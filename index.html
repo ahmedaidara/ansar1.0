@@ -1,145 +1,207 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Association</title>
-  <style>
-    :root {
-      --main: #0057b8;
-      --bg: #f4f4f4;
-      --white: #fff;
-      --text: #333;
-      --gray: #aaa;
-    }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    header {
-      background: var(--main);
-      color: var(--white);
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.4rem;
-      font-weight: bold;
-    }
-    .container {
-      padding: 1rem;
-    }
-    h2 {
-      margin-top: 2rem;
-      color: var(--main);
-    }
-    .card {
-      background: var(--white);
-      margin: 1rem 0;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .card span {
-      display: block;
-      margin: 0.2rem 0;
-    }
-    .status-actif {
-      color: green;
-      font-weight: bold;
-    }
-    .status-blacklist {
-      color: red;
-      font-weight: bold;
-    }
-    button.payer {
-      margin-top: 0.5rem;
-      background: var(--main);
-      color: var(--white);
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button.payer:hover {
-      background: #0041a3;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: var(--gray);
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANSAR ALMOUYASSAR</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://www.whereby.com/embed/whereby-embed.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js"></script>
 </head>
 <body>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="ANSAR ALMOUYASSAR Logo">
+    </div>
+    <div class="header-right">
+      <button id="theme-toggle">☀️</button>
+      <button id="settings-btn">⚙️</button>
+    </div>
+  </header>
 
-  <header>👥 Gestion Association</header>
-  
-  <div class="container">
-    <h2>📋 Membres</h2>
-    <div id="membres-list"></div>
+  <!-- Main Content -->
+  <main>
+    <!-- Accueil -->
+    <section id="accueil" class="page active">
+      <h1>ANSAR ALMOUYASSAR</h1>
+      <p>Président : Mouhamed Niang</p>
+      <div class="description">
+        <p>Description de l'association...</p>
+        <img src="placeholder.jpg" alt="Association Image">
+        <video controls>
+          <source src="placeholder.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div id="event-countdown"></div>
+      <div id="notifications"></div>
+    </section>
 
-    <h2>💰 Cotisations</h2>
-    <div id="cotisations-list"></div>
+    <!-- Membres -->
+    <section id="membres" class="page">
+      <h2>Liste des Membres</h2>
+      <input type="text" id="search-membres" placeholder="Rechercher un membre...">
+      <ul id="membres-list"></ul>
+    </section>
+
+    <!-- Événements -->
+    <section id="evenements" class="page">
+      <h2>Événements</h2>
+      <input type="text" id="search-evenements" placeholder="Rechercher un événement...">
+      <ul id="evenements-list"></ul>
+    </section>
+
+    <!-- Galerie -->
+    <section id="galerie" class="page">
+      <h2>Galerie</h2>
+      <div id="galerie-content"></div>
+    </section>
+
+    <!-- Coran -->
+    <section id="coran" class="page">
+      <h2>Coran</h2>
+      <ul id="juz-list">
+        <!-- 30 juz' en arabe -->
+      </ul>
+    </section>
+
+    <!-- Bibliothèque -->
+    <section id="bibliotheque" class="page">
+      <h2>Bibliothèque</h2>
+      <input type="text" id="search-bibliotheque" placeholder="Rechercher un livre...">
+      <div id="bibliotheque-content"></div>
+    </section>
+
+    <!-- Espace Personnel -->
+    <section id="espace-personnel" class="page">
+      <h2>Espace Personnel</h2>
+      <div id="login-form">
+        <input type="text" id="login-prenom" placeholder="Prénom">
+        <input type="text" id="login-nom" placeholder="Nom">
+        <input type="text" id="login-numero" placeholder="Numéro (MEMBRE001)">
+        <input type="password" id="login-password" placeholder="Mot de passe (ex. 10012005)">
+        <button id="login-btn">Se connecter</button>
+      </div>
+      <div id="espace-content" style="display: none;">
+        <h3 id="espace-title"></h3>
+        <div id="espace-info"></div>
+        <h4>Mes Cotisations</h4>
+        <div id="cotisations-content"></div>
+        <div id="payment-links">
+          <a href="https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/?amount=2000" target="_blank" class="payment-btn">Payer via Wave</a>
+          <a href="https://sugu.orange-sonatel.com/mp/dc3PQ0eEeSdcKQWVvcTH2Z" target="_blank" class="payment-btn">Payer via Orange Money</a>
+        </div>
+        <h4>Suggestion</h4>
+        <textarea id="suggestion-text" placeholder="Votre suggestion..."></textarea>
+        <button id="suggestion-btn">Envoyer</button>
+        <button id="logout-btn">Déconnexion</button>
+      </div>
+    </section>
+
+    <!-- Paramètres -->
+    <section id="parametres" class="page">
+      <h2>Paramètres</h2>
+      <label for="lang-select">Langue :</label>
+      <select id="lang-select">
+        <option value="fr">Français</option>
+        <option value="ar">Arabe</option>
+        <option value="en">Anglais</option>
+      </select>
+      <label for="theme-select">Thème :</label>
+      <select id="theme-select">
+        <option value="light">Clair</option>
+        <option value="dark">Sombre</option>
+      </select>
+      <h3>Liens Utiles</h3>
+      <ul>
+        <li><a href="http://www.almouyassar.com" target="_blank">www.almouyassar.com</a></li>
+        <li><a href="http://www.ansar.com" target="_blank">www.ansar.com</a></li>
+        <li><a href="http://www.lavoiedusalut.com" target="_blank">www.lavoiedusalut.com</a></li>
+        <li><a href="#" target="_blank">Politique de confidentialité</a></li>
+      </ul>
+    </section>
+
+    <!-- Espace Secret -->
+    <section id="espace-secret" class="page">
+      <h2>Espace Secret</h2>
+      <div id="secret-content">
+        <button id="add-membre-btn">Ajouter un membre</button>
+        <button id="edit-membre-btn">Modifier un membre</button>
+        <button id="galerie-btn">Galerie</button>
+        <button id="evenements-btn">Événements</button>
+        <button id="messages-btn">Messages</button>
+        <button id="notes-btn">Notes</button>
+        <button id="documents-btn">Documents</button>
+        <button id="suggestions-btn">Suggestions</button>
+        <button id="stats-btn">Statistiques</button>
+        <button id="calls-btn">Appels</button>
+        <button id="auto-messages-btn">Messages automatisés</button>
+      </div>
+      <div id="secret-subsection"></div>
+    </section>
+
+    <!-- Trésorier -->
+    <section id="espace-tresorier" class="page">
+      <h2>Espace Trésorier</h2>
+      <div id="tresorier-content">
+        <button id="add-cotisation-btn">Ajouter une cotisation</button>
+        <button id="manage-cotisations-btn">Gérer les cotisations</button>
+      </div>
+      <div id="tresorier-subsection"></div>
+    </section>
+
+    <!-- Président -->
+    <section id="espace-president" class="page">
+      <h2>Espace Président</h2>
+      <input type="password" id="president-password" placeholder="Mot de passe (0000)">
+      <button id="president-access-btn">Accéder</button>
+      <div id="president-content" style="display: none;">
+        <button id="add-sensitive-doc-btn">Ajouter un document</button>
+        <button id="manage-sensitive-docs-btn">Gérer les documents</button>
+        <div id="president-subsection"></div>
+      </div>
+    </section>
+
+    <!-- Secrétaire -->
+    <section id="espace-secretaire" class="page">
+      <h2>Espace Secrétaire</h2>
+      <button id="add-note-btn">Ajouter une note</button>
+      <button id="add-doc-btn">Ajouter un document</button>
+      <button id="manage-notes-docs-btn">Gérer notes/documents</button>
+      <div id="secretaire-subsection"></div>
+    </section>
+  </main>
+
+  <!-- Navigation -->
+  <nav>
+    <button data-page="accueil">Accueil</button>
+    <button data-page="membres">Membres</button>
+    <button data-page="evenements">Événements</button>
+    <button data-page="galerie">Galerie</button>
+    <button data-page="coran">Coran</button>
+    <button data-page="bibliotheque">Bibliothèque</button>
+    <button data-page="espace-personnel">Espace Personnel</button>
+  </nav>
+
+  <!-- Centre d'aide -->
+  <div id="help-btn">?</div>
+  <div id="help-chat" style="display: none;">
+    <div id="chat-messages"></div>
+    <div id="chat-input">
+      <input type="text" id="help-input" placeholder="Posez votre question...">
+      <button id="send-help-btn">Envoyer</button>
+      <button id="clear-chat-btn">🗑️</button>
+    </div>
+    <div id="secret-code-input" style="display: none;">
+      <input type="password" id="secret-code" placeholder="Entrez le code secret">
+      <button id="submit-secret-code">Entrée</button>
+    </div>
   </div>
 
-  <footer>© Club Info Saldia — Powered by Firebase</footer>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    // ✅ Ta configuration Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import {
-      getFirestore, collection, onSnapshot
-    } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyA0vL0QgFDkAi-ScZDVKC1G5MgcFCURE1A",
-      authDomain: "club-info-saldia.firebaseapp.com",
-      projectId: "club-info-saldia",
-      storageBucket: "club-info-saldia.appspot.com",
-      messagingSenderId: "231304730592",
-      appId: "1:231304730592:web:cb11caa0d19cc427bb9b61"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const membresList = document.getElementById("membres-list");
-    const cotisationsList = document.getElementById("cotisations-list");
-
-    // 📡 Affichage en temps réel des membres
-    onSnapshot(collection(db, "membres"), (snapshot) => {
-      membresList.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const membre = doc.data();
-        const statusClass = membre.statut === "actif" ? "status-actif" : "status-blacklist";
-        membresList.innerHTML += `
-          <div class="card">
-            <span><b>Nom :</b> ${membre.nom}</span>
-            <span><b>Statut :</b> <span class="${statusClass}">${membre.statut}</span></span>
-            <span><b>Classification :</b> ${membre.classification}</span>
-          </div>
-        `;
-      });
-    });
-
-    // 💸 Affichage en temps réel des cotisations
-    onSnapshot(collection(db, "cotisations"), (snapshot) => {
-      cotisationsList.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const c = doc.data();
-        cotisationsList.innerHTML += `
-          <div class="card">
-            <span><b>Nom :</b> ${c.nom}</span>
-            <span><b>Mois :</b> ${c.mois}</span>
-            <span><b>Montant :</b> ${c.montant} €</span>
-            <button class="payer" onclick="alert('Paiement pas encore connecté')">Payer</button>
-          </div>
-        `;
-      });
-    });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
