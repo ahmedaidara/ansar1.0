@@ -1,6 +1,6 @@
 const SUPABASE_URL = 'https://ncbfuuoupskhzgcjgpvq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYmZ1dW91cHNraHpnY2pncHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTMwNDYsImV4cCI6MjA2ODQyOTA0Nn0.3w7BT14mJeXQHBmZPNxbQwnArkk5wxytJ4aTqdYg4C8';
-const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); // Corrigé : 'Supabase' -> 'supabase'
 
 const presidentCode = '0000';
 let currentUser = null;
@@ -86,7 +86,15 @@ function showPage(pageId) {
   if (pageId === 'members') updateMembersList();
   if (pageId === 'events') updateEventsList();
   if (pageId === 'gallery') updateGalleryContent();
-  if (pageId === 'messages') updateMessagesList();
+  if (pageId === 'messages') {
+    updateMessagesList();
+    // Attacher l'écouteur d'événements pour le formulaire de chat
+    const chatForm = document.querySelector('#chat-form');
+    if (chatForm) {
+      chatForm.removeEventListener('submit', handleChatSubmit); // Éviter les doublons
+      chatForm.addEventListener('submit', handleChatSubmit);
+    }
+  }
   if (pageId === 'coran') updateCoranContent();
   if (pageId === 'personal') {
     document.querySelector('#personal-login').style.display = currentUser && currentUser.role !== 'admin' ? 'none' : 'block';
@@ -123,6 +131,7 @@ function toggleTheme() {
 
 async function updateEventCountdowns() {
   const countdowns = document.getElementById('event-countdowns');
+  if (!countdowns) return;
   const { data: events, error } = await supabase.from('events').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des événements:', error);
@@ -153,14 +162,21 @@ document.querySelector('#settings-language')?.addEventListener('change', (e) => 
 
 function showSecretEntry() {
   const secretEntry = document.querySelector('#secret-entry');
-  if (secretEntry) {
+  const chatMessages = document.querySelector('#chat-messages');
+  if (secretEntry && chatMessages) {
     secretEntry.style.display = 'block';
     if (secretEntryTimeout) clearTimeout(secretEntryTimeout);
     secretEntryTimeout = setTimeout(() => {
       secretEntry.style.display = 'none';
-      document.querySelector('#chat-messages').innerHTML += '<div class="chat-message received">Le délai pour entrer le second code a expiré.</div>';
-      document.querySelector('#chat-messages').scrollTop = document.querySelector('#chat-messages').scrollHeight;
+      chatMessages.innerHTML += '<div class="chat-message received">Le délai pour entrer le second code a expiré.</div>';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }, 30000); // Masquer après 30 secondes
+  } else {
+    console.error('Conteneur #secret-entry ou #chat-messages non trouvé');
+    if (chatMessages) {
+      chatMessages.innerHTML += '<div class="chat-message received">Erreur : impossible d\'afficher le champ de code secret.</div>';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   }
 }
 
@@ -209,6 +225,10 @@ async function handleChatSubmit(e) {
   const sendButton = document.querySelector('#chat-form button[type="submit"]');
   if (!input || !chatMessages || !sendButton) {
     console.error('Éléments du formulaire de chat non trouvés');
+    if (chatMessages) {
+      chatMessages.innerHTML += '<div class="chat-message received">Erreur : formulaire de chat non trouvé.</div>';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
     return;
   }
   sendButton.disabled = true; // Désactiver le bouton pendant l'envoi
@@ -306,15 +326,6 @@ async function updateMessagesList() {
   `).join('');
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const chatForm = document.querySelector('#chat-form');
-  if (chatForm) {
-    chatForm.addEventListener('submit', handleChatSubmit);
-  } else {
-    console.error('Formulaire de chat non trouvé');
-  }
-});
 
 document.querySelector('#personal-login-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -658,3 +669,9 @@ async function updateMonthlyPayment(memberCode, contributionName, year, monthInd
     alert('Erreur lors de la mise à jour des cotisations');
   }
 }
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+  initSupabase();
+  updateEventCountdowns();
+});
