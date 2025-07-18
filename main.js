@@ -153,18 +153,10 @@ document.querySelector('#settings-language')?.addEventListener('change', (e) => 
 
 function toggleChatbot() {
   isChatOpen = !isChatOpen;
-  const chatbot = document.querySelector('#chatbot');
-  if (chatbot) {
-    chatbot.style.display = isChatOpen ? 'block' : 'none';
-    if (isChatOpen) {
-      const messages = document.querySelector('#chatbot-messages');
-      if (messages) {
-        messages.innerHTML = '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
-        messages.scrollTop = messages.scrollHeight;
-      }
-    }
-  } else {
-    console.error('Chatbot element not found');
+  document.querySelector('#chatbot').style.display = isChatOpen ? 'block' : 'none';
+  if (isChatOpen) {
+    document.querySelector('#chatbot-messages').innerHTML = 
+      '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
   }
 }
 
