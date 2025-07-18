@@ -82,7 +82,7 @@ function showPage(pageId) {
   document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
   document.querySelector(`#${pageId}`).classList.add('active');
-  document.querySelector(`a[onclick="showPage('${pageId}')"]`).classList.add('active');
+  document.querySelector(`a[onclick="showPage('${pageId}')"]`)?.classList.add('active');
   if (pageId === 'members') updateMembersList();
   if (pageId === 'events') updateEventsList();
   if (pageId === 'gallery') updateGalleryContent();
@@ -101,7 +101,7 @@ function showTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`#${tabId}`).classList.add('active');
-  document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+  document.querySelector(`button[onclick="showTab('${tabId}')"]`)?.classList.add('active');
   if (tabId === 'edit-member') updateEditMembersList();
   if (tabId === 'gallery-admin') updateGalleryAdminList();
   if (tabId === 'events-admin') updateEventsAdminList();
@@ -147,44 +147,91 @@ async function updateEventCountdowns() {
 
 setInterval(updateEventCountdowns, 1000);
 
-document.querySelector('#settings-language').addEventListener('change', (e) => {
+document.querySelector('#settings-language')?.addEventListener('change', (e) => {
   // Language change handled in settings
 });
 
 function toggleChatbot() {
   isChatOpen = !isChatOpen;
-  document.querySelector('#chatbot').style.display = isChatOpen ? 'block' : 'none';
-  if (isChatOpen) {
-    document.querySelector('#chatbot-messages').innerHTML = '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
+  const chatbot = document.querySelector('#chatbot');
+  if (chatbot) {
+    chatbot.style.display = isChatOpen ? 'block' : 'none';
+    if (isChatOpen) {
+      const messages = document.querySelector('#chatbot-messages');
+      if (messages) {
+        messages.innerHTML = '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+  } else {
+    console.error('Chatbot element not found');
   }
 }
 
-document.querySelector('.chatbot-button').addEventListener('click', toggleChatbot);
+// Ensure the chatbot button exists before adding event listener
+const chatbotButton = document.querySelector('.chatbot-button');
+if (chatbotButton) {
+  chatbotButton.addEventListener('click', toggleChatbot);
+} else {
+  console.error('Chatbot button not found');
+}
 
-document.querySelector('#chatbot-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const input = document.querySelector('#chatbot-input');
-  const message = input.value;
-  if (!message) return;
-  const messages = document.querySelector('#chatbot-messages');
-  messages.innerHTML += `<div class="chatbot-message sent">${message}</div>`;
-  const secretCodes = ['ADMIN12301012000', '00000000', '11111111', '22222222'];
-  if (secretCodes.includes(message)) {
-    document.querySelector('#secret-entry').style.display = 'block';
-  } else {
-    const response = getChatbotResponse(message);
-    messages.innerHTML += `<div class="chatbot-message received">${response}</div>`;
-  }
-  input.value = '';
-  messages.scrollTop = messages.scrollHeight;
-});
+// Ensure the chatbot form exists before adding event listener
+const chatbotForm = document.querySelector('#chatbot-form');
+if (chatbotForm) {
+  chatbotForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.querySelector('#chatbot-input');
+    const message = input.value.trim();
+    if (!message) return;
+    const messages = document.querySelector('#chatbot-messages');
+    if (messages) {
+      messages.innerHTML += `<div class="chatbot-message sent">${message}</div>`;
+      const secretCodes = ['ADMIN12301012000', '00000000', '11111111', '22222222'];
+      if (secretCodes.includes(message)) {
+        const secretEntry = document.querySelector('#secret-entry');
+        if (secretEntry) {
+          secretEntry.style.display = 'block';
+        } else {
+          console.error('Secret entry element not found');
+        }
+      } else {
+        const response = getChatbotResponse(message);
+        messages.innerHTML += `<div class="chatbot-message received">${response}</div>`;
+      }
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+    } else {
+      console.error('Chatbot messages element not found');
+    }
+  });
+} else {
+  console.error('Chatbot form not found');
+}
+
+function getChatbotResponse(message) {
+  // Placeholder for chatbot response logic
+  const responses = {
+    'association': 'Notre association travaille pour le bien-être de la communauté.',
+    'membre': 'Pour devenir membre, veuillez contacter un administrateur.',
+    'cotisation': 'Les cotisations sont gérées par le trésorier. Consultez l\'onglet Cotisations.',
+    'default': 'Je ne comprends pas votre demande. Essayez des mots-clés comme "association", "membre", ou "cotisation".'
+  };
+  const key = Object.keys(responses).find(k => message.toLowerCase().includes(k)) || 'default';
+  return responses[key];
+}
 
 function enterSecret() {
-  const password = document.querySelector('#secret-password').value;
+  const password = document.querySelector('#secret-password')?.value;
+  if (!password) {
+    console.error('Secret password input not found or empty');
+    return;
+  }
   const adminCodes = ['JESUISMEMBRE66', '33333333', '44444444', '55555555'];
   const treasurerCodes = ['JESUISTRESORIER444', '66666666', '77777777', '88888888'];
   const presidentCodes = ['PRESIDENT000', '99999999', '11112222', '33334444'];
   const secretaryCodes = ['SECRETAIRE000', '55556666', '77778888', '99990000'];
+  const messages = document.querySelector('#chatbot-messages');
   if (adminCodes.includes(password)) {
     currentUser = { code: 'ADMIN123', role: 'admin' };
     showPage('secret');
@@ -204,16 +251,21 @@ function enterSecret() {
     showPage('secret');
     showTab('secretary');
     toggleChatbot();
-  } else {
-    document.querySelector('#chatbot-messages').innerHTML += '<div class="chatbot-message received">Mot de passe incorrect.</div>';
+  } else if (messages) {
+    messages.innerHTML += '<div class="chatbot-message received">Mot de passe incorrect.</div>';
+    messages.scrollTop = messages.scrollHeight;
   }
 }
 
-document.querySelector('#personal-login-form').addEventListener('submit', async (e) => {
+document.querySelector('#personal-login-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const code = document.querySelector('#personal-member-code').value;
-  const password = document.querySelector('#personal-password').value;
+  const code = document.querySelector('#personal-member-code')?.value;
+  const password = document.querySelector('#personal-password')?.value;
   const errorMessage = document.querySelector('#personal-error-message');
+  if (!code || !password || !errorMessage) {
+    console.error('Personal login form elements not found');
+    return;
+  }
 
   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[012])(19|20)\d\d$/;
   if (!dateRegex.test(password)) {
@@ -247,12 +299,12 @@ function logoutPersonal() {
   showPage('home');
 }
 
-document.querySelector('#add-member-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-member-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
   const { data: members } = await supabase.from('membres').select('code');
   const newCode = `${(members.length + 1).toString().padStart(3, '0')}`;
-  const file = document.querySelector('#new-member-photo').files[0];
+  const file = document.querySelector('#new-member-photo')?.files[0];
   let photoUrl = 'assets/images/default-photo.png';
   if (file) {
     photoUrl = await uploadFile('membersphotos', file, `${newCode}_${file.name}`);
@@ -261,19 +313,19 @@ document.querySelector('#add-member-form').addEventListener('submit', async (e) 
   const { data: contributions } = await supabase.from('contributions').select('*').eq('name', 'Mensuelle').single();
   const member = {
     code: newCode,
-    firstname: document.querySelector('#new-member-firstname').value,
-    lastname: document.querySelector('#new-member-lastname').value,
-    age: parseInt(document.querySelector('#new-member-age').value) || null,
-    dob: document.querySelector('#new-member-dob').value || null,
-    birthplace: document.querySelector('#new-member-birthplace').value || null,
+    firstname: document.querySelector('#new-member-firstname')?.value,
+    lastname: document.querySelector('#new-member-lastname')?.value,
+    age: parseInt(document.querySelector('#new-member-age')?.value) || null,
+    dob: document.querySelector('#new-member-dob')?.value || null,
+    birthplace: document.querySelector('#new-member-birthplace')?.value || null,
     photo: photoUrl,
-    email: document.querySelector('#new-member-email').value || null,
-    activity: document.querySelector('#new-member-activity').value || null,
-    address: document.querySelector('#new-member-address').value || null,
-    phone: document.querySelector('#new-member-phone').value || null,
-    residence: document.querySelector('#new-member-residence').value || null,
-    role: document.querySelector('#new-member-role').value || 'membre',
-    status: document.querySelector('#new-member-status').value || 'actif',
+    email: document.querySelector('#new-member-email')?.value || null,
+    activity: document.querySelector('#new-member-activity')?.value || null,
+    address: document.querySelector('#new-member-address')?.value || null,
+    phone: document.querySelector('#new-member-phone')?.value || null,
+    residence: document.querySelector('#new-member-residence')?.value || null,
+    role: document.querySelector('#new-member-role')?.value || 'membre',
+    status: document.querySelector('#new-member-status')?.value || 'actif',
     contributions: { Mensuelle: Object.fromEntries(contributions.years.map(year => [year, Array(12).fill(false)])) }
   };
   const { error } = await supabase.from('membres').insert([member]);
@@ -285,9 +337,9 @@ document.querySelector('#add-member-form').addEventListener('submit', async (e) 
   document.querySelector('#add-member-form').reset();
 });
 
-document.querySelector('#delete-member-form').addEventListener('submit', async (e) => {
+document.querySelector('#delete-member-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const code = document.querySelector('#delete-member-code').value;
+  const code = document.querySelector('#delete-member-code')?.value;
   if (code !== presidentCode) {
     alert('Code président incorrect');
     return;
@@ -302,11 +354,11 @@ document.querySelector('#delete-member-form').addEventListener('submit', async (
   document.querySelector('#delete-member-form').style.display = 'none';
 });
 
-document.querySelector('#add-contribution-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-contribution-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'tresorier') return;
-  const name = document.querySelector('#contribution-name').value;
-  const amount = parseInt(document.querySelector('#contribution-amount').value);
+  const name = document.querySelector('#contribution-name')?.value;
+  const amount = parseInt(document.querySelector('#contribution-amount')?.value);
   const currentYear = new Date().getFullYear().toString();
   const { error: contribError } = await supabase.from('contributions').insert([{ name, amount, years: [currentYear] }]);
   if (contribError) {
@@ -324,10 +376,10 @@ document.querySelector('#add-contribution-form').addEventListener('submit', asyn
   document.querySelector('#add-contribution-form').reset();
 });
 
-document.querySelector('#suggestion-form').addEventListener('submit', async (e) => {
+document.querySelector('#suggestion-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser) return;
-  const text = document.querySelector('#suggestion-text').value;
+  const text = document.querySelector('#suggestion-text')?.value;
   const { error } = await supabase.from('suggestions').insert([{ member: `${currentUser.firstname} ${currentUser.lastname}`, text }]);
   if (error) {
     console.error('Erreur lors de l\'ajout de la suggestion:', error);
@@ -337,10 +389,10 @@ document.querySelector('#suggestion-form').addEventListener('submit', async (e) 
   document.querySelector('#suggestion-form').reset();
 });
 
-document.querySelector('#add-gallery-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-gallery-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
-  const file = document.querySelector('#gallery-file').files[0];
+  const file = document.querySelector('#gallery-file')?.files[0];
   if (file) {
     const fileUrl = await uploadFile('gallery', file, file.name);
     if (!fileUrl) return;
@@ -354,19 +406,19 @@ document.querySelector('#add-gallery-form').addEventListener('submit', async (e)
   }
 });
 
-document.querySelector('#add-event-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-event-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
-  const file = document.querySelector('#event-file').files[0];
+  const file = document.querySelector('#event-file')?.files[0];
   let imageUrl = '';
   if (file) {
     imageUrl = await uploadFile('eventsimages', file, file.name);
     if (!imageUrl) return;
   }
   const event = {
-    name: document.querySelector('#event-name').value,
-    description: document.querySelector('#event-description').value,
-    datetime: new Date(`${document.querySelector('#event-date').value}T${document.querySelector('#event-time').value}`).toISOString(),
+    name: document.querySelector('#event-name')?.value,
+    description: document.querySelector('#event-description')?.value,
+    datetime: new Date(`${document.querySelector('#event-date')?.value}T${document.querySelector('#event-time')?.value}`).toISOString(),
     image: imageUrl
   };
   const { error } = await supabase.from('events').insert([event]);
@@ -378,12 +430,12 @@ document.querySelector('#add-event-form').addEventListener('submit', async (e) =
   document.querySelector('#add-event-form').reset();
 });
 
-document.querySelector('#add-message-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-message-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
   const message = {
-    title: document.querySelector('#message-title').value,
-    text: document.querySelector('#message-text').value,
+    title: document.querySelector('#message-title')?.value,
+    text: document.querySelector('#message-text')?.value,
     date: new Date().toISOString()
   };
   const { error } = await supabase.from('messages').insert([message]);
@@ -396,13 +448,13 @@ document.querySelector('#add-message-form').addEventListener('submit', async (e)
   sendNotification('Nouveau message', `${message.title}: ${message.text}`);
 });
 
-document.querySelector('#add-auto-message-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-auto-message-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
   const autoMessage = {
-    name: document.querySelector('#auto-message-name').value,
-    text: document.querySelector('#auto-message-text').value,
-    datetime: new Date(`${document.querySelector('#auto-message-date').value}T${document.querySelector('#auto-message-time').value}`).toISOString()
+    name: document.querySelector('#auto-message-name')?.value,
+    text: document.querySelector('#auto-message-text')?.value,
+    datetime: new Date(`${document.querySelector('#auto-message-date')?.value}T${document.querySelector('#auto-message-time')?.value}`).toISOString()
   };
   const { error } = await supabase.from('auto_messages').insert([autoMessage]);
   if (error) {
@@ -413,12 +465,12 @@ document.querySelector('#add-auto-message-form').addEventListener('submit', asyn
   document.querySelector('#add-auto-message-form').reset();
 });
 
-document.querySelector('#add-note-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-note-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
   const note = {
-    theme: document.querySelector('#note-theme').value,
-    text: document.querySelector('#note-text').value
+    theme: document.querySelector('#note-theme')?.value,
+    text: document.querySelector('#note-text')?.value
   };
   const { error } = await supabase.from('notes').insert([note]);
   if (error) {
@@ -429,14 +481,14 @@ document.querySelector('#add-note-form').addEventListener('submit', async (e) =>
   document.querySelector('#add-note-form').reset();
 });
 
-document.querySelector('#add-internal-doc-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-internal-doc-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
-  const file = document.querySelector('#internal-doc').files[0];
+  const file = document.querySelector('#internal-doc')?.files[0];
   if (file) {
     const fileUrl = await uploadFile('internaldocs', file, file.name);
     if (!fileUrl) return;
-    const { error } = await supabase.from('internal_docs').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#internal-doc-category').value }]);
+    const { error } = await supabase.from('internal_docs').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#internal-doc-category')?.value }]);
     if (error) {
       console.error('Erreur lors de l\'ajout du document interne:', error);
       alert('Erreur lors de l\'ajout du document interne');
@@ -446,14 +498,14 @@ document.querySelector('#add-internal-doc-form').addEventListener('submit', asyn
   }
 });
 
-document.querySelector('#add-president-file-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-president-file-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'president') return;
-  const file = document.querySelector('#president-file').files[0];
+  const file = document.querySelector('#president-file')?.files[0];
   if (file) {
     const fileUrl = await uploadFile('presidentfiles', file, file.name);
     if (!fileUrl) return;
-    const { error } = await supabase.from('president_files').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#president-file-category').value }]);
+    const { error } = await supabase.from('president_files').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#president-file-category')?.value }]);
     if (error) {
       console.error('Erreur lors de l\'ajout du fichier présidentiel:', error);
       alert('Erreur lors de l\'ajout du fichier présidentiel');
@@ -463,14 +515,14 @@ document.querySelector('#add-president-file-form').addEventListener('submit', as
   }
 });
 
-document.querySelector('#add-secretary-file-form').addEventListener('submit', async (e) => {
+document.querySelector('#add-secretary-file-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'secretaire') return;
-  const file = document.querySelector('#secretary-file').files[0];
+  const file = document.querySelector('#secretary-file')?.files[0];
   if (file) {
     const fileUrl = await uploadFile('secretaryfiles', file, file.name);
     if (!fileUrl) return;
-    const { error } = await supabase.from('secretary_files').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#secretary-file-category').value }]);
+    const { error } = await supabase.from('secretary_files').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#secretary-file-category')?.value }]);
     if (error) {
       console.error('Erreur lors de l\'ajout du fichier secrétaire:', error);
       alert('Erreur lors de l\'ajout du fichier secrétaire');
@@ -481,8 +533,9 @@ document.querySelector('#add-secretary-file-form').addEventListener('submit', as
 });
 
 async function updateMembersList() {
-  const search = document.querySelector('#members-search').value.toLowerCase();
+  const search = document.querySelector('#members-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#members-list');
+  if (!list) return;
   const { data: members, error } = await supabase.from('membres').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des membres:', error);
@@ -500,8 +553,9 @@ async function updateMembersList() {
 
 async function updateContributionsAdminList() {
   if (!currentUser || currentUser.role !== 'tresorier') return;
-  const search = document.querySelector('#contributions-admin-search').value.toLowerCase();
+  const search = document.querySelector('#contributions-admin-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#contributions-admin-list');
+  if (!list) return;
   const { data: contributions, error: contribError } = await supabase.from('contributions').select('*');
   const { data: members, error: memberError } = await supabase.from('membres').select('*');
   if (contribError || memberError) {
@@ -549,8 +603,9 @@ async function updateMonthlyPayment(memberCode, contributionName, year, monthInd
 }
 
 async function updateEditMembersList() {
-  const search = document.querySelector('#edit-member-search').value.toLowerCase();
+  const search = document.querySelector('#edit-member-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#edit-members-list');
+  if (!list) return;
   const { data: members, error } = await supabase.from('membres').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des membres:', error);
@@ -596,8 +651,9 @@ function deleteMember(code) {
 }
 
 async function updateEventsList() {
-  const search = document.querySelector('#events-search').value.toLowerCase();
+  const search = document.querySelector('#events-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#events-list');
+  if (!list) return;
   const { data: events, error } = await supabase.from('events').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des événements:', error);
@@ -616,8 +672,9 @@ async function updateEventsList() {
 }
 
 async function updateEventsAdminList() {
-  const search = document.querySelector('#events-admin-search').value.toLowerCase();
+  const search = document.querySelector('#events-admin-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#events-admin-list');
+  if (!list) return;
   const { data: events, error } = await supabase.from('events').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des événements:', error);
@@ -647,6 +704,7 @@ async function deleteEvent(id) {
 
 async function updateGalleryContent() {
   const content = document.querySelector('#gallery-content');
+  if (!content) return;
   const { data: gallery, error } = await supabase.from('gallery').select('*');
   if (error) {
     console.error('Erreur lors de la récupération de la galerie:', error);
@@ -661,8 +719,9 @@ async function updateGalleryContent() {
 }
 
 async function updateGalleryAdminList() {
-  const search = document.querySelector('#gallery-admin-search').value.toLowerCase();
+  const search = document.querySelector('#gallery-admin-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#gallery-admin-list');
+  if (!list) return;
   const { data: gallery, error } = await supabase.from('gallery').select('*');
   if (error) {
     console.error('Erreur lors de la récupération de la galerie:', error);
@@ -689,6 +748,7 @@ async function deleteGalleryItem(id) {
 
 async function updateMessagesList() {
   const list = document.querySelector('#messages-list');
+  if (!list) return;
   const { data: messages, error } = await supabase.from('messages').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des messages:', error);
@@ -705,8 +765,9 @@ async function updateMessagesList() {
 }
 
 async function updateMessagesAdminList() {
-  const search = document.querySelector('#messages-admin-search').value.toLowerCase();
+  const search = document.querySelector('#messages-admin-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#messages-admin-list');
+  if (!list) return;
   const { data: messages, error } = await supabase.from('messages').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des messages:', error);
@@ -735,6 +796,7 @@ async function deleteMessage(id) {
 
 async function updateMessagePopups() {
   const popups = document.querySelector('#message-popups');
+  if (!popups) return;
   const { data: messages, error } = await supabase.from('messages').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des messages:', error);
@@ -751,8 +813,9 @@ async function updateMessagePopups() {
 }
 
 async function updateAutoMessagesList() {
-  const search = document.querySelector('#auto-messages-search').value.toLowerCase();
+  const search = document.querySelector('#auto-messages-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#auto-messages-list');
+  if (!list) return;
   const { data: autoMessages, error } = await supabase.from('auto_messages').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des messages automatisés:', error);
@@ -780,8 +843,9 @@ async function deleteAutoMessage(id) {
 }
 
 async function updateNotesList() {
-  const search = document.querySelector('#notes-search').value.toLowerCase();
+  const search = document.querySelector('#notes-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#notes-list');
+  if (!list) return;
   const { data: notes, error } = await supabase.from('notes').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des notes:', error);
@@ -807,8 +871,9 @@ async function deleteNote(id) {
 }
 
 async function updateInternalDocsList() {
-  const search = document.querySelector('#internal-docs-search').value.toLowerCase();
+  const search = document.querySelector('#internal-docs-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#internal-docs-list');
+  if (!list) return;
   const { data: internalDocs, error } = await supabase.from('internal_docs').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des documents internes:', error);
@@ -835,8 +900,9 @@ async function deleteInternalDoc(id) {
 }
 
 async function updatePresidentFilesList() {
-  const search = document.querySelector('#president-files-search').value.toLowerCase();
+  const search = document.querySelector('#president-files-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#president-files-list');
+  if (!list) return;
   const { data: presidentFiles, error } = await supabase.from('president_files').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des fichiers présidentiels:', error);
@@ -863,8 +929,9 @@ async function deletePresidentFile(id) {
 }
 
 async function updateSecretaryFilesList() {
-  const search = document.querySelector('#secretary-files-search').value.toLowerCase();
+  const search = document.querySelector('#secretary-files-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#secretary-files-list');
+  if (!list) return;
   const { data: secretaryFiles, error } = await supabase.from('secretary_files').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des fichiers secrétaire:', error);
@@ -891,8 +958,9 @@ async function deleteSecretaryFile(id) {
 }
 
 async function updateSuggestionsList() {
-  const search = document.querySelector('#suggestions-search').value.toLowerCase();
+  const search = document.querySelector('#suggestions-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#suggestions-list');
+  if (!list) return;
   const { data: suggestions, error } = await supabase.from('suggestions').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des suggestions:', error);
@@ -918,8 +986,9 @@ async function deleteSuggestion(id) {
 }
 
 function updateCoranContent() {
-  const search = document.querySelector('#coran-search').value.toLowerCase();
+  const search = document.querySelector('#coran-search')?.value.toLowerCase() || '';
   const content = document.querySelector('#coran-content');
+  if (!content) return;
   content.innerHTML = Array(30).fill()
     .map((_, i) => ({ juz: `Juz' ${i + 1}`, id: i + 1 }))
     .filter(j => j.juz.toLowerCase().includes(search))
@@ -927,8 +996,9 @@ function updateCoranContent() {
 }
 
 async function updateLibraryContent() {
-  const search = document.querySelector('#library-search').value.toLowerCase();
+  const search = document.querySelector('#library-search')?.value.toLowerCase() || '';
   const content = document.querySelector('#library-content');
+  if (!content) return;
   const { data: library, error } = await supabase.from('library').select('*');
   if (error) {
     console.error('Erreur lors de la récupération de la bibliothèque:', error);
@@ -948,6 +1018,7 @@ async function updatePersonalInfo() {
   if (!currentUser) return;
   const info = document.querySelector('#personal-info');
   const contributionsDiv = document.querySelector('#personal-contributions');
+  if (!info || !contributionsDiv) return;
   const { data: contributions, error } = await supabase.from('contributions').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des cotisations:', error);
@@ -1026,8 +1097,9 @@ async function updateStats() {
 }
 
 async function updateCallMembersList() {
-  const search = document.querySelector('#video-calls-search').value.toLowerCase();
+  const search = document.querySelector('#video-calls-search')?.value.toLowerCase() || '';
   const list = document.querySelector('#members-call-list');
+  if (!list) return;
   const { data: members, error } = await supabase.from('membres').select('*');
   if (error) {
     console.error('Erreur lors de la récupération des membres:', error);
@@ -1052,7 +1124,7 @@ function updateSelectedCallMembers(code, checked) {
 }
 
 function toggleCallAll() {
-  const checkAll = document.querySelector('#call-all').checked;
+  const checkAll = document.querySelector('#call-all')?.checked;
   selectedCallMembers = checkAll ? (async () => {
     const { data: members } = await supabase.from('membres').select('code');
     return members.map(m => m.code);
@@ -1111,22 +1183,22 @@ function sendNotification(title, body) {
   }
 }
 
-document.querySelector('#members-search').addEventListener('input', updateMembersList);
-document.querySelector('#events-search').addEventListener('input', updateEventsList);
-document.querySelector('#coran-search').addEventListener('input', updateCoranContent);
-document.querySelector('#library-search').addEventListener('input', updateLibraryContent);
-document.querySelector('#edit-member-search').addEventListener('input', updateEditMembersList);
-document.querySelector('#gallery-admin-search').addEventListener('input', updateGalleryAdminList);
-document.querySelector('#events-admin-search').addEventListener('input', updateEventsAdminList);
-document.querySelector('#messages-admin-search').addEventListener('input', updateMessagesAdminList);
-document.querySelector('#notes-search').addEventListener('input', updateNotesList);
-document.querySelector('#internal-docs-search').addEventListener('input', updateInternalDocsList);
-document.querySelector('#suggestions-search').addEventListener('input', updateSuggestionsList);
-document.querySelector('#video-calls-search').addEventListener('input', updateCallMembersList);
-document.querySelector('#auto-messages-search').addEventListener('input', updateAutoMessagesList);
-document.querySelector('#contributions-admin-search').addEventListener('input', updateContributionsAdminList);
-document.querySelector('#president-files-search').addEventListener('input', updatePresidentFilesList);
-document.querySelector('#secretary-files-search').addEventListener('input', updateSecretaryFilesList);
+document.querySelector('#members-search')?.addEventListener('input', updateMembersList);
+document.querySelector('#events-search')?.addEventListener('input', updateEventsList);
+document.querySelector('#coran-search')?.addEventListener('input', updateCoranContent);
+document.querySelector('#library-search')?.addEventListener('input', updateLibraryContent);
+document.querySelector('#edit-member-search')?.addEventListener('input', updateEditMembersList);
+document.querySelector('#gallery-admin-search')?.addEventListener('input', updateGalleryAdminList);
+document.querySelector('#events-admin-search')?.addEventListener('input', updateEventsAdminList);
+document.querySelector('#messages-admin-search')?.addEventListener('input', updateMessagesAdminList);
+document.querySelector('#notes-search')?.addEventListener('input', updateNotesList);
+document.querySelector('#internal-docs-search')?.addEventListener('input', updateInternalDocsList);
+document.querySelector('#suggestions-search')?.addEventListener('input', updateSuggestionsList);
+document.querySelector('#video-calls-search')?.addEventListener('input', updateCallMembersList);
+document.querySelector('#auto-messages-search')?.addEventListener('input', updateAutoMessagesList);
+document.querySelector('#contributions-admin-search')?.addEventListener('input', updateContributionsAdminList);
+document.querySelector('#president-files-search')?.addEventListener('input', updatePresidentFilesList);
+document.querySelector('#secretary-files-search')?.addEventListener('input', updateSecretaryFilesList);
 
 initSupabase().then(() => {
   updateMembersList();
