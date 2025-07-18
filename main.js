@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Collez ici TOUT votre code actuel
-  let isChatOpen = false;
+let isChatOpen = false;
 const SUPABASE_URL = 'https://ncbfuuoupskhzgcjgpvq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYmZ1dW91cHNraHpnY2pncHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTMwNDYsImV4cCI6MjA2ODQyOTA0Nn0.3w7BT14mJeXQHBmZPNxbQwnArkk5wxytJ4aTqdYg4C8';
 const supabase = supabaseClient.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1220,7 +1218,4 @@ initSupabase().then(() => {
   updateStats();
   updateEventCountdowns();
   updateMessagePopups();
-});
-
-    // (y compris les corrections des étapes 1 et 2)
 });
