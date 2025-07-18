@@ -4,204 +4,360 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ANSAR ALMOUYASSAR</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="main.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <script src="https://www.whereby.com/embed/whereby-embed.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+  <script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Header -->
   <header>
-    <div class="logo">
-      <img src="logo.png" alt="ANSAR ALMOUYASSAR Logo">
-    </div>
-    <div class="header-right">
-      <button id="theme-toggle">☀️</button>
-      <button id="settings-btn">⚙️</button>
-    </div>
+    <nav class="top-nav">
+      <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+      <span class="material-icons settings-icon" onclick="showPage('settings')">settings</span>
+    </nav>
   </header>
-
-  <!-- Main Content -->
   <main>
-    <!-- Accueil -->
-    <section id="accueil" class="page active">
-      <h1>ANSAR ALMOUYASSAR</h1>
-      <p>Président : Mouhamed Niang</p>
-      <div class="description">
-        <p>Description de l'association...</p>
-        <img src="placeholder.jpg" alt="Association Image">
+    <!-- Page d'accueil -->
+    <section id="home" class="page active">
+      <div class="hero">
+        <h1>ANSAR ALMOUYASSAR</h1>
+        <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
         <video controls>
-          <source src="placeholder.mp4" type="video/mp4">
+          <source src="assets/videos/intro.mp4" type="video/mp4">
+          Votre navigateur ne supporte pas la vidéo.
         </video>
+        <div id="event-countdowns"></div>
+        <div id="message-popups"></div>
       </div>
-      <div id="event-countdown"></div>
-      <div id="notifications"></div>
     </section>
 
-    <!-- Membres -->
-    <section id="membres" class="page">
+    <!-- Page des membres -->
+    <section id="members" class="page">
       <h2>Liste des Membres</h2>
-      <input type="text" id="search-membres" placeholder="Rechercher un membre...">
-      <ul id="membres-list"></ul>
+      <input type="text" id="members-search" placeholder="Rechercher un membre..." class="search-bar">
+      <div id="members-list"></div>
     </section>
 
-    <!-- Événements -->
-    <section id="evenements" class="page">
-      <h2>Événements</h2>
-      <input type="text" id="search-evenements" placeholder="Rechercher un événement...">
-      <ul id="evenements-list"></ul>
+    <!-- Page des événements -->
+    <section id="events" class="page">
+      <h2>Événements à venir</h2>
+      <input type="text" id="events-search" placeholder="Rechercher un événement..." class="search-bar">
+      <div id="events-list"></div>
     </section>
 
-    <!-- Galerie -->
-    <section id="galerie" class="page">
+    <!-- Page de la galerie -->
+    <section id="gallery" class="page">
       <h2>Galerie</h2>
-      <div id="galerie-content"></div>
+      <div id="gallery-content" class="gallery-grid"></div>
     </section>
 
-    <!-- Coran -->
+    <!-- Page des messages -->
+    <section id="messages" class="page">
+      <h2>Messages</h2>
+      <div id="messages-list"></div>
+    </section>
+
+    <!-- Page Coran -->
     <section id="coran" class="page">
-      <h2>Coran</h2>
-      <ul id="juz-list">
-        <!-- 30 juz' en arabe -->
-      </ul>
+      <h2>Coran - 30 Juz'</h2>
+      <input type="text" id="coran-search" placeholder="Rechercher un juz..." class="search-bar">
+      <div id="coran-content"></div>
     </section>
 
-    <!-- Bibliothèque -->
-    <section id="bibliotheque" class="page">
+    <!-- Page Bibliothèque -->
+    <section id="library" class="page">
       <h2>Bibliothèque</h2>
-      <input type="text" id="search-bibliotheque" placeholder="Rechercher un livre...">
-      <div id="bibliotheque-content"></div>
+      <input type="text" id="library-search" placeholder="Rechercher un livre..." class="search-bar">
+      <div id="library-content"></div>
     </section>
 
-    <!-- Espace Personnel -->
-    <section id="espace-personnel" class="page">
-      <h2>Espace Personnel</h2>
-      <div id="login-form">
-        <input type="text" id="login-prenom" placeholder="Prénom">
-        <input type="text" id="login-nom" placeholder="Nom">
-        <input type="text" id="login-numero" placeholder="Numéro (MEMBRE001)">
-        <input type="password" id="login-password" placeholder="Mot de passe (ex. 10012005)">
-        <button id="login-btn">Se connecter</button>
+    <!-- Espace personnel -->
+    <section id="personal" class="page">
+      <div id="personal-login" style="display: block;">
+        <h2>Espace Personnel</h2>
+        <form id="personal-login-form">
+          <label for="personal-member-code">Numéro de Membre</label>
+          <input type="text" id="personal-member-code" placeholder="Ex. : 001" required>
+          <label for="personal-password">Mot de passe (Date de naissance : JJMMAAAA)</label>
+          <input type="password" id="personal-password" placeholder="Ex. : 10012005" required>
+          <button type="submit" class="cta-button">Se connecter</button>
+        </form>
+        <p id="personal-error-message" style="color: red; display: none;"></p>
       </div>
-      <div id="espace-content" style="display: none;">
-        <h3 id="espace-title"></h3>
-        <div id="espace-info"></div>
-        <h4>Mes Cotisations</h4>
-        <div id="cotisations-content"></div>
-        <div id="payment-links">
-          <a href="https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/?amount=2000" target="_blank" class="payment-btn">Payer via Wave</a>
-          <a href="https://sugu.orange-sonatel.com/mp/dc3PQ0eEeSdcKQWVvcTH2Z" target="_blank" class="payment-btn">Payer via Orange Money</a>
-        </div>
-        <h4>Suggestion</h4>
-        <textarea id="suggestion-text" placeholder="Votre suggestion..."></textarea>
-        <button id="suggestion-btn">Envoyer</button>
-        <button id="logout-btn">Déconnexion</button>
+      <div id="personal-content" style="display: none;">
+        <h2 id="personal-title">Mon Espace Personnel</h2>
+        <div id="personal-info"></div>
+        <h3>Mes Cotisations</h3>
+        <div id="personal-contributions"></div>
+        <button class="cta-button" onclick="payViaWave()">Payer via Wave</button>
+        <button class="cta-button" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
+        <h3>Suggestions</h3>
+        <form id="suggestion-form">
+          <textarea id="suggestion-text" placeholder="Votre suggestion..." required></textarea>
+          <button type="submit" class="cta-button">Envoyer</button>
+        </form>
+        <button class="cta-button logout-button" onclick="logoutPersonal()">Se déconnecter</button>
       </div>
     </section>
 
-    <!-- Paramètres -->
-    <section id="parametres" class="page">
+    <!-- Espace Secret Général -->
+    <section id="secret" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Secret - Administration</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('add-member')">Ajouter un Membre</button>
+        <button class="tab-button" onclick="showTab('edit-member')">Modifier un Membre</button>
+        <button class="tab-button" onclick="showTab('gallery-admin')">Galerie</button>
+        <button class="tab-button" onclick="showTab('events-admin')">Événements</button>
+        <button class="tab-button" onclick="showTab('messages-admin')">Messages</button>
+        <button class="tab-button" onclick="showTab('notes')">Notes</button>
+        <button class="tab-button" onclick="showTab('internal-docs')">Documents Internes</button>
+        <button class="tab-button" onclick="showTab('suggestions-admin')">Suggestions</button>
+        <button class="tab-button" onclick="showTab('stats')">Statistiques</button>
+        <button class="tab-button" onclick="showTab('video-calls')">Appels</button>
+        <button class="tab-button" onclick="showTab('auto-messages')">Messages Automatisés</button>
+      </div>
+      <div id="add-member" class="tab-content active">
+        <h3>Ajouter un Membre</h3>
+        <form id="add-member-form">
+          <input type="text" id="new-member-firstname" placeholder="Prénom (obligatoire)" required>
+          <input type="text" id="new-member-lastname" placeholder="Nom (obligatoire)" required>
+          <input type="number" id="new-member-age" placeholder="Âge">
+          <input type="text" id="new-member-dob" placeholder="Date de naissance (JJMMAAAA)">
+          <input type="text" id="new-member-birthplace" placeholder="Lieu de naissance">
+          <input type="file" id="new-member-photo" accept="image/*">
+          <input type="email" id="new-member-email" placeholder="Email">
+          <input type="text" id="new-member-activity" placeholder="Activité actuelle">
+          <input type="text" id="new-member-address" placeholder="Adresse">
+          <input type="tel" id="new-member-phone" placeholder="Numéro de téléphone">
+          <input type="text" id="new-member-residence" placeholder="Résidence actuelle">
+          <select id="new-member-role">
+            <option value="membre">Membre</option>
+            <option value="tresorier">Trésorier</option>
+            <option value="president">Président</option>
+            <option value="secretaire">Secrétaire</option>
+          </select>
+          <select id="new-member-status">
+            <option value="actif">Actif</option>
+            <option value="inactif">Inactif</option>
+            <option value="liste-noire">Liste noire</option>
+          </select>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+      </div>
+      <div id="edit-member" class="tab-content">
+        <h3>Modifier/Supprimer un Membre</h3>
+        <input type="text" id="edit-member-search" placeholder="Rechercher un membre..." class="search-bar">
+        <div id="edit-members-list"></div>
+        <form id="delete-member-form" style="display: none;">
+          <input type="text" id="delete-member-code" placeholder="Code président (0000)" required>
+          <button type="submit" class="cta-button">Confirmer la suppression</button>
+        </form>
+      </div>
+      <div id="gallery-admin" class="tab-content">
+        <h3>Gérer la Galerie</h3>
+        <form id="add-gallery-form">
+          <input type="file" id="gallery-file" accept="image/*,video/*" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="gallery-admin-search" placeholder="Rechercher un média..." class="search-bar">
+        <div id="gallery-admin-list"></div>
+      </div>
+      <div id="events-admin" class="tab-content">
+        <h3>Ajouter un Événement</h3>
+        <form id="add-event-form">
+          <input type="text" id="event-name" placeholder="Nom de l'événement" required>
+          <input type="date" id="event-date" required>
+          <input type="time" id="event-time" required>
+          <textarea id="event-description" placeholder="Description" required></textarea>
+          <input type="file" id="event-file" accept="image/*">
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="events-admin-search" placeholder="Rechercher un événement..." class="search-bar">
+        <div id="events-admin-list"></div>
+      </div>
+      <div id="messages-admin" class="tab-content">
+        <h3>Gérer les Messages</h3>
+        <form id="add-message-form">
+          <input type="text" id="message-title" placeholder="Titre du message" required>
+          <textarea id="message-text" placeholder="Contenu du message" required></textarea>
+          <button type="submit" class="cta-button">Envoyer</button>
+        </form>
+        <input type="text" id="messages-admin-search" placeholder="Rechercher un message..." class="search-bar">
+        <div id="messages-admin-list"></div>
+      </div>
+      <div id="notes" class="tab-content">
+        <h3>Notes</h3>
+        <form id="add-note-form">
+          <input type="text" id="note-theme" placeholder="Thème (ex. : Réunion)" required>
+          <textarea id="note-text" placeholder="Contenu de la note" required></textarea>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="notes-search" placeholder="Rechercher une note..." class="search-bar">
+        <div id="notes-list"></div>
+      </div>
+      <div id="internal-docs" class="tab-content">
+        <h3>Documents Internes</h3>
+        <form id="add-internal-doc-form">
+          <input type="text" id="internal-doc-category" placeholder="Catégorie" required>
+          <input type="file" id="internal-doc" accept="*" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="internal-docs-search" placeholder="Rechercher un document..." class="search-bar">
+        <div id="internal-docs-list"></div>
+      </div>
+      <div id="suggestions-admin" class="tab-content">
+        <h3>Suggestions des Membres</h3>
+        <input type="text" id="suggestions-search" placeholder="Rechercher une suggestion..." class="search-bar">
+        <div id="suggestions-list"></div>
+      </div>
+      <div id="stats" class="tab-content">
+        <h3>Statistiques</h3>
+        <canvas id="stats-total-amount"></canvas>
+        <canvas id="stats-members"></canvas>
+        <canvas id="stats-status"></canvas>
+        <canvas id="stats-contributions"></canvas>
+      </div>
+      <div id="video-calls" class="tab-content">
+        <h3>Appels Vidéo & Audio</h3>
+        <input type="text" id="video-calls-search" placeholder="Rechercher un membre..." class="search-bar">
+        <div id="members-call-list"></div>
+        <input type="checkbox" id="call-all" onchange="toggleCallAll()">
+        <label for="call-all">Cocher tout</label>
+        <button class="cta-button" onclick="startCall('video')">Appel Vidéo</button>
+        <button class="cta-button" onclick="startCall('audio')">Appel Audio</button>
+        <div id="video-call-container" style="width: 100%; height: 500px;"></div>
+      </div>
+      <div id="auto-messages" class="tab-content">
+        <h3>Messages Automatisés</h3>
+        <form id="add-auto-message-form">
+          <input type="text" id="auto-message-name" placeholder="Nom (ex. : Rappel Cotisation)" required>
+          <textarea id="auto-message-text" placeholder="Contenu du message" required></textarea>
+          <input type="date" id="auto-message-date" required>
+          <input type="time" id="auto-message-time" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="auto-messages-search" placeholder="Rechercher un message automatisé..." class="search-bar">
+        <div id="auto-messages-list"></div>
+      </div>
+    </section>
+
+    <!-- Espace Trésorier -->
+    <section id="treasurer" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Trésorier</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations</button>
+      </div>
+      <div id="treasurer-contributions" class="tab-content active">
+        <h3>Gestion des Cotisations</h3>
+        <form id="add-contribution-form">
+          <input type="text" id="contribution-name" placeholder="Nom (ex. : Journée de visite)" required>
+          <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
+          <button type="submit" class="cta-button">Ajouter Cotisation</button>
+        </form>
+        <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
+        <div id="contributions-admin-list"></div>
+      </div>
+    </section>
+
+    <!-- Espace Président -->
+    <section id="president" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Président</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('president-files')">Fichiers Présidentiels</button>
+      </div>
+      <div id="president-files" class="tab-content active">
+        <h3>Fichiers Présidentiels</h3>
+        <form id="add-president-file-form">
+          <input type="text" id="president-file-category" placeholder="Catégorie" required>
+          <input type="file" id="president-file" accept="application/pdf,image/*" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="president-files-search" placeholder="Rechercher un fichier..." class="search-bar">
+        <div id="president-files-list"></div>
+      </div>
+    </section>
+
+    <!-- Espace Secrétaire -->
+    <section id="secretary" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Secrétaire</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
+      </div>
+      <div id="secretary-files" class="tab-content active">
+        <h3>Fichiers Secrétaire</h3>
+        <form id="add-secretary-file-form">
+          <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
+          <input type="file" id="secretary-file" accept="application/pdf,image/*" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
+        <div id="secretary-files-list"></div>
+      </div>
+    </section>
+
+    <!-- Page des paramètres -->
+    <section id="settings" class="page">
       <h2>Paramètres</h2>
-      <label for="lang-select">Langue :</label>
-      <select id="lang-select">
+      <label>Mode sombre/clair</label>
+      <button class="cta-button" onclick="toggleTheme()">Changer le thème</button>
+      <label>Langue</label>
+      <select id="settings-language">
         <option value="fr">Français</option>
-        <option value="ar">Arabe</option>
-        <option value="en">Anglais</option>
-      </select>
-      <label for="theme-select">Thème :</label>
-      <select id="theme-select">
-        <option value="light">Clair</option>
-        <option value="dark">Sombre</option>
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
       </select>
       <h3>Liens Utiles</h3>
-      <ul>
-        <li><a href="http://www.almouyassar.com" target="_blank">www.almouyassar.com</a></li>
-        <li><a href="http://www.ansar.com" target="_blank">www.ansar.com</a></li>
-        <li><a href="http://www.lavoiedusalut.com" target="_blank">www.lavoiedusalut.com</a></li>
-        <li><a href="#" target="_blank">Politique de confidentialité</a></li>
-      </ul>
-    </section>
-
-    <!-- Espace Secret -->
-    <section id="espace-secret" class="page">
-      <h2>Espace Secret</h2>
-      <div id="secret-content">
-        <button id="add-membre-btn">Ajouter un membre</button>
-        <button id="edit-membre-btn">Modifier un membre</button>
-        <button id="galerie-btn">Galerie</button>
-        <button id="evenements-btn">Événements</button>
-        <button id="messages-btn">Messages</button>
-        <button id="notes-btn">Notes</button>
-        <button id="documents-btn">Documents</button>
-        <button id="suggestions-btn">Suggestions</button>
-        <button id="stats-btn">Statistiques</button>
-        <button id="calls-btn">Appels</button>
-        <button id="auto-messages-btn">Messages automatisés</button>
+      <div class="links-container">
+        <a href="https://www.almouyassar.com" target="_blank" class="link-button">www.almouyassar.com</a>
+        <a href="https://www.ansar.com" target="_blank" class="link-button">www.ansar.com</a>
+        <a href="https://www.lavoiedusalut.com" target="_blank" class="link-button">www.lavoiedusalut.com</a>
+        <a href="#" target="_blank" class="link-button">Politique de confidentialité</a>
       </div>
-      <div id="secret-subsection"></div>
-    </section>
-
-    <!-- Trésorier -->
-    <section id="espace-tresorier" class="page">
-      <h2>Espace Trésorier</h2>
-      <div id="tresorier-content">
-        <button id="add-cotisation-btn">Ajouter une cotisation</button>
-        <button id="manage-cotisations-btn">Gérer les cotisations</button>
-      </div>
-      <div id="tresorier-subsection"></div>
-    </section>
-
-    <!-- Président -->
-    <section id="espace-president" class="page">
-      <h2>Espace Président</h2>
-      <input type="password" id="president-password" placeholder="Mot de passe (0000)">
-      <button id="president-access-btn">Accéder</button>
-      <div id="president-content" style="display: none;">
-        <button id="add-sensitive-doc-btn">Ajouter un document</button>
-        <button id="manage-sensitive-docs-btn">Gérer les documents</button>
-        <div id="president-subsection"></div>
-      </div>
-    </section>
-
-    <!-- Secrétaire -->
-    <section id="espace-secretaire" class="page">
-      <h2>Espace Secrétaire</h2>
-      <button id="add-note-btn">Ajouter une note</button>
-      <button id="add-doc-btn">Ajouter un document</button>
-      <button id="manage-notes-docs-btn">Gérer notes/documents</button>
-      <div id="secretaire-subsection"></div>
     </section>
   </main>
-
-  <!-- Navigation -->
-  <nav>
-    <button data-page="accueil">Accueil</button>
-    <button data-page="membres">Membres</button>
-    <button data-page="evenements">Événements</button>
-    <button data-page="galerie">Galerie</button>
-    <button data-page="coran">Coran</button>
-    <button data-page="bibliotheque">Bibliothèque</button>
-    <button data-page="espace-personnel">Espace Personnel</button>
-  </nav>
-
-  <!-- Centre d'aide -->
-  <div id="help-btn">?</div>
-  <div id="help-chat" style="display: none;">
-    <div id="chat-messages"></div>
-    <div id="chat-input">
-      <input type="text" id="help-input" placeholder="Posez votre question...">
-      <button id="send-help-btn">Envoyer</button>
-      <button id="clear-chat-btn">🗑️</button>
+  <footer>
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active" onclick="showPage('home')"><span class="material-icons">home</span>Accueil</a>
+      <a href="#" class="nav-item" onclick="showPage('members')"><span class="material-icons">people</span>Membres</a>
+      <a href="#" class="nav-item" onclick="showPage('events')"><span class="material-icons">event</span>Événements</a>
+      <a href="#" class="nav-item" onclick="showPage('gallery')"><span class="material-icons">photo_library</span>Galerie</a>
+      <a href="#" class="nav-item" onclick="showPage('messages')"><span class="material-icons">notifications</span>Messages</a>
+      <a href="#" class="nav-item" onclick="showPage('coran')"><span class="material-icons">book</span>Coran</a>
+      <a href="#" class="nav-item" onclick="showPage('personal')"><span class="material-icons">person</span>Personnel</a>
+      <a href="#" class="nav-item" onclick="showPage('library')"><span class="material-icons">library_books</span>Bibliothèque</a>
+    </nav>
+  </footer>
+  <div class="chatbot-button">
+    <span class="material-icons">chat</span>
+  </div>
+  <div id="chatbot" class="chatbot-container" style="display: none;">
+    <div class="chatbot-header">
+      <h3>Assistant ANSAR</h3>
+      <span class="material-icons" onclick="toggleChatbot()">close</span>
     </div>
-    <div id="secret-code-input" style="display: none;">
-      <input type="password" id="secret-code" placeholder="Entrez le code secret">
-      <button id="submit-secret-code">Entrée</button>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-controls">
+      <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> Effacer</button>
+    </div>
+    <form id="chatbot-form">
+      <input type="text" id="chatbot-input" placeholder="Posez une question...">
+      <button type="submit" class="cta-button"><span class="material-icons">send</span></button>
+    </form>
+    <div id="secret-entry" style="display: none;">
+      <input type="password" id="secret-password" placeholder="Mot de passe">
+      <button class="cta-button" onclick="enterSecret()">Entrée</button>
     </div>
   </div>
-
-  <script src="app.js"></script>
+  <script src="chatbotResponses.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
