@@ -1,114 +1,81 @@
-const DB_NAME = 'ansar-almouyassar';
-const DB_VERSION = 1;
-let db;
+const SUPABASE_URL = 'https://ncbfuuoupskhzgcjgpvq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYmZ1dW91cHNraHpnY2pncHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTMwNDYsImV4cCI6MjA2ODQyOTA0Nn0.3w7BT14mJeXQHBmZPNxbQwnArkk5wxytJ4aTqdYg4C8';
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const members = [
-  {
-    code: '001',
-    firstname: 'Mouhamed',
-    lastname: 'Niang',
-    age: 45,
-    dob: '01012000',
-    birthplace: 'Dakar',
-    photo: 'assets/images/default-photo.png',
-    email: 'mouhamed.niang@example.com',
-    activity: 'Président',
-    address: '123 Rue Principale, Dakar',
-    phone: '+221123456789',
-    residence: 'Dakar',
-    role: 'president',
-    status: 'actif',
-    contributions: { '2023': Array(12).fill(false), '2024': Array(12).fill(false), '2025': Array(12).fill(false) }
-  }
-];
-const contributions = [{ name: 'Mensuelle', amount: 2000, years: ['2023', '2024', '2025'] }];
-const events = [{ name: 'Conférence Annuelle', description: 'Conférence 2025', image: 'assets/images/conference.jpg', datetime: '2025-08-17T15:00:00' }];
-const suggestions = [];
-const gallery = [];
-const messages = [];
-const autoMessages = [];
-const notes = [];
-const internalDocs = [];
-const presidentFiles = [];
-const secretaryFiles = [];
-const library = [];
 const presidentCode = '0000';
 let currentUser = null;
 let isChatOpen = false;
 let selectedCallMembers = [];
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = (event) => {
-      db = event.target.result;
-      db.createObjectStore('members', { keyPath: 'code' });
-      db.createObjectStore('contributions', { keyPath: 'name' });
-      db.createObjectStore('events', { autoIncrement: true });
-      db.createObjectStore('suggestions', { autoIncrement: true });
-      db.createObjectStore('gallery', { autoIncrement: true });
-      db.createObjectStore('messages', { autoIncrement: true });
-      db.createObjectStore('autoMessages', { autoIncrement: true });
-      db.createObjectStore('notes', { autoIncrement: true });
-      db.createObjectStore('internalDocs', { autoIncrement: true });
-      db.createObjectStore('presidentFiles', { autoIncrement: true });
-      db.createObjectStore('secretaryFiles', { autoIncrement: true });
-      db.createObjectStore('library', { autoIncrement: true });
-    };
-    request.onsuccess = (event) => {
-      db = event.target.result;
-      resolve();
-    };
-    request.onerror = (event) => reject(event.target.error);
-  });
+async function initSupabase() {
+  try {
+    console.log('Supabase client initialized');
+    await initRealtime();
+  } catch (error) {
+    console.error('Erreur lors de l\'initialisation de Supabase:', error);
+  }
 }
 
-function saveToDB(storeName, data) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = Array.isArray(data) ? data.forEach(item => store.put(item)) : store.put(data);
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
-  });
+async function uploadFile(bucket, file, fileName) {
+  try {
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .upload(fileName, file, { upsert: true });
+    if (error) throw error;
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${data.path}`;
+    return publicUrl;
+  } catch (error) {
+    console.error(`Erreur lors du téléchargement vers ${bucket}:`, error);
+    alert(`Erreur lors du téléchargement du fichier dans ${bucket}`);
+    return null;
+  }
 }
 
-function loadFromDB(storeName) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readonly');
-    const store = transaction.objectStore(storeName);
-    const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+async function initRealtime() {
+  const tables = ['membres', 'contributions', 'events', 'suggestions', 'gallery', 'messages', 'auto_messages', 'notes', 'internal_docs', 'president_files', 'secretary_files', 'library'];
+  tables.forEach(table => {
+    supabase
+      .channel(`public:${table}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table }, () => {
+        if (table === 'membres') {
+          updateMembersList();
+          updateEditMembersList();
+          updateCallMembersList();
+          updatePersonalInfo();
+          updateStats();
+        } else if (table === 'contributions') {
+          updateContributionsAdminList();
+          updatePersonalInfo();
+          updateStats();
+        } else if (table === 'events') {
+          updateEventsList();
+          updateEventsAdminList();
+          updateEventCountdowns();
+        } else if (table === 'suggestions') {
+          updateSuggestionsList();
+        } else if (table === 'gallery') {
+          updateGalleryContent();
+          updateGalleryAdminList();
+        } else if (table === 'messages') {
+          updateMessagesList();
+          updateMessagesAdminList();
+          updateMessagePopups();
+        } else if (table === 'auto_messages') {
+          updateAutoMessagesList();
+        } else if (table === 'notes') {
+          updateNotesList();
+        } else if (table === 'internal_docs') {
+          updateInternalDocsList();
+        } else if (table === 'president_files') {
+          updatePresidentFilesList();
+        } else if (table === 'secretary_files') {
+          updateSecretaryFilesList();
+        } else if (table === 'library') {
+          updateLibraryContent();
+        }
+      })
+      .subscribe();
   });
-}
-
-async function initDB() {
-  await openDB();
-  const storedMembers = await loadFromDB('members');
-  if (storedMembers.length > 0) members.splice(0, members.length, ...storedMembers);
-  const storedContributions = await loadFromDB('contributions');
-  if (storedContributions.length > 0) contributions.splice(0, contributions.length, ...storedContributions);
-  const storedEvents = await loadFromDB('events');
-  if (storedEvents.length > 0) events.splice(0, events.length, ...storedEvents);
-  const storedSuggestions = await loadFromDB('suggestions');
-  if (storedSuggestions.length > 0) suggestions.splice(0, suggestions.length, ...storedSuggestions);
-  const storedGallery = await loadFromDB('gallery');
-  if (storedGallery.length > 0) gallery.splice(0, gallery.length, ...storedGallery);
-  const storedMessages = await loadFromDB('messages');
-  if (storedMessages.length > 0) messages.splice(0, messages.length, ...storedMessages);
-  const storedAutoMessages = await loadFromDB('autoMessages');
-  if (storedAutoMessages.length > 0) autoMessages.splice(0, autoMessages.length, ...storedAutoMessages);
-  const storedNotes = await loadFromDB('notes');
-  if (storedNotes.length > 0) notes.splice(0, notes.length, ...storedNotes);
-  const storedInternalDocs = await loadFromDB('internalDocs');
-  if (storedInternalDocs.length > 0) internalDocs.splice(0, internalDocs.length, ...storedInternalDocs);
-  const storedPresidentFiles = await loadFromDB('presidentFiles');
-  if (storedPresidentFiles.length > 0) presidentFiles.splice(0, presidentFiles.length, ...storedPresidentFiles);
-  const storedSecretaryFiles = await loadFromDB('secretaryFiles');
-  if (storedSecretaryFiles.length > 0) secretaryFiles.splice(0, secretaryFiles.length, ...storedSecretaryFiles);
-  const storedLibrary = await loadFromDB('library');
-  if (storedLibrary.length > 0) library.splice(0, library.length, ...storedLibrary);
 }
 
 function showPage(pageId) {
@@ -154,8 +121,13 @@ function toggleTheme() {
   document.body.classList.toggle('dark-mode');
 }
 
-function updateEventCountdowns() {
+async function updateEventCountdowns() {
   const countdowns = document.getElementById('event-countdowns');
+  const { data: events, error } = await supabase.from('events').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des événements:', error);
+    return;
+  }
   countdowns.innerHTML = events.map(event => {
     const eventDate = new Date(event.datetime);
     const now = new Date();
@@ -174,7 +146,6 @@ function updateEventCountdowns() {
 }
 
 setInterval(updateEventCountdowns, 1000);
-setInterval(checkAutoMessages, 60000);
 
 document.querySelector('#settings-language').addEventListener('change', (e) => {
   // Language change handled in settings
@@ -238,7 +209,7 @@ function enterSecret() {
   }
 }
 
-document.querySelector('#personal-login-form').addEventListener('submit', (e) => {
+document.querySelector('#personal-login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const code = document.querySelector('#personal-member-code').value;
   const password = document.querySelector('#personal-password').value;
@@ -251,17 +222,22 @@ document.querySelector('#personal-login-form').addEventListener('submit', (e) =>
     return;
   }
 
-  const member = members.find(m => m.code === code && m.dob === password);
-  if (member) {
-    currentUser = member;
-    document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
-    document.querySelector('#personal-login').style.display = 'none';
-    document.querySelector('#personal-content').style.display = 'block';
-    updatePersonalInfo();
-  } else {
+  const { data: member, error } = await supabase
+    .from('membres')
+    .select('*')
+    .eq('code', code)
+    .eq('dob', password)
+    .single();
+  if (error || !member) {
     errorMessage.textContent = 'Numéro de membre ou mot de passe incorrect';
     errorMessage.style.display = 'block';
+    return;
   }
+  currentUser = member;
+  document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
+  document.querySelector('#personal-login').style.display = 'none';
+  document.querySelector('#personal-content').style.display = 'block';
+  updatePersonalInfo();
 });
 
 function logoutPersonal() {
@@ -274,14 +250,23 @@ function logoutPersonal() {
 document.querySelector('#add-member-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
+  const { data: members } = await supabase.from('membres').select('code');
+  const newCode = `${(members.length + 1).toString().padStart(3, '0')}`;
+  const file = document.querySelector('#new-member-photo').files[0];
+  let photoUrl = 'assets/images/default-photo.png';
+  if (file) {
+    photoUrl = await uploadFile('membersphotos', file, `${newCode}_${file.name}`);
+    if (!photoUrl) return;
+  }
+  const { data: contributions } = await supabase.from('contributions').select('*').eq('name', 'Mensuelle').single();
   const member = {
-    code: `${(members.length + 1).toString().padStart(3, '0')}`,
+    code: newCode,
     firstname: document.querySelector('#new-member-firstname').value,
     lastname: document.querySelector('#new-member-lastname').value,
     age: parseInt(document.querySelector('#new-member-age').value) || null,
     dob: document.querySelector('#new-member-dob').value || null,
     birthplace: document.querySelector('#new-member-birthplace').value || null,
-    photo: document.querySelector('#new-member-photo').files[0] ? URL.createObjectURL(document.querySelector('#new-member-photo').files[0]) : 'assets/images/default-photo.png',
+    photo: photoUrl,
     email: document.querySelector('#new-member-email').value || null,
     activity: document.querySelector('#new-member-activity').value || null,
     address: document.querySelector('#new-member-address').value || null,
@@ -289,21 +274,15 @@ document.querySelector('#add-member-form').addEventListener('submit', async (e) 
     residence: document.querySelector('#new-member-residence').value || null,
     role: document.querySelector('#new-member-role').value || 'membre',
     status: document.querySelector('#new-member-status').value || 'actif',
-    contributions: Object.fromEntries(contributions.filter(c => c.name === 'Mensuelle').map(c => {
-      const years = {};
-      c.years.forEach(year => {
-        years[year] = Array(12).fill(false);
-      });
-      return [c.name, years];
-    }))
+    contributions: { Mensuelle: Object.fromEntries(contributions.years.map(year => [year, Array(12).fill(false)])) }
   };
-  members.push(member);
-  await saveToDB('members', members);
+  const { error } = await supabase.from('membres').insert([member]);
+  if (error) {
+    console.error('Erreur lors de l\'ajout du membre:', error);
+    alert('Erreur lors de l\'ajout du membre');
+    return;
+  }
   document.querySelector('#add-member-form').reset();
-  updateMembersList();
-  updateEditMembersList();
-  updateCallMembersList();
-  updateStats();
 });
 
 document.querySelector('#delete-member-form').addEventListener('submit', async (e) => {
@@ -314,16 +293,13 @@ document.querySelector('#delete-member-form').addEventListener('submit', async (
     return;
   }
   const memberCode = document.querySelector('#delete-member-form').dataset.memberCode;
-  const index = members.findIndex(m => m.code === memberCode);
-  if (index !== -1) {
-    members.splice(index, 1);
-    await saveToDB('members', members);
-    updateMembersList();
-    updateEditMembersList();
-    updateCallMembersList();
-    updateStats();
-    document.querySelector('#delete-member-form').style.display = 'none';
+  const { error } = await supabase.from('membres').delete().eq('code', memberCode);
+  if (error) {
+    console.error('Erreur lors de la suppression du membre:', error);
+    alert('Erreur lors de la suppression du membre');
+    return;
   }
+  document.querySelector('#delete-member-form').style.display = 'none';
 });
 
 document.querySelector('#add-contribution-form').addEventListener('submit', async (e) => {
@@ -332,29 +308,33 @@ document.querySelector('#add-contribution-form').addEventListener('submit', asyn
   const name = document.querySelector('#contribution-name').value;
   const amount = parseInt(document.querySelector('#contribution-amount').value);
   const currentYear = new Date().getFullYear().toString();
-  const contribution = { name, amount, years: [currentYear] };
-  contributions.push(contribution);
-  members.forEach(member => {
+  const { error: contribError } = await supabase.from('contributions').insert([{ name, amount, years: [currentYear] }]);
+  if (contribError) {
+    console.error('Erreur lors de l\'ajout de la cotisation:', contribError);
+    alert('Erreur lors de l\'ajout de la cotisation');
+    return;
+  }
+  const { data: members } = await supabase.from('membres').select('*');
+  for (const member of members) {
     if (!member.contributions[name]) {
       member.contributions[name] = { [currentYear]: Array(12).fill(false) };
+      await supabase.from('membres').update({ contributions: member.contributions }).eq('code', member.code);
     }
-  });
-  await saveToDB('contributions', contributions);
-  await saveToDB('members', members);
+  }
   document.querySelector('#add-contribution-form').reset();
-  updateContributionsAdminList();
-  updatePersonalInfo();
-  updateStats();
 });
 
 document.querySelector('#suggestion-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser) return;
   const text = document.querySelector('#suggestion-text').value;
-  suggestions.push({ member: `${currentUser.firstname} ${currentUser.lastname}`, text });
-  await saveToDB('suggestions', suggestions);
+  const { error } = await supabase.from('suggestions').insert([{ member: `${currentUser.firstname} ${currentUser.lastname}`, text }]);
+  if (error) {
+    console.error('Erreur lors de l\'ajout de la suggestion:', error);
+    alert('Erreur lors de l\'ajout de la suggestion');
+    return;
+  }
   document.querySelector('#suggestion-form').reset();
-  updateSuggestionsList();
 });
 
 document.querySelector('#add-gallery-form').addEventListener('submit', async (e) => {
@@ -362,44 +342,58 @@ document.querySelector('#add-gallery-form').addEventListener('submit', async (e)
   if (!currentUser || currentUser.role !== 'admin') return;
   const file = document.querySelector('#gallery-file').files[0];
   if (file) {
-    gallery.push({ type: file.type.startsWith('image') ? 'image' : 'video', url: URL.createObjectURL(file), name: file.name });
-    await saveToDB('gallery', gallery);
+    const fileUrl = await uploadFile('gallery', file, file.name);
+    if (!fileUrl) return;
+    const { error } = await supabase.from('gallery').insert([{ type: file.type.startsWith('image') ? 'image' : 'video', url: fileUrl, name: file.name }]);
+    if (error) {
+      console.error('Erreur lors de l\'ajout au gallery:', error);
+      alert('Erreur lors de l\'ajout au gallery');
+      return;
+    }
     document.querySelector('#add-gallery-form').reset();
-    updateGalleryContent();
-    updateGalleryAdminList();
   }
 });
 
 document.querySelector('#add-event-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
+  const file = document.querySelector('#event-file').files[0];
+  let imageUrl = '';
+  if (file) {
+    imageUrl = await uploadFile('eventsimages', file, file.name);
+    if (!imageUrl) return;
+  }
   const event = {
     name: document.querySelector('#event-name').value,
     description: document.querySelector('#event-description').value,
     datetime: new Date(`${document.querySelector('#event-date').value}T${document.querySelector('#event-time').value}`).toISOString(),
-    image: document.querySelector('#event-file').files[0] ? URL.createObjectURL(document.querySelector('#event-file').files[0]) : ''
+    image: imageUrl
   };
-  events.push(event);
-  await saveToDB('events', events);
+  const { error } = await supabase.from('events').insert([event]);
+  if (error) {
+    console.error('Erreur lors de l\'ajout de l\'événement:', error);
+    alert('Erreur lors de l\'ajout de l\'événement');
+    return;
+  }
   document.querySelector('#add-event-form').reset();
-  updateEventsList();
-  updateEventsAdminList();
-  updateEventCountdowns();
 });
 
 document.querySelector('#add-message-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') return;
-  const title = document.querySelector('#message-title').value;
-  const text = document.querySelector('#message-text').value;
-  const message = { title, text, date: new Date().toISOString() };
-  messages.unshift(message);
-  await saveToDB('messages', messages);
+  const message = {
+    title: document.querySelector('#message-title').value,
+    text: document.querySelector('#message-text').value,
+    date: new Date().toISOString()
+  };
+  const { error } = await supabase.from('messages').insert([message]);
+  if (error) {
+    console.error('Erreur lors de l\'ajout du message:', error);
+    alert('Erreur lors de l\'ajout du message');
+    return;
+  }
   document.querySelector('#add-message-form').reset();
-  updateMessagesList();
-  updateMessagesAdminList();
-  updateMessagePopups();
-  sendNotification('Nouveau message', `${title}: ${text}`);
+  sendNotification('Nouveau message', `${message.title}: ${message.text}`);
 });
 
 document.querySelector('#add-auto-message-form').addEventListener('submit', async (e) => {
@@ -410,10 +404,13 @@ document.querySelector('#add-auto-message-form').addEventListener('submit', asyn
     text: document.querySelector('#auto-message-text').value,
     datetime: new Date(`${document.querySelector('#auto-message-date').value}T${document.querySelector('#auto-message-time').value}`).toISOString()
   };
-  autoMessages.push(autoMessage);
-  await saveToDB('autoMessages', autoMessages);
+  const { error } = await supabase.from('auto_messages').insert([autoMessage]);
+  if (error) {
+    console.error('Erreur lors de l\'ajout du message automatisé:', error);
+    alert('Erreur lors de l\'ajout du message automatisé');
+    return;
+  }
   document.querySelector('#add-auto-message-form').reset();
-  updateAutoMessagesList();
 });
 
 document.querySelector('#add-note-form').addEventListener('submit', async (e) => {
@@ -423,10 +420,13 @@ document.querySelector('#add-note-form').addEventListener('submit', async (e) =>
     theme: document.querySelector('#note-theme').value,
     text: document.querySelector('#note-text').value
   };
-  notes.push(note);
-  await saveToDB('notes', notes);
+  const { error } = await supabase.from('notes').insert([note]);
+  if (error) {
+    console.error('Erreur lors de l\'ajout de la note:', error);
+    alert('Erreur lors de l\'ajout de la note');
+    return;
+  }
   document.querySelector('#add-note-form').reset();
-  updateNotesList();
 });
 
 document.querySelector('#add-internal-doc-form').addEventListener('submit', async (e) => {
@@ -434,10 +434,15 @@ document.querySelector('#add-internal-doc-form').addEventListener('submit', asyn
   if (!currentUser || currentUser.role !== 'admin') return;
   const file = document.querySelector('#internal-doc').files[0];
   if (file) {
-    internalDocs.push({ name: file.name, url: URL.createObjectURL(file), category: document.querySelector('#internal-doc-category').value });
-    await saveToDB('internalDocs', internalDocs);
+    const fileUrl = await uploadFile('internaldocs', file, file.name);
+    if (!fileUrl) return;
+    const { error } = await supabase.from('internal_docs').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#internal-doc-category').value }]);
+    if (error) {
+      console.error('Erreur lors de l\'ajout du document interne:', error);
+      alert('Erreur lors de l\'ajout du document interne');
+      return;
+    }
     document.querySelector('#add-internal-doc-form').reset();
-    updateInternalDocsList();
   }
 });
 
@@ -446,10 +451,15 @@ document.querySelector('#add-president-file-form').addEventListener('submit', as
   if (!currentUser || currentUser.role !== 'president') return;
   const file = document.querySelector('#president-file').files[0];
   if (file) {
-    presidentFiles.push({ name: file.name, url: URL.createObjectURL(file), category: document.querySelector('#president-file-category').value });
-    await saveToDB('presidentFiles', presidentFiles);
+    const fileUrl = await uploadFile('presidentfiles', file, file.name);
+    if (!fileUrl) return;
+    const { error } = await supabase.from('president_files').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#president-file-category').value }]);
+    if (error) {
+      console.error('Erreur lors de l\'ajout du fichier présidentiel:', error);
+      alert('Erreur lors de l\'ajout du fichier présidentiel');
+      return;
+    }
     document.querySelector('#add-president-file-form').reset();
-    updatePresidentFilesList();
   }
 });
 
@@ -458,16 +468,26 @@ document.querySelector('#add-secretary-file-form').addEventListener('submit', as
   if (!currentUser || currentUser.role !== 'secretaire') return;
   const file = document.querySelector('#secretary-file').files[0];
   if (file) {
-    secretaryFiles.push({ name: file.name, url: URL.createObjectURL(file), category: document.querySelector('#secretary-file-category').value });
-    await saveToDB('secretaryFiles', secretaryFiles);
+    const fileUrl = await uploadFile('secretaryfiles', file, file.name);
+    if (!fileUrl) return;
+    const { error } = await supabase.from('secretary_files').insert([{ name: file.name, url: fileUrl, category: document.querySelector('#secretary-file-category').value }]);
+    if (error) {
+      console.error('Erreur lors de l\'ajout du fichier secrétaire:', error);
+      alert('Erreur lors de l\'ajout du fichier secrétaire');
+      return;
+    }
     document.querySelector('#add-secretary-file-form').reset();
-    updateSecretaryFilesList();
   }
 });
 
-function updateMembersList() {
+async function updateMembersList() {
   const search = document.querySelector('#members-search').value.toLowerCase();
   const list = document.querySelector('#members-list');
+  const { data: members, error } = await supabase.from('membres').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des membres:', error);
+    return;
+  }
   list.innerHTML = members
     .filter(m => `${m.firstname} ${m.lastname}`.toLowerCase().includes(search) || m.code.toLowerCase().includes(search))
     .map(m => `
@@ -478,10 +498,16 @@ function updateMembersList() {
     `).join('');
 }
 
-function updateContributionsAdminList() {
+async function updateContributionsAdminList() {
   if (!currentUser || currentUser.role !== 'tresorier') return;
   const search = document.querySelector('#contributions-admin-search').value.toLowerCase();
   const list = document.querySelector('#contributions-admin-list');
+  const { data: contributions, error: contribError } = await supabase.from('contributions').select('*');
+  const { data: members, error: memberError } = await supabase.from('membres').select('*');
+  if (contribError || memberError) {
+    console.error('Erreur lors de la récupération des cotisations ou membres:', contribError || memberError);
+    return;
+  }
   list.innerHTML = contributions
     .filter(c => c.name.toLowerCase().includes(search))
     .map(c => `
@@ -507,18 +533,29 @@ function updateContributionsAdminList() {
 
 async function updateMonthlyPayment(memberCode, contributionName, year, monthIndex, paid) {
   if (!currentUser || currentUser.role !== 'tresorier') return;
-  const member = members.find(m => m.code === memberCode);
+  const { data: member, error } = await supabase.from('membres').select('*').eq('code', memberCode).single();
+  if (error) {
+    console.error('Erreur lors de la récupération du membre:', error);
+    return;
+  }
   member.contributions[contributionName][year][monthIndex] = paid;
-  await saveToDB('members', members);
-  updateContributionsAdminList();
-  updatePersonalInfo();
-  updateStats();
+  const { error: updateError } = await supabase.from('membres').update({ contributions: member.contributions }).eq('code', memberCode);
+  if (updateError) {
+    console.error('Erreur lors de la mise à jour de la cotisation:', updateError);
+    alert('Erreur lors de la mise à jour de la cotisation');
+    return;
+  }
   sendNotification('Mise à jour cotisation', `Cotisation ${contributionName} pour ${member.firstname} ${member.lastname} (${year}, ${['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'][monthIndex]}) marquée comme ${paid ? 'payée' : 'non payée'}.`);
 }
 
-function updateEditMembersList() {
+async function updateEditMembersList() {
   const search = document.querySelector('#edit-member-search').value.toLowerCase();
   const list = document.querySelector('#edit-members-list');
+  const { data: members, error } = await supabase.from('membres').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des membres:', error);
+    return;
+  }
   list.innerHTML = members
     .filter(m => `${m.firstname} ${m.lastname}`.toLowerCase().includes(search) || m.code.toLowerCase().includes(search))
     .map(m => `
@@ -531,8 +568,12 @@ function updateEditMembersList() {
     `).join('');
 }
 
-function editMember(code) {
-  const member = members.find(m => m.code === code);
+async function editMember(code) {
+  const { data: member, error } = await supabase.from('membres').select('*').eq('code', code).single();
+  if (error) {
+    console.error('Erreur lors de la récupération du membre:', error);
+    return;
+  }
   document.querySelector('#new-member-firstname').value = member.firstname;
   document.querySelector('#new-member-lastname').value = member.lastname;
   document.querySelector('#new-member-age').value = member.age || '';
@@ -554,9 +595,14 @@ function deleteMember(code) {
   document.querySelector('#delete-member-form').style.display = 'block';
 }
 
-function updateEventsList() {
+async function updateEventsList() {
   const search = document.querySelector('#events-search').value.toLowerCase();
   const list = document.querySelector('#events-list');
+  const { data: events, error } = await supabase.from('events').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des événements:', error);
+    return;
+  }
   list.innerHTML = events
     .filter(e => e.name.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
     .map(e => `
@@ -569,33 +615,43 @@ function updateEventsList() {
     `).join('');
 }
 
-function updateEventsAdminList() {
+async function updateEventsAdminList() {
   const search = document.querySelector('#events-admin-search').value.toLowerCase();
   const list = document.querySelector('#events-admin-list');
+  const { data: events, error } = await supabase.from('events').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des événements:', error);
+    return;
+  }
   list.innerHTML = events
     .filter(e => e.name.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
-    .map((e, index) => `
+    .map(e => `
       <div class="event-card">
         <h4>${e.name}</h4>
         <p>${e.description}</p>
         <p>Date: ${new Date(e.datetime).toLocaleString()}</p>
         ${e.image ? `<img src="${e.image}" alt="${e.name}" style="max-width: 100%; border-radius: 10px;">` : ''}
-        <button class="cta-button" onclick="deleteEvent(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteEvent('${e.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteEvent(index) {
+async function deleteEvent(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  events.splice(index, 1);
-  await saveToDB('events', events);
-  updateEventsList();
-  updateEventsAdminList();
-  updateEventCountdowns();
+  const { error } = await supabase.from('events').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression de l\'événement:', error);
+    alert('Erreur lors de la suppression de l\'événement');
+  }
 }
 
-function updateGalleryContent() {
+async function updateGalleryContent() {
   const content = document.querySelector('#gallery-content');
+  const { data: gallery, error } = await supabase.from('gallery').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération de la galerie:', error);
+    return;
+  }
   content.innerHTML = gallery
     .map(g => `
       <div>
@@ -604,29 +660,40 @@ function updateGalleryContent() {
     `).join('');
 }
 
-function updateGalleryAdminList() {
+async function updateGalleryAdminList() {
   const search = document.querySelector('#gallery-admin-search').value.toLowerCase();
   const list = document.querySelector('#gallery-admin-list');
+  const { data: gallery, error } = await supabase.from('gallery').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération de la galerie:', error);
+    return;
+  }
   list.innerHTML = gallery
     .filter(g => g.name.toLowerCase().includes(search))
-    .map((g, index) => `
+    .map(g => `
       <div>
         ${g.type === 'image' ? `<img src="${g.url}" alt="Galerie" style="max-width: 100%; border-radius: 10px;">` : `<video src="${g.url}" controls style="max-width: 100%; border-radius: 10px;"></video>`}
-        <button class="cta-button" onclick="deleteGalleryItem(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteGalleryItem('${g.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteGalleryItem(index) {
+async function deleteGalleryItem(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  gallery.splice(index, 1);
-  await saveToDB('gallery', gallery);
-  updateGalleryContent();
-  updateGalleryAdminList();
+  const { error } = await supabase.from('gallery').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression de l\'élément de la galerie:', error);
+    alert('Erreur lors de la suppression de l\'élément de la galerie');
+  }
 }
 
-function updateMessagesList() {
+async function updateMessagesList() {
   const list = document.querySelector('#messages-list');
+  const { data: messages, error } = await supabase.from('messages').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des messages:', error);
+    return;
+  }
   list.innerHTML = messages
     .map(m => `
       <div class="message-card">
@@ -637,190 +704,217 @@ function updateMessagesList() {
     `).join('');
 }
 
-function updateMessagesAdminList() {
+async function updateMessagesAdminList() {
   const search = document.querySelector('#messages-admin-search').value.toLowerCase();
   const list = document.querySelector('#messages-admin-list');
+  const { data: messages, error } = await supabase.from('messages').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des messages:', error);
+    return;
+  }
   list.innerHTML = messages
     .filter(m => m.title.toLowerCase().includes(search) || m.text.toLowerCase().includes(search))
-    .map((m, index) => `
+    .map(m => `
       <div class="message-card">
         <h4>${m.title}</h4>
         <p>${m.text}</p>
         <p><small>${new Date(m.date).toLocaleString()}</small></p>
-        <button class="cta-button" onclick="deleteMessage(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteMessage('${m.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteMessage(index) {
+async function deleteMessage(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  messages.splice(index, 1);
-  await saveToDB('messages', messages);
-  updateMessagesList();
-  updateMessagesAdminList();
-  updateMessagePopups();
+  const { error } = await supabase.from('messages').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression du message:', error);
+    alert('Erreur lors de la suppression du message');
+  }
 }
 
-function updateMessagePopups() {
+async function updateMessagePopups() {
   const popups = document.querySelector('#message-popups');
+  const { data: messages, error } = await supabase.from('messages').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des messages:', error);
+    return;
+  }
   popups.innerHTML = messages
-    .map((m, index) => `
+    .map(m => `
       <div class="message-popup">
         <h4>${m.title}</h4>
         <p>${m.text}</p>
-        <button class="close-button" onclick="closeMessage(${index})"><span class="material-icons">close</span></button>
+        <button class="close-button" onclick="deleteMessage('${m.id}')"><span class="material-icons">close</span></button>
       </div>
     `).join('');
 }
 
-async function closeMessage(index) {
-  messages.splice(index, 1);
-  await saveToDB('messages', messages);
-  updateMessagesList();
-  updateMessagesAdminList();
-  updateMessagePopups();
-}
-
-function checkAutoMessages() {
-  const now = new Date();
-  autoMessages.forEach(async (m, index) => {
-    if (new Date(m.datetime) <= now) {
-      messages.unshift({ title: m.name, text: m.text, date: now.toISOString() });
-      await saveToDB('messages', messages);
-      autoMessages.splice(index, 1);
-      await saveToDB('autoMessages', autoMessages);
-      updateMessagesList();
-      updateMessagesAdminList();
-      updateMessagePopups();
-      updateAutoMessagesList();
-      sendNotification('Message automatisé', `${m.name}: ${m.text}`);
-    }
-  });
-}
-
-function updateAutoMessagesList() {
+async function updateAutoMessagesList() {
   const search = document.querySelector('#auto-messages-search').value.toLowerCase();
   const list = document.querySelector('#auto-messages-list');
+  const { data: autoMessages, error } = await supabase.from('auto_messages').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des messages automatisés:', error);
+    return;
+  }
   list.innerHTML = autoMessages
     .filter(m => m.name.toLowerCase().includes(search) || m.text.toLowerCase().includes(search))
-    .map((m, index) => `
+    .map(m => `
       <div class="message-card">
         <h4>${m.name}</h4>
         <p>${m.text}</p>
         <p>Date: ${new Date(m.datetime).toLocaleString()}</p>
-        <button class="cta-button" onclick="deleteAutoMessage(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteAutoMessage('${m.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteAutoMessage(index) {
+async function deleteAutoMessage(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  autoMessages.splice(index, 1);
-  await saveToDB('autoMessages', autoMessages);
-  updateAutoMessagesList();
+  const { error } = await supabase.from('auto_messages').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression du message automatisé:', error);
+    alert('Erreur lors de la suppression du message automatisé');
+  }
 }
 
-function updateNotesList() {
+async function updateNotesList() {
   const search = document.querySelector('#notes-search').value.toLowerCase();
   const list = document.querySelector('#notes-list');
+  const { data: notes, error } = await supabase.from('notes').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des notes:', error);
+    return;
+  }
   list.innerHTML = notes
     .filter(n => n.theme.toLowerCase().includes(search) || n.text.toLowerCase().includes(search))
-    .map((n, index) => `
+    .map(n => `
       <div class="note-card">
         <p><strong>${n.theme}</strong>: ${n.text}</p>
-        <button class="cta-button" onclick="deleteNote(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteNote('${n.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteNote(index) {
+async function deleteNote(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  notes.splice(index, 1);
-  await saveToDB('notes', notes);
-  updateNotesList();
+  const { error } = await supabase.from('notes').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression de la note:', error);
+    alert('Erreur lors de la suppression de la note');
+  }
 }
 
-function updateInternalDocsList() {
+async function updateInternalDocsList() {
   const search = document.querySelector('#internal-docs-search').value.toLowerCase();
   const list = document.querySelector('#internal-docs-list');
+  const { data: internalDocs, error } = await supabase.from('internal_docs').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des documents internes:', error);
+    return;
+  }
   list.innerHTML = internalDocs
     .filter(d => d.name.toLowerCase().includes(search) || d.category.toLowerCase().includes(search))
-    .map((d, index) => `
+    .map(d => `
       <div class="file-card">
         <p><strong>Catégorie :</strong> ${d.category}</p>
         <a href="${d.url}" download>${d.name}</a>
-        <button class="cta-button" onclick="deleteInternalDoc(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteInternalDoc('${d.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteInternalDoc(index) {
+async function deleteInternalDoc(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  internalDocs.splice(index, 1);
-  await saveToDB('internalDocs', internalDocs);
-  updateInternalDocsList();
+  const { error } = await supabase.from('internal_docs').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression du document interne:', error);
+    alert('Erreur lors de la suppression du document interne');
+  }
 }
 
-function updatePresidentFilesList() {
+async function updatePresidentFilesList() {
   const search = document.querySelector('#president-files-search').value.toLowerCase();
   const list = document.querySelector('#president-files-list');
+  const { data: presidentFiles, error } = await supabase.from('president_files').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des fichiers présidentiels:', error);
+    return;
+  }
   list.innerHTML = presidentFiles
     .filter(f => f.name.toLowerCase().includes(search) || f.category.toLowerCase().includes(search))
-    .map((f, index) => `
+    .map(f => `
       <div class="file-card">
         <p><strong>Catégorie :</strong> ${f.category}</p>
         <a href="${f.url}" download>${f.name}</a>
-        <button class="cta-button" onclick="deletePresidentFile(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deletePresidentFile('${f.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deletePresidentFile(index) {
+async function deletePresidentFile(id) {
   if (!currentUser || currentUser.role !== 'president') return;
-  presidentFiles.splice(index, 1);
-  await saveToDB('presidentFiles', presidentFiles);
-  updatePresidentFilesList();
+  const { error } = await supabase.from('president_files').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression du fichier présidentiel:', error);
+    alert('Erreur lors de la suppression du fichier présidentiel');
+  }
 }
 
-function updateSecretaryFilesList() {
+async function updateSecretaryFilesList() {
   const search = document.querySelector('#secretary-files-search').value.toLowerCase();
   const list = document.querySelector('#secretary-files-list');
+  const { data: secretaryFiles, error } = await supabase.from('secretary_files').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des fichiers secrétaire:', error);
+    return;
+  }
   list.innerHTML = secretaryFiles
     .filter(f => f.name.toLowerCase().includes(search) || f.category.toLowerCase().includes(search))
-    .map((f, index) => `
+    .map(f => `
       <div class="file-card">
         <p><strong>Catégorie :</strong> ${f.category}</p>
         <a href="${f.url}" download>${f.name}</a>
-        <button class="cta-button" onclick="deleteSecretaryFile(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteSecretaryFile('${f.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteSecretaryFile(index) {
+async function deleteSecretaryFile(id) {
   if (!currentUser || currentUser.role !== 'secretaire') return;
-  secretaryFiles.splice(index, 1);
-  await saveToDB('secretaryFiles', secretaryFiles);
-  updateSecretaryFilesList();
+  const { error } = await supabase.from('secretary_files').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression du fichier secrétaire:', error);
+    alert('Erreur lors de la suppression du fichier secrétaire');
+  }
 }
 
-function updateSuggestionsList() {
+async function updateSuggestionsList() {
   const search = document.querySelector('#suggestions-search').value.toLowerCase();
   const list = document.querySelector('#suggestions-list');
+  const { data: suggestions, error } = await supabase.from('suggestions').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des suggestions:', error);
+    return;
+  }
   list.innerHTML = suggestions
     .filter(s => s.member.toLowerCase().includes(search) || s.text.toLowerCase().includes(search))
-    .map((s, index) => `
+    .map(s => `
       <div class="suggestion-card">
         <p><strong>${s.member}</strong>: ${s.text}</p>
-        <button class="cta-button" onclick="deleteSuggestion(${index})">Supprimer</button>
+        <button class="cta-button" onclick="deleteSuggestion('${s.id}')">Supprimer</button>
       </div>
     `).join('');
 }
 
-async function deleteSuggestion(index) {
+async function deleteSuggestion(id) {
   if (!currentUser || currentUser.role !== 'admin') return;
-  suggestions.splice(index, 1);
-  await saveToDB('suggestions', suggestions);
-  updateSuggestionsList();
+  const { error } = await supabase.from('suggestions').delete().eq('id', id);
+  if (error) {
+    console.error('Erreur lors de la suppression de la suggestion:', error);
+    alert('Erreur lors de la suppression de la suggestion');
+  }
 }
 
 function updateCoranContent() {
@@ -832,9 +926,14 @@ function updateCoranContent() {
     .map(j => `<p style="font-family: 'Amiri', serif; font-size: 1.2rem;">${j.juz}</p>`).join('');
 }
 
-function updateLibraryContent() {
+async function updateLibraryContent() {
   const search = document.querySelector('#library-search').value.toLowerCase();
   const content = document.querySelector('#library-content');
+  const { data: library, error } = await supabase.from('library').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération de la bibliothèque:', error);
+    return;
+  }
   content.innerHTML = library
     .filter(l => l.name.toLowerCase().includes(search) || l.category.toLowerCase().includes(search))
     .map(l => `
@@ -845,10 +944,15 @@ function updateLibraryContent() {
     `).join('');
 }
 
-function updatePersonalInfo() {
+async function updatePersonalInfo() {
   if (!currentUser) return;
   const info = document.querySelector('#personal-info');
-  const contributions = document.querySelector('#personal-contributions');
+  const contributionsDiv = document.querySelector('#personal-contributions');
+  const { data: contributions, error } = await supabase.from('contributions').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des cotisations:', error);
+    return;
+  }
   info.innerHTML = `
     <img src="${currentUser.photo}" alt="${currentUser.firstname} ${currentUser.lastname}" style="width: 100px; border-radius: 50%;">
     <p><strong>Prénom :</strong> ${currentUser.firstname}</p>
@@ -864,7 +968,7 @@ function updatePersonalInfo() {
     <p><strong>Rôle :</strong> ${currentUser.role}</p>
     <p><strong>Statut :</strong> ${currentUser.status}</p>
   `;
-  contributions.innerHTML = Object.entries(currentUser.contributions).map(([name, years]) => `
+  contributionsDiv.innerHTML = Object.entries(currentUser.contributions).map(([name, years]) => `
     <div class="contribution-card">
       <p><strong>${name}</strong>: ${contributions.find(c => c.name === name).amount} FCFA</p>
       ${Object.entries(years).map(([year, months]) => `
@@ -876,7 +980,13 @@ function updatePersonalInfo() {
   `).join('');
 }
 
-function updateStats() {
+async function updateStats() {
+  const { data: members, error: memberError } = await supabase.from('membres').select('*');
+  const { data: contributions, error: contribError } = await supabase.from('contributions').select('*');
+  if (memberError || contribError) {
+    console.error('Erreur lors de la récupération des données pour les stats:', memberError || contribError);
+    return;
+  }
   const totalAmount = members.reduce((sum, m) => sum + Object.values(m.contributions).reduce((s, years) => s + Object.values(years).reduce((t, months) => t + months.filter(p => p).length * contributions.find(c => c.name === Object.keys(m.contributions)[0]).amount, 0), 0), 0);
   const membersCount = members.length;
   const activeMembers = members.filter(m => m.status === 'actif').length;
@@ -915,9 +1025,14 @@ function updateStats() {
   });
 }
 
-function updateCallMembersList() {
+async function updateCallMembersList() {
   const search = document.querySelector('#video-calls-search').value.toLowerCase();
   const list = document.querySelector('#members-call-list');
+  const { data: members, error } = await supabase.from('membres').select('*');
+  if (error) {
+    console.error('Erreur lors de la récupération des membres:', error);
+    return;
+  }
   list.innerHTML = members
     .filter(m => `${m.firstname} ${m.lastname}`.toLowerCase().includes(search) || m.code.toLowerCase().includes(search))
     .map(m => `
@@ -938,7 +1053,10 @@ function updateSelectedCallMembers(code, checked) {
 
 function toggleCallAll() {
   const checkAll = document.querySelector('#call-all').checked;
-  selectedCallMembers = checkAll ? members.map(m => m.code) : [];
+  selectedCallMembers = checkAll ? (async () => {
+    const { data: members } = await supabase.from('membres').select('code');
+    return members.map(m => m.code);
+  })() : [];
   document.querySelectorAll('#members-call-list input[type=checkbox]').forEach(checkbox => {
     checkbox.checked = checkAll;
   });
@@ -1010,7 +1128,7 @@ document.querySelector('#contributions-admin-search').addEventListener('input', 
 document.querySelector('#president-files-search').addEventListener('input', updatePresidentFilesList);
 document.querySelector('#secretary-files-search').addEventListener('input', updateSecretaryFilesList);
 
-initDB().then(() => {
+initSupabase().then(() => {
   updateMembersList();
   updateContributionsAdminList();
   updateEventsList();
