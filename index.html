@@ -357,34 +357,6 @@
   </div>
   <script src="chatbotResponses.js"></script>
   <script src="main.js"></script>
-  <!-- Bouton flottant du chat -->
-<div id="chat-button" style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  z-index: 999;
-">
-💬
-</div>
-<script>
-  const chatButton = document.getElementById('chat-button');
-  const chatBox = document.getElementById('chat-box');
-
-  chatButton.addEventListener('click', () => {
-    chatBox.style.display = (chatBox.style.display === 'none') ? 'flex' : 'none';
-  });
-</script>
 
 </body>
 </html>
