@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Association</title>
+  <style>
+    :root {
+      --main: #0057b8;
+      --bg: #f4f4f4;
+      --white: #fff;
+      --text: #333;
+      --gray: #aaa;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      background: var(--main);
+      color: var(--white);
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+    .container {
+      padding: 1rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      color: var(--main);
+    }
+    .card {
+      background: var(--white);
+      margin: 1rem 0;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card span {
+      display: block;
+      margin: 0.2rem 0;
+    }
+    .status-actif {
+      color: green;
+      font-weight: bold;
+    }
+    .status-blacklist {
+      color: red;
+      font-weight: bold;
+    }
+    button.payer {
+      margin-top: 0.5rem;
+      background: var(--main);
+      color: var(--white);
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.payer:hover {
+      background: #0041a3;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+  </style>
+</head>
+<body>
+
+  <header>👥 Gestion Association</header>
+  
+  <div class="container">
+    <h2>📋 Membres</h2>
+    <div id="membres-list"></div>
+
+    <h2>💰 Cotisations</h2>
+    <div id="cotisations-list"></div>
+  </div>
+
+  <footer>© Club Info Saldia — Powered by Firebase</footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    // ✅ Ta configuration Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import {
+      getFirestore, collection, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0vL0QgFDkAi-ScZDVKC1G5MgcFCURE1A",
+      authDomain: "club-info-saldia.firebaseapp.com",
+      projectId: "club-info-saldia",
+      storageBucket: "club-info-saldia.appspot.com",
+      messagingSenderId: "231304730592",
+      appId: "1:231304730592:web:cb11caa0d19cc427bb9b61"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const membresList = document.getElementById("membres-list");
+    const cotisationsList = document.getElementById("cotisations-list");
+
+    // 📡 Affichage en temps réel des membres
+    onSnapshot(collection(db, "membres"), (snapshot) => {
+      membresList.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const membre = doc.data();
+        const statusClass = membre.statut === "actif" ? "status-actif" : "status-blacklist";
+        membresList.innerHTML += `
+          <div class="card">
+            <span><b>Nom :</b> ${membre.nom}</span>
+            <span><b>Statut :</b> <span class="${statusClass}">${membre.statut}</span></span>
+            <span><b>Classification :</b> ${membre.classification}</span>
+          </div>
+        `;
+      });
+    });
+
+    // 💸 Affichage en temps réel des cotisations
+    onSnapshot(collection(db, "cotisations"), (snapshot) => {
+      cotisationsList.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const c = doc.data();
+        cotisationsList.innerHTML += `
+          <div class="card">
+            <span><b>Nom :</b> ${c.nom}</span>
+            <span><b>Mois :</b> ${c.mois}</span>
+            <span><b>Montant :</b> ${c.montant} €</span>
+            <button class="payer" onclick="alert('Paiement pas encore connecté')">Payer</button>
+          </div>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
