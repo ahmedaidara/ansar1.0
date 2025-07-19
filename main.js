@@ -183,11 +183,24 @@ function showPage(pageId) {
 
 
 function showTab(tabId) {
+  const tabContent = document.querySelector(`#${tabId}`);
+  const tabButton = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
+
+  if (!tabContent) {
+    console.error(`Tab content #${tabId} not found in DOM`);
+    return;
+  }
+  if (!tabButton) {
+    console.error(`Tab button for ${tabId} not found in DOM`);
+    return;
+  }
+
   document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`#${tabId}`).classList.add('active');
-  document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
-  
+
+  tabContent.classList.add('active');
+  tabButton.classList.add('active');
+
   switch(tabId) {
     case 'edit-member': updateEditMembersList(); break;
     case 'gallery-admin': updateGalleryAdminList(); break;
@@ -202,9 +215,9 @@ function showTab(tabId) {
     case 'treasurer': updateContributionsAdminList(); break;
     case 'president': updatePresidentFilesList(); break;
     case 'secretary': updateSecretaryFilesList(); break;
+    default: console.warn(`No action defined for tab ${tabId}`);
   }
 }
-
 function toggleTheme() {
   document.body.classList.toggle('dark-mode');
   localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
