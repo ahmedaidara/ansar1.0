@@ -1,7 +1,11 @@
 const SUPABASE_URL = 'https://ncbfuuoupskhzgcjgpvq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYmZ1dW91cHNraHpnY2pncHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTMwNDYsImV4cCI6MjA2ODQyOTA0Nn0.3w7BT14mJeXQHBmZPNxbQwnArkk5wxytJ4aTqdYg4C8';
-const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+if (typeof Supabase === 'undefined') {
+  console.error('Supabase library not loaded');
+  alert('Erreur : La bibliothèque Supabase n\'est pas chargée. Vérifiez votre connexion ou la balise script.');
+} else {
+  const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+}
 const presidentCode = '0000';
 let currentUser = null;
 let isChatOpen = false;
