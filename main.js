@@ -17,61 +17,70 @@ const presidentCode = '0000';
 
 // ==================== FONCTIONS DE BASE POUR GITHUB ====================
 
-async function loadData(file) {
-  try {
-    const response = await fetch(`https://api.github.com/repos/ahmedaidara/ansar1.0/contents/data/${file}`, {
-      headers: {
-        'Authorization': `Bearer ${TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
+// ==================== FONCTIONS DE BASE ====================
+async function loadData(file, retries = 3, delay = 1000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(`https://api.github.com/repos/ahmedaidara/ansar1.0/contents/data/${file}`, {
+        headers: {
+          'Authorization': `Bearer ${TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.error(`Erreur 401: Vérifiez le token GitHub ou ses permissions pour ${file}`);
+        }
+        throw new Error(`Erreur ${response.status} lors du chargement de ${file}`);
       }
-    });
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status} lors du chargement de ${file}`);
+      const data = await response.json();
+      return JSON.parse(atob(data.content));
+    } catch (error) {
+      if (attempt === retries) {
+        console.error(`Erreur loadData(${file}) après ${retries} tentatives:`, error);
+        return [];
+      }
+      await new Promise(resolve => setTimeout(resolve, delay * attempt));
     }
-    const data = await response.json();
-    return JSON.parse(atob(data.content));
-  } catch (error) {
-    console.error(`Erreur loadData(${file}):`, error);
-    return []; // Retourner un tableau vide pour éviter les erreurs en aval
   }
 }
 
-async function saveData(fileName, data) {
-  try {
-    let sha = null;
+async function saveData(file, data, retries = 3, delay = 1000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const getResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
+      const currentData = await loadData(file);
+      const response = await fetch(`https://api.github.com/repos/ahmedaidara/ansar1.0/contents/data/${file}`, {
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
+          'Accept': 'application/vnd.github.v3+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        },
+        body: JSON.stringify({
+          message: `Mise à jour de ${file}`,
+          content: btoa(JSON.stringify(data, null, 2)),
+          sha: currentData.sha || (await (await fetch(`https://api.github.com/repos/ahmedaidara/ansar1.0/contents/data/${file}`, {
+            headers: { 'Authorization': `Bearer ${TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+          })).json()).sha
+        })
       });
-      if (getResponse.ok) {
-        const existingData = await getResponse.json();
-        sha = existingData.sha;
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.error(`Erreur 401: Vérifiez le token GitHub ou ses permissions pour ${file}`);
+        }
+        throw new Error(`Erreur ${response.status}: Bad credentials`);
       }
-    } catch (e) {
-      console.log(`Fichier ${fileName} non existant, création nouvelle`);
+      return await response.json();
+    } catch (error) {
+      if (attempt === retries) {
+        console.error(`Erreur saveData(${file}) après ${retries} tentatives:`, error);
+        throw error;
+      }
+      await new Promise(resolve => setTimeout(resolve, delay * attempt));
     }
-
-    const updateResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `Mise à jour de ${fileName}`,
-        content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
-        sha: sha
-      })
-    });
-
-    if (!updateResponse.ok) {
-      const errorData = await updateResponse.json();
-      throw new Error(`Erreur ${updateResponse.status}: ${errorData.message}`);
-    }
+  }
+}
 
     // Déclencher une mise à jour immédiate après sauvegarde
     switch (fileName) {
@@ -144,6 +153,42 @@ async function updateAutoMessagesList() {
 }
 
 
+async function updateSuggestionsList() {
+  try {
+    const suggestions = await loadData('suggestions.json');
+    const search = document.querySelector('#suggestions-search').value.toLowerCase();
+    const list = document.querySelector('#suggestions-list');
+    
+    list.innerHTML = suggestions
+      .filter(s => s.text.toLowerCase().includes(search))
+      .map(s => `
+        <div class="suggestion-card">
+          <p><strong>Suggestion de ${s.memberName || 'Anonyme'}</strong></p>
+          <p>${s.text}</p>
+          <p><small>${new Date(s.date).toLocaleDateString()}</small></p>
+          <button class="cta-button small danger" onclick="deleteSuggestion('${s.id}')">Supprimer</button>
+        </div>
+      `).join('');
+  } catch (error) {
+    console.error('Erreur updateSuggestionsList:', error);
+    list.innerHTML = '<p>Aucune suggestion disponible</p>';
+  }
+}
+
+async function deleteSuggestion(id) {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer cette suggestion ?")) return;
+  try {
+    const suggestions = await loadData('suggestions.json');
+    const updatedSuggestions = suggestions.filter(s => s.id !== id);
+    await saveData('suggestions.json', updatedSuggestions);
+    await updateSuggestionsList();
+    alert('Suggestion supprimée avec succès');
+  } catch (error) {
+    console.error('Erreur deleteSuggestion:', error);
+    alert('Erreur lors de la suppression');
+  }
+}
+
 // ==================== FONCTIONS D'INTERFACE ====================
 
 function showPage(pageId) {
@@ -182,16 +227,119 @@ function showPage(pageId) {
 }
 
 
+async function updateContributionsAdminList() {
+  try {
+    const contributions = await loadData('contributions.json');
+    const search = document.querySelector('#contributions-admin-search').value.toLowerCase();
+    const list = document.querySelector('#contributions-admin-list');
+    
+    list.innerHTML = contributions
+      .filter(c => c.name.toLowerCase().includes(search))
+      .map(c => `
+        <div class="contribution-card">
+          <p><strong>${c.name}</strong></p>
+          <p>Montant: ${c.amount} FCFA</p>
+          <button class="cta-button small danger" onclick="deleteContribution('${c.id}')">Supprimer</button>
+        </div>
+      `).join('');
+  } catch (error) {
+    console.error('Erreur updateContributionsAdminList:', error);
+    list.innerHTML = '<p>Aucune cotisation disponible</p>';
+  }
+}
+
+async function deleteContribution(id) {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer cette cotisation ?")) return;
+  try {
+    const contributions = await loadData('contributions.json');
+    const updatedContributions = contributions.filter(c => c.id !== id);
+    await saveData('contributions.json', updatedContributions);
+    await updateContributionsAdminList();
+    alert('Cotisation supprimée avec succès');
+  } catch (error) {
+    console.error('Erreur deleteContribution:', error);
+    alert('Erreur lors de la suppression');
+  }
+}
+
+async function updatePresidentFilesList() {
+  try {
+    const files = await loadData('presidentFiles.json');
+    const search = document.querySelector('#president-files-search').value.toLowerCase();
+    const list = document.querySelector('#president-files-list');
+    
+    list.innerHTML = files
+      .filter(f => f.category.toLowerCase().includes(search))
+      .map(f => `
+        <div class="file-card">
+          <p><strong>${f.category}</strong></p>
+          <a href="${f.url}" target="_blank">${f.name}</a>
+          <button class="cta-button small danger" onclick="deletePresidentFile('${f.id}')">Supprimer</button>
+        </div>
+      `).join('');
+  } catch (error) {
+    console.error('Erreur updatePresidentFilesList:', error);
+    list.innerHTML = '<p>Aucun fichier disponible</p>';
+  }
+}
+
+async function deletePresidentFile(id) {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) return;
+  try {
+    const files = await loadData('presidentFiles.json');
+    const updatedFiles = files.filter(f => f.id !== id);
+    await saveData('presidentFiles.json', updatedFiles);
+    await updatePresidentFilesList();
+    alert('Fichier supprimé avec succès');
+  } catch (error) {
+    console.error('Erreur deletePresidentFile:', error);
+    alert('Erreur lors de la suppression');
+  }
+}
+
+async function updateSecretaryFilesList() {
+  try {
+    const files = await loadData('secretaryFiles.json');
+    const search = document.querySelector('#secretary-files-search').value.toLowerCase();
+    const list = document.querySelector('#secretary-files-list');
+    
+    list.innerHTML = files
+      .filter(f => f.category.toLowerCase().includes(search))
+      .map(f => `
+        <div class="file-card">
+          <p><strong>${f.category}</strong></p>
+          <a href="${f.url}" target="_blank">${f.name}</a>
+          <button class="cta-button small danger" onclick="deleteSecretaryFile('${f.id}')">Supprimer</button>
+        </div>
+      `).join('');
+  } catch (error) {
+    console.error('Erreur updateSecretaryFilesList:', error);
+    list.innerHTML = '<p>Aucun fichier disponible</p>';
+  }
+}
+
+async function deleteSecretaryFile(id) {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) return;
+  try {
+    const files = await loadData('secretaryFiles.json');
+    const updatedFiles = files.filter(f => f.id !== id);
+    await saveData('secretaryFiles.json', updatedFiles);
+    await updateSecretaryFilesList();
+    alert('Fichier supprimé avec succès');
+  } catch (error) {
+    console.error('Erreur deleteSecretaryFile:', error);
+    alert('Erreur lors de la suppression');
+  }
+}
+
+
+// ==================== GESTION DES ONGLETS ====================
 function showTab(tabId) {
   const tabContent = document.querySelector(`#${tabId}`);
   const tabButton = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
 
-  if (!tabContent) {
-    console.error(`Tab content #${tabId} not found in DOM`);
-    return;
-  }
-  if (!tabButton) {
-    console.error(`Tab button for ${tabId} not found in DOM`);
+  if (!tabContent || !tabButton) {
+    console.error(`Tab content or button for ${tabId} not found`);
     return;
   }
 
@@ -201,7 +349,8 @@ function showTab(tabId) {
   tabContent.classList.add('active');
   tabButton.classList.add('active');
 
-  switch(tabId) {
+  switch (tabId) {
+    case 'add-member': break; // Pas d'action nécessaire
     case 'edit-member': updateEditMembersList(); break;
     case 'gallery-admin': updateGalleryAdminList(); break;
     case 'events-admin': updateEventsAdminList(); break;
@@ -212,12 +361,13 @@ function showTab(tabId) {
     case 'stats': updateStats(); break;
     case 'video-calls': initVideoCall(); break;
     case 'auto-messages': updateAutoMessagesList(); break;
-    case 'treasurer': updateContributionsAdminList(); break;
-    case 'president': updatePresidentFilesList(); break;
-    case 'secretary': updateSecretaryFilesList(); break;
+    case 'treasurer-contributions': updateContributionsAdminList(); break;
+    case 'president-files': updatePresidentFilesList(); break;
+    case 'secretary-files': updateSecretaryFilesList(); break;
     default: console.warn(`No action defined for tab ${tabId}`);
   }
 }
+
 function toggleTheme() {
   document.body.classList.toggle('dark-mode');
   localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
@@ -942,43 +1092,50 @@ if (chatbotForm) {
 
 // ==================== INITIALISATION ====================
 
-async function initializeApp() {
-  try {
-    // Vérifier le mode sombre
-    if (localStorage.getItem('darkMode') === 'true') {
-      document.body.classList.add('dark-mode');
-    }
-    
-    // Attacher les événements
-    setupEventListeners();
-    
-    // Charger les données initiales
-    await Promise.all([
-      updateMembersList(),
-      updateEventsList(),
-      updateGalleryContent(),
-      updateMessagesList()
-    ]);
-    
-    // Configurer la synchronisation périodique
-    setInterval(async () => {
-      if (currentUser) {
-        try {
-          await Promise.all([
-            updateMembersList(),
-            updateEventsList(),
-            updateMessagesList(),
-            checkAutoMessages()
-          ]);
-        } catch (error) {
-          console.error('Erreur synchronisation:', error);
-        }
-      }
-    }, 10000);
-    
-  } catch (error) {
-    console.error('Erreur initialisation:', error);
+// ==================== INITIALISATION ====================
+function initializeApp() {
+  const chatbotButton = document.querySelector('.chatbot-button');
+  if (chatbotButton) {
+    chatbotButton.addEventListener('click', toggleChatbot);
   }
+
+  const chatbotForm = document.querySelector('#chatbot-form');
+  if (chatbotForm) {
+    chatbotForm.addEventListener('submit', handleChatbotSubmit);
+  }
+
+  const refreshButton = document.querySelector('#refresh-data');
+  if (refreshButton) {
+    refreshButton.addEventListener('click', async () => {
+      await updateAllMemberLists();
+      await updateEventsList();
+      await updateMessagesList();
+      await updateGalleryAdminList();
+      await checkAutoMessages();
+    });
+  }
+
+  setInterval(async () => {
+    try {
+      await Promise.all([
+        updateMembersList(),
+        updateEventsList(),
+        updateMessagesList(),
+        checkAutoMessages()
+      ]);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour périodique:', error);
+    }
+  }, 10000);
+
+  // Appeler les fonctions d'initialisation
+  updateAllMemberLists();
+  updateGalleryAdminList();
+  updateEventsAdminList();
+  updateMessagesAdminList();
+  updateNotesList();
+  updateInternalDocsList();
+  updateAutoMessagesList();
 }
 
 // Démarrer l'application
