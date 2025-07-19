@@ -1,5 +1,5 @@
 // ==================== CONFIGURATION DE BASE ====================
-const TOKEN = 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Remplace par ton nouveau token
+const TOKEN = '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'; // Remplace par ton nouveau token
 
 // ==================== FONCTIONS DE BASE ====================
 async function loadData(file, retries = 3, delay = 1000) {
