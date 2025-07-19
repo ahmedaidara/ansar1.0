@@ -1,0 +1,25 @@
+[
+  {
+    "code": "001",
+    "firstname": "Mouhamed",
+    "lastname": "Niang",
+    "age": 45,
+    "dob": "01012000",
+    "birthplace": "Dakar",
+    "photo": "assets/images/default-photo.png",
+    "email": "mouhamed.niang@example.com",
+    "activity": "Président",
+    "address": "123 Rue Principale, Dakar",
+    "phone": "+221123456789",
+    "residence": "Dakar",
+    "role": "president",
+    "status": "actif",
+    "contributions": {
+      "Mensuelle": {
+        "2023": [false, false, false, false, false, false, false, false, false, false, false, false],
+        "2024": [false, false, false, false, false, false, false, false, false, false, false, false],
+        "2025": [false, false, false, false, false, false, false, false, false, false, false, false]
+      }
+    }
+  }
+]
