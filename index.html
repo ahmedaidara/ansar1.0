@@ -8,11 +8,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <!-- Dans la section <head> ou avant la balise </body> -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"></script>
+  <!-- Scripts Firebase (version compatible pour éviter les erreurs de module) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -29,10 +29,13 @@
       <div class="hero">
         <h1>ANSAR ALMOUYASSAR</h1>
         <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
+        <!-- Commenter la vidéo si intro.mp4 n'existe pas -->
+        <!--
         <video controls>
           <source src="assets/videos/intro.mp4" type="video/mp4">
           Votre navigateur ne supporte pas la vidéo.
         </video>
+        -->
         <div id="event-countdowns"></div>
         <div id="message-popups"></div>
       </div>
@@ -162,16 +165,16 @@
           <button type="submit" class="cta-button">Confirmer la suppression</button>
         </form>
       </div>
-    <div id="gallery-admin" class="tab-content">
-  <h3>Gérer la Galerie</h3>
-  <form id="add-gallery-form">
-    <input type="file" id="gallery-file" accept="image/*,video/*" required>
-    <input type="text" id="gallery-description" placeholder="Description du média" required>
-    <button type="submit" class="cta-button">Ajouter</button>
-  </form>
-  <input type="text" id="gallery-admin-search" placeholder="Rechercher un média..." class="search-bar">
-  <div id="gallery-admin-list"></div>
-</div>
+      <div id="gallery-admin" class="tab-content">
+        <h3>Gérer la Galerie</h3>
+        <form id="add-gallery-form">
+          <input type="file" id="gallery-file" accept="image/*,video/*" required>
+          <input type="text" id="gallery-description" placeholder="Description du média" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="gallery-admin-search" placeholder="Rechercher un média..." class="search-bar">
+        <div id="gallery-admin-list"></div>
+      </div>
       <div id="events-admin" class="tab-content">
         <h3>Ajouter un Événement</h3>
         <form id="add-event-form">
@@ -358,7 +361,7 @@
     </form>
     <div id="secret-entry" style="display: none;">
       <input type="password" id="secret-password" placeholder="Mot de passe">
-      <button class="cta-button" onclick="enterSecret()">Entrée</button>
+      <button class="cta-button" onclick="checkSecretPassword()">Entrée</button>
     </div>
   </div>
   <script src="chatbotResponses.js"></script>
