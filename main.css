@@ -150,160 +150,80 @@ main {
   color: var(--accent-color);
 }
 
-/* Styles pour le bouton du nouveau chat */
-.chat2-button {
+.chatbot-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 110px;
   right: 20px;
-  background-color: var(--secondary-color); /* Utilise la variable pour cohérence */
-  color: white;
-  border: none;
+  background: var(--accent-color);
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
-/* Styles pour le conteneur du chat */
+.chatbot-button:hover {
+  transform: scale(1.1);
+}
+
 .chatbot-container {
   position: fixed;
-  bottom: 80px;
+  bottom: 160px;
   right: 20px;
   width: 300px;
-  max-height: 400px;
-  background: var(--bg-color);
+  background: url('assets/images/chatbot-bg.jpg') no-repeat center center;
+  background-size: contain;
+  border: 1px solid var(--secondary-color);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  display: none;
-  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
-/* Styles pour l'en-tête du chat */
 .chatbot-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  background-color: var(--secondary-color);
+  padding: 0.5rem;
+  background: var(--primary-color);
   color: white;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-radius: 10px 10px 0 0;
 }
 
-.chatbot-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.chatbot-header .material-icons {
-  cursor: pointer;
-}
-
-/* Styles pour les messages du chat */
-#chatbot2-messages {
-  flex-grow: 1;
+.chatbot-messages {
+  max-height: 300px;
   overflow-y: auto;
-  padding: 10px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .chatbot-message {
-  margin: 5px 0;
-  padding: 8px;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
   border-radius: 5px;
 }
 
-.chatbot-message.sent {
-  background-color: var(--secondary-color);
+.sent {
+  background: var(--accent-color);
   color: white;
-  margin-left: 20%;
-  margin-right: 10px;
+  text-align: right;
 }
 
-.chatbot-message.received {
-  background-color: #f0f0f0;
-  margin-right: 20%;
-  margin-left: 10px;
+.received {
+  background: var(--secondary-color);
+  color: white;
 }
 
-/* Styles pour les contrôles du chat */
-#chatbot2-controls {
-  padding: 10px;
-}
-
-/* Styles pour le formulaire du chat */
-#chatbot2-form {
+#chatbot-form {
   display: flex;
-  padding: 10px;
-  background: #f9f9f9;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.8);
 }
 
-#chatbot2-input {
+#chatbot-input {
   flex-grow: 1;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
+  margin-right: 0.5rem;
 }
 
-#chatbot2-form button {
-  margin-left: 10px;
-  background-color: var(--secondary-color);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-
-/* Styles pour l'entrée secrète */
-#secret-entry2 {
-  position: fixed;
-  bottom: 480px;
-  right: 20px;
-  width: 300px;
-  padding: 10px;
-  background: var(--bg-color);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-}
-
-#secret-password2 {
-  width: calc(100% - 90px);
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-#secret-entry2 button {
-  margin-left: 10px;
-  background-color: var(--secondary-color);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-
-/* Autres styles pour les pages, onglets, cartes, etc. */
-.tab-content {
-  display: none;
-}
-.tab-content.active {
-  display: block;
-}
-.member-card, .event-card, .message-card, .contribution-card, .note-card, .file-card, .suggestion-card {
-  border: 1px solid var(--secondary-color);
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  background: var(--bg-color);
-}
 form {
   display: flex;
   flex-direction: column;
@@ -311,33 +231,47 @@ form {
   max-width: 400px;
   margin: 0 auto;
 }
+
 input, textarea, select {
   padding: 0.8rem;
   border: 1px solid var(--text-color);
   border-radius: 5px;
   font-size: 1rem;
 }
+
 .search-bar {
   width: 100%;
   max-width: 400px;
   margin: 1rem auto;
   display: block;
 }
+
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
 }
+
 .gallery-grid img, .gallery-grid video {
   width: 100%;
   border-radius: 10px;
 }
+
+.member-card, .contribution-card, .event-card, .suggestion-card, .note-card, .file-card {
+  background: var(--bg-color);
+  border: 1px solid var(--secondary-color);
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+}
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
+
 .tab-button {
   padding: 0.5rem 1rem;
   background: var(--secondary-color);
@@ -346,24 +280,37 @@ input, textarea, select {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .tab-button.active {
   background: var(--accent-color);
 }
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
 canvas {
   max-width: 100%;
   margin: 1rem 0;
 }
+
 #video-call-container where-by {
   width: 100%;
   height: 100%;
   border-radius: 10px;
 }
+
 .links-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
 }
+
 .link-button {
   display: block;
   padding: 1rem;
@@ -374,21 +321,26 @@ canvas {
   border-radius: 5px;
   transition: transform 0.3s ease;
 }
+
 .link-button:hover {
   transform: scale(1.05);
 }
+
 @media (max-width: 768px) {
   main {
     padding: 0.5rem;
   }
+
   .bottom-nav {
     grid-template-columns: repeat(8, 1fr);
     gap: 0.3rem;
     padding: 0.3rem;
   }
+
   .nav-item {
     font-size: 0.7rem;
   }
+
   .chatbot-container {
     width: 90%;
   }
