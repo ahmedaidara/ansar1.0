@@ -1,14 +1,11 @@
 const SUPABASE_URL = 'https://ncbfuuoupskhzgcjgpvq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYmZ1dW91cHNraHpnY2pncHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTMwNDYsImV4cCI6MjA2ODQyOTA0Nn0.3w7BT14mJeXQHBmZPNxbQwnArkk5wxytJ4aTqdYg4C8';
-let supabase;
-
 if (typeof Supabase === 'undefined') {
   console.error('Supabase library not loaded');
   alert('Erreur : La bibliothèque Supabase n\'est pas chargée. Vérifiez votre connexion ou la balise script.');
 } else {
-  supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 }
-
 const presidentCode = '0000';
 let currentUser = null;
 let isChatOpen = false;
@@ -21,65 +18,6 @@ async function initSupabase() {
   } catch (error) {
     console.error('Erreur lors de l\'initialisation de Supabase:', error);
   }
-}
-
-function toggleChatbot() {
-  isChatOpen = !isChatOpen;
-  const chatbot = document.querySelector('#chatbot');
-  if (chatbot) {
-    chatbot.style.display = isChatOpen ? 'block' : 'none';
-    if (isChatOpen) {
-      const messages = document.querySelector('#chatbot-messages');
-      if (messages) {
-        messages.innerHTML = '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
-        messages.scrollTop = messages.scrollHeight;
-      }
-    }
-  } else {
-    console.error('Chatbot element not found');
-  }
-}
-
-function clearChatHistory() {
-  const messages = document.querySelector('#chatbot-messages');
-  if (messages) {
-    messages.innerHTML = '<div class="chatbot-message received">Historique effacé. Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
-    messages.scrollTop = messages.scrollHeight;
-  }
-}
-
-document.querySelector('.chatbot-button')?.addEventListener('click', toggleChatbot);
-
-const chatbotForm = document.querySelector('#chatbot-form');
-if (chatbotForm) {
-  chatbotForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const input = document.querySelector('#chatbot-input');
-    const message = input.value.trim();
-    if (!message) return;
-    const messages = document.querySelector('#chatbot-messages');
-    if (messages) {
-      messages.innerHTML += `<div class="chatbot-message sent">${message}</div>`;
-      const secretCodes = ['ADMIN12301012000', '00000000', '11111111', '22222222'];
-      if (secretCodes.includes(message)) {
-        const secretEntry = document.querySelector('#secret-entry');
-        if (secretEntry) {
-          secretEntry.style.display = 'block';
-        } else {
-          console.error('Secret entry element not found');
-        }
-      } else {
-        const response = getChatbotResponse(message);
-        messages.innerHTML += `<div class="chatbot-message received">${response}</div>`;
-      }
-      input.value = '';
-      messages.scrollTop = messages.scrollHeight;
-    } else {
-      console.error('Chatbot messages element not found');
-    }
-  });
-} else {
-  console.error('Chatbot form not found');
 }
 
 async function uploadFile(bucket, file, fileName) {
@@ -217,7 +155,66 @@ document.querySelector('#settings-language')?.addEventListener('change', (e) => 
   // Language change handled in settings
 });
 
+function toggleChatbot() {
+  isChatOpen = !isChatOpen;
+  const chatbot = document.querySelector('#chatbot');
+  if (chatbot) {
+    chatbot.style.display = isChatOpen ? 'block' : 'none';
+    if (isChatOpen) {
+      const messages = document.querySelector('#chatbot-messages');
+      if (messages) {
+        messages.innerHTML = '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+  } else {
+    console.error('Chatbot element not found');
+  }
+}
+
+// Ensure the chatbot button exists before adding event listener
+const chatbotButton = document.querySelector('.chatbot-button');
+if (chatbotButton) {
+  chatbotButton.addEventListener('click', toggleChatbot);
+} else {
+  console.error('Chatbot button not found');
+}
+
+// Ensure the chatbot form exists before adding event listener
+const chatbotForm = document.querySelector('#chatbot-form');
+if (chatbotForm) {
+  chatbotForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.querySelector('#chatbot-input');
+    const message = input.value.trim();
+    if (!message) return;
+    const messages = document.querySelector('#chatbot-messages');
+    if (messages) {
+      messages.innerHTML += `<div class="chatbot-message sent">${message}</div>`;
+      const secretCodes = ['ADMIN12301012000', '00000000', '11111111', '22222222'];
+      if (secretCodes.includes(message)) {
+        const secretEntry = document.querySelector('#secret-entry');
+        if (secretEntry) {
+          secretEntry.style.display = 'block';
+        } else {
+          console.error('Secret entry element not found');
+        }
+      } else {
+        const response = getChatbotResponse(message);
+        messages.innerHTML += `<div class="chatbot-message received">${response}</div>`;
+      }
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+    } else {
+      console.error('Chatbot messages element not found');
+    }
+  });
+} else {
+  console.error('Chatbot form not found');
+}
+
 function getChatbotResponse(message) {
+  // Placeholder for chatbot response logic
   const responses = {
     'association': 'Notre association travaille pour le bien-être de la communauté.',
     'membre': 'Pour devenir membre, veuillez contacter un administrateur.',
@@ -1068,7 +1065,7 @@ async function updateStats() {
   const totalAmount = members.reduce((sum, m) => sum + Object.values(m.contributions).reduce((s, years) => s + Object.values(years).reduce((t, months) => t + months.filter(p => p).length * contributions.find(c => c.name === Object.keys(m.contributions)[0]).amount, 0), 0), 0);
   const membersCount = members.length;
   const activeMembers = members.filter(m => m.status === 'actif').length;
-  const upToDateMembers = members.filter(m => Object.values(m.contributions).every(years => Object.values(years).every(months => months.every(p => p))).length;
+  const upToDateMembers = members.filter(m => Object.values(m.contributions).every(years => Object.values(years).every(months => months.every(p => p)))).length;
 
   new Chart(document.getElementById('stats-total-amount'), {
     type: 'bar',
