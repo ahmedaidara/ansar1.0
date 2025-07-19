@@ -335,61 +335,57 @@
     </nav>
   </footer>
   
-<!-- Bouton pour le nouveau chat2 -->
-<button class="chatbot-button chat2-button" onclick="toggleChatbot2()">
-  <span class="material-icons">chat</span>
-</button>
+  <!-- Bouton du chatbot amélioré -->
+  <button class="chatbot-button" onclick="toggleChatbot2()">
+    <span class="material-icons">chat</span>
+    <span class="notification-badge" id="chat-notification" style="display: none;"></span>
+  </button>
 
-<!-- Bouton pour le chat existant -->
-<button class="chatbot-button" onclick="toggleChatbot()">
-  <span class="material-icons">chat</span>
-</button>
+  <!-- Interface du chatbot amélioré -->
+  <div id="chatbot2" class="chatbot-container" style="display: none;">
+    <div class="chatbot-header">
+      <h3>Assistant ANSAR</h3>
+      <div class="chatbot-actions">
+        <span class="material-icons" onclick="clearChat2History()" title="Effacer l'historique">delete</span>
+        <span class="material-icons" onclick="toggleChatbot2()" title="Fermer">close</span>
+      </div>
+    </div>
+    
+    <div id="chatbot2-messages" class="chatbot-messages">
+      <div class="chatbot-message received">
+        Bienvenue dans l'assistant ANSAR ALMOUYASSAR. Comment puis-je vous aider ?
+      </div>
+    </div>
+    
+    <form id="chatbot2-form" class="chatbot-input-area">
+      <input type="text" id="chatbot2-input" placeholder="Écrivez votre message..." autocomplete="off">
+      <button type="submit" class="send-button">
+        <span class="material-icons">send</span>
+      </button>
+    </form>
+    
+    <!-- Section d'accès secret -->
+    <div id="secret-entry2" class="secret-entry" style="display: none;">
+      <h4>Accès Administrateur</h4>
+      <input type="password" id="secret-password2" placeholder="Entrez le code secret">
+      <button class="cta-button" onclick="enterSecret2()">Valider</button>
+      <p class="hint">Codes possibles : ADMIN12301012000, 00000000, 11111111, etc.</p>
+    </div>
+    
+    <!-- Suggestions rapides -->
+    <div class="quick-replies">
+      <button class="quick-reply" onclick="sendQuickReply('association')">Association</button>
+      <button class="quick-reply" onclick="sendQuickReply('membre')">Devenir membre</button>
+      <button class="quick-reply" onclick="sendQuickReply('cotisation')">Cotisations</button>
+      <button class="quick-reply" onclick="sendQuickReply('événement')">Événements</button>
+    </div>
+  </div>
 
-<!-- Conteneur pour le nouveau chat2 -->
-<div id="chatbot2" class="chatbot-container" style="display: none;">
-  <div class="chatbot-header">
-    <h3>Assistant ANSAR 2</h3>
-    <span class="material-icons" onclick="toggleChatbot2()">close</span>
-  </div>
-  <div id="chatbot2-messages"></div>
-  <div id="chatbot2-controls">
-    <button class="cta-button clear-history" onclick="clearChat2History()"><span class="material-icons">delete</span> Effacer</button>
-  </div>
-  <form id="chatbot2-form">
-    <input type="text" id="chatbot2-input" placeholder="Posez une question..." autocomplete="off">
-    <button type="submit" class="cta-button"><span class="material-icons">send</span></button>
-  </form>
-  <div id="secret-entry2" style="display: none;">
-    <input type="password" id="secret-password2" placeholder="Mot de passe">
-    <button class="cta-button" onclick="enterSecret2()">Entrée</button>
-  </div>
-</div>
-
-<!-- Conteneur pour le chat existant -->
-<div id="chatbot" class="chatbot-container" style="display: none;">
-  <div class="chatbot-header">
-    <h3>Assistant ANSAR</h3>
-    <span class="material-icons" onclick="toggleChatbot()">close</span>
-  </div>
-  <div id="chatbot-messages"></div>
-  <div id="chatbot-controls">
-    <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> Effacer</button>
-  </div>
-  <form id="chatbot-form">
-    <input type="text" id="chatbot-input" placeholder="Posez une question..." autocomplete="off">
-    <button type="submit" class="cta-button"><span class="material-icons">send</span></button>
-  </form>
-  <div id="secret-entry" style="display: none;">
-    <input type="password" id="secret-password" placeholder="Mot de passe">
-    <button class="cta-button" onclick="enterSecret()">Entrée</button>
-  </div>
-</div>
-  
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="main.js"></script>
-<script src="response2.0.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="main.js"></script>
+  <script src="response2.0.js"></script>
 </body>
 </html>
