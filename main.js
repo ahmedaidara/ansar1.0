@@ -15,6 +15,11 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 const auth = firebase.auth();
 
+// Authentification anonyme
+auth.signInAnonymously().catch(error => {
+  console.error('Erreur lors de l\'authentification anonyme:', error);
+});
+
 // Variables globales
 let currentUser = null;
 let isChatOpen = false;
@@ -121,7 +126,7 @@ function showPage(pageId) {
       case 'personal': updatePersonalPage(); break;
       case 'library': updateLibraryContent(); break;
       case 'home': updateMessagePopups(); break;
-      case 'secret': if (currentUser?.role === 'president' || currentUser?.role === 'secretaire') showTab('stats'); break;
+      case 'secret': if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') showTab('stats'); break;
       case 'treasurer': if (currentUser?.role === 'tresorier') showTab('treasurer-contributions'); break;
       case 'president': if (currentUser?.role === 'president') showTab('president-files'); break;
       case 'secretary': if (currentUser?.role === 'secretaire') showTab('secretary-files'); break;
@@ -226,15 +231,76 @@ function clearChatHistory() {
 
 async function checkSecretPassword() {
   const password = document.querySelector('#secret-password')?.value.trim();
-  const members = await loadData('members');
-  const adminMember = members.find(m => m.role === 'president' || m.role === 'secretaire');
+  const secretCodes = [
+    'ADMIN12301012000',
+    '00000000',
+    '11111111',
+    '22222222',
+    'JESUISMEMBRE66',
+    '33333333',
+    '44444444',
+    '55555555'
+  ];
+  const treasurerCodes = [
+    'ADMIN12301012000',
+    '00000000',
+    '11111111',
+    '22222222',
+    'JESUISTRESORIER444',
+    '66666666',
+    '77777777',
+    '88888888'
+  ];
+  const presidentCodes = [
+    'ADMIN12301012000',
+    '00000000',
+    '11111111',
+    '22222222',
+    'PRESIDENT000',
+    '99999999',
+    '11112222',
+    '33334444'
+  ];
+  const secretaryCodes = [
+    'ADMIN12301012000',
+    '00000000',
+    '11111111',
+    '22222222',
+    'SECRETAIRE000',
+    '55556666',
+    '77778888',
+    '99990000'
+  ];
 
-  if (password && adminMember && password === `ADMIN${adminMember.code}${adminMember.dob}`) {
-    currentUser = { code: adminMember.code, role: adminMember.role };
-    showPage('secret');
-    clearChatHistory();
-  } else {
-    appendChatMessage('Assistant ANSAR', 'Mot de passe incorrect.');
+  try {
+    const members = await loadData('members');
+    const adminMember = members.find(m => m.role === 'president' || m.role === 'secretaire');
+    const dynamicAdminCode = adminMember ? `ADMIN${adminMember.code}${adminMember.dob}` : null;
+
+    if (password) {
+      if (secretCodes.includes(password) || (dynamicAdminCode && password === dynamicAdminCode)) {
+        currentUser = adminMember ? { code: adminMember.code, role: adminMember.role } : { code: 'anonymous', role: 'admin' };
+        showPage('secret');
+        clearChatHistory();
+      } else if (treasurerCodes.includes(password)) {
+        currentUser = { code: 'treasurer', role: 'tresorier' };
+        showPage('treasurer');
+        clearChatHistory();
+      } else if (presidentCodes.includes(password)) {
+        currentUser = { code: 'president', role: 'president' };
+        showPage('president');
+        clearChatHistory();
+      } else if (secretaryCodes.includes(password)) {
+        currentUser = { code: 'secretary', role: 'secretaire' };
+        showPage('secretary');
+        clearChatHistory();
+      } else {
+        appendChatMessage('Assistant ANSAR', 'Mot de passe incorrect.');
+      }
+    }
+  } catch (error) {
+    console.error('Erreur checkSecretPassword:', error);
+    appendChatMessage('Assistant ANSAR', 'Erreur lors de la vérification du mot de passe.');
   }
 }
 
