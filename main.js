@@ -1,14 +1,15 @@
 const SUPABASE_URL = 'https://ncbfuuoupskhzgcjgpvq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYmZ1dW91cHNraHpnY2pncHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTMwNDYsImV4cCI6MjA2ODQyOTA0Nn0.3w7BT14mJeXQHBmZPNxbQwnArkk5wxytJ4aTqdYg4C8';
+
 if (typeof Supabase === 'undefined') {
   console.error('Supabase library not loaded');
   alert('Erreur : La bibliothèque Supabase n\'est pas chargée. Vérifiez votre connexion ou la balise script.');
 } else {
   const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 }
+
 const presidentCode = '0000';
 let currentUser = null;
-let isChatOpen = false;
 let selectedCallMembers = [];
 
 async function initSupabase() {
@@ -154,112 +155,6 @@ setInterval(updateEventCountdowns, 1000);
 document.querySelector('#settings-language')?.addEventListener('change', (e) => {
   // Language change handled in settings
 });
-
-function toggleChatbot() {
-  isChatOpen = !isChatOpen;
-  const chatbot = document.querySelector('#chatbot');
-  if (chatbot) {
-    chatbot.style.display = isChatOpen ? 'block' : 'none';
-    if (isChatOpen) {
-      const messages = document.querySelector('#chatbot-messages');
-      if (messages) {
-        messages.innerHTML = '<div class="chatbot-message received">Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
-        messages.scrollTop = messages.scrollHeight;
-      }
-    }
-  } else {
-    console.error('Chatbot element not found');
-  }
-}
-
-// Ensure the chatbot button exists before adding event listener
-const chatbotButton = document.querySelector('.chatbot-button');
-if (chatbotButton) {
-  chatbotButton.addEventListener('click', toggleChatbot);
-} else {
-  console.error('Chatbot button not found');
-}
-
-// Ensure the chatbot form exists before adding event listener
-const chatbotForm = document.querySelector('#chatbot-form');
-if (chatbotForm) {
-  chatbotForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const input = document.querySelector('#chatbot-input');
-    const message = input.value.trim();
-    if (!message) return;
-    const messages = document.querySelector('#chatbot-messages');
-    if (messages) {
-      messages.innerHTML += `<div class="chatbot-message sent">${message}</div>`;
-      const secretCodes = ['ADMIN12301012000', '00000000', '11111111', '22222222'];
-      if (secretCodes.includes(message)) {
-        const secretEntry = document.querySelector('#secret-entry');
-        if (secretEntry) {
-          secretEntry.style.display = 'block';
-        } else {
-          console.error('Secret entry element not found');
-        }
-      } else {
-        const response = getChatbotResponse(message);
-        messages.innerHTML += `<div class="chatbot-message received">${response}</div>`;
-      }
-      input.value = '';
-      messages.scrollTop = messages.scrollHeight;
-    } else {
-      console.error('Chatbot messages element not found');
-    }
-  });
-} else {
-  console.error('Chatbot form not found');
-}
-
-function getChatbotResponse(message) {
-  // Placeholder for chatbot response logic
-  const responses = {
-    'association': 'Notre association travaille pour le bien-être de la communauté.',
-    'membre': 'Pour devenir membre, veuillez contacter un administrateur.',
-    'cotisation': 'Les cotisations sont gérées par le trésorier. Consultez l\'onglet Cotisations.',
-    'default': 'Je ne comprends pas votre demande. Essayez des mots-clés comme "association", "membre", ou "cotisation".'
-  };
-  const key = Object.keys(responses).find(k => message.toLowerCase().includes(k)) || 'default';
-  return responses[key];
-}
-
-function enterSecret() {
-  const password = document.querySelector('#secret-password')?.value;
-  if (!password) {
-    console.error('Secret password input not found or empty');
-    return;
-  }
-  const adminCodes = ['JESUISMEMBRE66', '33333333', '44444444', '55555555'];
-  const treasurerCodes = ['JESUISTRESORIER444', '66666666', '77777777', '88888888'];
-  const presidentCodes = ['PRESIDENT000', '99999999', '11112222', '33334444'];
-  const secretaryCodes = ['SECRETAIRE000', '55556666', '77778888', '99990000'];
-  const messages = document.querySelector('#chatbot-messages');
-  if (adminCodes.includes(password)) {
-    currentUser = { code: 'ADMIN123', role: 'admin' };
-    showPage('secret');
-    toggleChatbot();
-  } else if (treasurerCodes.includes(password)) {
-    currentUser = { code: 'TRESORIER', role: 'tresorier' };
-    showPage('secret');
-    showTab('treasurer');
-    toggleChatbot();
-  } else if (presidentCodes.includes(password)) {
-    currentUser = { code: 'PRESIDENT', role: 'president' };
-    showPage('secret');
-    showTab('president');
-    toggleChatbot();
-  } else if (secretaryCodes.includes(password)) {
-    currentUser = { code: 'SECRETAIRE', role: 'secretaire' };
-    showPage('secret');
-    showTab('secretary');
-    toggleChatbot();
-  } else if (messages) {
-    messages.innerHTML += '<div class="chatbot-message received">Mot de passe incorrect.</div>';
-    messages.scrollTop = messages.scrollHeight;
-  }
-}
 
 document.querySelector('#personal-login-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
