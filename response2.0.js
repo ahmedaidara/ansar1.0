@@ -1,4 +1,6 @@
 let isChat2Open = false;
+let awaitingSecondCode = false;
+let firstCode = null;
 
 function toggleChatbot2() {
   isChat2Open = !isChat2Open;
@@ -22,6 +24,12 @@ function clearChat2History() {
   if (messages) {
     messages.innerHTML = '<div class="chatbot-message received">Historique effacé. Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
     messages.scrollTop = messages.scrollHeight;
+    awaitingSecondCode = false;
+    firstCode = null;
+    const secretEntry = document.querySelector('#secret-entry');
+    if (secretEntry) {
+      secretEntry.style.display = 'none';
+    }
   }
 }
 
@@ -38,14 +46,18 @@ if (chatbot2Form) {
     if (messages) {
       messages.innerHTML += `<div class="chatbot-message sent">${message}</div>`;
       const secretCodes = ['ADMIN12301012000', '00000000', '11111111', '22222222'];
-      if (secretCodes.includes(message)) {
+      if (!awaitingSecondCode && secretCodes.includes(message)) {
         const secretEntry = document.querySelector('#secret-entry');
         if (secretEntry) {
           secretEntry.style.display = 'block';
+          awaitingSecondCode = true;
+          firstCode = message;
+          messages.innerHTML += `<div class="chatbot-message received">Veuillez entrer le deuxième code d'accès.</div>`;
         } else {
           console.error('Secret entry element not found');
+          messages.innerHTML += `<div class="chatbot-message received">Erreur : Impossible d'afficher le champ de mot de passe.</div>`;
         }
-      } else {
+      } else if (!awaitingSecondCode) {
         const response = getChatbot2Response(message);
         messages.innerHTML += `<div class="chatbot-message received">${response}</div>`;
       }
@@ -69,3 +81,62 @@ function getChatbot2Response(message) {
   const key = Object.keys(responses).find(k => message.toLowerCase().includes(k)) || 'default';
   return responses[key];
 }
+
+function enterSecret2() {
+  const password = document.querySelector('#secret-password')?.value;
+  const messages = document.querySelector('#chatbot2-messages');
+  if (!password || !messages) {
+    console.error('Secret password input or messages element not found');
+    messages.innerHTML += '<div class="chatbot-message received">Erreur : Champ de mot de passe introuvable.</div>';
+    messages.scrollTop = messages.scrollHeight;
+    return;
+  }
+
+  const adminCodes = ['JESUISMEMBRE66', '33333333', '44444444', '55555555'];
+  const treasurerCodes = ['JESUISTRESORIER444', '66666666', '77777777', '88888888'];
+  const presidentCodes = ['PRESIDENT000', '99999999', '11112222', '33334444'];
+  const secretaryCodes = ['SECRETAIRE000', '55556666', '77778888', '99990000'];
+
+  if (adminCodes.includes(password)) {
+    currentUser = { code: 'ADMIN123', role: 'admin' };
+    showPage('secret');
+    toggleChatbot2();
+    awaitingSecondCode = false;
+    firstCode = null;
+    document.querySelector('#secret-entry').style.display = 'none';
+    messages.innerHTML += '<div class="chatbot-message received">Accès à l\'espace secret autorisé.</div>';
+  } else if (treasurerCodes.includes(password)) {
+    currentUser = { code: 'TRESORIER', role: 'tresorier' };
+    showPage('secret');
+    showTab('treasurer');
+    toggleChatbot2();
+    awaitingSecondCode = false;
+    firstCode = null;
+    document.querySelector('#secret-entry').style.display = 'none';
+    messages.innerHTML += '<div class="chatbot-message received">Accès à l\'espace trésorier autorisé.</div>';
+  } else if (presidentCodes.includes(password)) {
+    currentUser = { code: 'PRESIDENT', role: 'president' };
+    showPage('secret');
+    showTab('president');
+    toggleChatbot2();
+    awaitingSecondCode = false;
+    firstCode = null;
+    document.querySelector('#secret-entry').style.display = 'none';
+    messages.innerHTML += '<div class="chatbot-message received">Accès à l\'espace président autorisé.</div>';
+  } else if (secretaryCodes.includes(password)) {
+    currentUser = { code: 'SECRETAIRE', role: 'secretaire' };
+    showPage('secret');
+    showTab('secretary');
+    toggleChatbot2();
+    awaitingSecondCode = false;
+    firstCode = null;
+    document.querySelector('#secret-entry').style.display = 'none';
+    messages.innerHTML += '<div class="chatbot-message received">Accès à l\'espace secrétaire autorisé.</div>';
+  } else {
+    messages.innerHTML += '<div class="chatbot-message received">Mot de passe incorrect.</div>';
+  }
+  messages.scrollTop = messages.scrollHeight;
+  document.querySelector('#secret-password').value = '';
+}
+
+document.querySelector('#secret-entry button')?.addEventListener('click', enterSecret2);
