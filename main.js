@@ -5,10 +5,14 @@ let supabase = null;
 
 if (typeof window.Supabase === 'undefined') {
   console.error('Supabase library not loaded');
-  alert('Erreur : La bibliothèque Supabase n\'est pas chargée. Vérifiez votre connexion ou la balise script.');
+  alert('Erreur : Impossible de charger la bibliothèque Supabase. Vérifiez votre connexion réseau ou la balise script dans index.html.');
 } else {
-  supabase = window.Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  console.log('Supabase client initialized');
+  try {
+    supabase = window.Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('Supabase client initialized');
+  } catch (error) {
+    console.error('Erreur lors de la création du client Supabase:', error);
+  }
 }
 
 const presidentCode = '0000';
@@ -854,19 +858,21 @@ async function updateGalleryContent() {
     console.error('Supabase client not initialized');
     return;
   }
-  const content = document.querySelector('#gallery-content');
-  if (!content) return;
-  
+  const list = document.querySelector('#gallery-list');
+  if (!list) return;
   try {
     const { data: gallery, error } = await supabase.from('gallery').select('*');
-    if (error) throw error;
-    
-    content.innerHTML = gallery
-      .map(g => `
-        <div>
-          ${g.type === 'image' ? `<img src="${g.url}" alt="Galerie">` : `<video src="${g.url}" controls></video>`}
-        </div>
-      `).join('');
+    if (error) {
+      console.error('Erreur lors de la récupération de la galerie:', error);
+      return;
+    }
+    list.innerHTML = gallery.map(item => `
+      <div class="gallery-item">
+        ${item.type === 'image' ? `<img src="${item.url}" alt="${item.description || ''}">` : 
+          `<video src="${item.url}" controls></video>`}
+        <p>${item.description || ''}</p>
+      </div>
+    `).join('');
   } catch (error) {
     console.error('Erreur dans updateGalleryContent:', error);
   }
@@ -917,19 +923,18 @@ async function updateMessagesList() {
   }
   const list = document.querySelector('#messages-list');
   if (!list) return;
-  
   try {
     const { data: messages, error } = await supabase.from('messages').select('*');
-    if (error) throw error;
-    
-    list.innerHTML = messages
-      .map(m => `
-        <div class="message-card">
-          <h4>${m.title}</h4>
-          <p>${m.text}</p>
-          <p><small>${new Date(m.date).toLocaleString()}</small></p>
-        </div>
-      `).join('');
+    if (error) {
+      console.error('Erreur lors de la récupération des messages:', error);
+      return;
+    }
+    list.innerHTML = messages.map(m => `
+      <div class="message-card">
+        <p><strong>${m.sender}</strong>: ${m.content}</p>
+        <p>${new Date(m.created_at).toLocaleString()}</p>
+      </div>
+    `).join('');
   } catch (error) {
     console.error('Erreur dans updateMessagesList:', error);
   }
@@ -1488,24 +1493,27 @@ document.querySelector('#contributions-admin-search')?.addEventListener('input',
 document.querySelector('#president-files-search')?.addEventListener('input', updatePresidentFilesList);
 document.querySelector('#secretary-files-search')?.addEventListener('input', updateSecretaryFilesList);
 
-// Initialize the application
-initSupabase().then(() => {
+document.addEventListener('DOMContentLoaded', () => {
   if (supabase) {
-    updateMembersList();
-    updateContributionsAdminList();
-    updateEventsList();
-    updateGalleryContent();
-    updateMessagesList();
-    updateAutoMessagesList();
-    updateNotesList();
-    updateInternalDocsList();
-    updatePresidentFilesList();
-    updateSecretaryFilesList();
-    updateSuggestionsList();
-    updateCoranContent();
-    updateLibraryContent();
-    updateStats();
-    updateEventCountdowns();
-    updateMessagePopups();
+    initSupabase().then(() => {
+      updateMembersList();
+      updateContributionsAdminList();
+      updateEventsList();
+      updateGalleryContent();
+      updateMessagesList();
+      updateAutoMessagesList();
+      updateNotesList();
+      updateInternalDocsList();
+      updatePresidentFilesList();
+      updateSecretaryFilesList();
+      updateSuggestionsList();
+      updateCoranContent();
+      updateLibraryContent();
+      updateStats();
+      updateEventCountdowns();
+      updateMessagePopups();
+    });
+  } else {
+    console.error('Supabase not initialized, skipping data updates');
   }
 });
