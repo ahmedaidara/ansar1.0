@@ -150,80 +150,191 @@ main {
   color: var(--accent-color);
 }
 
-.chatbot-button {
+/* Styles pour le bouton du nouveau chat */
+.chat2-button {
   position: fixed;
-  bottom: 110px;
+  bottom: 20px; /* Positionné en bas à droite comme l'ancien bouton */
   right: 20px;
-  background: var(--accent-color);
+  background-color: #3a6241; /* Couleur ajustée pour correspondre à l'ancien bouton */
+  color: white;
+  border: none;
   border-radius: 50%;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.chatbot-button:hover {
-  transform: scale(1.1);
-}
-
-.chatbot-container {
-  position: fixed;
-  bottom: 160px;
-  right: 20px;
-  width: 300px;
-  background: url('assets/images/chatbot-bg.jpg') no-repeat center center;
-  background-size: contain;
-  border: 1px solid var(--secondary-color);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
+/* Styles pour le conteneur du chat */
+.chatbot-container {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+/* Styles pour l'en-tête du chat */
 .chatbot-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
-  background: var(--primary-color);
+  padding: 10px;
+  background-color: #3a6241;
   color: white;
-  border-radius: 10px 10px 0 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
-.chatbot-messages {
-  max-height: 300px;
+.chatbot-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.chatbot-header .material-icons {
+  cursor: pointer;
+}
+
+/* Styles pour les messages du chat */
+#chatbot2-messages {
+  flex-grow: 1;
   overflow-y: auto;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
 }
 
 .chatbot-message {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
+  margin: 5px 0;
+  padding: 8px;
   border-radius: 5px;
 }
 
-.sent {
-  background: var(--accent-color);
+.chatbot-message.sent {
+  background-color: #3a6241;
   color: white;
-  text-align: right;
+  margin-left: 20%;
+  margin-right: 10px;
 }
 
-.received {
-  background: var(--secondary-color);
-  color: white;
+.chatbot-message.received {
+  background-color: #f0f0f0;
+  margin-right: 20%;
+  margin-left: 10px;
 }
 
-#chatbot-form {
+/* Styles pour les contrôles du chat */
+#chatbot2-controls {
+  padding: 10px;
+}
+
+/* Styles pour le formulaire du chat */
+#chatbot2-form {
   display: flex;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  background: #f9f9f9;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
-#chatbot-input {
+#chatbot2-input {
   flex-grow: 1;
-  margin-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
 }
 
+#chatbot2-form button {
+  margin-left: 10px;
+  background-color: #3a6241;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+/* Styles pour l'entrée secrète */
+#secret-entry2 {
+  position: fixed;
+  bottom: 480px; /* Ajusté pour être au-dessus du chatbot */
+  right: 20px;
+  width: 300px;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+}
+
+#secret-password2 {
+  width: calc(100% - 90px);
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#secret-entry2 button {
+  margin-left: 10px;
+  background-color: #3a6241;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+/* Autres styles pour les pages, onglets, cartes, etc. */
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+.member-card, .event-card, .message-card, .contribution-card, .note-card, .file-card, .suggestion-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+.cta-button {
+  background-color: #3a6241;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.message-popup {
+  position: fixed;
+  bottom: 80px;
+  right: 340px;
+  width: 300px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1000;
+}
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 form {
   display: flex;
   flex-direction: column;
