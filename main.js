@@ -2,7 +2,7 @@
 const REPO_OWNER = 'ahmedaidara';
 const REPO_NAME = 'ansar1.0';
 const DATA_PATH = 'data/';
-const TOKEN = 'ghp_votre_token_personnel'; // Remplacez par votre token GitHub
+const TOKEN = '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'; // Remplacez par votre token GitHub
 
 // Variables globales
 let currentUser = null;
