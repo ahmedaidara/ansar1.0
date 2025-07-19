@@ -42,16 +42,14 @@ async function loadData(fileName) {
 
 async function saveData(fileName, data) {
   try {
-    // Récupérer le SHA du fichier existant
     let sha = null;
     try {
       const getResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
         headers: {
-          'Authorization': `token ${TOKEN}`,
+          'Authorization': `Bearer ${TOKEN}`,
           'Accept': 'application/vnd.github.v3+json'
         }
       });
-      
       if (getResponse.ok) {
         const existingData = await getResponse.json();
         sha = existingData.sha;
@@ -59,23 +57,45 @@ async function saveData(fileName, data) {
     } catch (e) {
       console.log(`Fichier ${fileName} non existant, création nouvelle`);
     }
-    
-    // Mettre à jour le fichier
+
     const updateResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${TOKEN}`,
+        'Authorization': `Bearer ${TOKEN}`,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         message: `Mise à jour de ${fileName}`,
-        content: btoa(JSON.stringify(data, null, 2)),
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
         sha: sha
       })
     });
-    
-    if (!updateResponse.ok) throw new Error(`Erreur ${updateResponse.status} lors de la sauvegarde`);
+
+    if (!updateResponse.ok) {
+      const errorData = await updateResponse.json();
+      throw new Error(`Erreur ${updateResponse.status}: ${errorData.message}`);
+    }
+
+    // Déclencher une mise à jour immédiate après sauvegarde
+    switch (fileName) {
+      case 'members.json':
+        await updateAllMemberLists();
+        break;
+      case 'gallery.json':
+        await updateGalleryContent();
+        await updateGalleryAdminList();
+        break;
+      case 'events.json':
+        await updateEventsList();
+        await updateEventsAdminList();
+        break;
+      case 'messages.json':
+        await updateMessagesList();
+        await updateMessagesAdminList();
+        break;
+    }
+
     return true;
   } catch (error) {
     console.error(`Erreur saveData(${fileName}):`, error);
@@ -157,18 +177,11 @@ function toggleTheme() {
 // Écouteur pour le formulaire d'ajout/modification
 document.querySelector('#add-member-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  
-  // Vérification des droits admin
-  if (!currentUser || currentUser.role !== 'admin') {
-    alert('Accès refusé : Seuls les administrateurs peuvent gérer les membres');
-    return;
-  }
 
   const members = await loadData('members.json');
   const isEditing = e.target.dataset.editing;
   const photoInput = document.getElementById('new-member-photo');
 
-  // Création de l'objet membre
   const memberData = {
     code: isEditing || generateMemberCode(members),
     firstname: document.getElementById('new-member-firstname').value.trim(),
@@ -193,12 +206,11 @@ document.querySelector('#add-member-form').addEventListener('submit', async (e) 
     } else {
       await addNewMember(members, memberData);
     }
-    
+
     document.getElementById('add-member-form').reset();
     delete e.target.dataset.editing;
     await updateAllMemberLists();
     alert(`Membre ${isEditing ? 'modifié' : 'ajouté'} avec succès!`);
-    
   } catch (error) {
     console.error("Erreur:", error);
     alert(`Erreur lors de ${isEditing ? 'la modification' : "l'ajout"} du membre`);
@@ -483,15 +495,27 @@ async function deleteEvent(index) {
   }
 }
 
+
+
+document.querySelector('#refresh-data')?.addEventListener('click', async () => {
+  try {
+    await Promise.all([
+      updateMembersList(),
+      updateEventsList(),
+      updateMessagesList(),
+      updateGalleryContent(),
+      checkAutoMessages()
+    ]);
+    alert('Données rafraîchies avec succès !');
+  } catch (error) {
+    console.error('Erreur lors du rafraîchissement:', error);
+    alert('Erreur lors du rafraîchissement des données');
+  }
+});
 // ==================== FONCTIONS GALERIE ====================
 
 document.querySelector('#add-gallery-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  
-  if (!currentUser || currentUser.role !== 'admin') {
-    alert('Accès refusé : Seuls les administrateurs peuvent ajouter à la galerie');
-    return;
-  }
 
   const fileInput = document.querySelector('#gallery-file');
   if (fileInput.files.length === 0) {
@@ -501,10 +525,9 @@ document.querySelector('#add-gallery-form').addEventListener('submit', async (e)
 
   const file = fileInput.files[0];
   const gallery = await loadData('gallery.json');
-  
+
   try {
     const fileUrl = await uploadFile(file);
-    
     gallery.push({
       type: file.type.startsWith('image') ? 'image' : 'video',
       url: fileUrl,
@@ -524,6 +547,82 @@ document.querySelector('#add-gallery-form').addEventListener('submit', async (e)
     alert("Erreur lors de l'ajout à la galerie");
   }
 });
+
+
+function setupEventListeners() {
+  // Écouteurs pour la navigation
+  document.querySelectorAll('.nav-item a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pageId = link.getAttribute('onclick').match(/'([^']+)'/)[1];
+      showPage(pageId);
+    });
+  });
+
+  // Écouteur pour le bouton de thème
+  document.querySelector('.theme-toggle')?.addEventListener('click', toggleTheme);
+
+  // Écouteur pour le formulaire de recherche des membres
+  document.querySelector('#members-search')?.addEventListener('input', updateMembersList);
+
+  // Écouteur pour le formulaire de recherche des événements
+  document.querySelector('#events-search')?.addEventListener('input', updateEventsList);
+}
+
+
+async function updateGalleryAdminList() {
+  try {
+    const gallery = await loadData('gallery.json');
+    const list = document.querySelector('#gallery-admin-list');
+    if (!list) return;
+
+    list.innerHTML = gallery.map((item, index) => `
+      <div class="gallery-item">
+        ${item.type === 'image' ? 
+          `<img src="${item.url}" alt="${item.name}" class="gallery-image">` : 
+          `<video src="${item.url}" controls class="gallery-video"></video>`}
+        <div class="gallery-details">
+          <p>${item.name}</p>
+          <p class="gallery-date">${formatDate(item.date)}</p>
+          <button class="cta-button danger" onclick="deleteGalleryItem(${index})">Supprimer</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Erreur updateGalleryAdminList:', error);
+  }
+}
+
+async function deleteGalleryItem(index) {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer cet élément de la galerie ?")) return;
+
+  try {
+    const gallery = await loadData('gallery.json');
+    gallery.splice(index, 1);
+    const success = await saveData('gallery.json', gallery);
+
+    if (success) {
+      await updateGalleryContent();
+      await updateGalleryAdminList();
+      alert('Élément supprimé avec succès');
+    }
+  } catch (error) {
+    console.error('Erreur deleteGalleryItem:', error);
+    alert('Erreur lors de la suppression de l\'élément');
+  }
+}
+
+
+function clearChatHistory() {
+  const messagesContainer = document.querySelector('#chatbot-messages');
+  if (messagesContainer) {
+    messagesContainer.innerHTML = `
+      <div class="chatbot-message received">
+        Historique effacé. Posez une nouvelle question !
+      </div>
+    `;
+  }
+}
 
 // ==================== FONCTIONS MESSAGES ====================
 
@@ -788,7 +887,7 @@ async function initializeApp() {
           console.error('Erreur synchronisation:', error);
         }
       }
-    }, 30000);
+    }, 10000);
     
   } catch (error) {
     console.error('Erreur initialisation:', error);
