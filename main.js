@@ -503,6 +503,133 @@ function sendNotification(title, body) {
   }
 }
 
+// Chatbot functions
+function toggleChatbot() {
+  isChatOpen = !isChatOpen;
+  const chatbot = document.querySelector('#chatbot');
+  chatbot.style.display = isChatOpen ? 'block' : 'none';
+  
+  if (isChatOpen) {
+    document.querySelector('#chatbot-messages').innerHTML = `
+      <div class="chatbot-message received">
+        Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.
+      </div>
+    `;
+  }
+}
+
+function handleChatbotSubmit(e) {
+  e.preventDefault();
+  const input = document.querySelector('#chatbot-input');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const messagesContainer = document.querySelector('#chatbot-messages');
+  
+  // Ajouter le message de l'utilisateur
+  messagesContainer.innerHTML += `
+    <div class="chatbot-message sent">${message}</div>
+  `;
+
+  // Obtenir et afficher la réponse
+  const response = getChatbotResponse(message);
+  
+  if (response === "secret") {
+    // Afficher le champ pour le mot de passe secret
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">
+        Veuillez entrer un mot de passe (ex. : JESUISMEMBRE66, JESUISTRESORIER444, PRESIDENT000, SECRETAIRE000)
+      </div>
+      <div id="secret-entry" style="display: block; margin-top: 10px;">
+        <input type="password" id="secret-password" placeholder="Mot de passe">
+        <button onclick="checkSecretPassword()" class="cta-button">Valider</button>
+      </div>
+    `;
+  } else {
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">${response}</div>
+    `;
+  }
+
+  input.value = '';
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function checkSecretPassword() {
+  const password = document.querySelector('#secret-password').value.trim();
+  const messagesContainer = document.querySelector('#chatbot-messages');
+  
+  const adminCodes = ['JESUISMEMBRE66', '33333333', '44444444', '55555555'];
+  const treasurerCodes = ['JESUISTRESORIER444', '66666666', '77777777', '88888888'];
+  const presidentCodes = ['PRESIDENT000', '99999999', '11112222', '33334444'];
+  const secretaryCodes = ['SECRETAIRE000', '55556666', '77778888', '99990000'];
+
+  if (adminCodes.includes(password)) {
+    currentUser = { code: 'ADMIN123', role: 'admin' };
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">
+        Accès admin autorisé. Redirection vers l'Espace Secret...
+      </div>
+    `;
+    setTimeout(() => {
+      showPage('secret');
+      toggleChatbot();
+    }, 1500);
+  } 
+  else if (treasurerCodes.includes(password)) {
+    currentUser = { code: 'TRESORIER', role: 'tresorier' };
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">
+        Accès trésorier autorisé. Redirection vers l'Espace Secret...
+      </div>
+    `;
+    setTimeout(() => {
+      showPage('secret');
+      showTab('treasurer');
+      toggleChatbot();
+    }, 1500);
+  }
+  else if (presidentCodes.includes(password)) {
+    currentUser = { code: 'PRESIDENT', role: 'president' };
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">
+        Accès président autorisé. Redirection vers l'Espace Secret...
+      </div>
+    `;
+    setTimeout(() => {
+      showPage('secret');
+      showTab('president');
+      toggleChatbot();
+    }, 1500);
+  }
+  else if (secretaryCodes.includes(password)) {
+    currentUser = { code: 'SECRETAIRE', role: 'secretaire' };
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">
+        Accès secrétaire autorisé. Redirection vers l'Espace Secret...
+      </div>
+    `;
+    setTimeout(() => {
+      showPage('secret');
+      showTab('secretary');
+      toggleChatbot();
+    }, 1500);
+  }
+  else {
+    messagesContainer.innerHTML += `
+      <div class="chatbot-message received">
+        Mot de passe incorrect. Essayez à nouveau.
+      </div>
+    `;
+  }
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Initialisation du chatbot
+document.querySelector('.chatbot-button').addEventListener('click', toggleChatbot);
+document.querySelector('#chatbot-form').addEventListener('submit', handleChatbotSubmit);
+
 // ==================== INITIALISATION ====================
 
 async function initializeApp() {
@@ -539,176 +666,3 @@ async function initializeApp() {
 
 // Démarrer l'application
 document.addEventListener('DOMContentLoaded', initializeApp);
-
-
-// ==================== FONCTIONS DU CHATBOT ====================
-
-let isChatOpen = false;
-
-function toggleChatbot() {
-  isChatOpen = !isChatOpen;
-  const chatbot = document.querySelector('#chatbot');
-  chatbot.style.display = isChatOpen ? 'block' : 'none';
-  
-  if (isChatOpen) {
-    document.querySelector('#chatbot-messages').innerHTML = `
-      <div class="chatbot-message received">
-        Bienvenue dans l'assistant ANSAR ALMOUYASSAR!<br><br>
-        Posez votre question ou utilisez un mot-clé comme:<br>
-        • "association"<br>
-        • "membre"<br> 
-        • "cotisation"<br>
-        • "événement"<br>
-        • "espace secret"
-      </div>
-    `;
-    document.querySelector('#chatbot-input').focus();
-  }
-}
-
-function handleChatbotSubmit(e) {
-  e.preventDefault();
-  const input = document.querySelector('#chatbot-input');
-  const message = input.value.trim();
-  if (!message) return;
-
-  const messagesContainer = document.querySelector('#chatbot-messages');
-  
-  // Ajouter le message de l'utilisateur
-  messagesContainer.innerHTML += `
-    <div class="chatbot-message sent">
-      <div class="message-content">${message}</div>
-      <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-    </div>
-  `;
-
-  // Traiter la réponse
-  processChatbotResponse(message);
-
-  input.value = '';
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function processChatbotResponse(message) {
-  const messagesContainer = document.querySelector('#chatbot-messages');
-  const response = getChatbotResponse(message);
-  
-  if (response === "secret") {
-    showSecretPasswordField();
-  } else {
-    // Simuler un délai de réponse plus naturel
-    setTimeout(() => {
-      messagesContainer.innerHTML += `
-        <div class="chatbot-message received">
-          <div class="message-content">${response}</div>
-          <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-        </div>
-      `;
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, 800);
-  }
-}
-
-function showSecretPasswordField() {
-  const messagesContainer = document.querySelector('#chatbot-messages');
-  
-  setTimeout(() => {
-    messagesContainer.innerHTML += `
-      <div class="chatbot-message received">
-        <div class="message-content">
-          Accès sécurisé requis. Veuillez entrer le mot de passe correspondant à votre rôle:<br><br>
-          • <strong>Membre du bureau:</strong> JESUISMEMBRE66<br>
-          • <strong>Trésorier:</strong> JESUISTRESORIER444<br>
-          • <strong>Président:</strong> PRESIDENT000<br>
-          • <strong>Secrétaire:</strong> SECRETAIRE000
-        </div>
-      </div>
-      <div id="secret-entry" class="secret-entry">
-        <input type="password" id="secret-password" placeholder="Entrez votre mot de passe">
-        <button onclick="checkSecretPassword()" class="cta-button small">Valider</button>
-      </div>
-    `;
-    document.querySelector('#secret-password').focus();
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }, 800);
-}
-
-function checkSecretPassword() {
-  const password = document.querySelector('#secret-password').value.trim();
-  const messagesContainer = document.querySelector('#chatbot-messages');
-  
-  const roleCodes = {
-    admin: ['JESUISMEMBRE66', '33333333', '44444444', '55555555'],
-    tresorier: ['JESUISTRESORIER444', '66666666', '77777777', '88888888'],
-    president: ['PRESIDENT000', '99999999', '11112222', '33334444'],
-    secretaire: ['SECRETAIRE000', '55556666', '77778888', '99990000']
-  };
-
-  let role = null;
-  if (roleCodes.admin.includes(password)) role = 'admin';
-  else if (roleCodes.tresorier.includes(password)) role = 'tresorier';
-  else if (roleCodes.president.includes(password)) role = 'president';
-  else if (roleCodes.secretaire.includes(password)) role = 'secretaire';
-
-  if (role) {
-    currentUser = { 
-      code: role.toUpperCase(), 
-      role: role,
-      firstname: role.charAt(0).toUpperCase() + role.slice(1)
-    };
-    
-    messagesContainer.innerHTML += `
-      <div class="chatbot-message received">
-        <div class="message-content">
-          Authentification réussie! Accès ${role} autorisé.<br>
-          Redirection vers l'espace sécurisé...
-        </div>
-      </div>
-    `;
-    
-    setTimeout(() => {
-      showPage('secret');
-      switch(role) {
-        case 'tresorier': showTab('treasurer'); break;
-        case 'president': showTab('president'); break;
-        case 'secretaire': showTab('secretary'); break;
-        default: showTab('stats');
-      }
-      toggleChatbot();
-    }, 1500);
-  } else {
-    messagesContainer.innerHTML += `
-      <div class="chatbot-message received">
-        <div class="message-content error">
-          ❌ Mot de passe incorrect. Veuillez réessayer ou contacter l'administrateur.
-        </div>
-      </div>
-    `;
-  }
-
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-// Initialisation du chatbot
-document.addEventListener('DOMContentLoaded', () => {
-  const chatbotButton = document.querySelector('.chatbot-button');
-  if (chatbotButton) {
-    chatbotButton.addEventListener('click', toggleChatbot);
-  }
-  
-  const chatbotForm = document.querySelector('#chatbot-form');
-  if (chatbotForm) {
-    chatbotForm.addEventListener('submit', handleChatbotSubmit);
-  }
-
-  // Permettre d'envoyer le message avec la touche Entrée
-  const chatbotInput = document.querySelector('#chatbot-input');
-  if (chatbotInput) {
-    chatbotInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleChatbotSubmit(e);
-      }
-    });
-  }
-});
