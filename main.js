@@ -4,11 +4,7 @@ const REPO_NAME = 'ansar1.0';
 const DATA_PATH = 'data/';
 const TOKEN = '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'; // REMPLACEZ PAR VOTRE VRAI TOKEN
 
-// Vérification du token
-if (!TOKEN || TOKEN === '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') {
-  alert('ERREUR : Token GitHub non configuré. Veuillez configurer votre token dans le fichier main.js');
-  throw new Error('Token GitHub non configuré');
-}
+
 
 // Variables globales
 let currentUser = null;
