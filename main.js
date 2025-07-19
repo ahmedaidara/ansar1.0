@@ -1,8 +1,14 @@
-// Configuration GitHub
+// Configuration GitHub - À METTUR EN TOUT DÉBUT DU FICHIER
 const REPO_OWNER = 'ahmedaidara';
 const REPO_NAME = 'ansar1.0';
 const DATA_PATH = 'data/';
-const TOKEN = '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'; // Remplacez par votre token GitHub
+const TOKEN = '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'; // REMPLACEZ PAR VOTRE VRAI TOKEN
+
+// Vérification du token
+if (!TOKEN || TOKEN === 'ghp_votre_token_personnel') {
+  alert('ERREUR : Token GitHub non configuré. Veuillez configurer votre token dans le fichier main.js');
+  throw new Error('Token GitHub non configuré');
+}
 
 // Variables globales
 let currentUser = null;
@@ -81,23 +87,40 @@ async function saveData(fileName, data) {
 // ==================== FONCTIONS D'INTERFACE ====================
 
 function showPage(pageId) {
-  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  document.querySelector(`#${pageId}`).classList.add('active');
-  document.querySelector(`a[onclick="showPage('${pageId}')"]`).classList.add('active');
-  
-  switch(pageId) {
-    case 'members': updateMembersList(); break;
-    case 'events': updateEventsList(); break;
-    case 'gallery': updateGalleryContent(); break;
-    case 'messages': updateMessagesList(); break;
-    case 'coran': updateCoranContent(); break;
-    case 'personal': updatePersonalPage(); break;
-    case 'library': updateLibraryContent(); break;
-    case 'home': updateMessagePopups(); break;
-    case 'secret': if (currentUser) showTab('stats'); break;
+  try {
+    const pages = document.querySelectorAll('.page');
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    if (!pages || !navItems) {
+      console.error('Éléments de navigation introuvables');
+      return;
+    }
+
+    pages.forEach(page => page.classList.remove('active'));
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const pageElement = document.querySelector(`#${pageId}`);
+    const navElement = document.querySelector(`a[onclick="showPage('${pageId}')"]`);
+
+    if (pageElement) pageElement.classList.add('active');
+    if (navElement) navElement.classList.add('active');
+
+    switch(pageId) {
+      case 'members': updateMembersList(); break;
+      case 'events': updateEventsList(); break;
+      case 'gallery': updateGalleryContent(); break;
+      case 'messages': updateMessagesList(); break;
+      case 'coran': updateCoranContent(); break;
+      case 'personal': updatePersonalPage(); break;
+      case 'library': updateLibraryContent(); break;
+      case 'home': updateMessagePopups(); break;
+      case 'secret': if (currentUser) showTab('stats'); break;
+    }
+  } catch (error) {
+    console.error('Erreur showPage:', error);
   }
 }
+
 
 function showTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -313,6 +336,70 @@ async function updateAllMemberLists() {
     updateEditMembersList(),
     updateStats()
   ]);
+}
+
+// ==================== FONCTIONS MANQUANTES ====================
+
+async function updateGalleryContent() {
+  try {
+    const gallery = await loadData('gallery.json');
+    const content = document.querySelector('#gallery-content');
+    content.innerHTML = gallery.map(item => `
+      <div class="gallery-item">
+        ${item.type === 'image' ? 
+          `<img src="${item.url}" alt="${item.name}">` : 
+          `<video src="${item.url}" controls></video>`}
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Erreur updateGalleryContent:', error);
+  }
+}
+
+async function checkAutoMessages() {
+  try {
+    const autoMessages = await loadData('autoMessages.json');
+    const messages = await loadData('messages.json');
+    const now = new Date();
+
+    for (let i = autoMessages.length - 1; i >= 0; i--) {
+      if (new Date(autoMessages[i].datetime) <= now) {
+        messages.unshift({
+          title: autoMessages[i].name,
+          text: autoMessages[i].text,
+          date: now.toISOString()
+        });
+        
+        autoMessages.splice(i, 1);
+        await saveData('autoMessages.json', autoMessages);
+        await saveData('messages.json', messages);
+        
+        sendNotification('Message automatisé', `${autoMessages[i].name}: ${autoMessages[i].text}`);
+      }
+    }
+  } catch (error) {
+    console.error('Erreur checkAutoMessages:', error);
+  }
+}
+
+async function updateStats() {
+  try {
+    const members = await loadData('members.json');
+    const contributions = await loadData('contributions.json');
+    
+    const totalAmount = members.reduce((sum, m) => {
+      return sum + Object.entries(m.contributions).reduce((s, [name, years]) => {
+        return s + Object.values(years).reduce((t, months) => {
+          return t + months.filter(Boolean).length * (contributions.find(c => c.name === name)?.amount || 0);
+        }, 0);
+      }, 0);
+    }, 0);
+
+    // Mettez à jour vos graphiques ici...
+    console.log('Statistiques mises à jour', { totalAmount });
+  } catch (error) {
+    console.error('Erreur updateStats:', error);
+  }
 }
 
 // ==================== FONCTIONS ÉVÉNEMENTS ====================
@@ -670,32 +757,39 @@ document.querySelector('#chatbot-form').addEventListener('submit', handleChatbot
 // ==================== INITIALISATION ====================
 
 async function initializeApp() {
-  // Vérifier le mode sombre
-  if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-  }
-  
-  // Configurer la synchronisation périodique
-  setInterval(async () => {
-    if (currentUser) {
-      try {
-        await updateMembersList();
-        await updateEventsList();
-        await updateMessagesList();
-        await checkAutoMessages();
-      } catch (error) {
-        console.error('Erreur synchronisation:', error);
-      }
-    }
-  }, 30000);
-  
-  // Charger les données initiales
   try {
-    await updateMembersList();
-    await updateEventsList();
-    await updateGalleryContent();
-    await updateMessagesList();
-    await updateMessagePopups();
+    // Vérifier le mode sombre
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+    
+    // Attacher les événements
+    setupEventListeners();
+    
+    // Charger les données initiales
+    await Promise.all([
+      updateMembersList(),
+      updateEventsList(),
+      updateGalleryContent(),
+      updateMessagesList()
+    ]);
+    
+    // Configurer la synchronisation périodique
+    setInterval(async () => {
+      if (currentUser) {
+        try {
+          await Promise.all([
+            updateMembersList(),
+            updateEventsList(),
+            updateMessagesList(),
+            checkAutoMessages()
+          ]);
+        } catch (error) {
+          console.error('Erreur synchronisation:', error);
+        }
+      }
+    }, 30000);
+    
   } catch (error) {
     console.error('Erreur initialisation:', error);
   }
