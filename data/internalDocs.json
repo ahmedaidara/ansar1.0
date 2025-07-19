@@ -1,1 +1,4 @@
-[]
+[
+  { "title": "Note 1", "content": "Contenu de la note 1" },
+  { "title": "Note 2", "content": "Contenu de la note 2" }
+]
