@@ -567,101 +567,89 @@ document.querySelector('#refresh-data')?.addEventListener('click', async () => {
 });
 // ==================== FONCTIONS GALERIE ====================
 
+// ==================== GESTION DE LA GALERIE ====================
+
 document.querySelector('#add-gallery-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-
   const fileInput = document.querySelector('#gallery-file');
-  if (fileInput.files.length === 0) {
+  const description = document.querySelector('#gallery-description').value.trim();
+  const file = fileInput.files[0];
+  
+  if (!file) {
     alert('Veuillez sélectionner un fichier');
     return;
   }
 
-  const file = fileInput.files[0];
-  const gallery = await loadData('gallery.json');
-
   try {
     const fileUrl = await uploadFile(file);
+    const gallery = await loadData('gallery.json');
+    
     gallery.push({
       type: file.type.startsWith('image') ? 'image' : 'video',
       url: fileUrl,
       name: file.name,
+      description: description || 'Pas de description',
       date: new Date().toISOString()
     });
 
-    const success = await saveData('gallery.json', gallery);
-    if (success) {
-      alert('Fichier ajouté à la galerie avec succès!');
-      document.querySelector('#add-gallery-form').reset();
-      await updateGalleryContent();
-      await updateGalleryAdminList();
-    }
+    await saveData('gallery.json', gallery);
+    await updateGalleryAdminList();
+    
+    fileInput.value = '';
+    document.querySelector('#gallery-description').value = '';
+    alert('Média ajouté avec succès');
   } catch (error) {
     console.error("Erreur d'ajout à la galerie:", error);
-    alert("Erreur lors de l'ajout à la galerie");
+    alert("Erreur lors de l'ajout du média");
   }
 });
-
-
-function setupEventListeners() {
-  // Écouteurs pour la navigation
-  document.querySelectorAll('.nav-item a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const pageId = link.getAttribute('onclick').match(/'([^']+)'/)[1];
-      showPage(pageId);
-    });
-  });
-
-  // Écouteur pour le bouton de thème
-  document.querySelector('.theme-toggle')?.addEventListener('click', toggleTheme);
-
-  // Écouteur pour le formulaire de recherche des membres
-  document.querySelector('#members-search')?.addEventListener('input', updateMembersList);
-
-  // Écouteur pour le formulaire de recherche des événements
-  document.querySelector('#events-search')?.addEventListener('input', updateEventsList);
-}
-
 
 async function updateGalleryAdminList() {
   try {
     const gallery = await loadData('gallery.json');
+    const search = document.querySelector('#gallery-admin-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#gallery-admin-list');
+    
     if (!list) return;
 
-    list.innerHTML = gallery.map((item, index) => `
-      <div class="gallery-item">
-        ${item.type === 'image' ? 
-          `<img src="${item.url}" alt="${item.name}" class="gallery-image">` : 
-          `<video src="${item.url}" controls class="gallery-video"></video>`}
-        <div class="gallery-details">
-          <p>${item.name}</p>
-          <p class="gallery-date">${formatDate(item.date)}</p>
-          <button class="cta-button danger" onclick="deleteGalleryItem(${index})">Supprimer</button>
+    list.innerHTML = gallery
+      .filter(g => 
+        (g.description?.toLowerCase().includes(search)) || 
+        (g.name?.toLowerCase().includes(search))
+      )
+      .map(g => `
+        <div class="gallery-item">
+          ${g.type === 'image' 
+            ? `<img src="${g.url}" alt="${g.description}" class="gallery-image">` 
+            : `<video src="${g.url}" controls class="gallery-video"></video>`
+          }
+          <div class="gallery-details">
+            <p><strong>${g.description || 'Pas de description'}</strong></p>
+            <p>${g.name}</p>
+            <p class="gallery-date">${formatDate(g.date)}</p>
+            <button class="cta-button danger" onclick="deleteGalleryItem('${g.url}')">Supprimer</button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
   } catch (error) {
     console.error('Erreur updateGalleryAdminList:', error);
+    const list = document.querySelector('#gallery-admin-list');
+    if (list) list.innerHTML = '<p>Aucun média disponible</p>';
   }
 }
 
-async function deleteGalleryItem(index) {
-  if (!confirm("Êtes-vous sûr de vouloir supprimer cet élément de la galerie ?")) return;
-
+async function deleteGalleryItem(url) {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer définitivement ce média ?")) return;
+  
   try {
     const gallery = await loadData('gallery.json');
-    gallery.splice(index, 1);
-    const success = await saveData('gallery.json', gallery);
-
-    if (success) {
-      await updateGalleryContent();
-      await updateGalleryAdminList();
-      alert('Élément supprimé avec succès');
-    }
+    const updatedGallery = gallery.filter(g => g.url !== url);
+    await saveData('gallery.json', updatedGallery);
+    await updateGalleryAdminList();
+    alert('Média supprimé avec succès');
   } catch (error) {
     console.error('Erreur deleteGalleryItem:', error);
-    alert('Erreur lors de la suppression de l\'élément');
+    alert('Erreur lors de la suppression du média');
   }
 }
 
