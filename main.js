@@ -850,8 +850,21 @@ function checkSecretPassword() {
 }
 
 // Initialisation du chatbot
-document.querySelector('.chatbot-button').addEventListener('click', toggleChatbot);
-document.querySelector('#chatbot-form').addEventListener('submit', handleChatbotSubmit);
+// Initialisation du chatbot
+const chatbotButton = document.querySelector('.chatbot-button');
+if (chatbotButton) {
+  chatbotButton.addEventListener('click', toggleChatbot);
+} else {
+  console.error("Le bouton du chatbot (.chatbot-button) n'a pas été trouvé dans le DOM.");
+}
+
+// Initialisation du formulaire du chatbot
+const chatbotForm = document.querySelector('#chatbot-form');
+if (chatbotForm) {
+  chatbotForm.addEventListener('submit', handleChatbotSubmit);
+} else {
+  console.error("Le formulaire du chatbot (#chatbot-form) n'a pas été trouvé dans le DOM.");
+}
 
 // ==================== INITIALISATION ====================
 
