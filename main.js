@@ -2,13 +2,13 @@
 const REPO_OWNER = 'ahmedaidara';
 const REPO_NAME = 'ansar1.0';
 const DATA_PATH = 'data/';
-const TOKEN = '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'; // REMPLACEZ PAR VOTRE VRAI TOKEN
+const TOKEN = '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';
+const presidentCode = '0000';
 
-// Vérification du token
-if (!TOKEN || TOKEN.includes('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')) {
-  console.error('Token GitHub non configuré!');
-  alert('ERREUR : Token GitHub non configuré dans main.js');
-}
+// Variables globales
+let currentUser = null;
+let isChatOpen = false;
+let selectedCallMembers = [];
 
 // ==================== FONCTIONS DE BASE ====================
 async function loadData(fileName) {
@@ -21,11 +21,7 @@ async function loadData(fileName) {
     });
     
     if (!response.ok) {
-      if (response.status === 404) {
-        // Si le fichier n'existe pas, le créer avec un tableau vide
-        await saveData(fileName, []);
-        return [];
-      }
+      if (response.status === 404) return [];
       throw new Error(`Erreur ${response.status}`);
     }
     
@@ -39,7 +35,6 @@ async function loadData(fileName) {
 
 async function saveData(fileName, data) {
   try {
-    // 1. Récupérer le SHA du fichier existant
     let sha = null;
     try {
       const getResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
@@ -51,7 +46,6 @@ async function saveData(fileName, data) {
       if (getResponse.ok) sha = (await getResponse.json()).sha;
     } catch (e) { console.log(`Fichier ${fileName} non existant`); }
 
-    // 2. Envoyer la requête
     const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
       method: 'PUT',
       headers: {
@@ -75,12 +69,60 @@ async function saveData(fileName, data) {
   }
 }
 
+// ==================== FONCTIONS D'INTERFACE ====================
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  document.getElementById(pageId)?.classList.add('active');
+  document.querySelector(`a[onclick*="${pageId}"]`)?.classList.add('active');
+
+  switch(pageId) {
+    case 'members': updateMembersList(); break;
+    case 'events': updateEventsList(); break;
+    case 'gallery': updateGalleryContent(); break;
+    case 'messages': updateMessagesList(); break;
+    case 'coran': updateCoranContent(); break;
+    case 'personal': updatePersonalPage(); break;
+    case 'library': updateLibraryContent(); break;
+    case 'home': updateMessagePopups(); break;
+    case 'secret': if (currentUser) showTab('stats'); break;
+  }
+}
+
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(tabId)?.classList.add('active');
+  document.querySelector(`button[onclick*="${tabId}"]`)?.classList.add('active');
+
+  switch(tabId) {
+    case 'edit-member': updateEditMembersList(); break;
+    case 'gallery-admin': updateGalleryAdminList(); break;
+    case 'events-admin': updateEventsAdminList(); break;
+    case 'messages-admin': updateMessagesAdminList(); break;
+    case 'notes': updateNotesList(); break;
+    case 'internal-docs': updateInternalDocsList(); break;
+    case 'suggestions-admin': updateSuggestionsList(); break;
+    case 'stats': updateStats(); break;
+    case 'video-calls': initVideoCall(); break;
+    case 'auto-messages': updateAutoMessagesList(); break;
+    case 'treasurer': updateContributionsAdminList(); break;
+    case 'president': updatePresidentFilesList(); break;
+    case 'secretary': updateSecretaryFilesList(); break;
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+}
+
 // ==================== FONCTIONS MEMBRES ====================
 async function updateMembersList() {
   try {
     const members = await loadData('members.json');
-    const search = document.querySelector('#members-search')?.value.toLowerCase() || '';
-    const list = document.querySelector('#members-list');
+    const search = document.getElementById('members-search')?.value.toLowerCase() || '';
+    const list = document.getElementById('members-list');
     if (!list) return;
 
     list.innerHTML = members
@@ -110,42 +152,12 @@ async function addNewMember(memberData) {
   }
 }
 
-// ==================== FONCTIONS GALERIE ====================
-async function updateGalleryContent() {
-  try {
-    const gallery = await loadData('gallery.json');
-    const content = document.querySelector('#gallery-content');
-    if (!content) return;
-
-    content.innerHTML = gallery.map(item => `
-      <div class="gallery-item">
-        ${item.type === 'image' ? 
-          `<img src="${item.url}" alt="${item.name}">` : 
-          `<video src="${item.url}" controls></video>`}
-      </div>
-    `).join('');
-  } catch (error) {
-    console.error('Erreur updateGalleryContent:', error);
-  }
-}
-
-async function addGalleryItem(item) {
-  try {
-    const gallery = await loadData('gallery.json');
-    gallery.push(item);
-    return await saveData('gallery.json', gallery);
-  } catch (error) {
-    console.error('Erreur addGalleryItem:', error);
-    return false;
-  }
-}
-
-// ==================== FONCTIONS ÉVÉNEMENTS ====================
+// ==================== ÉVÉNEMENTS ====================
 async function updateEventsList() {
   try {
     const events = await loadData('events.json');
-    const search = document.querySelector('#events-search')?.value.toLowerCase() || '';
-    const list = document.querySelector('#events-list');
+    const search = document.getElementById('events-search')?.value.toLowerCase() || '';
+    const list = document.getElementById('events-list');
     if (!list) return;
 
     list.innerHTML = events
@@ -165,10 +177,37 @@ async function updateEventsList() {
   }
 }
 
-// ==================== FONCTIONS UTILITAIRES ====================
+// ==================== GALERIE ====================
+async function updateGalleryContent() {
+  try {
+    const gallery = await loadData('gallery.json');
+    const content = document.getElementById('gallery-content');
+    if (!content) return;
+
+    content.innerHTML = gallery.map(item => `
+      <div class="gallery-item">
+        ${item.type === 'image' ? 
+          `<img src="${item.url}" alt="${item.name}">` : 
+          `<video src="${item.url}" controls></video>`}
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Erreur updateGalleryContent:', error);
+  }
+}
+
+// ==================== INITIALISATION ====================
 function setupEventListeners() {
-  // Membres
-  document.querySelector('#add-member-form')?.addEventListener('submit', async (e) => {
+  // Navigation
+  document.querySelectorAll('[onclick^="showPage("]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const pageId = e.target.getAttribute('onclick').match(/showPage\('([^']+)'/)[1];
+      showPage(pageId);
+    });
+  });
+
+  // Formulaire membre
+  document.getElementById('add-member-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
     
@@ -176,8 +215,24 @@ function setupEventListeners() {
       code: `${(await loadData('members.json')).length + 1).toString().padStart(3, '0')}`,
       firstname: form.querySelector('#new-member-firstname').value,
       lastname: form.querySelector('#new-member-lastname').value,
-      // ... autres champs
-      photo: 'assets/images/default-photo.png'
+      age: parseInt(form.querySelector('#new-member-age').value) || null,
+      dob: form.querySelector('#new-member-dob').value || null,
+      birthplace: form.querySelector('#new-member-birthplace').value || null,
+      photo: 'assets/images/default-photo.png',
+      email: form.querySelector('#new-member-email').value || null,
+      activity: form.querySelector('#new-member-activity').value || null,
+      address: form.querySelector('#new-member-address').value || null,
+      phone: form.querySelector('#new-member-phone').value || null,
+      residence: form.querySelector('#new-member-residence').value || null,
+      role: form.querySelector('#new-member-role').value || 'membre',
+      status: form.querySelector('#new-member-status').value || 'actif',
+      contributions: { 
+        'Mensuelle': { 
+          '2023': Array(12).fill(false), 
+          '2024': Array(12).fill(false), 
+          '2025': Array(12).fill(false) 
+        }
+      }
     };
 
     if (await addNewMember(member)) {
@@ -186,36 +241,14 @@ function setupEventListeners() {
       await updateMembersList();
     }
   });
-
-  // Galerie
-  document.querySelector('#add-gallery-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const fileInput = e.target.querySelector('#gallery-file');
-    if (fileInput.files.length === 0) return;
-
-    const file = fileInput.files[0];
-    const item = {
-      type: file.type.startsWith('image') ? 'image' : 'video',
-      url: URL.createObjectURL(file),
-      name: file.name,
-      date: new Date().toISOString()
-    };
-
-    if (await addGalleryItem(item)) {
-      alert('Élément ajouté à la galerie!');
-      fileInput.value = '';
-      await updateGalleryContent();
-    }
-  });
 }
 
-// ==================== INITIALISATION ====================
 async function initializeApp() {
-  // Créer les fichiers s'ils n'existent pas
+  // Vérifier les fichiers de données
   await Promise.all([
     loadData('members.json'),
-    loadData('gallery.json'),
-    loadData('events.json')
+    loadData('events.json'),
+    loadData('gallery.json')
   ]);
 
   // Configurer les écouteurs
