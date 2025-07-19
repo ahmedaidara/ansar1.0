@@ -157,15 +157,16 @@
           <button type="submit" class="cta-button">Confirmer la suppression</button>
         </form>
       </div>
-      <div id="gallery-admin" class="tab-content">
-        <h3>Gérer la Galerie</h3>
-        <form id="add-gallery-form">
-          <input type="file" id="gallery-file" accept="image/*,video/*" required>
-          <button type="submit" class="cta-button">Ajouter</button>
-        </form>
-        <input type="text" id="gallery-admin-search" placeholder="Rechercher un média..." class="search-bar">
-        <div id="gallery-admin-list"></div>
-      </div>
+    <div id="gallery-admin" class="tab-content">
+  <h3>Gérer la Galerie</h3>
+  <form id="add-gallery-form">
+    <input type="file" id="gallery-file" accept="image/*,video/*" required>
+    <input type="text" id="gallery-description" placeholder="Description du média" required>
+    <button type="submit" class="cta-button">Ajouter</button>
+  </form>
+  <input type="text" id="gallery-admin-search" placeholder="Rechercher un média..." class="search-bar">
+  <div id="gallery-admin-list"></div>
+</div>
       <div id="events-admin" class="tab-content">
         <h3>Ajouter un Événement</h3>
         <form id="add-event-form">
