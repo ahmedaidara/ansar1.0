@@ -17,6 +17,14 @@ function toggleChatbot2() {
   }
 }
 
+function clearChat2History() {
+  const messages = document.querySelector('#chatbot2-messages');
+  if (messages) {
+    messages.innerHTML = '<div class="chatbot-message received">Historique effacé. Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.</div>';
+    messages.scrollTop = messages.scrollHeight;
+  }
+}
+
 document.querySelector('.chat2-button')?.addEventListener('click', toggleChatbot2);
 
 const chatbot2Form = document.querySelector('#chatbot2-form');
