@@ -2,7 +2,7 @@
 const REPO_OWNER = 'ahmedaidara';
 const REPO_NAME = 'ansar1.0';
 const DATA_PATH = 'data/';
-const TOKEN = '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'; // REMPLACEZ PAR VOTRE VRAI TOKEN
+const TOKEN = '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'; // REMPLACEZ PAR VOTRE VRAI TOKEN
 
 
 
