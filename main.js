@@ -101,6 +101,90 @@ async function uploadFile(file, path) {
   }
 }
 
+// Nouvelle fonction pour afficher la liste des membres dans l'espace trésorier
+async function updateTreasurerContributionsList() {
+  try {
+    const members = await loadData('members');
+    const search = document.querySelector('#treasurer-contributions-search')?.value.toLowerCase() || '';
+    const list = document.querySelector('#treasurer-contributions-list');
+    if (!list) return;
+
+    list.innerHTML = members
+      .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
+      .map(m => `
+        <div class="member-card" onclick="manageMemberContributions('${m.code}')">
+          <img src="${m.photo}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+          <div>
+            <p><strong>${m.firstname} ${m.lastname}</strong></p>
+            <p><small>${m.code} • ${m.role}</small></p>
+          </div>
+        </div>
+      `).join('');
+  } catch (error) {
+    console.error('Erreur updateTreasurerContributionsList:', error);
+  }
+}
+
+// Nouvelle fonction pour gérer les cotisations d'un membre
+async function manageMemberContributions(code) {
+  try {
+    const members = await loadData('members');
+    const member = members.find(m => m.code === code);
+    if (!member) {
+      alert('Membre introuvable');
+      return;
+    }
+
+    const contributionsContainer = document.querySelector('#treasurer-contributions');
+    if (!contributionsContainer) return;
+
+    contributionsContainer.innerHTML = `
+      <h3>Cotisations de ${member.firstname} ${member.lastname} (${member.code})</h3>
+      <form id="member-contributions-form">
+        ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
+          <div class="contribution-year">
+            <h4>${year}</h4>
+            ${months.map((paid, i) => `
+              <label>
+                <input type="checkbox" name="month-${year}-${i}" ${paid ? 'checked' : ''}>
+                Mois ${i + 1}
+              </label>
+            `).join('')}
+          </div>
+        `).join('')}
+        <button type="submit" class="cta-button">Enregistrer</button>
+        <button type="button" class="cta-button" onclick="updateTreasurerContributionsList()">Retour</button>
+      </form>
+    `;
+
+    document.querySelector('#member-contributions-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updatedContributions = { Mensuelle: {} };
+      ['2023', '2024', '2025'].forEach(year => {
+        updatedContributions.Mensuelle[year] = Array(12).fill(false);
+        months.forEach((_, i) => {
+          const checkbox = document.querySelector(`input[name="month-${year}-${i}"]`);
+          if (checkbox) {
+            updatedContributions.Mensuelle[year][i] = checkbox.checked;
+          }
+        });
+      });
+
+      try {
+        await saveData('members', { contributions: updatedContributions }, member.id);
+        alert('Cotisations mises à jour avec succès');
+        updateTreasurerContributionsList();
+      } catch (error) {
+        console.error('Erreur manageMemberContributions:', error);
+        alert('Erreur lors de la mise à jour des cotisations');
+      }
+    });
+  } catch (error) {
+    console.error('Erreur manageMemberContributions:', error);
+    alert('Erreur lors du chargement des cotisations');
+  }
+}
+
 // ==================== FONCTIONS D'INTERFACE ====================
 
 function showPage(pageId) {
@@ -136,6 +220,7 @@ function showPage(pageId) {
   }
 }
 
+// Mettre à jour la fonction showTab pour inclure l'onglet des cotisations
 function showTab(tabId) {
   const tabContent = document.querySelector(`#${tabId}`);
   const tabButton = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
@@ -159,7 +244,7 @@ function showTab(tabId) {
     case 'stats': updateStats(); break;
     case 'video-calls': initVideoCall(); break;
     case 'auto-messages': updateAutoMessagesList(); break;
-    case 'treasurer-contributions': updateContributionsAdminList(); break;
+    case 'treasurer-contributions': updateTreasurerContributionsList(); break;
     case 'president-files': updatePresidentFilesList(); break;
     case 'secretary-files': updateSecretaryFilesList(); break;
   }
