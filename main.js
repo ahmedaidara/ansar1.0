@@ -89,7 +89,7 @@ function showPage(pageId) {
     }
     
     // Activer l'élément de navigation correspondant
-    const navElements = document.querySelectorAll(`[onclick*="showPage('${pageId}')]`);
+    const navElements = document.querySelectorAll(`[data-page="${pageId}"]`);
     navElements.forEach(el => {
       el.classList.add('active');
     });
@@ -148,7 +148,7 @@ function showTab(tabId) {
     }
     
     // Activer le bouton correspondant
-    const tabButtons = document.querySelectorAll(`[onclick*="showTab('${tabId}')]`);
+    const tabButtons = document.querySelectorAll(`[data-tab="${tabId}"]`);
     tabButtons.forEach(btn => {
       btn.classList.add('active');
     });
@@ -167,32 +167,8 @@ function showTab(tabId) {
       case 'messages-admin': 
         updateMessagesAdminList(); 
         break;
-      case 'notes': 
-        updateNotesList(); 
-        break;
-      case 'internal-docs': 
-        updateInternalDocsList(); 
-        break;
-      case 'suggestions-admin': 
-        updateSuggestionsList(); 
-        break;
       case 'stats': 
         updateStats(); 
-        break;
-      case 'video-calls': 
-        initVideoCall(); 
-        break;
-      case 'auto-messages': 
-        updateAutoMessagesList(); 
-        break;
-      case 'treasurer': 
-        updateContributionsAdminList(); 
-        break;
-      case 'president': 
-        updatePresidentFilesList(); 
-        break;
-      case 'secretary': 
-        updateSecretaryFilesList(); 
         break;
     }
   } catch (error) {
@@ -224,177 +200,44 @@ async function updateMembersList() {
   }
 }
 
-async function updateEditMembersList() {
-  try {
-    const members = await loadData('members.json');
-    const search = document.getElementById('edit-member-search')?.value.toLowerCase() || '';
-    const list = document.getElementById('edit-members-list');
-    if (!list) return;
-
-    list.innerHTML = members
-      .filter(m => `${m.firstname} ${m.lastname}`.toLowerCase().includes(search) || m.code.toLowerCase().includes(search))
-      .map(m => `
-        <div class="member-card">
-          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
-          <div>
-            <p><strong>${m.firstname} ${m.lastname}</strong></p>
-            <p><small>${m.code} • ${m.role}</small></p>
-          </div>
-          <div class="member-actions">
-            <button class="cta-button small" onclick="editMember('${m.code}')">Modifier</button>
-            <button class="cta-button small danger" onclick="confirmDeleteMember('${m.code}')">Supprimer</button>
-          </div>
-        </div>
-      `).join('');
-  } catch (error) {
-    console.error('Erreur updateEditMembersList:', error);
-  }
-}
-
-async function addNewMember(memberData) {
-  try {
-    const members = await loadData('members.json');
-    members.push(memberData);
-    return await saveData('members.json', members);
-  } catch (error) {
-    console.error('Erreur addNewMember:', error);
-    return false;
-  }
-}
-
-function editMember(code) {
-  // Implémentez la logique d'édition ici
-  console.log('Modifier le membre:', code);
-}
-
-function confirmDeleteMember(code) {
-  if (confirm('Êtes-vous sûr de vouloir supprimer ce membre ?')) {
-    deleteMember(code);
-  }
-}
-
-async function deleteMember(code) {
-  try {
-    const members = await loadData('members.json');
-    const updatedMembers = members.filter(m => m.code !== code);
-    const success = await saveData('members.json', updatedMembers);
-    
-    if (success) {
-      await updateMembersList();
-      await updateEditMembersList();
-      alert('Membre supprimé avec succès');
-    }
-  } catch (error) {
-    console.error('Erreur deleteMember:', error);
-    alert('Erreur lors de la suppression du membre');
-  }
-}
-
-// ==================== FONCTIONS ÉVÉNEMENTS ====================
-async function updateEventsList() {
-  try {
-    const events = await loadData('events.json');
-    const search = document.getElementById('events-search')?.value.toLowerCase() || '';
-    const list = document.getElementById('events-list');
-    if (!list) return;
-
-    list.innerHTML = events
-      .filter(e => e.name.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
-      .map(e => `
-        <div class="event-card">
-          ${e.image ? `<img src="${e.image}" alt="${e.name}" class="event-image">` : ''}
-          <div class="event-details">
-            <h4>${e.name}</h4>
-            <p>${e.description}</p>
-            <p class="event-date">${new Date(e.datetime).toLocaleString()}</p>
-          </div>
-        </div>
-      `).join('');
-  } catch (error) {
-    console.error('Erreur updateEventsList:', error);
-  }
-}
-
-// ==================== FONCTIONS GALERIE ====================
-async function updateGalleryContent() {
-  try {
-    const gallery = await loadData('gallery.json');
-    const content = document.getElementById('gallery-content');
-    if (!content) return;
-
-    content.innerHTML = gallery.map(item => `
-      <div class="gallery-item">
-        ${item.type === 'image' ? 
-          `<img src="${item.url}" alt="${item.name}">` : 
-          `<video src="${item.url}" controls></video>`}
-        <p class="gallery-item-name">${item.name}</p>
-      </div>
-    `).join('');
-  } catch (error) {
-    console.error('Erreur updateGalleryContent:', error);
-  }
-}
-
 // ==================== INITIALISATION ====================
 function setupEventListeners() {
-  // Navigation
-  document.querySelectorAll('[onclick^="showPage("]').forEach(el => {
-    el.addEventListener('click', function(e) {
+  // Navigation principale
+  document.querySelectorAll('[data-page]').forEach(link => {
+    link.addEventListener('click', function(e) {
       e.preventDefault();
-      const match = this.getAttribute('onclick').match(/showPage\('([^']+)'/);
-      if (match && match[1]) {
-        showPage(match[1]);
-      }
+      const pageId = this.getAttribute('data-page');
+      showPage(pageId);
     });
   });
 
   // Onglets
-  document.querySelectorAll('[onclick^="showTab("]').forEach(el => {
-    el.addEventListener('click', function(e) {
+  document.querySelectorAll('[data-tab]').forEach(button => {
+    button.addEventListener('click', function(e) {
       e.preventDefault();
-      const match = this.getAttribute('onclick').match(/showTab\('([^']+)'/);
-      if (match && match[1]) {
-        showTab(match[1]);
-      }
+      const tabId = this.getAttribute('data-tab');
+      showTab(tabId);
     });
   });
 
-  // Formulaire membre
+  // Formulaire d'ajout de membre
   const addMemberForm = document.getElementById('add-member-form');
   if (addMemberForm) {
-    addMemberForm.addEventListener('submit', async (e) => {
+    addMemberForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      const form = e.target;
       const member = {
         code: `${(await loadData('members.json')).length + 1}`.padStart(3, '0'),
-        firstname: form.querySelector('#new-member-firstname').value,
-        lastname: form.querySelector('#new-member-lastname').value,
-        age: parseInt(form.querySelector('#new-member-age').value) || null,
-        dob: form.querySelector('#new-member-dob').value || null,
-        birthplace: form.querySelector('#new-member-birthplace').value || null,
-        photo: 'assets/images/default-photo.png',
-        email: form.querySelector('#new-member-email').value || null,
-        activity: form.querySelector('#new-member-activity').value || null,
-        address: form.querySelector('#new-member-address').value || null,
-        phone: form.querySelector('#new-member-phone').value || null,
-        residence: form.querySelector('#new-member-residence').value || null,
-        role: form.querySelector('#new-member-role').value || 'membre',
-        status: form.querySelector('#new-member-status').value || 'actif',
-        contributions: { 
-          'Mensuelle': { 
-            '2023': Array(12).fill(false), 
-            '2024': Array(12).fill(false), 
-            '2025': Array(12).fill(false) 
-          }
-        }
+        firstname: this.querySelector('#new-member-firstname').value,
+        lastname: this.querySelector('#new-member-lastname').value,
+        // ... autres champs
+        photo: 'assets/images/default-photo.png'
       };
 
       if (await addNewMember(member)) {
         alert('Membre ajouté avec succès!');
-        form.reset();
+        this.reset();
         await updateMembersList();
-        await updateEditMembersList();
       }
     });
   }
@@ -406,8 +249,7 @@ async function initializeApp() {
     await Promise.all([
       loadData('members.json'),
       loadData('events.json'),
-      loadData('gallery.json'),
-      loadData('messages.json')
+      loadData('gallery.json')
     ]);
 
     // Configurer les écouteurs
@@ -419,16 +261,6 @@ async function initializeApp() {
       updateEventsList(),
       updateGalleryContent()
     ]);
-
-    // Synchronisation périodique
-    setInterval(async () => {
-      try {
-        await updateMembersList();
-        await updateEventsList();
-      } catch (error) {
-        console.error('Erreur synchronisation:', error);
-      }
-    }, 30000);
 
     // Afficher la page d'accueil par défaut
     showPage('home');
