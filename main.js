@@ -10,7 +10,7 @@ const firebaseConfig = {
 };
 
 // Initialiser Firebase
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const storage = firebase.storage();
 const auth = firebase.auth();
@@ -35,10 +35,10 @@ async function loadData(collection) {
 }
 
 // Sauvegarder les données dans Firestore
-async function saveData(collection, data, id = null) {
+async function saveData(collection, data, docId = null) {
   try {
-    if (id) {
-      await db.collection(collection).doc(id).set(data, { merge: true });
+    if (docId) {
+      await db.collection(collection).doc(docId).set(data, { merge: true });
     } else {
       await db.collection(collection).add(data);
     }
@@ -51,9 +51,9 @@ async function saveData(collection, data, id = null) {
 }
 
 // Supprimer un document
-async function deleteData(collection, id) {
+async function deleteData(collection, docId) {
   try {
-    await db.collection(collection).doc(id).delete();
+    await db.collection(collection).doc(docId).delete();
     return true;
   } catch (error) {
     console.error(`Erreur deleteData(${collection}):`, error);
@@ -82,7 +82,7 @@ function showPage(pageId) {
     const pages = document.querySelectorAll('.page');
     const navItems = document.querySelectorAll('.nav-item');
     
-    if (!pages || !navItems) {
+    if (!pages.length || !navItems.length) {
       console.error('Éléments de navigation introuvables');
       return;
     }
@@ -165,19 +165,19 @@ document.querySelector('#add-member-form')?.addEventListener('submit', async (e)
 
   const memberData = {
     code: isEditing || (await generateMemberCode()),
-    firstname: document.getElementById('new-member-firstname').value.trim(),
-    lastname: document.getElementById('new-member-lastname').value.trim(),
-    age: parseInt(document.getElementById('new-member-age').value) || null,
-    dob: document.getElementById('new-member-dob').value || null,
-    birthplace: document.getElementById('new-member-birthplace').value.trim() || null,
+    firstname: document.getElementById('new-member-firstname')?.value.trim() || '',
+    lastname: document.getElementById('new-member-lastname')?.value.trim() || '',
+    age: parseInt(document.getElementById('new-member-age')?.value) || null,
+    dob: document.getElementById('new-member-dob')?.value || null,
+    birthplace: document.getElementById('new-member-birthplace')?.value.trim() || null,
     photo: await handlePhotoUpload(photoInput),
-    email: document.getElementById('new-member-email').value.trim() || null,
-    activity: document.getElementById('new-member-activity').value.trim() || null,
-    address: document.getElementById('new-member-address').value.trim() || null,
-    phone: document.getElementById('new-member-phone').value.trim() || null,
-    residence: document.getElementById('new-member-residence').value.trim() || null,
-    role: document.getElementById('new-member-role').value || 'membre',
-    status: document.getElementById('new-member-status').value || 'actif',
+    email: document.getElementById('new-member-email')?.value.trim() || null,
+    activity: document.getElementById('new-member-activity')?.value.trim() || null,
+    address: document.getElementById('new-member-address')?.value.trim() || null,
+    phone: document.getElementById('new-member-phone')?.value.trim() || null,
+    residence: document.getElementById('new-member-residence')?.value.trim() || null,
+    role: document.getElementById('new-member-role')?.value || 'membre',
+    status: document.getElementById('new-member-status')?.value || 'actif',
     contributions: initializeContributions(),
     createdAt: new Date().toISOString()
   };
@@ -201,7 +201,7 @@ async function generateMemberCode() {
 }
 
 async function handlePhotoUpload(photoInput) {
-  if (photoInput.files.length > 0) {
+  if (photoInput?.files.length > 0) {
     try {
       return await uploadFile(photoInput.files[0]);
     } catch (error) {
@@ -228,12 +228,15 @@ async function updateMembersList() {
     const search = document.querySelector('#members-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#members-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #members-list not found');
+      return;
+    }
 
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
-        <div class="member-card" onclick="showMemberDetail('${m.id}')">
+        <div class="member-card" onclick="showMemberDetail('${m.code}')">
           <img src="${m.photo}" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
@@ -252,7 +255,10 @@ async function updateEditMembersList() {
     const search = document.querySelector('#edit-member-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#edit-members-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #edit-members-list not found');
+      return;
+    }
 
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
@@ -264,8 +270,8 @@ async function updateEditMembersList() {
             <p><small>${m.code} • ${m.role}</small></p>
           </div>
           <div class="member-actions">
-            <button class="cta-button small" onclick="editMember('${m.id}')">Modifier</button>
-            <button class="cta-button small danger" onclick="confirmDeleteMember('${m.id}')">Supprimer</button>
+            <button class="cta-button small" onclick="editMember('${m.code}')">Modifier</button>
+            <button class="cta-button small danger" onclick="confirmDeleteMember('${m.code}')">Supprimer</button>
           </div>
         </div>
       `).join('');
@@ -274,20 +280,28 @@ async function updateEditMembersList() {
   }
 }
 
-async function editMember(id) {
+async function editMember(code) {
   try {
     const members = await loadData('members');
-    const member = members.find(m => m.id === id);
-    if (!member) return;
+    const member = members.find(m => m.code === code);
+    if (!member) {
+      alert('Membre introuvable');
+      return;
+    }
 
     const form = document.querySelector('#add-member-form');
-    form.dataset.editing = id;
-    document.getElementById('new-member-firstname').value = member.firstname;
-    document.getElementById('new-member-lastname').value = member.lastname;
+    if (!form) {
+      console.error('Formulaire #add-member-form introuvable');
+      return;
+    }
+
+    form.dataset.editing = member.id;
+    document.getElementById('new-member-firstname').value = member.firstname || '';
+    document.getElementById('new-member-lastname').value = member.lastname || '';
     document.getElementById('new-member-age').value = member.age || '';
     document.getElementById('new-member-dob').value = member.dob || '';
     document.getElementById('new-member-birthplace').value = member.birthplace || '';
-    document.getElementById('new-member-email').value = member.email || '';
+    document.getElementById('new-member-email').value = member.header || '';
     document.getElementById('new-member-activity').value = member.activity || '';
     document.getElementById('new-member-address').value = member.address || '';
     document.getElementById('new-member-phone').value = member.phone || '';
@@ -302,11 +316,17 @@ async function editMember(id) {
   }
 }
 
-async function confirmDeleteMember(id) {
+async function confirmDeleteMember(code) {
   if (!confirm("Êtes-vous sûr de vouloir supprimer définitivement ce membre ?")) return;
   
   try {
-    await deleteData('members', id);
+    const members = await loadData('members');
+    const member = members.find(m => m.code === code);
+    if (!member) {
+      alert('Membre introuvable');
+      return;
+    }
+    await deleteData('members', member.id);
     await updateAllMemberLists();
     alert('Membre supprimé avec succès');
   } catch (error) {
@@ -329,7 +349,10 @@ async function updateGalleryContent() {
   try {
     const gallery = await loadData('gallery');
     const content = document.querySelector('#gallery-content');
-    if (!content) return;
+    if (!content) {
+      console.error('Element #gallery-content not found');
+      return;
+    }
 
     content.innerHTML = gallery.map(item => `
       <div class="gallery-item">
@@ -346,8 +369,8 @@ async function updateGalleryContent() {
 document.querySelector('#add-gallery-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const fileInput = document.querySelector('#gallery-file');
-  const description = document.querySelector('#gallery-description').value.trim();
-  const file = fileInput.files[0];
+  const description = document.querySelector('#gallery-description')?.value.trim() || '';
+  const file = fileInput?.files[0];
   
   if (!file) {
     alert('Veuillez sélectionner un fichier');
@@ -368,7 +391,9 @@ document.querySelector('#add-gallery-form')?.addEventListener('submit', async (e
     await updateGalleryAdminList();
     
     fileInput.value = '';
-    document.querySelector('#gallery-description').value = '';
+    if (document.querySelector('#gallery-description')) {
+      document.querySelector('#gallery-description').value = '';
+    }
     alert('Média ajouté avec succès');
   } catch (error) {
     console.error("Erreur d'ajout à la galerie:", error);
@@ -382,7 +407,10 @@ async function updateGalleryAdminList() {
     const search = document.querySelector('#gallery-admin-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#gallery-admin-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #gallery-admin-list not found');
+      return;
+    }
 
     list.innerHTML = gallery
       .filter(g => 
@@ -431,7 +459,10 @@ async function updateEventsList() {
     const search = document.querySelector('#events-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#events-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #events-list not found');
+      return;
+    }
 
     list.innerHTML = events
       .filter(e => e.name.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
@@ -455,7 +486,10 @@ async function updateEventsAdminList() {
     const events = await loadData('events');
     const list = document.querySelector('#events-admin-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #events-admin-list not found');
+      return;
+    }
 
     list.innerHTML = events.map(e => `
       <div class="event-card">
@@ -504,7 +538,10 @@ async function updateMessagesList() {
     const messages = await loadData('messages');
     const list = document.querySelector('#messages-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #messages-list not found');
+      return;
+    }
 
     list.innerHTML = messages.map(msg => `
       <div class="message-card">
@@ -523,7 +560,10 @@ async function updateMessagesAdminList() {
     const messages = await loadData('messages');
     const list = document.querySelector('#messages-admin-list');
     
-    if (!list) return;
+    if (!list) {
+      console.error('Element #messages-admin-list not found');
+      return;
+    }
 
     list.innerHTML = messages.map(msg => `
       <div class="message-card">
@@ -592,7 +632,10 @@ async function updateAutoMessagesList() {
   try {
     const autoMessages = await loadData('autoMessages');
     const autoMessagesList = document.querySelector('#auto-messages-list');
-    if (!autoMessagesList) return;
+    if (!autoMessagesList) {
+      console.error('Element #auto-messages-list not found');
+      return;
+    }
 
     autoMessagesList.innerHTML = autoMessages.length ? autoMessages.map(msg => `
       <li>${msg.content} (Programmé: ${formatDate(msg.date)})</li>
@@ -608,7 +651,10 @@ async function updateNotesList() {
   try {
     const notes = await loadData('notes');
     const notesList = document.querySelector('#notes-list');
-    if (!notesList) return;
+    if (!notesList) {
+      console.error('Element #notes-list not found');
+      return;
+    }
 
     notesList.innerHTML = notes.length ? notes.map(note => `
       <li>${note.title}: ${note.content}</li>
@@ -622,7 +668,10 @@ async function updateInternalDocsList() {
   try {
     const docs = await loadData('internalDocs');
     const docsList = document.querySelector('#internal-docs-list');
-    if (!docsList) return;
+    if (!docsList) {
+      console.error('Element #internal-docs-list not found');
+      return;
+    }
 
     docsList.innerHTML = docs.length ? docs.map(doc => `
       <li>${doc.name} (<a href="${doc.url}">${doc.url}</a>)</li>
@@ -683,32 +732,44 @@ function sendNotification(title, body) {
 // ==================== FONCTIONS CHATBOT ====================
 
 function toggleChatbot() {
+  console.log('toggleChatbot called');
   isChatOpen = !isChatOpen;
   const chatbot = document.querySelector('#chatbot');
-  if (chatbot) {
-    chatbot.style.display = isChatOpen ? 'block' : 'none';
+  if (!chatbot) {
+    console.error('Chatbot element #chatbot not found');
+    return;
   }
+  chatbot.style.display = isChatOpen ? 'block' : 'none';
   
   if (isChatOpen) {
     const messagesContainer = document.querySelector('#chatbot-messages');
-    if (messagesContainer) {
-      messagesContainer.innerHTML = `
-        <div class="chatbot-message received">
-          Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.
-        </div>
-      `;
+    if (!messagesContainer) {
+      console.error('Chatbot messages container #chatbot-messages not found');
+      return;
     }
+    messagesContainer.innerHTML = `
+      <div class="chatbot-message received">
+        Bienvenue ! Posez une question ou utilisez un mot-clé comme "association", "membre", "cotisation", etc.
+      </div>
+    `;
   }
 }
 
 function handleChatbotSubmit(e) {
   e.preventDefault();
   const input = document.querySelector('#chatbot-input');
+  if (!input) {
+    console.error('Chatbot input #chatbot-input not found');
+    return;
+  }
   const message = input.value.trim();
   if (!message) return;
 
   const messagesContainer = document.querySelector('#chatbot-messages');
-  if (!messagesContainer) return;
+  if (!messagesContainer) {
+    console.error('Chatbot messages container #chatbot-messages not found');
+    return;
+  }
 
   messagesContainer.innerHTML += `
     <div class="chatbot-message sent">${message}</div>
@@ -737,9 +798,12 @@ function handleChatbotSubmit(e) {
 }
 
 function checkSecretPassword() {
-  const password = document.querySelector('#secret-password').value.trim();
+  const password = document.querySelector('#secret-password')?.value.trim();
   const messagesContainer = document.querySelector('#chatbot-messages');
-  if (!messagesContainer) return;
+  if (!messagesContainer) {
+    console.error('Chatbot messages container #chatbot-messages not found');
+    return;
+  }
 
   const adminCodes = ['JESUISMEMBRE66', '33333333', '44444444', '55555555'];
   const treasurerCodes = ['JESUISTRESORIER444', '66666666', '77777777', '88888888'];
@@ -812,6 +876,8 @@ function clearChatHistory() {
         Historique effacé. Posez une nouvelle question !
       </div>
     `;
+  } else {
+    console.error('Chatbot messages container #chatbot-messages not found');
   }
 }
 
@@ -852,8 +918,8 @@ function updateSecretaryFilesList() {
   console.log('updateSecretaryFilesList non implémenté');
 }
 
-function showMemberDetail(id) {
-  console.log(`showMemberDetail non implémenté pour id: ${id}`);
+function showMemberDetail(code) {
+  console.log(`showMemberDetail non implémenté pour code: ${code}`);
 }
 
 function getChatbotResponse(message) {
@@ -881,12 +947,18 @@ function setupRealtimeUpdates(collection, updateFunction) {
 function setupEventListeners() {
   const chatbotButton = document.querySelector('.chatbot-button');
   if (chatbotButton) {
+    console.log('Chatbot button found, attaching event listener');
     chatbotButton.addEventListener('click', toggleChatbot);
+  } else {
+    console.error('Chatbot button (.chatbot-button) not found in DOM');
   }
 
   const chatbotForm = document.querySelector('#chatbot-form');
   if (chatbotForm) {
+    console.log('Chatbot form found, attaching event listener');
     chatbotForm.addEventListener('submit', handleChatbotSubmit);
+  } else {
+    console.error('Chatbot form (#chatbot-form) not found in DOM');
   }
 
   const refreshButton = document.querySelector('#refresh-data');
@@ -911,6 +983,7 @@ function setupEventListeners() {
 
 async function initializeApp() {
   try {
+    console.log('Initializing app...');
     if (localStorage.getItem('darkMode') === 'true') {
       document.body.classList.add('dark-mode');
     }
@@ -930,6 +1003,7 @@ async function initializeApp() {
     setupRealtimeUpdates('messages', updateMessagesList);
     setupRealtimeUpdates('autoMessages', checkAutoMessages);
     
+    console.log('App initialized successfully');
   } catch (error) {
     console.error('Erreur initialisation:', error);
   }
