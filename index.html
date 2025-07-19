@@ -8,10 +8,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   <script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 </head>
 <body>
   <header>
@@ -335,64 +336,28 @@
       <a href="#" class="nav-item" onclick="showPage('library')"><span class="material-icons">library_books</span>Bibliothèque</a>
     </nav>
   </footer>
-  
-<!-- Bouton pour le nouveau chat2 -->
-<button class="chatbot-button chat2-button" onclick="toggleChatbot2()">
-  <span class="material-icons">chat</span>
-</button>
-
-<!-- Bouton pour le chat existant -->
-<button class="chatbot-button" onclick="toggleChatbot()">
-  <span class="material-icons">chat</span>
-</button>
-
-<!-- Conteneur pour le nouveau chat2 -->
-<div id="chatbot2" class="chatbot-container" style="display: none;">
-  <div class="chatbot-header">
-    <h3>Assistant ANSAR 2</h3>
-    <span class="material-icons" onclick="toggleChatbot2()">close</span>
+  <div class="chatbot-button">
+    <span class="material-icons">chat</span>
   </div>
-  <div id="chatbot2-messages"></div>
-  <div id="chatbot2-controls">
-    <button class="cta-button clear-history" onclick="clearChat2History()"><span class="material-icons">delete</span> Effacer</button>
+  <div id="chatbot" class="chatbot-container" style="display: none;">
+    <div class="chatbot-header">
+      <h3>Assistant ANSAR</h3>
+      <span class="material-icons" onclick="toggleChatbot()">close</span>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-controls">
+      <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> Effacer</button>
+    </div>
+    <form id="chatbot-form">
+      <input type="text" id="chatbot-input" placeholder="Posez une question...">
+      <button type="submit" class="cta-button"><span class="material-icons">send</span></button>
+    </form>
+    <div id="secret-entry" style="display: none;">
+      <input type="password" id="secret-password" placeholder="Mot de passe">
+      <button class="cta-button" onclick="enterSecret()">Entrée</button>
+    </div>
   </div>
-  <form id="chatbot2-form">
-    <input type="text" id="chatbot2-input" placeholder="Posez une question..." autocomplete="off">
-    <button type="submit" class="cta-button"><span class="material-icons">send</span></button>
-  </form>
-  <div id="secret-entry2" style="display: none;">
-    <input type="password" id="secret-password2" placeholder="Mot de passe">
-    <button class="cta-button" onclick="enterSecret2()">Entrée</button>
-  </div>
-</div>
-
-<!-- Conteneur pour le chat existant -->
-<div id="chatbot" class="chatbot-container" style="display: none;">
-  <div class="chatbot-header">
-    <h3>Assistant ANSAR</h3>
-    <span class="material-icons" onclick="toggleChatbot()">close</span>
-  </div>
-  <div id="chatbot-messages"></div>
-  <div id="chatbot-controls">
-    <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> Effacer</button>
-  </div>
-  <form id="chatbot-form">
-    <input type="text" id="chatbot-input" placeholder="Posez une question..." autocomplete="off">
-    <button type="submit" class="cta-button"><span class="material-icons">send</span></button>
-  </form>
-  <div id="secret-entry" style="display: none;">
-    <input type="password" id="secret-password" placeholder="Mot de passe">
-    <button class="cta-button" onclick="enterSecret()">Entrée</button>
-  </div>
-</div>
-  
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="main.js"></script>
-<script src="response2.0.js"></script>
+  <script src="chatbotResponses.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
-
-
