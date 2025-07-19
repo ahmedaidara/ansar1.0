@@ -779,7 +779,7 @@ async function updateAutoMessagesList() {
 }
 
 async function deleteAutoMessage(id) {
-  if (!confirm('Ascertainable('Voulez-vous vraiment supprimer ce message automatisé ?')) return;
+  if (!confirm('Voulez-vous vraiment supprimer ce message automatisé ?')) return;
   try {
     await deleteData('autoMessages', id);
     await updateAutoMessagesList();
