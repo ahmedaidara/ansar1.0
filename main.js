@@ -12,27 +12,27 @@ let isChatOpen = false;
 let selectedCallMembers = [];
 const presidentCode = '0000';
 
+
+
+
 // ==================== FONCTIONS DE BASE POUR GITHUB ====================
 
-async function loadData(fileName) {
+async function loadData(file) {
   try {
-    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}${fileName}`, {
+    const response = await fetch(`https://api.github.com/repos/ahmedaidara/ansar1.0/contents/data/${file}`, {
       headers: {
-        'Authorization': `token ${TOKEN}`,
+        'Authorization': `Bearer ${TOKEN}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
-    
     if (!response.ok) {
-      if (response.status === 404) return [];
-      throw new Error(`Erreur ${response.status} lors du chargement de ${fileName}`);
+      throw new Error(`Erreur ${response.status} lors du chargement de ${file}`);
     }
-    
     const data = await response.json();
     return JSON.parse(atob(data.content));
   } catch (error) {
-    console.error(`Erreur loadData(${fileName}):`, error);
-    return [];
+    console.error(`Erreur loadData(${file}):`, error);
+    return []; // Retourner un tableau vide pour éviter les erreurs en aval
   }
 }
 
@@ -99,6 +99,50 @@ async function saveData(fileName, data) {
     return false;
   }
 }
+
+
+async function updateNotesList() {
+  try {
+    const notes = await loadData('notes.json');
+    const notesList = document.querySelector('#notes-list');
+    if (!notesList) {
+      console.error('Element #notes-list not found');
+      return;
+    }
+    notesList.innerHTML = notes.length ? notes.map(note => `<li>${note.title}: ${note.content}</li>`).join('') : '<p>Aucune note disponible</p>';
+  } catch (error) {
+    console.error('Erreur updateNotesList:', error);
+  }
+}
+
+async function updateInternalDocsList() {
+  try {
+    const docs = await loadData('internalDocs.json');
+    const docsList = document.querySelector('#internal-docs-list');
+    if (!docsList) {
+      console.error('Element #internal-docs-list not found');
+      return;
+    }
+    docsList.innerHTML = docs.length ? docs.map(doc => `<li>${doc.name} (<a href="${doc.url}">${doc.url}</a>)</li>`).join('') : '<p>Aucun document disponible</p>';
+  } catch (error) {
+    console.error('Erreur updateInternalDocsList:', error);
+  }
+}
+
+async function updateAutoMessagesList() {
+  try {
+    const autoMessages = await loadData('autoMessages.json');
+    const autoMessagesList = document.querySelector('#auto-messages-list');
+    if (!autoMessagesList) {
+      console.error('Element #auto-messages-list not found');
+      return;
+    }
+    autoMessagesList.innerHTML = autoMessages.length ? autoMessages.map(msg => `<li>${msg.content} (Programmé: ${msg.date})</li>`).join('') : '<p>Aucun message automatique disponible</p>';
+  } catch (error) {
+    console.error('Erreur updateAutoMessagesList:', error);
+  }
+}
+
 
 // ==================== FONCTIONS D'INTERFACE ====================
 
@@ -620,6 +664,39 @@ function clearChatHistory() {
   }
 }
 
+
+async function uploadFile(file) {
+  try {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        const content = reader.result.split(',')[1]; // Obtenir le contenu en base64
+        const fileName = `gallery/${Date.now()}_${file.name}`;
+        const response = await fetch(`https://api.github.com/repos/ahmedaidara/ansar1.0/contents/${fileName}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `Upload ${file.name}`,
+            content: content
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`Erreur ${response.status} lors de l'upload de ${file.name}`);
+        }
+        const data = await response.json();
+        resolve(data.content.download_url);
+      };
+      reader.onerror = () => reject(new Error('Erreur de lecture du fichier'));
+      reader.readAsDataURL(file);
+    });
+  } catch (error) {
+    console.error('Erreur uploadFile:', error);
+    throw error;
+  }
+}
 // ==================== FONCTIONS MESSAGES ====================
 
 async function updateMessagesList() {
