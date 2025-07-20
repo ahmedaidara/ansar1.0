@@ -102,19 +102,17 @@ async function uploadFile(file, path) {
 }
 
 // Remplacer la fonction updateTreasurerContributionsList
+// Remplacer la fonction updateTreasurerContributionsList (vers la ligne 110 dans votre code actuel)
 async function updateTreasurerContributionsList() {
   try {
     const members = await loadData('members');
     const search = document.querySelector('#treasurer-contributions-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#treasurer-contributions-list');
-    const content = document.querySelector('#treasurer-contributions-content');
-    if (!list || !content) {
-      console.error('Élément #treasurer-contributions-list ou #treasurer-contributions-content introuvable');
+    if (!list) {
+      console.error('Élément #treasurer-contributions-list introuvable');
       return;
     }
 
-    // Vider le contenu du formulaire pour afficher la liste
-    content.innerHTML = '';
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
@@ -131,7 +129,7 @@ async function updateTreasurerContributionsList() {
   }
 }
 
-// Remplacer la fonction manageMemberContributions
+// Remplacer la fonction manageMemberContributions (vers la ligne 130 dans votre code actuel)
 async function manageMemberContributions(code) {
   try {
     const members = await loadData('members');
@@ -141,14 +139,16 @@ async function manageMemberContributions(code) {
       return;
     }
 
-    const contributionsContainer = document.querySelector('#treasurer-contributions-content');
-    if (!contributionsContainer) {
-      console.error('Élément #treasurer-contributions-content introuvable');
+    showPage('member-contributions-page');
+    const contributionsContainer = document.querySelector('#member-contributions-content');
+    const contributionsTitle = document.querySelector('#member-contributions-title');
+    if (!contributionsContainer || !contributionsTitle) {
+      console.error('Élément #member-contributions-content ou #member-contributions-title introuvable');
       return;
     }
 
+    contributionsTitle.textContent = `Cotisations de ${member.firstname} ${member.lastname} (${member.code})`;
     contributionsContainer.innerHTML = `
-      <h3>Cotisations de ${member.firstname} ${member.lastname} (${member.code})</h3>
       <form id="member-contributions-form">
         ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
           <div class="contribution-year">
@@ -162,7 +162,7 @@ async function manageMemberContributions(code) {
           </div>
         `).join('')}
         <button type="submit" class="cta-button">Enregistrer</button>
-        <button type="button" class="cta-button" onclick="updateTreasurerContributionsList()">Retour</button>
+        <button type="button" class="cta-button" onclick="showPage('treasurer')">Retour</button>
       </form>
     `;
 
@@ -182,11 +182,10 @@ async function manageMemberContributions(code) {
       try {
         await saveData('members', { contributions: updatedContributions }, member.id);
         alert('Cotisations mensuelles mises à jour avec succès');
-        // Mettre à jour l'espace personnel si le membre est connecté
         if (currentUser?.code === member.code) {
           showMemberDetail(member.code);
         }
-        updateTreasurerContributionsList();
+        showPage('treasurer');
       } catch (error) {
         console.error('Erreur manageMemberContributions:', error);
         alert('Erreur lors de la mise à jour des cotisations');
@@ -195,6 +194,74 @@ async function manageMemberContributions(code) {
   } catch (error) {
     console.error('Erreur manageMemberContributions:', error);
     alert('Erreur lors du chargement des cotisations');
+  }
+}
+
+
+// Ajouter après la fonction manageMemberContributions
+async function manageMemberGlobalContributions(code) {
+  try {
+    const members = await loadData('members');
+    const contributions = await loadData('contributions');
+    const member = members.find(m => m.code === code);
+    if (!member) {
+      alert('Membre introuvable');
+      return;
+    }
+
+    showPage('member-contributions-page');
+    const contributionsContainer = document.querySelector('#member-contributions-content');
+    const contributionsTitle = document.querySelector('#member-contributions-title');
+    if (!contributionsContainer || !contributionsTitle) {
+      console.error('Élément #member-contributions-content ou #member-contributions-title introuvable');
+      return;
+    }
+
+    contributionsTitle.textContent = `Cotisations Globales de ${member.firstname} ${member.lastname} (${member.code})`;
+    contributionsContainer.innerHTML = `
+      <form id="member-global-contributions-form">
+        ${Object.entries(member.contributions?.globalContributions || {}).map(([name, data]) => `
+          <div class="contribution-item">
+            <label>
+              <input type="checkbox" name="global-${name}" data-contribution-id="${data.id}" data-contribution-name="${name}" ${data.paid ? 'checked' : ''}>
+              ${name} (${data.amount} FCFA)
+            </label>
+          </div>
+        `).join('') || '<p>Aucune cotisation globale</p>'}
+        <button type="submit" class="cta-button">Enregistrer</button>
+        <button type="button" class="cta-button" onclick="showPage('treasurer')">Retour</button>
+      </form>
+    `;
+
+    document.querySelector('#member-global-contributions-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updatedContributions = { ...member.contributions, globalContributions: {} };
+      for (const [name, data] of Object.entries(member.contributions.globalContributions)) {
+        const checkbox = document.querySelector(`input[name="global-${name}"]`);
+        if (checkbox) {
+          updatedContributions.globalContributions[name] = {
+            id: data.id,
+            amount: data.amount,
+            paid: checkbox.checked
+          };
+        }
+      }
+
+      try {
+        await saveData('members', { contributions: updatedContributions }, member.id);
+        alert('Cotisations globales mises à jour avec succès');
+        if (currentUser?.code === member.code) {
+          showMemberDetail(member.code);
+        }
+        showPage('treasurer');
+      } catch (error) {
+        console.error('Erreur manageMemberGlobalContributions:', error);
+        alert('Erreur lors de la mise à jour des cotisations globales');
+      }
+    });
+  } catch (error) {
+    console.error('Erreur manageMemberGlobalContributions:', error);
+    alert('Erreur lors du chargement des cotisations globales');
   }
 }
 // ==================== FONCTIONS D'INTERFACE ====================
@@ -327,6 +394,7 @@ function clearChatHistory() {
   document.querySelector('#chatbot-input').disabled = false;
 }
 
+// Remplacer la fonction checkSecretPassword (vers la ligne 200 dans votre code actuel)
 async function checkSecretPassword() {
   const password = document.querySelector('#secret-password')?.value.trim();
   const secretCodes = [
@@ -595,10 +663,11 @@ async function updateAllMemberLists() {
   ]);
 }
 
-// Mettre à jour la fonction showMemberDetail pour inclure les cotisations globales
+// Remplacer la fonction showMemberDetail (vers la ligne 300 dans votre code actuel)
 async function showMemberDetail(code) {
   try {
     const members = await loadData('members');
+    const contributions = await loadData('contributions');
     const member = members.find(m => m.code === code);
     if (!member) {
       alert('Membre introuvable');
@@ -621,14 +690,14 @@ async function showMemberDetail(code) {
         ${member.phone ? `<p><strong>Téléphone:</strong> ${member.phone}</p>` : ''}
       `;
       document.querySelector('#personal-contributions').innerHTML = `
+        <p><strong>Cotisations Globales:</strong></p>
+        ${Object.entries(member.contributions?.globalContributions || {}).map(([name, data]) => `
+          <p>${name} (${data.amount} FCFA): ${data.paid ? '✅ Payé' : '❌ Non payé'}</p>
+        `).join('') || '<p>Aucune cotisation globale</p>'}
         <p><strong>Cotisations Mensuelles:</strong></p>
         ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
           <p>${year}: ${months.map((paid, i) => paid ? `✅ Mois ${i+1}` : `❌ Mois ${i+1}`).join(', ')}</p>
         `).join('')}
-        <p><strong>Cotisations Globales:</strong></p>
-        ${Object.entries(member.contributions?.globalContributions || {}).map(([name, data]) => `
-          <p>${name}: ${data.paid ? '✅ Payé' : '❌ Non payé'}</p>
-        `).join('') || '<p>Aucune cotisation globale</p>'}
       `;
     }
   } catch (error) {
@@ -636,7 +705,6 @@ async function showMemberDetail(code) {
     alert('Erreur lors de l\'affichage des détails du membre');
   }
 }
-
 // ==================== FONCTIONS GALERIE ====================
 
 async function updateGalleryContent() {
@@ -1128,7 +1196,7 @@ async function updateSuggestionsList() {
 
 // ==================== FONCTIONS COTISATIONS ====================
 
-// Remplacer la fonction add-contribution-form
+// Remplacer la fonction add-contribution-form (vers la ligne 600 dans votre code actuel)
 document.querySelector('#add-contribution-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const contributionData = {
@@ -1151,6 +1219,7 @@ document.querySelector('#add-contribution-form')?.addEventListener('submit', asy
           ...member.contributions?.globalContributions,
           [contributionData.name]: {
             id: contributionId,
+            amount: contributionData.amount,
             paid: false
           }
         }
@@ -1168,11 +1237,10 @@ document.querySelector('#add-contribution-form')?.addEventListener('submit', asy
 });
 
 
-// Remplacer la fonction updateContributionsAdminList
+/ Remplacer la fonction updateContributionsAdminList (vers la ligne 620 dans votre code actuel)
 async function updateContributionsAdminList() {
   try {
     const contributions = await loadData('contributions');
-    const members = await loadData('members');
     const search = document.querySelector('#contributions-admin-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#contributions-admin-list');
     if (!list) return;
@@ -1184,6 +1252,7 @@ async function updateContributionsAdminList() {
           <p><strong>${c.name}</strong>: ${c.amount} FCFA</p>
           <p class="contribution-date">${formatDate(c.createdAt)}</p>
           <button class="cta-button" onclick="manageGlobalContribution('${c.id}', '${c.name}')">Gérer Paiements</button>
+          <button class="cta-button danger" onclick="confirmDeleteContribution('${c.id}', '${c.name}')">Supprimer</button>
         </div>
       `).join('') || '<p>Aucune cotisation disponible</p>';
   } catch (error) {
@@ -1191,16 +1260,60 @@ async function updateContributionsAdminList() {
   }
 }
 
+// Nouvelle fonction pour confirmer la suppression d'une cotisation globale (ajouter après updateContributionsAdminList)
+async function confirmDeleteContribution(contributionId, contributionName) {
+  const contributionsAdmin = document.querySelector('#contributions-admin');
+  if (!contributionsAdmin) return;
 
-// Nouvelle fonction pour gérer les paiements des cotisations globales
+  contributionsAdmin.innerHTML = `
+    <h3>Supprimer la Cotisation: ${contributionName}</h3>
+    <form id="delete-contribution-form">
+      <label for="delete-contribution-code">Entrez le code président (0000):</label>
+      <input type="text" id="delete-contribution-code" required>
+      <button type="submit" class="cta-button">Confirmer la Suppression</button>
+      <button type="button" class="cta-button" onclick="updateContributionsAdminList()">Annuler</button>
+    </form>
+  `;
+
+  document.querySelector('#delete-contribution-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const presidentInput = document.querySelector('#delete-contribution-code')?.value.trim();
+    if (presidentInput !== presidentCode) {
+      alert('Code président incorrect');
+      return;
+    }
+
+    try {
+      // Supprimer la cotisation de la collection contributions
+      await deleteData('contributions', contributionId);
+
+      // Supprimer la cotisation de chaque membre
+      const members = await loadData('members');
+      for (const member of members) {
+        const updatedContributions = { ...member.contributions };
+        delete updatedContributions.globalContributions[contributionName];
+        await saveData('members', { contributions: updatedContributions }, member.id);
+      }
+
+      alert('Cotisation globale supprimée avec succès');
+      updateContributionsAdminList();
+    } catch (error) {
+      console.error('Erreur confirmDeleteContribution:', error);
+      alert('Erreur lors de la suppression de la cotisation');
+    }
+  });
+}
+// Remplacer la fonction manageGlobalContribution (vers la ligne 640 dans votre code actuel)
 async function manageGlobalContribution(contributionId, contributionName) {
   try {
     const members = await loadData('members');
+    const contributions = await loadData('contributions');
+    const contribution = contributions.find(c => c.id === contributionId);
     const contributionsAdmin = document.querySelector('#contributions-admin');
     if (!contributionsAdmin) return;
 
     contributionsAdmin.innerHTML = `
-      <h3>Gérer les Paiements: ${contributionName}</h3>
+      <h3>Gérer les Paiements: ${contributionName} (${contribution.amount} FCFA)</h3>
       <input type="text" id="global-contribution-search" placeholder="Rechercher un membre..." class="search-bar">
       <div id="global-contribution-members"></div>
       <button class="cta-button" onclick="updateContributionsAdminList()">Retour</button>
@@ -1243,12 +1356,12 @@ async function manageGlobalContribution(contributionId, contributionName) {
               ...member.contributions?.globalContributions,
               [contributionName]: {
                 id: contributionId,
+                amount: contribution.amount,
                 paid
               }
             }
           };
           await saveData('members', { contributions: updatedContributions }, memberId);
-          // Mettre à jour l'espace personnel si le membre est connecté
           if (currentUser?.code === member.code) {
             showMemberDetail(member.code);
           }
