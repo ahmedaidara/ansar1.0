@@ -253,8 +253,7 @@
         <div id="auto-messages-list"></div>
       </div>
     </section>
-
-<!-- Remplacer la section treasurer -->
+<!-- Mettre à jour la section treasurer -->
 <section id="treasurer" class="page">
   <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
   <h2>Espace Trésorier</h2>
@@ -270,7 +269,7 @@
   <div id="contributions-admin" class="tab-content">
     <h3>Gestion des Cotisations Globales</h3>
     <form id="add-contribution-form">
-      <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL 2000F)" required>
+      <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL)" required>
       <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
       <button type="submit" class="cta-button">Ajouter Cotisation</button>
     </form>
@@ -285,6 +284,13 @@
   <h2 id="treasurer-member-title">Cotisations du Membre</h2>
   <div id="treasurer-member-content"></div>
 </section>
+
+    <!-- Ajouter après <section id="treasurer"> -->
+<div id="member-contributions-page" class="page">
+  <button class="cta-button back-button" onclick="showPage('treasurer')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2 id="member-contributions-title">Gestion des Cotisations</h2>
+  <div id="member-contributions-content"></div>
+</div>
 
     <!-- Espace Président -->
     <section id="president" class="page">
