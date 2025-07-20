@@ -254,7 +254,7 @@
       </div>
     </section>
 
-<!-- Remplacer la section treasurer -->
+<!-- Espace Trésorier -->
 <section id="treasurer" class="page">
   <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
   <h2>Espace Trésorier</h2>
@@ -265,6 +265,7 @@
   <div id="treasurer-contributions" class="tab-content active">
     <h3>Gestion des Cotisations Mensuelles</h3>
     <input type="text" id="treasurer-contributions-search" placeholder="Rechercher un membre..." class="search-bar">
+    <div id="treasurer-contributions-content"></div>
     <div id="treasurer-contributions-list"></div>
   </div>
   <div id="contributions-admin" class="tab-content">
@@ -279,11 +280,11 @@
   </div>
 </section>
 
-<!-- Ajouter la nouvelle page pour les cotisations d'un membre -->
-<section id="treasurer-member-contributions" class="page" style="display: none;">
+<!-- Page pour les cotisations d'un membre -->
+<section id="treasurer-member-contributions" class="page">
   <button class="cta-button back-button" onclick="showPage('treasurer'); showTab('treasurer-contributions')"><span class="material-icons">arrow_back</span> Retour</button>
   <h2 id="treasurer-member-title">Cotisations du Membre</h2>
-  <div id="treasurer-member-content"></div>
+  <div id="treasurer-contributions-content"></div>
 </section>
 
     <!-- Espace Président -->
