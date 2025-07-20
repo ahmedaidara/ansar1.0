@@ -102,18 +102,22 @@ async function uploadFile(file, path) {
 }
 
 // Nouvelle fonction pour afficher la liste des membres dans l'espace trésorier
+// Remplacer/Ajouter la fonction updateTreasurerContributionsList
 async function updateTreasurerContributionsList() {
   try {
     const members = await loadData('members');
     const search = document.querySelector('#treasurer-contributions-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#treasurer-contributions-list');
-    if (!list) return;
+    if (!list) {
+      console.error('Élément #treasurer-contributions-list introuvable');
+      return;
+    }
 
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
         <div class="member-card" onclick="manageMemberContributions('${m.code}')">
-          <img src="${m.photo}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
@@ -126,6 +130,7 @@ async function updateTreasurerContributionsList() {
 }
 
 // Nouvelle fonction pour gérer les cotisations d'un membre
+// Remplacer/Ajouter la fonction manageMemberContributions
 async function manageMemberContributions(code) {
   try {
     const members = await loadData('members');
@@ -162,17 +167,21 @@ async function manageMemberContributions(code) {
       const updatedContributions = { Mensuelle: {} };
       ['2023', '2024', '2025'].forEach(year => {
         updatedContributions.Mensuelle[year] = Array(12).fill(false);
-        months.forEach((_, i) => {
+        for (let i = 0; i < 12; i++) {
           const checkbox = document.querySelector(`input[name="month-${year}-${i}"]`);
           if (checkbox) {
             updatedContributions.Mensuelle[year][i] = checkbox.checked;
           }
-        });
+        }
       });
 
       try {
         await saveData('members', { contributions: updatedContributions }, member.id);
         alert('Cotisations mises à jour avec succès');
+        // Mettre à jour l'espace personnel si le membre est connecté
+        if (currentUser?.code === member.code) {
+          showMemberDetail(member.code);
+        }
         updateTreasurerContributionsList();
       } catch (error) {
         console.error('Erreur manageMemberContributions:', error);
@@ -184,7 +193,6 @@ async function manageMemberContributions(code) {
     alert('Erreur lors du chargement des cotisations');
   }
 }
-
 // ==================== FONCTIONS D'INTERFACE ====================
 
 function showPage(pageId) {
@@ -220,7 +228,7 @@ function showPage(pageId) {
   }
 }
 
-// Mettre à jour la fonction showTab pour inclure l'onglet des cotisations
+// Mettre à jour la fonction showTab
 function showTab(tabId) {
   const tabContent = document.querySelector(`#${tabId}`);
   const tabButton = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
@@ -245,6 +253,7 @@ function showTab(tabId) {
     case 'video-calls': initVideoCall(); break;
     case 'auto-messages': updateAutoMessagesList(); break;
     case 'treasurer-contributions': updateTreasurerContributionsList(); break;
+    case 'contributions-admin': updateContributionsAdminList(); break;
     case 'president-files': updatePresidentFilesList(); break;
     case 'secretary-files': updateSecretaryFilesList(); break;
   }
@@ -449,6 +458,7 @@ function initializeContributions() {
   };
 }
 
+// Remplacer la fonction updateMembersList
 async function updateMembersList() {
   try {
     const members = await loadData('members');
@@ -459,14 +469,21 @@ async function updateMembersList() {
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
-        <div class="member-card" onclick="showMemberDetail('${m.code}')">
-          <img src="${m.photo}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+        <div class="member-card">
+          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
           </div>
         </div>
       `).join('');
+
+    // Supprimer tout écouteur d'événements existant sur .member-card
+    const memberCards = document.querySelectorAll('.member-card');
+    memberCards.forEach(card => {
+      card.removeEventListener('click', showMemberDetail); // Supprime tout écouteur précédent
+      card.style.cursor = 'default'; // Indique visuellement que le clic n'est pas interactif
+    });
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
   }
