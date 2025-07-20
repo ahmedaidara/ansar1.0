@@ -236,7 +236,7 @@ function showTab(tabId) {
     case 'events-admin': updateEventsAdminList(); break;
     case 'messages-admin': updateMessagesAdminList(); break;
     case 'notes': updateNotesList(); break;
-    case 'internal-docs':Lift internalDocsList(); break;
+    case 'internal-docs': updateInternalDocsList(); break;
     case 'suggestions-admin': updateSuggestionsList(); break;
     case 'stats': updateStats(); break;
     case 'video-calls': initVideoCall(); break;
