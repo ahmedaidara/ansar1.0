@@ -25,6 +25,7 @@ let currentUser = null;
 let isChatOpen = false;
 let selectedCallMembers = [];
 const presidentCode = '0000';
+const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
 // ==================== INITIALISATION ====================
 
@@ -101,84 +102,8 @@ async function uploadFile(file, path) {
   }
 }
 
-async function updateTreasurerContributionsList() {
-  try {
-    const members = await loadData('members');
-    const contributions = await loadData('contributions');
-    const search = document.querySelector('#treasurer-contributions-search')?.value.toLowerCase() || '';
-    const list = document.querySelector('#treasurer-contributions-list');
-    const content = document.querySelector('#treasurer-contributions-content');
-    if (!list || !content) {
-      console.error('Élément #treasurer-contributions-list ou #treasurer-contributions-content introuvable');
-      return;
-    }
 
-    // Afficher les cotisations globales en haut
-    content.innerHTML = `
-      <h3>Cotisations Globales</h3>
-      ${contributions.length ? contributions.map(c => `
-        <div class="contribution-card">
-          <p><strong>${c.name}</strong>: ${c.amount} FCFA</p>
-          <button class="cta-button" onclick="manageGlobalContribution('${c.id}', '${c.name}')">Gérer Paiements</button>
-          <button class="cta-button danger" onclick="deleteGlobalContribution('${c.id}', '${c.name}')">Supprimer</button>
-        </div>
-      `).join('') : '<p>Aucune cotisation globale disponible</p>'}
-      <h3>Liste des Membres</h3>
-    `;
 
-    // Afficher la liste des membres pour les cotisations mensuelles
-    list.innerHTML = members
-      .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
-      .map(m => `
-        <div class="member-card" onclick="manageMemberContributions('${m.code}')">
-          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
-          <div>
-            <p><strong>${m.firstname} ${m.lastname}</strong></p>
-            <p><small>${m.code} • ${m.role}</small></p>
-          </div>
-        </div>
-      `).join('');
-  } catch (error) {
-    console.error('Erreur updateTreasurerContributionsList:', error);
-  }
-}
-async function manageMemberContributions(code) {
-  try {
-    const members = await loadData('members');
-    const member = members.find(m => m.code === code);
-    if (!member) {
-      alert('Membre introuvable');
-      return;
-    }
-
-    const contributionsContainer = document.querySelector('#treasurer-contributions-content');
-    if (!contributionsContainer) {
-      console.error('Élément #treasurer-contributions-content introuvable');
-      return;
-    }
-
-    contributionsContainer.innerHTML = `
-      <h3>Cotisations de ${member.firstname} ${member.lastname} (${member.code})</h3>
-      <button class="cta-button" onclick="showPage('treasurer'); showTab('treasurer-contributions')">Retour à la liste des membres</button>
-      <form id="member-contributions-form">
-        ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
-          <div class="contribution-year">
-            <h4>${year}</h4>
-            ${months.map((paid, i) => `
-              <label>
-                <input type="checkbox" name="month-${year}-${i}" ${paid ? 'checked' : ''} disabled>
-                Mois ${i + 1}
-              </label>
-            `).join('')}
-          </div>
-        `).join('')}
-      </form>
-    `;
-  } catch (error) {
-    console.error('Erreur manageMemberContributions:', error);
-    alert('Erreur lors du chargement des cotisations');
-  }
-}
 // ==================== FONCTIONS D'INTERFACE ====================
 
 function showPage(pageId) {
@@ -204,10 +129,37 @@ function showPage(pageId) {
       case 'personal': updatePersonalPage(); break;
       case 'library': updateLibraryContent(); break;
       case 'home': updateMessagePopups(); break;
-      case 'secret': if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') showTab('stats'); break;
-      case 'treasurer': if (currentUser?.role === 'tresorier') showTab('treasurer-contributions'); break;
-      case 'president': if (currentUser?.role === 'president') showTab('president-files'); break;
-      case 'secretary': if (currentUser?.role === 'secretaire') showTab('secretary-files'); break;
+      case 'settings': break;
+      case 'secret': 
+        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
+          showTab('add-member');
+        } else {
+          showPage('home');
+        }
+        break;
+case 'treasurer':
+  if (currentUser?.role !== 'tresorier') {
+    showPage('home');
+  }
+  break;
+      case 'treasurer-monthly': updateTreasurerMonthlyList(); break;
+      case 'treasurer-member-monthly': break;
+      case 'treasurer-global': updateContributionsAdminList(); break;
+      case 'treasurer-global-manage': break;
+      case 'president': 
+        if (currentUser?.role === 'president') {
+          showTab('president-files');
+        } else {
+          showPage('home');
+        }
+        break;
+      case 'secretary': 
+        if (currentUser?.role === 'secretaire') {
+          showTab('secretary-files');
+        } else {
+          showPage('home');
+        }
+        break;
     }
   } catch (error) {
     console.error('Erreur showPage:', error);
@@ -230,7 +182,7 @@ function showTab(tabId) {
   tabContent.classList.add('active');
   tabButton.classList.add('active');
 
-  switch (tabId) {
+ switch (tabId) {
     case 'edit-member': updateEditMembersList(); break;
     case 'gallery-admin': updateGalleryAdminList(); break;
     case 'events-admin': updateEventsAdminList(); break;
@@ -270,18 +222,32 @@ function initChatbot() {
     return;
   }
 
+  console.log('Initialisation du chatbot'); // Journal pour confirmer l'initialisation
+
   chatbotButton.addEventListener('click', toggleChatbot);
   chatbotForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const message = chatbotInput.value.trim();
-    if (!message) return;
+    if (!message) {
+      console.log('Message vide ignoré');
+      return;
+    }
 
+    console.log('Message envoyé:', message); // Journal du message
     appendChatMessage('Vous', message);
     const response = getChatbotResponse(message);
-    
+    console.log('Réponse du chatbot:', response); // Journal de la réponse
+
     if (response === 'secret') {
-      document.querySelector('#secret-entry').style.display = 'block';
-      chatbotInput.disabled = true;
+      const secretEntry = document.querySelector('#secret-entry');
+      if (secretEntry) {
+        secretEntry.style.display = 'block';
+        chatbotInput.disabled = true;
+        appendChatMessage('Assistant ANSAR', 'Veuillez entrer le mot de passe sécurisé.');
+      } else {
+        console.error('Élément #secret-entry introuvable');
+        appendChatMessage('Assistant ANSAR', 'Erreur : impossible d\'afficher la zone de saisie du mot de passe.');
+      }
     } else {
       appendChatMessage('Assistant ANSAR', response);
     }
@@ -391,6 +357,48 @@ async function checkSecretPassword() {
   }
 }
 
+function getChatbotResponse(message) {
+  const secretCodes = [
+    'ADMIN12301012000',
+    '00000000',
+    '11111111',
+    '22222222',
+    'JESUISMEMBRE66',
+    '33333333',
+    '44444444',
+    '55555555',
+    'JESUISTRESORIER444',
+    '66666666',
+    '77777777',
+    '88888888',
+    'PRESIDENT000',
+    '99999999',
+    '11112222',
+    '33334444',
+    'SECRETAIRE000',
+    '55556666',
+    '77778888',
+    '99990000'
+  ];
+
+  console.log('Vérification du message:', message); // Journal pour débogage
+
+  // Vérifie si le message est un code secret
+  if (secretCodes.includes(message.trim())) {
+    console.log('Code secret détecté:', message);
+    return 'secret';
+  }
+
+  // Réponses génériques pour autres messages
+  switch (message.toLowerCase()) {
+    case 'bonjour':
+      return 'Bonjour ! Comment puis-je vous aider aujourd\'hui ?';
+    case 'salut':
+      return 'Salut ! Posez-moi une question ou entrez un code d\'accès.';
+    default:
+      return 'Désolé, je ne comprends pas votre demande. Essayez un code d\'accès ou une question comme "bonjour".';
+  }
+}
 // ==================== FONCTIONS MEMBRES ====================
 
 document.querySelector('#add-member-form')?.addEventListener('submit', async (e) => {
@@ -488,11 +496,19 @@ async function updateEditMembersList() {
   try {
     const members = await loadData('members');
     const search = document.querySelector('#edit-member-search')?.value.toLowerCase() || '';
+    const filter = document.querySelector('#edit-member-filter')?.value || 'all';
     const list = document.querySelector('#edit-members-list');
     if (!list) return;
 
-    list.innerHTML = members
-      .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
+    const filteredMembers = members.filter(m => {
+      const matchesSearch = `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search);
+      if (filter === 'all') return matchesSearch;
+      const hasPaid = Object.values(m.contributions.Mensuelle).some(year => year.some(paid => paid)) ||
+                      Object.values(m.contributions.globalContributions || {}).some(c => c.paid);
+      return matchesSearch && (filter === 'paid' ? hasPaid : !hasPaid);
+    });
+
+    list.innerHTML = filteredMembers
       .map(m => `
         <div class="member-card">
           <img src="${m.photo}" alt="${m.firstname} ${m.lastname}" class="member-photo">
@@ -505,7 +521,10 @@ async function updateEditMembersList() {
             <button class="cta-button small danger" onclick="confirmDeleteMember('${m.code}')">Supprimer</button>
           </div>
         </div>
-      `).join('');
+      `).join('') || '<p>Aucun membre trouvé</p>';
+
+    document.querySelector('#edit-member-search')?.addEventListener('input', updateEditMembersList);
+    document.querySelector('#edit-member-filter')?.addEventListener('change', updateEditMembersList);
   } catch (error) {
     console.error('Erreur updateEditMembersList:', error);
   }
@@ -611,8 +630,8 @@ async function showMemberDetail(code) {
       const contributions = await loadData('contributions');
       document.querySelector('#personal-contributions').innerHTML = `
         <p><strong>Cotisations Mensuelles:</strong></p>
-        ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
-          <p>${year}: ${months.map((paid, i) => paid ? `✅ Mois ${i+1}` : `❌ Mois ${i+1}`).join(', ')}</p>
+        ${Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
+          <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
         `).join('')}
         <p><strong>Cotisations Globales:</strong></p>
         ${contributions.map(c => `
@@ -1158,6 +1177,7 @@ document.querySelector('#add-contribution-form')?.addEventListener('submit', asy
 
 
 async function updateContributionsAdminList() {
+  console.log('updateContributionsAdminList appelé'); // Journal
   try {
     const contributions = await loadData('contributions');
     const members = await loadData('members');
@@ -1184,30 +1204,37 @@ async function updateContributionsAdminList() {
 }
 
 async function deleteGlobalContribution(contributionId, contributionName) {
+  console.log('deleteGlobalContribution appelé:', contributionId, contributionName); // Journal
   const deleteForm = document.createElement('div');
   deleteForm.id = 'delete-contribution-form';
   deleteForm.innerHTML = `
+    <button class="cta-button back-button" onclick="goBackToTreasurerGlobal()"><span class="material-icons">arrow_back</span> Retour</button>
     <h3>Supprimer la cotisation: ${contributionName}</h3>
     <p>Entrez le code président pour confirmer la suppression :</p>
     <input type="password" id="delete-contribution-code" placeholder="Code président">
     <button class="cta-button" onclick="confirmDeleteContribution('${contributionId}', '${contributionName}')">Confirmer</button>
     <button class="cta-button" onclick="this.parentElement.remove()">Annuler</button>
   `;
-  document.querySelector('#contributions-admin')?.appendChild(deleteForm);
+  const treasurerGlobal = document.querySelector('#treasurer-global');
+  if (!treasurerGlobal) {
+    console.error('Élément #treasurer-global introuvable');
+    alert('Erreur : conteneur des cotisations introuvable');
+    return;
+  }
+  treasurerGlobal.appendChild(deleteForm);
 }
 
 async function confirmDeleteContribution(contributionId, contributionName) {
+  console.log('confirmDeleteContribution appelé:', contributionId, contributionName); // Journal
   const presidentInput = document.querySelector('#delete-contribution-code')?.value.trim();
   if (presidentInput !== presidentCode) {
+    console.log('Code président incorrect:', presidentInput); // Journal
     alert('Code président incorrect');
     return;
   }
 
   try {
-    // Supprimer la cotisation de la collection 'contributions'
     await deleteData('contributions', contributionId);
-
-    // Supprimer la cotisation globale des membres
     const members = await loadData('members');
     for (const member of members) {
       const updatedContributions = { ...member.contributions };
@@ -1215,12 +1242,12 @@ async function confirmDeleteContribution(contributionId, contributionName) {
       await saveData('members', { contributions: updatedContributions }, member.id);
     }
 
-    // Mettre à jour l'affichage
     await updateContributionsAdminList();
     document.querySelector('#delete-contribution-form')?.remove();
+    console.log('Cotisation supprimée:', contributionName); // Journal
     alert('Cotisation globale supprimée avec succès');
   } catch (error) {
-    console.error('Erreur deleteGlobalContribution:', error);
+    console.error('Erreur confirmDeleteContribution:', error);
     alert('Erreur lors de la suppression de la cotisation');
   }
 }
@@ -1228,23 +1255,27 @@ async function confirmDeleteContribution(contributionId, contributionName) {
 
 // Nouvelle fonction pour gérer les paiements des cotisations globales
 async function manageGlobalContribution(contributionId, contributionName) {
+  console.log('manageGlobalContribution appelé:', contributionId, contributionName); // Journal
   try {
     const members = await loadData('members');
-    const contributionsAdmin = document.querySelector('#contributions-admin');
-    if (!contributionsAdmin) return;
+    showPage('treasurer-global-manage'); // Utiliser la page dédiée
+    const globalManage = document.querySelector('#treasurer-global-manage');
+    if (!globalManage) {
+      console.error('Élément #treasurer-global-manage introuvable');
+      alert('Erreur : conteneur des paiements introuvable');
+      return;
+    }
 
-    contributionsAdmin.innerHTML = `
-      <h3>Gérer les Paiements: ${contributionName}</h3>
-      <input type="text" id="global-contribution-search" placeholder="Rechercher un membre..." class="search-bar">
-      <div id="global-contribution-members"></div>
-      <button class="cta-button" onclick="updateContributionsAdminList()">Retour</button>
-    `;
+    document.querySelector('#treasurer-global-title').textContent = `Gérer les Paiements: ${contributionName}`;
+    const membersList = document.querySelector('#global-contribution-members');
+    if (!membersList) {
+      console.error('Élément #global-contribution-members introuvable');
+      alert('Erreur : conteneur des membres introuvable');
+      return;
+    }
 
     const updateMembersList = async () => {
       const search = document.querySelector('#global-contribution-search')?.value.toLowerCase() || '';
-      const membersList = document.querySelector('#global-contribution-members');
-      if (!membersList) return;
-
       membersList.innerHTML = members
         .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
         .map(m => `
@@ -1255,7 +1286,7 @@ async function manageGlobalContribution(contributionId, contributionName) {
               Payé
             </label>
           </div>
-        `).join('');
+        `).join('') || '<p>Aucun membre trouvé</p>';
     };
 
     await updateMembersList();
@@ -1265,6 +1296,7 @@ async function manageGlobalContribution(contributionId, contributionName) {
     const checkboxes = document.querySelectorAll('.global-contribution-checkbox');
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', async (e) => {
+        console.log('Checkbox changé:', e.target.dataset.memberId, contributionName, e.target.checked); // Journal
         const memberId = e.target.dataset.memberId;
         const contributionName = e.target.dataset.contributionName;
         const paid = e.target.checked;
@@ -1282,12 +1314,12 @@ async function manageGlobalContribution(contributionId, contributionName) {
             }
           };
           await saveData('members', { contributions: updatedContributions }, memberId);
-          // Mettre à jour l'espace personnel si le membre est connecté
           if (currentUser?.code === member.code) {
             showMemberDetail(member.code);
           }
+          console.log('Paiement mis à jour pour', member.firstname, member.lastname); // Journal
         } catch (error) {
-          console.error('Erreur manageGlobalContribution:', error);
+          console.error('Erreur mise à jour paiement:', error);
           alert('Erreur lors de la mise à jour du paiement');
         }
       });
@@ -1295,6 +1327,118 @@ async function manageGlobalContribution(contributionId, contributionName) {
   } catch (error) {
     console.error('Erreur manageGlobalContribution:', error);
     alert('Erreur lors du chargement des paiements');
+  }
+}
+
+
+function goBackToTreasurerGlobal() {
+  console.log('Retour à treasurer-global'); // Journal
+  showPage('treasurer-global');
+}
+async function updateTreasurerMonthlyList() {
+  try {
+    const members = await loadData('members');
+    const search = document.querySelector('#treasurer-monthly-search')?.value.toLowerCase() || '';
+    const filter = document.querySelector('#treasurer-monthly-filter')?.value || 'all';
+    const list = document.querySelector('#treasurer-monthly-list');
+    if (!list) {
+      console.error('Élément #treasurer-monthly-list introuvable');
+      return;
+    }
+
+    const filteredMembers = members.filter(m => {
+      const matchesSearch = `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search);
+      if (filter === 'all') return matchesSearch;
+      const hasPaid = Object.values(m.contributions.Mensuelle).some(year => year.some(paid => paid));
+      return matchesSearch && (filter === 'paid' ? hasPaid : !hasPaid);
+    });
+
+    list.innerHTML = filteredMembers
+      .map(m => `
+        <div class="member-card" onclick="manageMemberMonthlyContributions('${m.code}')">
+          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+          <div>
+            <p><strong>${m.firstname} ${m.lastname}</strong></p>
+            <p><small>${m.code} • ${m.role}</small></p>
+          </div>
+        </div>
+      `).join('') || '<p>Aucun membre trouvé</p>';
+
+    document.querySelector('#treasurer-monthly-search')?.addEventListener('input', updateTreasurerMonthlyList);
+    document.querySelector('#treasurer-monthly-filter')?.addEventListener('change', updateTreasurerMonthlyList);
+  } catch (error) {
+    console.error('Erreur updateTreasurerMonthlyList:', error);
+  }
+}
+
+async function manageMemberMonthlyContributions(code) {
+  console.log('manageMemberMonthlyContributions appelé avec code:', code); // Journal de débogage
+  try {
+    const members = await loadData('members');
+    const member = members.find(m => m.code === code);
+    if (!member) {
+      console.error('Membre introuvable pour code:', code);
+      alert('Membre introuvable');
+      return;
+    }
+
+    const content = document.querySelector('#treasurer-monthly-content');
+    if (!content) {
+      console.error('Élément #treasurer-monthly-content introuvable');
+      return;
+    }
+
+    document.querySelector('#treasurer-member-title').textContent = `Cotisations de ${member.firstname} ${member.lastname}`;
+    content.innerHTML = `
+      <form id="member-monthly-contributions-form">
+        ${Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
+          <div class="contribution-year">
+            <h4>${year}</h4>
+            ${paidMonths.map((paid, i) => `
+              <label>
+                <input type="checkbox" name="month-${year}-${i}" data-member-id="${member.id}" data-year="${year}" data-month="${i}" ${paid ? 'checked' : ''}>
+                ${months[i]}
+              </label>
+            `).join('')}
+          </div>
+        `).join('')}
+      </form>
+    `;
+
+    showPage('treasurer-member-monthly');
+
+    const checkboxes = document.querySelectorAll('#member-monthly-contributions-form input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', async (e) => {
+        console.log('Checkbox changé:', e.target.dataset.memberId, e.target.dataset.year, e.target.dataset.month); // Journal
+        const memberId = e.target.dataset.memberId;
+        const year = e.target.dataset.year;
+        const month = parseInt(e.target.dataset.month);
+        const paid = e.target.checked;
+
+        try {
+          const member = members.find(m => m.id === memberId);
+          const updatedContributions = {
+            ...member.contributions,
+            Mensuelle: {
+              ...member.contributions.Mensuelle,
+              [year]: member.contributions.Mensuelle[year].map((p, i) => i === month ? paid : p)
+            }
+          };
+          await saveData('members', { contributions: updatedContributions }, memberId);
+          if (currentUser?.code === member.code) {
+            showMemberDetail(member.code);
+          }
+          console.log('Cotisation mise à jour pour', member.firstname, member.lastname); // Journal
+        } catch (error) {
+          console.error('Erreur mise à jour cotisation mensuelle:', error);
+          alert('Erreur lors de la mise à jour du paiement');
+        }
+      });
+    });
+  } catch (error) {
+    console.error('Erreur manageMemberMonthlyContributions:', error);
+    alert('Erreur lors du chargement des cotisations');
   }
 }
 
@@ -1682,4 +1826,15 @@ function sendNotification(title, body) {
       }
     });
   }
+}
+
+
+function goBackToTreasurerMonthly() {
+  console.log('Retour à treasurer-monthly');
+  showPage('treasurer-monthly');
+}
+
+function goBackToTreasurer() {
+  console.log('Retour à treasurer'); // Journal pour débogage
+  showPage('treasurer');
 }
