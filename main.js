@@ -1,6 +1,14 @@
 ```javascript
 console.log('main.js chargé avec succès');
 ```
+console.log('Début du chargement de main.js');
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error(`Erreur globale: ${message} à ${source}:${lineno}:${colno}`, error);
+};
+console.log('main.js chargé avec succès');
+
+
+
 
 // Configuration Firebase
 const firebaseConfig = {
@@ -33,6 +41,10 @@ const presidentCode = '0000';
 // ==================== INITIALISATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM chargé, initialisation en cours');
+  console.log('showPage défini :', typeof showPage === 'function');
+  console.log('toggleChatbot défini :', typeof toggleChatbot === 'function');
+
   // Initialiser le thème
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
@@ -45,7 +57,32 @@ document.addEventListener('DOMContentLoaded', () => {
   updateMessagePopups();
   checkAutoMessages();
 
-  // Ajouter les écouteurs d'événements
+  // Ajouter les écouteurs pour les liens de navigation
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const pageId = link.getAttribute('data-page');
+      if (pageId && typeof showPage === 'function') {
+        showPage(pageId);
+      } else {
+        console.error('showPage non défini ou pageId manquant:', pageId);
+      }
+    });
+  });
+
+  // Ajouter l'écouteur pour le bouton du chatbot
+  const chatbotButton = document.querySelector('.chatbot-button');
+  if (chatbotButton) {
+    chatbotButton.addEventListener('click', () => {
+      if (typeof toggleChatbot === 'function') {
+        toggleChatbot();
+      } else {
+        console.error('toggleChatbot non défini');
+      }
+    });
+  }
+
+  // Ajouter les écouteurs pour le bouton de rafraîchissement
   document.querySelector('#refresh-data')?.addEventListener('click', () => {
     updateMembersList();
     updateEventsList();
@@ -55,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLibraryContent();
   });
 });
+
 
 // ==================== FONCTIONS DE BASE POUR FIRESTORE ====================
 
@@ -277,16 +315,22 @@ async function manageMemberGlobalContributions(code) {
 function showPage(pageId) {
   try {
     const pages = document.querySelectorAll('.page');
-    const navItems = document.querySelectorAll('.nav-item');
-    
+    const navItems = document.querySelectorAll('.nav-link'); // Mise à jour pour correspondre à la classe
+
     pages.forEach(page => page.classList.remove('active'));
     navItems.forEach(item => item.classList.remove('active'));
 
     const pageElement = document.querySelector(`#${pageId}`);
-    const navElement = document.querySelector(`a[onclick="showPage('${pageId}')"]`);
+    const navElement = document.querySelector(`.nav-link[data-page="${pageId}"]`);
 
-    if (pageElement) pageElement.classList.add('active');
-    if (navElement) navElement.classList.add('active');
+    if (pageElement) {
+      pageElement.classList.add('active');
+    } else {
+      console.error(`Page avec l'ID ${pageId} introuvable`);
+    }
+    if (navElement) {
+      navElement.classList.add('active');
+    }
 
     switch (pageId) {
       case 'members': updateMembersList(); break;
@@ -297,13 +341,39 @@ function showPage(pageId) {
       case 'personal': updatePersonalPage(); break;
       case 'library': updateLibraryContent(); break;
       case 'home': updateMessagePopups(); break;
-      case 'secret': if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') showTab('stats'); break;
-      case 'treasurer': if (currentUser?.role === 'tresorier') showTab('treasurer-contributions'); break;
-      case 'president': if (currentUser?.role === 'president') showTab('president-files'); break;
-      case 'secretary': if (currentUser?.role === 'secretaire') showTab('secretary-files'); break;
+      case 'secret': 
+        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
+          showTab('stats');
+        } else {
+          console.error('Accès non autorisé à la page secret');
+        }
+        break;
+      case 'treasurer': 
+        if (currentUser?.role === 'tresorier') {
+          showTab('treasurer-contributions');
+        } else {
+          console.error('Accès non autorisé à la page treasurer');
+        }
+        break;
+      case 'president': 
+        if (currentUser?.role === 'president') {
+          showTab('president-files');
+        } else {
+          console.error('Accès non autorisé à la page president');
+        }
+        break;
+      case 'secretary': 
+        if (currentUser?.role === 'secretaire') {
+          showTab('secretary-files');
+        } else {
+          console.error('Accès non autorisé à la page secretary');
+        }
+        break;
+      default:
+        console.error('Page inconnue:', pageId);
     }
   } catch (error) {
-    console.error('Erreur showPage:', error);
+    console.error('Erreur dans showPage:', error);
   }
 }
 
