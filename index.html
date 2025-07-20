@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -21,7 +20,7 @@
   <header>
     <nav class="top-nav">
       <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
-      <span class="material-icons settings-icon" onclick="showPage('settings')">settings</span>
+      <span class="material-icons settings-icon" data-page="settings">settings</span>
     </nav>
   </header>
   <main>
@@ -33,7 +32,7 @@
         <div id="event-countdowns"></div>
         <div id="message-popups"></div>
       </div>
-      <button id="refresh-data" class="cta-button">Rafraîchir les données</button>
+      <button id="refresh-data" class="cta-button" data-action="refreshData">Rafraîchir les données</button>
     </section>
 
     <!-- Page des membres -->
@@ -94,33 +93,33 @@
         <div id="personal-info"></div>
         <h3>Mes Cotisations</h3>
         <div id="personal-contributions"></div>
-        <button class="cta-button" onclick="payViaWave()">Payer via Wave</button>
-        <button class="cta-button" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
+        <button class="cta-button" data-action="payViaWave">Payer via Wave</button>
+        <button class="cta-button" data-action="payViaOrangeMoney">Payer via Orange Money</button>
         <h3>Suggestions</h3>
         <form id="suggestion-form">
           <textarea id="suggestion-text" placeholder="Votre suggestion..." required></textarea>
           <button type="submit" class="cta-button">Envoyer</button>
         </form>
-        <button class="cta-button logout-button" onclick="logoutPersonal()">Se déconnecter</button>
+        <button class="cta-button logout-button" data-action="logoutPersonal">Se déconnecter</button>
       </div>
     </section>
 
     <!-- Espace Secret Général -->
     <section id="secret" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <button class="cta-button back-button" data-page="home"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Espace Secret - Administration</h2>
       <div class="tabs">
-        <button class="tab-button active" onclick="showTab('add-member')">Ajouter un Membre</button>
-        <button class="tab-button" onclick="showTab('edit-member')">Modifier un Membre</button>
-        <button class="tab-button" onclick="showTab('gallery-admin')">Galerie</button>
-        <button class="tab-button" onclick="showTab('events-admin')">Événements</button>
-        <button class="tab-button" onclick="showTab('messages-admin')">Messages</button>
-        <button class="tab-button" onclick="showTab('notes')">Notes</button>
-        <button class="tab-button" onclick="showTab('internal-docs')">Documents Internes</button>
-        <button class="tab-button" onclick="showTab('suggestions-admin')">Suggestions</button>
-        <button class="tab-button" onclick="showTab('stats')">Statistiques</button>
-        <button class="tab-button" onclick="showTab('video-calls')">Appels</button>
-        <button class="tab-button" onclick="showTab('auto-messages')">Messages Automatisés</button>
+        <button class="tab-button active" data-tab="add-member">Ajouter un Membre</button>
+        <button class="tab-button" data-tab="edit-member">Modifier un Membre</button>
+        <button class="tab-button" data-tab="gallery-admin">Galerie</button>
+        <button class="tab-button" data-tab="events-admin">Événements</button>
+        <button class="tab-button" data-tab="messages-admin">Messages</button>
+        <button class="tab-button" data-tab="notes">Notes</button>
+        <button class="tab-button" data-tab="internal-docs">Documents Internes</button>
+        <button class="tab-button" data-tab="suggestions-admin">Suggestions</button>
+        <button class="tab-button" data-tab="stats">Statistiques</button>
+        <button class="tab-button" data-tab="video-calls">Appels</button>
+        <button class="tab-button" data-tab="auto-messages">Messages Automatisés</button>
       </div>
       <div id="add-member" class="tab-content active">
         <h3>Ajouter un Membre</h3>
@@ -228,10 +227,10 @@
         <h3>Appels Vidéo & Audio</h3>
         <input type="text" id="video-calls-search" placeholder="Rechercher un membre..." class="search-bar">
         <div id="members-call-list"></div>
-        <input type="checkbox" id="call-all" onchange="toggleCallAll()">
+        <input type="checkbox" id="call-all" data-action="toggleCallAll">
         <label for="call-all">Cocher tout</label>
-        <button class="cta-button" onclick="startCall('video')">Appel Vidéo</button>
-        <button class="cta-button" onclick="startCall('audio')">Appel Audio</button>
+        <button class="cta-button" data-action="startCall" data-call-type="video">Appel Vidéo</button>
+        <button class="cta-button" data-action="startCall" data-call-type="audio">Appel Audio</button>
         <div id="video-call-container" style="width: 100%; height: 500px;"></div>
       </div>
       <div id="auto-messages" class="tab-content">
@@ -250,11 +249,11 @@
 
     <!-- Espace Trésorier -->
     <section id="treasurer" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <button class="cta-button back-button" data-page="home"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Espace Trésorier</h2>
       <div class="tabs">
-        <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations Mensuelles</button>
-        <button class="tab-button" onclick="showTab('contributions-admin')">Cotisations Globales</button>
+        <button class="tab-button active" data-tab="treasurer-contributions">Cotisations Mensuelles</button>
+        <button class="tab-button" data-tab="contributions-admin">Cotisations Globales</button>
       </div>
       <div id="treasurer-contributions" class="tab-content active">
         <h3>Gestion des Cotisations Mensuelles</h3>
@@ -275,17 +274,17 @@
 
     <!-- Page des cotisations d'un membre -->
     <div id="member-contributions-page" class="page">
-      <button class="cta-button back-button" onclick="showPage('treasurer')"><span class="material-icons">arrow_back</span> Retour</button>
+      <button class="cta-button back-button" data-page="treasurer"><span class="material-icons">arrow_back</span> Retour</button>
       <h2 id="member-contributions-title">Gestion des Cotisations</h2>
       <div id="member-contributions-content"></div>
     </div>
 
     <!-- Espace Président -->
     <section id="president" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <button class="cta-button back-button" data-page="home"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Espace Président</h2>
       <div class="tabs">
-        <button class="tab-button active" onclick="showTab('president-files')">Fichiers Présidentiels</button>
+        <button class="tab-button active" data-tab="president-files">Fichiers Présidentiels</button>
       </div>
       <div id="president-files" class="tab-content active">
         <h3>Fichiers Présidentiels</h3>
@@ -301,10 +300,10 @@
 
     <!-- Espace Secrétaire -->
     <section id="secretary" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <button class="cta-button back-button" data-page="home"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Espace Secrétaire</h2>
       <div class="tabs">
-        <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
+        <button class="tab-button active" data-tab="secretary-files">Fichiers Secrétaire</button>
       </div>
       <div id="secretary-files" class="tab-content active">
         <h3>Fichiers Secrétaire</h3>
@@ -322,7 +321,7 @@
     <section id="settings" class="page">
       <h2>Paramètres</h2>
       <label>Mode sombre/clair</label>
-      <button class="cta-button" onclick="toggleTheme()">Changer le thème</button>
+      <button class="cta-button" data-action="toggleTheme">Changer le thème</button>
       <label>Langue</label>
       <select id="settings-language">
         <option value="fr">Français</option>
@@ -340,27 +339,27 @@
   </main>
   <footer>
     <nav class="bottom-nav">
-      <a href="#" class="nav-item active" onclick="showPage('home')"><span class="material-icons">home</span>Accueil</a>
-      <a href="#" class="nav-item" onclick="showPage('members')"><span class="material-icons">people</span>Membres</a>
-      <a href="#" class="nav-item" onclick="showPage('events')"><span class="material-icons">event</span>Événements</a>
-      <a href="#" class="nav-item" onclick="showPage('gallery')"><span class="material-icons">photo_library</span>Galerie</a>
-      <a href="#" class="nav-item" onclick="showPage('messages')"><span class="material-icons">notifications</span>Messages</a>
-      <a href="#" class="nav-item" onclick="showPage('coran')"><span class="material-icons">book</span>Coran</a>
-      <a href="#" class="nav-item" onclick="showPage('personal')"><span class="material-icons">person</span>Personnel</a>
-      <a href="#" class="nav-item" onclick="showPage('library')"><span class="material-icons">library_books</span>Bibliothèque</a>
+      <a href="#" class="nav-item active nav-link" data-page="home"><span class="material-icons">home</span>Accueil</a>
+      <a href="#" class="nav-item nav-link" data-page="members"><span class="material-icons">people</span>Membres</a>
+      <a href="#" class="nav-item nav-link" data-page="events"><span class="material-icons">event</span>Événements</a>
+      <a href="#" class="nav-item nav-link" data-page="gallery"><span class="material-icons">photo_library</span>Galerie</a>
+      <a href="#" class="nav-item nav-link" data-page="messages"><span class="material-icons">notifications</span>Messages</a>
+      <a href="#" class="nav-item nav-link" data-page="coran"><span class="material-icons">book</span>Coran</a>
+      <a href="#" class="nav-item nav-link" data-page="personal"><span class="material-icons">person</span>Personnel</a>
+      <a href="#" class="nav-item nav-link" data-page="library"><span class="material-icons">library_books</span>Bibliothèque</a>
     </nav>
   </footer>
-  <div class="chatbot-button">
-    <span class="material-icons" onclick="toggleChatbot()">chat</span>
+  <div class="chatbot-button" data-action="toggleChatbot">
+    <span class="material-icons">chat</span>
   </div>
   <div id="chatbot" class="chatbot-container" style="display: none;">
     <div class="chatbot-header">
       <h3>Assistant ANSAR</h3>
-      <span class="material-icons" onclick="toggleChatbot()">close</span>
+      <span class="material-icons" data-action="toggleChatbot">close</span>
     </div>
     <div id="chatbot-messages"></div>
     <div id="chatbot-controls">
-      <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> Effacer</button>
+      <button class="cta-button clear-history" data-action="clearChatHistory"><span class="material-icons">delete</span> Effacer</button>
     </div>
     <form id="chatbot-form">
       <input type="text" id="chatbot-input" placeholder="Posez une question...">
@@ -368,11 +367,10 @@
     </form>
     <div id="secret-entry" style="display: none;">
       <input type="password" id="secret-password" placeholder="Mot de passe">
-      <button class="cta-button" onclick="checkSecretPassword()">Entrée</button>
+      <button class="cta-button" data-action="checkSecretPassword">Entrée</button>
     </div>
   </div>
   <script src="chatbotResponses.js"></script>
-  <script src="main.js" defer></script>
+  <script src="main.js"></script>
 </body>
 </html>
-```
