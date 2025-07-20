@@ -267,7 +267,6 @@
     <h3>Gestion des Cotisations Mensuelles</h3>
     <input type="text" id="treasurer-contributions-search" placeholder="Rechercher un membre..." class="search-bar">
     <div id="treasurer-contributions-list"></div>
-    <div id="treasurer-contributions-content"></div>
   </div>
   <div id="contributions-admin" class="tab-content">
     <h3>Gestion des Cotisations Globales</h3>
@@ -279,6 +278,13 @@
     <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
     <div id="contributions-admin-list"></div>
   </div>
+</section>
+
+<!-- Ajouter la nouvelle page pour les cotisations d'un membre -->
+<section id="treasurer-member-contributions" class="page" style="display: none;">
+  <button class="cta-button back-button" onclick="showPage('treasurer'); showTab('treasurer-contributions')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2 id="treasurer-member-title">Cotisations du Membre</h2>
+  <div id="treasurer-member-content"></div>
 </section>
 
     <!-- Espace Président -->
