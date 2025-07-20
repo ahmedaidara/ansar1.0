@@ -24,6 +24,7 @@ auth.signInAnonymously().catch(error => {
 let currentUser = null;
 let isChatOpen = false;
 let selectedCallMembers = [];
+let memberListener = null;
 const presidentCode = '0000';
 const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
@@ -604,47 +605,80 @@ async function updateAllMemberLists() {
 }
 
 async function showMemberDetail(code) {
+  console.log('showMemberDetail appelé avec code:', code);
   try {
     const members = await loadData('members');
     const member = members.find(m => m.code === code);
     if (!member) {
+      console.error('Membre introuvable pour code:', code);
       alert('Membre introuvable');
       return;
     }
 
-    showPage('personal');
-    const personalContent = document.querySelector('#personal-content');
-    const personalLogin = document.querySelector('#personal-login');
-    if (personalContent && personalLogin) {
-      personalLogin.style.display = 'none';
-      personalContent.style.display = 'block';
-      document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
-      document.querySelector('#personal-info').innerHTML = `
-        <p><strong>Code:</strong> ${member.code}</p>
-        <p><strong>Nom:</strong> ${member.firstname} ${member.lastname}</p>
-        <p><strong>Rôle:</strong> ${member.role}</p>
-        <p><strong>Statut:</strong> ${member.status}</p>
-        ${member.email ? `<p><strong>Email:</strong> ${member.email}</p>` : ''}
-        ${member.phone ? `<p><strong>Téléphone:</strong> ${member.phone}</p>` : ''}
-      `;
-      const contributions = await loadData('contributions');
-      document.querySelector('#personal-contributions').innerHTML = `
-        <p><strong>Cotisations Mensuelles:</strong></p>
-        ${Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
-          <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
-        `).join('')}
-        <p><strong>Cotisations Globales:</strong></p>
-        ${contributions.map(c => `
-          <p>${c.name} (${c.amount} FCFA): ${member.contributions.globalContributions?.[c.name]?.paid ? '✅ Payé' : '❌ Non payé'}</p>
-        `).join('') || '<p>Aucune cotisation globale</p>'}
-      `;
+    if (memberListener) {
+      memberListener();
+      memberListener = null;
+      console.log('Ancien listener Firestore nettoyé');
     }
+
+    const updatePersonalPage = (memberData) => {
+      const personalContent = document.querySelector('#personal-content');
+      if (!personalContent) {
+        console.error('Élément #personal-content introuvable');
+        alert('Erreur : conteneur de l’espace personnel introuvable');
+        return;
+      }
+
+      personalContent.innerHTML = `
+        <div class="member-info">
+          <img src="${memberData.photo || 'https://via.placeholder.com/150'}" alt="${memberData.firstname} ${memberData.lastname}" class="member-photo">
+          <h2>${memberData.firstname} ${memberData.lastname}</h2>
+          <p><strong>Code:</strong> ${memberData.code}</p>
+          <p><strong>Rôle:</strong> ${memberData.role}</p>
+          <h3>Cotisations Mensuelles</h3>
+          ${Object.entries(memberData.contributions.Mensuelle).map(([year, paidMonths]) => `
+            <div class="contribution-year">
+              <h4>${year}</h4>
+              ${paidMonths.map((paid, i) => `
+                <p>${months[i]}: ${paid ? '✅ Payé' : '❌ Non payé'}</p>
+              `).join('')}
+            </div>
+          `).join('')}
+          <h3>Cotisations Globales</h3>
+          ${Object.entries(memberData.contributions.globalContributions || {}).map(([name, data]) => `
+            <p>${name}: ${data.paid ? '✅ Payé' : '❌ Non payé'}</p>
+          `).join('') || '<p>Aucune cotisation globale</p>'}
+        </div>
+      `;
+      console.log('Espace personnel mis à jour pour', memberData.firstname, memberData.lastname);
+    };
+
+    updatePersonalPage(member);
+
+    const db = firebase.firestore();
+    memberListener = db.collection('members').doc(member.id).onSnapshot(
+      (doc) => {
+        if (doc.exists) {
+          const updatedMember = { id: doc.id, ...doc.data() };
+          console.log('Mise à jour en temps réel reçue pour', updatedMember.firstname, updatedMember.lastname);
+          updatePersonalPage(updatedMember);
+        } else {
+          console.error('Document membre introuvable:', member.id);
+          alert('Erreur : données du membre introuvables');
+        }
+      },
+      (error) => {
+        console.error('Erreur listener Firestore:', error);
+        alert('Erreur lors de la synchronisation des données');
+      }
+    );
+
+    showPage('personal');
   } catch (error) {
     console.error('Erreur showMemberDetail:', error);
-    alert('Erreur lors de l\'affichage des détails du membre');
+    alert('Erreur lors du chargement de l’espace personnel');
   }
 }
-
 // ==================== FONCTIONS GALERIE ====================
 
 async function updateGalleryContent() {
