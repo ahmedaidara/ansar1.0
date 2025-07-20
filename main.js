@@ -413,7 +413,6 @@ document.querySelector('#add-member-form')?.addEventListener('submit', async (e)
     age: parseInt(document.getElementById('new-member-age')?.value) || null,
     dob: document.getElementById('new-member-dob')?.value || null,
     birthplace: document.getElementById('new-member-birthplace')?.value.trim() || null,
-    photo: await handlePhotoUpload(photoInput),
     email: document.getElementById('new-member-email')?.value.trim() || null,
     activity: document.getElementById('new-member-activity')?.value.trim() || null,
     address: document.getElementById('new-member-address')?.value.trim() || null,
@@ -442,12 +441,7 @@ async function generateMemberCode() {
   return `${(members.length + 1).toString().padStart(3, '0')}`;
 }
 
-async function handlePhotoUpload(photoInput) {
-  if (photoInput?.files.length > 0) {
-    return await uploadFile(photoInput.files[0], 'members');
-  }
-  return 'assets/images/default-photo.png';
-}
+
 
 // Remplacer la fonction initializeContributions
 function initializeContributions() {
@@ -666,77 +660,7 @@ async function updateGalleryContent() {
   }
 }
 
-document.querySelector('#add-gallery-form')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const fileInput = document.querySelector('#gallery-file');
-  const description = document.querySelector('#gallery-description')?.value.trim() || '';
-  const file = fileInput?.files[0];
 
-  if (!file) {
-    alert('Veuillez sélectionner un fichier');
-    return;
-  }
-
-  try {
-    const fileUrl = await uploadFile(file, 'gallery');
-    const galleryData = {
-      type: file.type.startsWith('image') ? 'image' : 'video',
-      url: fileUrl,
-      name: file.name,
-      description,
-      date: new Date().toISOString()
-    };
-
-    await saveData('gallery', galleryData);
-    await updateGalleryContent();
-    await updateGalleryAdminList();
-    document.querySelector('#add-gallery-form').reset();
-    alert('Média ajouté avec succès');
-  } catch (error) {
-    console.error('Erreur addGalleryItem:', error);
-    alert('Erreur lors de l\'ajout du média');
-  }
-});
-
-async function updateGalleryAdminList() {
-  try {
-    const gallery = await loadData('gallery');
-    const search = document.querySelector('#gallery-admin-search')?.value.toLowerCase() || '';
-    const list = document.querySelector('#gallery-admin-list');
-    if (!list) return;
-
-    list.innerHTML = gallery
-      .filter(g => g.description?.toLowerCase().includes(search) || g.name?.toLowerCase().includes(search))
-      .map(g => `
-        <div class="gallery-item">
-          ${g.type === 'image' ? 
-            `<img src="${g.url}" alt="${g.description}" class="gallery-image">` : 
-            `<video src="${g.url}" controls class="gallery-video"></video>`}
-          <div class="gallery-details">
-            <p><strong>${g.description || 'Pas de description'}</strong></p>
-            <p>${g.name}</p>
-            <p class="gallery-date">${formatDate(g.date)}</p>
-            <button class="cta-button danger" onclick="deleteGalleryItem('${g.id}')">Supprimer</button>
-          </div>
-        </div>
-      `).join('');
-  } catch (error) {
-    console.error('Erreur updateGalleryAdminList:', error);
-  }
-}
-
-async function deleteGalleryItem(id) {
-  if (!confirm('Voulez-vous vraiment supprimer ce média ?')) return;
-  try {
-    await deleteData('gallery', id);
-    await updateGalleryContent();
-    await updateGalleryAdminList();
-    alert('Média supprimé avec succès');
-  } catch (error) {
-    console.error('Erreur deleteGalleryItem:', error);
-    alert('Erreur lors de la suppression du média');
-  }
-}
 
 // ==================== FONCTIONS ÉVÉNEMENTS ====================
 
@@ -751,7 +675,6 @@ document.querySelector('#add-event-form')?.addEventListener('submit', async (e) 
     name: document.querySelector('#event-name').value.trim(),
     description: document.querySelector('#event-description').value.trim(),
     datetime: new Date(`${eventDate}T${eventTime}`).toISOString(),
-    image: file ? await uploadFile(file, 'events') : null,
     createdAt: new Date().toISOString()
   };
 
@@ -1042,7 +965,6 @@ document.querySelector('#add-internal-doc-form')?.addEventListener('submit', asy
   }
 
   try {
-    const fileUrl = await uploadFile(file, 'internalDocs');
     const docData = {
       name: file.name,
       category: document.querySelector('#internal-doc-category').value.trim(),
@@ -1376,8 +1298,8 @@ async function updateTreasurerMonthlyList() {
 
     list.innerHTML = filteredMembers
       .map(m => `
-        <div class="member-card" onclick="manageMemberMonthlyContributions('${m.code}')">
-          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+<div class="member-card" onclick="manageMemberMonthlyContributions('${m.code}')">
+          <img src="https://via.placeholder.com/150" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
@@ -1500,7 +1422,6 @@ document.querySelector('#add-president-file-form')?.addEventListener('submit', a
   }
 
   try {
-    const fileUrl = await uploadFile(file, 'presidentFiles');
     const fileData = {
       name: file.name,
       category: document.querySelector('#president-file-category').value.trim(),
@@ -1548,7 +1469,6 @@ document.querySelector('#add-secretary-file-form')?.addEventListener('submit', a
   }
 
   try {
-    const fileUrl = await uploadFile(file, 'secretaryFiles');
     const fileData = {
       name: file.name,
       category: document.querySelector('#secretary-file-category').value.trim(),
