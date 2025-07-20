@@ -40,14 +40,6 @@
     <!-- Page des membres -->
     <section id="members" class="page">
       <h2>Liste des Membres</h2>
-      <div class="search-filter-container">
-        <input type="text" id="members-search" placeholder="Rechercher un membre..." class="search-bar">
-        <select id="members-filter" class="filter-select">
-          <option value="all">Tous</option>
-          <option value="paid">Payé</option>
-          <option value="unpaid">Non payé</option>
-        </select>
-      </div>
       <div id="members-list"></div>
     </section>
 
@@ -59,10 +51,7 @@
     </section>
 
     <!-- Page de la galerie -->
-    <section id="gallery" class="page">
-      <h2>Galerie</h2>
-      <div id="gallery-content" class="gallery-grid"></div>
-    </section>
+
 
     <!-- Page des messages -->
     <section id="messages" class="page">
@@ -120,7 +109,6 @@
       <div class="tabs">
         <button class="tab-button active" onclick="showTab('add-member')">Ajouter un Membre</button>
         <button class="tab-button" onclick="showTab('edit-member')">Modifier un Membre</button>
-        <button class="tab-button" onclick="showTab('gallery-admin')">Galerie</button>
         <button class="tab-button" onclick="showTab('events-admin')">Événements</button>
         <button class="tab-button" onclick="showTab('messages-admin')">Messages</button>
         <button class="tab-button" onclick="showTab('notes')">Notes</button>
@@ -144,7 +132,7 @@
           <input type="tel" id="new-member-phone" placeholder="Numéro de téléphone">
           <input type="text" id="new-member-residence" placeholder="Résidence actuelle">
           <select id="new-member-role">
-            <option value="membre">Membre</option>
+            <option value="membre">Membre Simple</option>
             <option value="tresorier">Trésorier</option>
             <option value="president">Président</option>
             <option value="secretaire">Secrétaire</option>
@@ -159,30 +147,15 @@
       </div>
       <div id="edit-member" class="tab-content">
         <h3>Modifier/Supprimer un Membre</h3>
-        <div class="search-filter-container">
-          <input type="text" id="edit-member-search" placeholder="Rechercher un membre..." class="search-bar">
-          <select id="edit-member-filter" class="filter-select">
-            <option value="all">Tous</option>
-            <option value="paid">Payé</option>
-            <option value="unpaid">Non payé</option>
-          </select>
-        </div>
+        
         <div id="edit-members-list"></div>
         <form id="delete-member-form" style="display: none;">
           <input type="text" id="delete-member-code" placeholder="Code président (0000)" required>
           <button type="submit" class="cta-button">Confirmer la suppression</button>
         </form>
       </div>
-      <div id="gallery-admin" class="tab-content">
-        <h3>Gérer la Galerie</h3>
-        <form id="add-gallery-form">
-          <input type="file" id="gallery-file" accept="image/*,video/*" required>
-          <input type="text" id="gallery-description" placeholder="Description du média" required>
-          <button type="submit" class="cta-button">Ajouter</button>
-        </form>
-        <input type="text" id="gallery-admin-search" placeholder="Rechercher un média..." class="search-bar">
-        <div id="gallery-admin-list"></div>
-      </div>
+      
+    
       <div id="events-admin" class="tab-content">
         <h3>Ajouter un Événement</h3>
         <form id="add-event-form">
@@ -190,7 +163,7 @@
           <input type="date" id="event-date" required>
           <input type="time" id="event-time" required>
           <textarea id="event-description" placeholder="Description" required></textarea>
-          <input type="file" id="event-file" accept="image/*">
+         
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
         <input type="text" id="events-admin-search" placeholder="Rechercher un événement..." class="search-bar">
@@ -220,7 +193,7 @@
         <h3>Documents Internes</h3>
         <form id="add-internal-doc-form">
           <input type="text" id="internal-doc-category" placeholder="Catégorie" required>
-          <input type="file" id="internal-doc" accept="*" required>
+          
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
         <input type="text" id="internal-docs-search" placeholder="Rechercher un document..." class="search-bar">
@@ -242,11 +215,7 @@
         <h3>Appels Vidéo & Audio</h3>
         <div class="search-filter-container">
           <input type="text" id="video-calls-search" placeholder="Rechercher un membre..." class="search-bar">
-          <select id="video-calls-filter" class="filter-select">
-            <option value="all">Tous</option>
-            <option value="paid">Payé</option>
-            <option value="unpaid">Non payé</option>
-          </select>
+
         </div>
         <div id="members-call-list"></div>
         <input type="checkbox" id="call-all" onchange="toggleCallAll()">
