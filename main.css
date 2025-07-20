@@ -345,3 +345,26 @@ canvas {
     width: 90%;
   }
 }
+
+/* Styles pour la page des cotisations d'un membre */
+#member-contributions-page {
+  display: none;
+}
+#member-contributions-page.active {
+  display: block;
+}
+.contribution-item {
+  margin: 10px 0;
+}
+.contribution-item label {
+  display: inline-block;
+  margin-right: 10px;
+}
+#delete-contribution-form {
+  margin-top: 20px;
+}
+#delete-contribution-code {
+  margin: 10px 0;
+  padding: 8px;
+  width: 200px;
+}
