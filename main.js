@@ -1,15 +1,3 @@
-```javascript
-console.log('main.js chargé avec succès');
-```
-console.log('Début du chargement de main.js');
-window.onerror = function(message, source, lineno, colno, error) {
-  console.error(`Erreur globale: ${message} à ${source}:${lineno}:${colno}`, error);
-};
-console.log('main.js chargé avec succès');
-
-
-
-
 // Configuration Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
@@ -41,10 +29,6 @@ const presidentCode = '0000';
 // ==================== INITIALISATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM chargé, initialisation en cours');
-  console.log('showPage défini :', typeof showPage === 'function');
-  console.log('toggleChatbot défini :', typeof toggleChatbot === 'function');
-
   // Initialiser le thème
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
@@ -57,32 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateMessagePopups();
   checkAutoMessages();
 
-  // Ajouter les écouteurs pour les liens de navigation
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      const pageId = link.getAttribute('data-page');
-      if (pageId && typeof showPage === 'function') {
-        showPage(pageId);
-      } else {
-        console.error('showPage non défini ou pageId manquant:', pageId);
-      }
-    });
-  });
-
-  // Ajouter l'écouteur pour le bouton du chatbot
-  const chatbotButton = document.querySelector('.chatbot-button');
-  if (chatbotButton) {
-    chatbotButton.addEventListener('click', () => {
-      if (typeof toggleChatbot === 'function') {
-        toggleChatbot();
-      } else {
-        console.error('toggleChatbot non défini');
-      }
-    });
-  }
-
-  // Ajouter les écouteurs pour le bouton de rafraîchissement
+  // Ajouter les écouteurs d'événements
   document.querySelector('#refresh-data')?.addEventListener('click', () => {
     updateMembersList();
     updateEventsList();
@@ -92,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLibraryContent();
   });
 });
-
 
 // ==================== FONCTIONS DE BASE POUR FIRESTORE ====================
 
@@ -144,29 +102,27 @@ async function uploadFile(file, path) {
 }
 
 // Remplacer la fonction updateTreasurerContributionsList
-// Remplacer la fonction updateTreasurerContributionsList (vers la ligne 110)
 async function updateTreasurerContributionsList() {
   try {
     const members = await loadData('members');
     const search = document.querySelector('#treasurer-contributions-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#treasurer-contributions-list');
-    if (!list) {
-      console.error('Élément #treasurer-contributions-list introuvable');
+    const content = document.querySelector('#treasurer-contributions-content');
+    if (!list || !content) {
+      console.error('Élément #treasurer-contributions-list ou #treasurer-contributions-content introuvable');
       return;
     }
 
+    // Vider le contenu du formulaire pour afficher la liste
+    content.innerHTML = '';
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
-        <div class="member-card">
+        <div class="member-card" onclick="manageMemberContributions('${m.code}')">
           <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
-          </div>
-          <div class="member-actions">
-            <button class="cta-button small" onclick="manageMemberGlobalContributions('${m.code}')">Cotisations Globales</button>
-            <button class="cta-button small" onclick="manageMemberContributions('${m.code}')">Cotisations Mensuelles</button>
           </div>
         </div>
       `).join('');
@@ -175,7 +131,7 @@ async function updateTreasurerContributionsList() {
   }
 }
 
-// Remplacer la fonction manageMemberContributions (vers la ligne 130 dans votre code actuel)
+// Remplacer la fonction manageMemberContributions
 async function manageMemberContributions(code) {
   try {
     const members = await loadData('members');
@@ -185,16 +141,14 @@ async function manageMemberContributions(code) {
       return;
     }
 
-    showPage('member-contributions-page');
-    const contributionsContainer = document.querySelector('#member-contributions-content');
-    const contributionsTitle = document.querySelector('#member-contributions-title');
-    if (!contributionsContainer || !contributionsTitle) {
-      console.error('Élément #member-contributions-content ou #member-contributions-title introuvable');
+    const contributionsContainer = document.querySelector('#treasurer-contributions-content');
+    if (!contributionsContainer) {
+      console.error('Élément #treasurer-contributions-content introuvable');
       return;
     }
 
-    contributionsTitle.textContent = `Cotisations de ${member.firstname} ${member.lastname} (${member.code})`;
     contributionsContainer.innerHTML = `
+      <h3>Cotisations de ${member.firstname} ${member.lastname} (${member.code})</h3>
       <form id="member-contributions-form">
         ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
           <div class="contribution-year">
@@ -208,7 +162,7 @@ async function manageMemberContributions(code) {
           </div>
         `).join('')}
         <button type="submit" class="cta-button">Enregistrer</button>
-        <button type="button" class="cta-button" onclick="showPage('treasurer')">Retour</button>
+        <button type="button" class="cta-button" onclick="updateTreasurerContributionsList()">Retour</button>
       </form>
     `;
 
@@ -228,10 +182,11 @@ async function manageMemberContributions(code) {
       try {
         await saveData('members', { contributions: updatedContributions }, member.id);
         alert('Cotisations mensuelles mises à jour avec succès');
+        // Mettre à jour l'espace personnel si le membre est connecté
         if (currentUser?.code === member.code) {
           showMemberDetail(member.code);
         }
-        showPage('treasurer');
+        updateTreasurerContributionsList();
       } catch (error) {
         console.error('Erreur manageMemberContributions:', error);
         alert('Erreur lors de la mise à jour des cotisations');
@@ -242,95 +197,21 @@ async function manageMemberContributions(code) {
     alert('Erreur lors du chargement des cotisations');
   }
 }
-
-
-// Ajouter après la fonction manageMemberContributions
-async function manageMemberGlobalContributions(code) {
-  try {
-    const members = await loadData('members');
-    const contributions = await loadData('contributions');
-    const member = members.find(m => m.code === code);
-    if (!member) {
-      alert('Membre introuvable');
-      return;
-    }
-
-    showPage('member-contributions-page');
-    const contributionsContainer = document.querySelector('#member-contributions-content');
-    const contributionsTitle = document.querySelector('#member-contributions-title');
-    if (!contributionsContainer || !contributionsTitle) {
-      console.error('Élément #member-contributions-content ou #member-contributions-title introuvable');
-      return;
-    }
-
-    contributionsTitle.textContent = `Cotisations Globales de ${member.firstname} ${member.lastname} (${member.code})`;
-    contributionsContainer.innerHTML = `
-      <form id="member-global-contributions-form">
-        ${Object.entries(member.contributions?.globalContributions || {}).map(([name, data]) => `
-          <div class="contribution-item">
-            <label>
-              <input type="checkbox" name="global-${name}" data-contribution-id="${data.id}" data-contribution-name="${name}" ${data.paid ? 'checked' : ''}>
-              ${name} (${data.amount} FCFA)
-            </label>
-          </div>
-        `).join('') || '<p>Aucune cotisation globale</p>'}
-        <button type="submit" class="cta-button">Enregistrer</button>
-        <button type="button" class="cta-button" onclick="showPage('treasurer')">Retour</button>
-      </form>
-    `;
-
-    document.querySelector('#member-global-contributions-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const updatedContributions = { ...member.contributions, globalContributions: {} };
-      for (const [name, data] of Object.entries(member.contributions.globalContributions)) {
-        const checkbox = document.querySelector(`input[name="global-${name}"]`);
-        if (checkbox) {
-          updatedContributions.globalContributions[name] = {
-            id: data.id,
-            amount: data.amount,
-            paid: checkbox.checked
-          };
-        }
-      }
-
-      try {
-        await saveData('members', { contributions: updatedContributions }, member.id);
-        alert('Cotisations globales mises à jour avec succès');
-        if (currentUser?.code === member.code) {
-          showMemberDetail(member.code);
-        }
-        showPage('treasurer');
-      } catch (error) {
-        console.error('Erreur manageMemberGlobalContributions:', error);
-        alert('Erreur lors de la mise à jour des cotisations globales');
-      }
-    });
-  } catch (error) {
-    console.error('Erreur manageMemberGlobalContributions:', error);
-    alert('Erreur lors du chargement des cotisations globales');
-  }
-}
 // ==================== FONCTIONS D'INTERFACE ====================
 
 function showPage(pageId) {
   try {
     const pages = document.querySelectorAll('.page');
-    const navItems = document.querySelectorAll('.nav-link'); // Mise à jour pour correspondre à la classe
-
+    const navItems = document.querySelectorAll('.nav-item');
+    
     pages.forEach(page => page.classList.remove('active'));
     navItems.forEach(item => item.classList.remove('active'));
 
     const pageElement = document.querySelector(`#${pageId}`);
-    const navElement = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+    const navElement = document.querySelector(`a[onclick="showPage('${pageId}')"]`);
 
-    if (pageElement) {
-      pageElement.classList.add('active');
-    } else {
-      console.error(`Page avec l'ID ${pageId} introuvable`);
-    }
-    if (navElement) {
-      navElement.classList.add('active');
-    }
+    if (pageElement) pageElement.classList.add('active');
+    if (navElement) navElement.classList.add('active');
 
     switch (pageId) {
       case 'members': updateMembersList(); break;
@@ -341,39 +222,13 @@ function showPage(pageId) {
       case 'personal': updatePersonalPage(); break;
       case 'library': updateLibraryContent(); break;
       case 'home': updateMessagePopups(); break;
-      case 'secret': 
-        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
-          showTab('stats');
-        } else {
-          console.error('Accès non autorisé à la page secret');
-        }
-        break;
-      case 'treasurer': 
-        if (currentUser?.role === 'tresorier') {
-          showTab('treasurer-contributions');
-        } else {
-          console.error('Accès non autorisé à la page treasurer');
-        }
-        break;
-      case 'president': 
-        if (currentUser?.role === 'president') {
-          showTab('president-files');
-        } else {
-          console.error('Accès non autorisé à la page president');
-        }
-        break;
-      case 'secretary': 
-        if (currentUser?.role === 'secretaire') {
-          showTab('secretary-files');
-        } else {
-          console.error('Accès non autorisé à la page secretary');
-        }
-        break;
-      default:
-        console.error('Page inconnue:', pageId);
+      case 'secret': if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') showTab('stats'); break;
+      case 'treasurer': if (currentUser?.role === 'tresorier') showTab('treasurer-contributions'); break;
+      case 'president': if (currentUser?.role === 'president') showTab('president-files'); break;
+      case 'secretary': if (currentUser?.role === 'secretaire') showTab('secretary-files'); break;
     }
   } catch (error) {
-    console.error('Erreur dans showPage:', error);
+    console.error('Erreur showPage:', error);
   }
 }
 
@@ -472,7 +327,6 @@ function clearChatHistory() {
   document.querySelector('#chatbot-input').disabled = false;
 }
 
-// Remplacer la fonction checkSecretPassword (vers la ligne 200 dans votre code actuel)
 async function checkSecretPassword() {
   const password = document.querySelector('#secret-password')?.value.trim();
   const secretCodes = [
@@ -610,28 +464,32 @@ function initializeContributions() {
   };
 }
 
+// Remplacer la fonction updateMembersList
 async function updateMembersList() {
   try {
     const members = await loadData('members');
-    const searchInput = document.querySelector('#members-search');
-    const search = searchInput ? searchInput.value.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : ''; // Échappe les caractères spéciaux
+    const search = document.querySelector('#members-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#members-list');
-    if (!list) {
-      console.error('Élément #members-list introuvable');
-      return;
-    }
+    if (!list) return;
 
     list.innerHTML = members
-      .filter(m => `${m.firstname || ''} ${m.lastname || ''} ${m.code || ''}`.toLowerCase().includes(search))
+      .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
-        <div class="member-card" onclick="showMemberDetail('${m.code}')">
-          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname || ''} ${m.lastname || ''}" class="member-photo">
+        <div class="member-card">
+          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
-            <p><strong>${m.firstname || ''} ${m.lastname || ''}</strong></p>
-            <p><small>${m.code || ''} • ${m.role || ''}</small></p>
+            <p><strong>${m.firstname} ${m.lastname}</strong></p>
+            <p><small>${m.code} • ${m.role}</small></p>
           </div>
         </div>
       `).join('');
+
+    // Supprimer tout écouteur d'événements existant sur .member-card
+    const memberCards = document.querySelectorAll('.member-card');
+    memberCards.forEach(card => {
+      card.removeEventListener('click', showMemberDetail); // Supprime tout écouteur précédent
+      card.style.cursor = 'default'; // Indique visuellement que le clic n'est pas interactif
+    });
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
   }
@@ -737,11 +595,10 @@ async function updateAllMemberLists() {
   ]);
 }
 
-// Remplacer la fonction showMemberDetail (vers la ligne 300 dans votre code actuel)
+// Mettre à jour la fonction showMemberDetail pour inclure les cotisations globales
 async function showMemberDetail(code) {
   try {
     const members = await loadData('members');
-    const contributions = await loadData('contributions');
     const member = members.find(m => m.code === code);
     if (!member) {
       alert('Membre introuvable');
@@ -764,14 +621,14 @@ async function showMemberDetail(code) {
         ${member.phone ? `<p><strong>Téléphone:</strong> ${member.phone}</p>` : ''}
       `;
       document.querySelector('#personal-contributions').innerHTML = `
-        <p><strong>Cotisations Globales:</strong></p>
-        ${Object.entries(member.contributions?.globalContributions || {}).map(([name, data]) => `
-          <p>${name} (${data.amount} FCFA): ${data.paid ? '✅ Payé' : '❌ Non payé'}</p>
-        `).join('') || '<p>Aucune cotisation globale</p>'}
         <p><strong>Cotisations Mensuelles:</strong></p>
         ${Object.entries(member.contributions.Mensuelle).map(([year, months]) => `
           <p>${year}: ${months.map((paid, i) => paid ? `✅ Mois ${i+1}` : `❌ Mois ${i+1}`).join(', ')}</p>
         `).join('')}
+        <p><strong>Cotisations Globales:</strong></p>
+        ${Object.entries(member.contributions?.globalContributions || {}).map(([name, data]) => `
+          <p>${name}: ${data.paid ? '✅ Payé' : '❌ Non payé'}</p>
+        `).join('') || '<p>Aucune cotisation globale</p>'}
       `;
     }
   } catch (error) {
@@ -779,6 +636,7 @@ async function showMemberDetail(code) {
     alert('Erreur lors de l\'affichage des détails du membre');
   }
 }
+
 // ==================== FONCTIONS GALERIE ====================
 
 async function updateGalleryContent() {
@@ -1270,7 +1128,7 @@ async function updateSuggestionsList() {
 
 // ==================== FONCTIONS COTISATIONS ====================
 
-// Remplacer la fonction add-contribution-form (vers la ligne 600 dans votre code actuel)
+// Remplacer la fonction add-contribution-form
 document.querySelector('#add-contribution-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const contributionData = {
@@ -1293,7 +1151,6 @@ document.querySelector('#add-contribution-form')?.addEventListener('submit', asy
           ...member.contributions?.globalContributions,
           [contributionData.name]: {
             id: contributionId,
-            amount: contributionData.amount,
             paid: false
           }
         }
@@ -1311,10 +1168,11 @@ document.querySelector('#add-contribution-form')?.addEventListener('submit', asy
 });
 
 
-/ Remplacer la fonction updateContributionsAdminList (vers la ligne 620 dans votre code actuel)
+// Remplacer la fonction updateContributionsAdminList
 async function updateContributionsAdminList() {
   try {
     const contributions = await loadData('contributions');
+    const members = await loadData('members');
     const search = document.querySelector('#contributions-admin-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#contributions-admin-list');
     if (!list) return;
@@ -1326,7 +1184,6 @@ async function updateContributionsAdminList() {
           <p><strong>${c.name}</strong>: ${c.amount} FCFA</p>
           <p class="contribution-date">${formatDate(c.createdAt)}</p>
           <button class="cta-button" onclick="manageGlobalContribution('${c.id}', '${c.name}')">Gérer Paiements</button>
-          <button class="cta-button danger" onclick="confirmDeleteContribution('${c.id}', '${c.name}')">Supprimer</button>
         </div>
       `).join('') || '<p>Aucune cotisation disponible</p>';
   } catch (error) {
@@ -1334,60 +1191,16 @@ async function updateContributionsAdminList() {
   }
 }
 
-// Nouvelle fonction pour confirmer la suppression d'une cotisation globale (ajouter après updateContributionsAdminList)
-async function confirmDeleteContribution(contributionId, contributionName) {
-  const contributionsAdmin = document.querySelector('#contributions-admin');
-  if (!contributionsAdmin) return;
 
-  contributionsAdmin.innerHTML = `
-    <h3>Supprimer la Cotisation: ${contributionName}</h3>
-    <form id="delete-contribution-form">
-      <label for="delete-contribution-code">Entrez le code président (0000):</label>
-      <input type="text" id="delete-contribution-code" required>
-      <button type="submit" class="cta-button">Confirmer la Suppression</button>
-      <button type="button" class="cta-button" onclick="updateContributionsAdminList()">Annuler</button>
-    </form>
-  `;
-
-  document.querySelector('#delete-contribution-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const presidentInput = document.querySelector('#delete-contribution-code')?.value.trim();
-    if (presidentInput !== presidentCode) {
-      alert('Code président incorrect');
-      return;
-    }
-
-    try {
-      // Supprimer la cotisation de la collection contributions
-      await deleteData('contributions', contributionId);
-
-      // Supprimer la cotisation de chaque membre
-      const members = await loadData('members');
-      for (const member of members) {
-        const updatedContributions = { ...member.contributions };
-        delete updatedContributions.globalContributions[contributionName];
-        await saveData('members', { contributions: updatedContributions }, member.id);
-      }
-
-      alert('Cotisation globale supprimée avec succès');
-      updateContributionsAdminList();
-    } catch (error) {
-      console.error('Erreur confirmDeleteContribution:', error);
-      alert('Erreur lors de la suppression de la cotisation');
-    }
-  });
-}
-// Remplacer la fonction manageGlobalContribution (vers la ligne 640 dans votre code actuel)
+// Nouvelle fonction pour gérer les paiements des cotisations globales
 async function manageGlobalContribution(contributionId, contributionName) {
   try {
     const members = await loadData('members');
-    const contributions = await loadData('contributions');
-    const contribution = contributions.find(c => c.id === contributionId);
     const contributionsAdmin = document.querySelector('#contributions-admin');
     if (!contributionsAdmin) return;
 
     contributionsAdmin.innerHTML = `
-      <h3>Gérer les Paiements: ${contributionName} (${contribution.amount} FCFA)</h3>
+      <h3>Gérer les Paiements: ${contributionName}</h3>
       <input type="text" id="global-contribution-search" placeholder="Rechercher un membre..." class="search-bar">
       <div id="global-contribution-members"></div>
       <button class="cta-button" onclick="updateContributionsAdminList()">Retour</button>
@@ -1430,12 +1243,12 @@ async function manageGlobalContribution(contributionId, contributionName) {
               ...member.contributions?.globalContributions,
               [contributionName]: {
                 id: contributionId,
-                amount: contribution.amount,
                 paid
               }
             }
           };
           await saveData('members', { contributions: updatedContributions }, memberId);
+          // Mettre à jour l'espace personnel si le membre est connecté
           if (currentUser?.code === member.code) {
             showMemberDetail(member.code);
           }
@@ -1814,21 +1627,14 @@ function startCall(type) {
 // ==================== FONCTIONS UTILITAIRES ====================
 
 function formatDate(dateString) {
-  try {
-    if (!dateString) return 'Date non disponible';
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return 'Date invalide';
-    return date.toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch (error) {
-    console.error('Erreur formatDate:', error);
-    return 'Date invalide';
-  }
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
 
 function sendNotification(title, body) {
