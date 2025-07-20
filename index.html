@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,7 +9,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <!-- Scripts Firebase (version compatible pour éviter les erreurs de module) -->
+  <!-- Scripts Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -29,13 +30,6 @@
       <div class="hero">
         <h1>ANSAR ALMOUYASSAR</h1>
         <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
-        <!-- Commenter la vidéo si intro.mp4 n'existe pas -->
-        <!--
-        <video controls>
-          <source src="assets/videos/intro.mp4" type="video/mp4">
-          Votre navigateur ne supporte pas la vidéo.
-        </video>
-        -->
         <div id="event-countdowns"></div>
         <div id="message-popups"></div>
       </div>
@@ -253,44 +247,38 @@
         <div id="auto-messages-list"></div>
       </div>
     </section>
-<!-- Mettre à jour la section treasurer -->
-<section id="treasurer" class="page">
-  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2>Espace Trésorier</h2>
-  <div class="tabs">
-    <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations Mensuelles</button>
-    <button class="tab-button" onclick="showTab('contributions-admin')">Cotisations Globales</button>
-  </div>
-  <div id="treasurer-contributions" class="tab-content active">
-    <h3>Gestion des Cotisations Mensuelles</h3>
-    <input type="text" id="treasurer-contributions-search" placeholder="Rechercher un membre..." class="search-bar">
-    <div id="treasurer-contributions-list"></div>
-  </div>
-  <div id="contributions-admin" class="tab-content">
-    <h3>Gestion des Cotisations Globales</h3>
-    <form id="add-contribution-form">
-      <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL)" required>
-      <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
-      <button type="submit" class="cta-button">Ajouter Cotisation</button>
-    </form>
-    <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
-    <div id="contributions-admin-list"></div>
-  </div>
-</section>
 
-<!-- Ajouter la nouvelle page pour les cotisations d'un membre -->
-<section id="treasurer-member-contributions" class="page" style="display: none;">
-  <button class="cta-button back-button" onclick="showPage('treasurer'); showTab('treasurer-contributions')"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2 id="treasurer-member-title">Cotisations du Membre</h2>
-  <div id="treasurer-member-content"></div>
-</section>
+    <!-- Espace Trésorier -->
+    <section id="treasurer" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Trésorier</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations Mensuelles</button>
+        <button class="tab-button" onclick="showTab('contributions-admin')">Cotisations Globales</button>
+      </div>
+      <div id="treasurer-contributions" class="tab-content active">
+        <h3>Gestion des Cotisations Mensuelles</h3>
+        <input type="text" id="treasurer-contributions-search" placeholder="Rechercher un membre..." class="search-bar">
+        <div id="treasurer-contributions-list"></div>
+      </div>
+      <div id="contributions-admin" class="tab-content">
+        <h3>Gestion des Cotisations Globales</h3>
+        <form id="add-contribution-form">
+          <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL)" required>
+          <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
+          <button type="submit" class="cta-button">Ajouter Cotisation</button>
+        </form>
+        <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
+        <div id="contributions-admin-list"></div>
+      </div>
+    </section>
 
-    <!-- Ajouter après <section id="treasurer"> -->
-<div id="member-contributions-page" class="page">
-  <button class="cta-button back-button" onclick="showPage('treasurer')"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2 id="member-contributions-title">Gestion des Cotisations</h2>
-  <div id="member-contributions-content"></div>
-</div>
+    <!-- Page des cotisations d'un membre -->
+    <div id="member-contributions-page" class="page">
+      <button class="cta-button back-button" onclick="showPage('treasurer')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2 id="member-contributions-title">Gestion des Cotisations</h2>
+      <div id="member-contributions-content"></div>
+    </div>
 
     <!-- Espace Président -->
     <section id="president" class="page">
@@ -363,7 +351,7 @@
     </nav>
   </footer>
   <div class="chatbot-button">
-    <span class="material-icons">chat</span>
+    <span class="material-icons" onclick="toggleChatbot()">chat</span>
   </div>
   <div id="chatbot" class="chatbot-container" style="display: none;">
     <div class="chatbot-header">
@@ -387,3 +375,4 @@
   <script src="main.js"></script>
 </body>
 </html>
+```
