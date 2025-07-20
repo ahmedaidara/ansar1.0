@@ -102,7 +102,7 @@ async function uploadFile(file, path) {
 }
 
 // Remplacer la fonction updateTreasurerContributionsList
-// Remplacer la fonction updateTreasurerContributionsList (vers la ligne 110 dans votre code actuel)
+// Remplacer la fonction updateTreasurerContributionsList (vers la ligne 110)
 async function updateTreasurerContributionsList() {
   try {
     const members = await loadData('members');
@@ -116,11 +116,15 @@ async function updateTreasurerContributionsList() {
     list.innerHTML = members
       .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
-        <div class="member-card" onclick="manageMemberContributions('${m.code}')">
+        <div class="member-card">
           <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
+          </div>
+          <div class="member-actions">
+            <button class="cta-button small" onclick="manageMemberGlobalContributions('${m.code}')">Cotisations Globales</button>
+            <button class="cta-button small" onclick="manageMemberContributions('${m.code}')">Cotisations Mensuelles</button>
           </div>
         </div>
       `).join('');
