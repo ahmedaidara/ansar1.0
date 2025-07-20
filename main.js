@@ -1177,7 +1177,7 @@ document.querySelector('#add-contribution-form')?.addEventListener('submit', asy
 
 
 async function updateContributionsAdminList() {
-  console.log('updateContributionsAdminList appelé'); // Journal
+  console.log('updateContributionsAdminList appelé');
   try {
     const contributions = await loadData('contributions');
     const members = await loadData('members');
@@ -1185,8 +1185,12 @@ async function updateContributionsAdminList() {
     const list = document.querySelector('#contributions-admin-list');
     if (!list) {
       console.error('Élément #contributions-admin-list introuvable');
+      alert('Erreur : conteneur des cotisations introuvable');
       return;
     }
+
+    // Fonction pour échapper les caractères spéciaux
+    const escapeString = (str) => str.replace(/'/g, "\\'").replace(/"/g, '\\"');
 
     list.innerHTML = contributions
       .filter(c => c.name.toLowerCase().includes(search))
@@ -1194,41 +1198,54 @@ async function updateContributionsAdminList() {
         <div class="contribution-card">
           <p><strong>${c.name}</strong>: ${c.amount} FCFA</p>
           <p class="contribution-date">${formatDate(c.createdAt)}</p>
-          <button class="cta-button" onclick="manageGlobalContribution('${c.id}', '${c.name}')">Gérer Paiements</button>
-          <button class="cta-button danger" onclick="deleteGlobalContribution('${c.id}', '${c.name}')">Supprimer</button>
+          <button class="cta-button" onclick="manageGlobalContribution('${c.id}', '${escapeString(c.name)}')">Gérer Paiements</button>
+          <button class="cta-button danger" onclick="deleteGlobalContribution('${c.id}', '${escapeString(c.name)}')">Supprimer</button>
         </div>
       `).join('') || '<p>Aucune cotisation disponible</p>';
   } catch (error) {
     console.error('Erreur updateContributionsAdminList:', error);
+    alert('Erreur lors du chargement des cotisations');
   }
 }
 
 async function deleteGlobalContribution(contributionId, contributionName) {
-  console.log('deleteGlobalContribution appelé:', contributionId, contributionName); // Journal
-  const deleteForm = document.createElement('div');
-  deleteForm.id = 'delete-contribution-form';
-  deleteForm.innerHTML = `
-    <button class="cta-button back-button" onclick="goBackToTreasurerGlobal()"><span class="material-icons">arrow_back</span> Retour</button>
-    <h3>Supprimer la cotisation: ${contributionName}</h3>
-    <p>Entrez le code président pour confirmer la suppression :</p>
-    <input type="password" id="delete-contribution-code" placeholder="Code président">
-    <button class="cta-button" onclick="confirmDeleteContribution('${contributionId}', '${contributionName}')">Confirmer</button>
-    <button class="cta-button" onclick="this.parentElement.remove()">Annuler</button>
-  `;
-  const treasurerGlobal = document.querySelector('#treasurer-global');
-  if (!treasurerGlobal) {
-    console.error('Élément #treasurer-global introuvable');
-    alert('Erreur : conteneur des cotisations introuvable');
-    return;
+  console.log('deleteGlobalContribution appelé:', contributionId, contributionName);
+  try {
+    showPage('treasurer-global-manage');
+    const globalManage = document.querySelector('#treasurer-global-manage');
+    if (!globalManage) {
+      console.error('Élément #treasurer-global-manage introuvable');
+      alert('Erreur : conteneur des paiements introuvable');
+      return;
+    }
+
+    globalManage.innerHTML = `
+      <button class="cta-button back-button" onclick="goBackToTreasurerGlobal()"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2 id="treasurer-global-title">Supprimer la cotisation: ${contributionName}</h2>
+      <form id="delete-contribution-form">
+        <p>Entrez le code président pour confirmer la suppression :</p>
+        <input type="password" id="delete-contribution-code" placeholder="Code président" required>
+        <button type="submit" class="cta-button">Confirmer</button>
+        <button type="button" class="cta-button" onclick="goBackToTreasurerGlobal()">Annuler</button>
+      </form>
+    `;
+
+    const deleteForm = document.querySelector('#delete-contribution-form');
+    deleteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await confirmDeleteContribution(contributionId, contributionName);
+    });
+  } catch (error) {
+    console.error('Erreur deleteGlobalContribution:', error);
+    alert('Erreur lors de l\'initialisation de la suppression');
   }
-  treasurerGlobal.appendChild(deleteForm);
 }
 
 async function confirmDeleteContribution(contributionId, contributionName) {
-  console.log('confirmDeleteContribution appelé:', contributionId, contributionName); // Journal
+  console.log('confirmDeleteContribution appelé:', contributionId, contributionName);
   const presidentInput = document.querySelector('#delete-contribution-code')?.value.trim();
   if (presidentInput !== presidentCode) {
-    console.log('Code président incorrect:', presidentInput); // Journal
+    console.log('Code président incorrect:', presidentInput);
     alert('Code président incorrect');
     return;
   }
@@ -1243,8 +1260,8 @@ async function confirmDeleteContribution(contributionId, contributionName) {
     }
 
     await updateContributionsAdminList();
-    document.querySelector('#delete-contribution-form')?.remove();
-    console.log('Cotisation supprimée:', contributionName); // Journal
+    showPage('treasurer-global');
+    console.log('Cotisation supprimée:', contributionName);
     alert('Cotisation globale supprimée avec succès');
   } catch (error) {
     console.error('Erreur confirmDeleteContribution:', error);
@@ -1252,13 +1269,12 @@ async function confirmDeleteContribution(contributionId, contributionName) {
   }
 }
 
-
 // Nouvelle fonction pour gérer les paiements des cotisations globales
 async function manageGlobalContribution(contributionId, contributionName) {
-  console.log('manageGlobalContribution appelé:', contributionId, contributionName); // Journal
+  console.log('manageGlobalContribution appelé:', contributionId, contributionName);
   try {
     const members = await loadData('members');
-    showPage('treasurer-global-manage'); // Utiliser la page dédiée
+    showPage('treasurer-global-manage');
     const globalManage = document.querySelector('#treasurer-global-manage');
     if (!globalManage) {
       console.error('Élément #treasurer-global-manage introuvable');
@@ -1276,6 +1292,7 @@ async function manageGlobalContribution(contributionId, contributionName) {
 
     const updateMembersList = async () => {
       const search = document.querySelector('#global-contribution-search')?.value.toLowerCase() || '';
+      console.log('Mise à jour de la liste des membres avec recherche:', search); // Journal
       membersList.innerHTML = members
         .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
         .map(m => `
@@ -1291,12 +1308,17 @@ async function manageGlobalContribution(contributionId, contributionName) {
 
     await updateMembersList();
 
-    document.querySelector('#global-contribution-search')?.addEventListener('input', updateMembersList);
+    const searchInput = document.querySelector('#global-contribution-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', updateMembersList);
+      console.log('Écouteur input ajouté à #global-contribution-search');
+    }
 
     const checkboxes = document.querySelectorAll('.global-contribution-checkbox');
+    console.log('Nombre de checkboxes trouvées:', checkboxes.length); // Journal
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', async (e) => {
-        console.log('Checkbox changé:', e.target.dataset.memberId, contributionName, e.target.checked); // Journal
+        console.log('Checkbox changé:', e.target.dataset.memberId, contributionName, e.target.checked);
         const memberId = e.target.dataset.memberId;
         const contributionName = e.target.dataset.contributionName;
         const paid = e.target.checked;
@@ -1317,7 +1339,7 @@ async function manageGlobalContribution(contributionId, contributionName) {
           if (currentUser?.code === member.code) {
             showMemberDetail(member.code);
           }
-          console.log('Paiement mis à jour pour', member.firstname, member.lastname); // Journal
+          console.log('Paiement mis à jour pour', member.firstname, member.lastname);
         } catch (error) {
           console.error('Erreur mise à jour paiement:', error);
           alert('Erreur lors de la mise à jour du paiement');
@@ -1329,7 +1351,6 @@ async function manageGlobalContribution(contributionId, contributionName) {
     alert('Erreur lors du chargement des paiements');
   }
 }
-
 
 function goBackToTreasurerGlobal() {
   console.log('Retour à treasurer-global'); // Journal
@@ -1372,7 +1393,7 @@ async function updateTreasurerMonthlyList() {
 }
 
 async function manageMemberMonthlyContributions(code) {
-  console.log('manageMemberMonthlyContributions appelé avec code:', code); // Journal de débogage
+  console.log('manageMemberMonthlyContributions appelé avec code:', code);
   try {
     const members = await loadData('members');
     const member = members.find(m => m.code === code);
@@ -1382,9 +1403,11 @@ async function manageMemberMonthlyContributions(code) {
       return;
     }
 
+    console.log('Membre trouvé:', member.firstname, member.lastname); // Journal supplémentaire
     const content = document.querySelector('#treasurer-monthly-content');
     if (!content) {
       console.error('Élément #treasurer-monthly-content introuvable');
+      alert('Erreur : conteneur des cotisations mensuelles introuvable');
       return;
     }
 
@@ -1405,12 +1428,14 @@ async function manageMemberMonthlyContributions(code) {
       </form>
     `;
 
+    console.log('Contenu des cotisations mensuelles généré pour', member.firstname, member.lastname); // Journal
     showPage('treasurer-member-monthly');
 
     const checkboxes = document.querySelectorAll('#member-monthly-contributions-form input[type="checkbox"]');
+    console.log('Nombre de checkboxes trouvées:', checkboxes.length); // Journal
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', async (e) => {
-        console.log('Checkbox changé:', e.target.dataset.memberId, e.target.dataset.year, e.target.dataset.month); // Journal
+        console.log('Checkbox changé:', e.target.dataset.memberId, e.target.dataset.year, e.target.dataset.month, e.target.checked);
         const memberId = e.target.dataset.memberId;
         const year = e.target.dataset.year;
         const month = parseInt(e.target.dataset.month);
@@ -1429,7 +1454,7 @@ async function manageMemberMonthlyContributions(code) {
           if (currentUser?.code === member.code) {
             showMemberDetail(member.code);
           }
-          console.log('Cotisation mise à jour pour', member.firstname, member.lastname); // Journal
+          console.log('Cotisation mise à jour pour', member.firstname, member.lastname);
         } catch (error) {
           console.error('Erreur mise à jour cotisation mensuelle:', error);
           alert('Erreur lors de la mise à jour du paiement');
