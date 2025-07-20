@@ -255,24 +255,30 @@
     </section>
 
     <!-- Espace Trésorier -->
-    <section id="treasurer" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Espace Trésorier</h2>
-      <div class="tabs">
-        <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations  Mensuelles</button>
-        <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations</button>
-      </div>
-      <div id="treasurer-contributions" class="tab-content active">
-        <h3>Gestion des Cotisations</h3>
-        <form id="add-contribution-form">
-          <input type="text" id="contribution-name" placeholder="Nom (ex. : Journée de visite)" required>
-          <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
-          <button type="submit" class="cta-button">Ajouter Cotisation</button>
-        </form>
-        <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
-        <div id="contributions-admin-list"></div>
-      </div>
-    </section>
+<!-- Remplacer la section treasurer -->
+<section id="treasurer" class="page">
+  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2>Espace Trésorier</h2>
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('treasurer-contributions')">Cotisations Mensuelles</button>
+    <button class="tab-button" onclick="showTab('contributions-admin')">Cotisations Globales</button>
+  </div>
+  <div id="treasurer-contributions" class="tab-content active">
+    <h3>Gestion des Cotisations Mensuelles</h3>
+    <input type="text" id="treasurer-contributions-search" placeholder="Rechercher un membre..." class="search-bar">
+    <div id="treasurer-contributions-list"></div>
+  </div>
+  <div id="contributions-admin" class="tab-content">
+    <h3>Gestion des Cotisations Globales</h3>
+    <form id="add-contribution-form">
+      <input type="text" id="contribution-name" placeholder="Nom (ex. : Journée de visite)" required>
+      <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
+      <button type="submit" class="cta-button">Ajouter Cotisation</button>
+    </form>
+    <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
+    <div id="contributions-admin-list"></div>
+  </div>
+</section>
 
     <!-- Espace Président -->
     <section id="president" class="page">
