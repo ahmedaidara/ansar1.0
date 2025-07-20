@@ -1,3 +1,7 @@
+```javascript
+console.log('main.js chargé avec succès');
+```
+
 // Configuration Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
@@ -536,32 +540,28 @@ function initializeContributions() {
   };
 }
 
-// Remplacer la fonction updateMembersList
 async function updateMembersList() {
   try {
     const members = await loadData('members');
-    const search = document.querySelector('#members-search')?.value.toLowerCase() || '';
+    const searchInput = document.querySelector('#members-search');
+    const search = searchInput ? searchInput.value.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : ''; // Échappe les caractères spéciaux
     const list = document.querySelector('#members-list');
-    if (!list) return;
+    if (!list) {
+      console.error('Élément #members-list introuvable');
+      return;
+    }
 
     list.innerHTML = members
-      .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
+      .filter(m => `${m.firstname || ''} ${m.lastname || ''} ${m.code || ''}`.toLowerCase().includes(search))
       .map(m => `
-        <div class="member-card">
-          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+        <div class="member-card" onclick="showMemberDetail('${m.code}')">
+          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname || ''} ${m.lastname || ''}" class="member-photo">
           <div>
-            <p><strong>${m.firstname} ${m.lastname}</strong></p>
-            <p><small>${m.code} • ${m.role}</small></p>
+            <p><strong>${m.firstname || ''} ${m.lastname || ''}</strong></p>
+            <p><small>${m.code || ''} • ${m.role || ''}</small></p>
           </div>
         </div>
       `).join('');
-
-    // Supprimer tout écouteur d'événements existant sur .member-card
-    const memberCards = document.querySelectorAll('.member-card');
-    memberCards.forEach(card => {
-      card.removeEventListener('click', showMemberDetail); // Supprime tout écouteur précédent
-      card.style.cursor = 'default'; // Indique visuellement que le clic n'est pas interactif
-    });
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
   }
@@ -1744,14 +1744,21 @@ function startCall(type) {
 // ==================== FONCTIONS UTILITAIRES ====================
 
 function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  try {
+    if (!dateString) return 'Date non disponible';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Date invalide';
+    return date.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    console.error('Erreur formatDate:', error);
+    return 'Date invalide';
+  }
 }
 
 function sendNotification(title, body) {
