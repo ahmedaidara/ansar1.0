@@ -27,15 +27,17 @@
   </header>
   <main>
     <!-- Page d'accueil -->
-    <section id="home" class="page active">
-      <div class="hero">
-        <h1>ANSAR ALMOUYASSAR</h1>
-        <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
-        <div id="event-countdowns"></div>
-        <div id="message-popups"></div>
-      </div>
-  
-    </section>
+<!-- Page d'accueil -->
+<section id="home" class="page active">
+  <div class="hero">
+    <h1>ANSAR ALMOUYASSAR</h1>
+    <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
+    <div id="event-countdowns"></div>
+    <div id="message-popups"></div>
+    <h3>Galerie</h3>
+    <div id="home-gallery"></div>
+  </div>
+</section>
 
     <!-- Page des membres -->
     <section id="members" class="page">
@@ -249,19 +251,17 @@
     </section>
 
     <!-- Page des Cotisations Mensuelles -->
-    <section id="treasurer-monthly" class="page">
-      <button class="cta-button back-button" onclick="showPage('treasurer')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Gestion des Cotisations Mensuelles</h2>
-      <div class="search-filter-container">
-        <input type="text" id="treasurer-monthly-search" placeholder="Rechercher un membre..." class="search-bar">
-        <select id="treasurer-monthly-filter" class="filter-select">
-          <option value="all">Tous</option>
-          <option value="paid">Payé</option>
-          <option value="unpaid">Non payé</option>
-        </select>
-      </div>
-      <div id="treasurer-monthly-list"></div>
-    </section>
+<section id="treasurer-monthly" class="page">
+  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2>Cotisations Mensuelles</h2>
+  <input type="text" id="treasurer-monthly-search" placeholder="Rechercher un membre..." class="search-bar">
+  <select id="treasurer-monthly-filter" class="filter-select">
+    <option value="all">Tous</option>
+    <option value="paid">Payé</option>
+    <option value="unpaid">Non payé</option>
+  </select>
+  <div id="treasurer-monthly-list"></div>
+</section>
 
     <!-- Page des Cotisations Mensuelles d'un Membre -->
 <!-- Page des Cotisations Mensuelles -->
@@ -327,23 +327,25 @@
 </section>
 
     <!-- Espace Secrétaire -->
-    <section id="secretary" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Espace Secrétaire</h2>
-      <div class="tabs">
-        <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
-      </div>
-      <div id="secretary-files" class="tab-content active">
-        <h3>Fichiers Secrétaire</h3>
-        <form id="add-secretary-file-form">
-          <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
-          <input type="file" id="secretary-file" accept="application/pdf,image/*" required>
-          <button type="submit" class="cta-button">Ajouter</button>
-        </form>
-        <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
-        <div id="secretary-files-list"></div>
-      </div>
-    </section>
+<!-- Espace Secrétaire -->
+<section id="secretary" class="page">
+  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2>Espace Secrétaire</h2>
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
+  </div>
+  <div id="secretary-files" class="tab-content active">
+    <h3>Fichiers Secrétaire</h3>
+    <form id="add-secretary-file-form">
+      <input type="text" id="secretary-file-name" placeholder="Nom du fichier" required>
+      <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
+      <input type="text" id="secretary-file-url" placeholder="Lien de l'image (ex. : https://i.imgur.com/XXXXX.jpg)" required>
+      <button type="submit" class="cta-button">Ajouter</button>
+    </form>
+    <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
+    <div id="secretary-files-list"></div>
+  </div>
+</section>
 
     <!-- Page des paramètres -->
     <section id="settings" class="page">
@@ -399,3 +401,4 @@
   </div>
 </body>
 </html>
+
