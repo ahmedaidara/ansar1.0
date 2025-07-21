@@ -557,6 +557,43 @@ async function editMember(code) {
   }
 }
 
+async function deleteMember(memberId, memberName) {
+  console.log('deleteMember appelé:', memberId, memberName);
+  try {
+    const deleteForm = document.querySelector('#delete-member-form');
+    const membersList = document.querySelector('#edit-members-list');
+    const addForm = document.querySelector('#add-member-form');
+
+    if (!deleteForm || !membersList) {
+      console.error('Éléments #delete-member-form ou #edit-members-list introuvables');
+      alert('Erreur : conteneur de suppression introuvable');
+      return;
+    }
+
+    // Cacher la liste et le formulaire d'ajout, afficher le formulaire de suppression
+    membersList.style.display = 'none';
+    if (addForm) addForm.style.display = 'none';
+    deleteForm.style.display = 'block';
+
+    // Mettre à jour le titre pour indiquer quel membre est supprimé
+    const title = document.querySelector('#admin-members h3');
+    if (title) title.textContent = `Supprimer ${memberName}`;
+
+    // Nettoyer les écouteurs précédents pour éviter les duplications
+    const newForm = deleteForm.cloneNode(true);
+    deleteForm.parentNode.replaceChild(newForm, deleteForm);
+
+    // Ajouter un nouvel écouteur pour la soumission
+    newForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await confirmDeleteMember(memberId, memberName);
+    });
+  } catch (error) {
+    console.error('Erreur deleteMember:', error);
+    alert('Erreur lors de l’initialisation de la suppression');
+  }
+}
+
 async function confirmDeleteMember(memberId, memberName) {
   console.log('confirmDeleteMember appelé:', memberId, memberName);
   try {
