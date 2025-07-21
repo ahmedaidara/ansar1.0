@@ -557,37 +557,31 @@ async function editMember(code) {
   }
 }
 
-async function confirmDeleteMember(code) {
-  const deleteForm = document.querySelector('#delete-member-form');
-  if (!deleteForm) return;
-
-  deleteForm.style.display = 'block';
-  deleteForm.onsubmit = async (e) => {
-    e.preventDefault();
+async function confirmDeleteMember(memberId, memberName) {
+  console.log('confirmDeleteMember appelé:', memberId, memberName);
+  try {
+    const db = firebase.firestore();
+    const codesDoc = await db.collection('settings').doc('presidentCodes').get();
+    const presidentCodes = codesDoc.exists ? codesDoc.data() : { memberDeletionCode: '0000' };
     const presidentInput = document.querySelector('#delete-member-code')?.value.trim();
-    if (presidentInput !== presidentCode) {
+
+    if (presidentInput !== presidentCodes.memberDeletionCode) {
+      console.log('Code président incorrect:', presidentInput);
       alert('Code président incorrect');
       return;
     }
 
-    try {
-      const members = await loadData('members');
-      const member = members.find(m => m.code === code);
-      if (!member) {
-        alert('Membre introuvable');
-        return;
-      }
-      await deleteData('members', member.id);
-      await updateAllMemberLists();
-      alert('Membre supprimé avec succès');
-      deleteForm.style.display = 'none';
-      deleteForm.reset();
-    } catch (error) {
-      console.error('Erreur deleteMember:', error);
-      alert('Erreur lors de la suppression');
-    }
-  };
+    await deleteData('members', memberId);
+    await updateMembersList();
+    showPage('admin-members');
+    console.log('Membre supprimé:', memberName);
+    alert('Membre supprimé avec succès');
+  } catch (error) {
+    console.error('Erreur confirmDeleteMember:', error);
+    alert('Erreur lors de la suppression du membre');
+  }
 }
+
 
 async function updateAllMemberLists() {
   await Promise.all([
@@ -639,26 +633,43 @@ async function showMemberDetail(code) {
   }
 }
 
-// ==================== FONCTIONS GALERIE ====================
 
-async function updateGalleryContent() {
+// ==================== FONCTIONS GAL ====================
+async function setPresidentCodes(event) {
+  event.preventDefault();
   try {
-    const gallery = await loadData('gallery');
-    const content = document.querySelector('#gallery-content');
-    if (!content) return;
+    const memberDeletionCode = document.querySelector('#member-deletion-code').value.trim();
+    const contributionDeletionCode = document.querySelector('#contribution-deletion-code').value.trim();
 
-    content.innerHTML = gallery.map(item => `
-      <div class="gallery-item">
-        ${item.type === 'image' ? 
-          `<img src="${item.url}" alt="${item.description || 'Image'}">` : 
-          `<video src="${item.url}" controls></video>`}
-        <p>${item.description || ''}</p>
-      </div>
-    `).join('');
+    if (!memberDeletionCode || !contributionDeletionCode) {
+      console.error('Codes manquants');
+      alert('Veuillez entrer les deux codes');
+      return;
+    }
+
+    const db = firebase.firestore();
+    await db.collection('settings').doc('presidentCodes').set({
+      memberDeletionCode,
+      contributionDeletionCode,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('Codes présidentiels enregistrés:', { memberDeletionCode, contributionDeletionCode });
+    alert('Codes de suppression enregistrés avec succès');
+    document.querySelector('#set-president-codes-form').reset();
   } catch (error) {
-    console.error('Erreur updateGalleryContent:', error);
+    console.error('Erreur setPresidentCodes:', error);
+    alert('Erreur lors de l’enregistrement des codes');
   }
 }
+
+// Attacher l'écouteur au formulaire
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('#set-president-codes-form');
+  if (form) {
+    form.addEventListener('submit', setPresidentCodes);
+  }
+});
 
 
 
@@ -1159,20 +1170,24 @@ async function deleteGlobalContribution(contributionId, contributionName) {
     });
   } catch (error) {
     console.error('Erreur deleteGlobalContribution:', error);
-    alert('Erreur lors de l\'initialisation de la suppression');
+    alert('Erreur lors de l’initialisation de la suppression');
   }
 }
 
 async function confirmDeleteContribution(contributionId, contributionName) {
   console.log('confirmDeleteContribution appelé:', contributionId, contributionName);
-  const presidentInput = document.querySelector('#delete-contribution-code')?.value.trim();
-  if (presidentInput !== presidentCode) {
-    console.log('Code président incorrect:', presidentInput);
-    alert('Code président incorrect');
-    return;
-  }
-
   try {
+    const db = firebase.firestore();
+    const codesDoc = await db.collection('settings').doc('presidentCodes').get();
+    const presidentCodes = codesDoc.exists ? codesDoc.data() : { contributionDeletionCode: '0000' };
+    const presidentInput = document.querySelector('#delete-contribution-code')?.value.trim();
+
+    if (presidentInput !== presidentCodes.contributionDeletionCode) {
+      console.log('Code président incorrect:', presidentInput);
+      alert('Code président incorrect');
+      return;
+    }
+
     await deleteData('contributions', contributionId);
     const members = await loadData('members');
     for (const member of members) {
