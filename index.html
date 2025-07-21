@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <!-- Scripts Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -28,6 +27,7 @@
   </header>
   <main>
     <!-- Page d'accueil -->
+<!-- Page d'accueil -->
 <section id="home" class="page active">
   <div class="header" style="background-image: url('assets/images/photo1.png');">
     <div class="header-content">
@@ -35,7 +35,7 @@
       <button class="settings" onclick="showPage('settings')"><i class="fas fa-cog"></i></button>
     </div>
     <div class="ad-banner">
-      <div class="ad-text">
+      <div class="ad-text banner-text">
         <h2>ANSAR ALMOUYASSAR</h2>
         <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
       </div>
@@ -58,6 +58,7 @@
   <h3>Galerie</h3>
   <div id="home-gallery" class="gallery-grid"></div>
 </section>
+
     <!-- Page des membres -->
 <!-- Page des membres -->
 <section id="members" class="page">
@@ -389,14 +390,14 @@
   </main>
   <footer>
     <nav class="bottom-nav">
-  <button class="nav-item active" onclick="showPage('home')"><span class="nav-icon"><i class="fas fa-home"></i></span>Accueil</button>
-  <button class="nav-item" onclick="showPage('members')"><span class="nav-icon"><i class="fas fa-users"></i></span>Membres</button>
-  <button class="nav-item" onclick="showPage('events')"><span class="nav-icon"><i class="fas fa-calendar-alt"></i></span>Événements</button>
-  <button class="nav-item" onclick="showPage('messages')"><span class="nav-icon"><i class="fas fa-bell"></i></span>Messages</button>
-  <button class="nav-item" onclick="showPage('coran')"><span class="nav-icon"><i class="fas fa-book"></i></span>Coran</button>
-  <button class="nav-item" onclick="showPage('personal')"><span class="nav-icon"><i class="fas fa-user"></i></span>Personnel</button>
-  <button class="nav-item" onclick="showPage('library')"><span class="nav-icon"><i class="fas fa-book-open"></i></span>Bibliothèque</button>
-</nav>
+      <a href="#" class="nav-item active" onclick="showPage('home')"><span class="material-icons">home</span>Accueil</a>
+      <a href="#" class="nav-item" onclick="showPage('members')"><span class="material-icons">people</span>Membres</a>
+      <a href="#" class="nav-item" onclick="showPage('events')"><span class="material-icons">event</span>Événements</a>
+      <a href="#" class="nav-item" onclick="showPage('messages')"><span class="material-icons">notifications</span>Messages</a>
+      <a href="#" class="nav-item" onclick="showPage('coran')"><span class="material-icons">book</span>Coran</a>
+      <a href="#" class="nav-item" onclick="showPage('personal')"><span class="material-icons">person</span>Personnel</a>
+      <a href="#" class="nav-item" onclick="showPage('library')"><span class="material-icons">library_books</span>Bibliothèque</a>
+    </nav>
   </footer>
   <div class="chatbot-button">
     <span class="material-icons">chat</span>
