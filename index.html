@@ -309,23 +309,21 @@
 </section>
 
     <!-- Espace Président -->
-    <section id="president" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Espace Président</h2>
-      <div class="tabs">
-        <button class="tab-button active" onclick="showTab('president-files')">Fichiers Présidentiels</button>
-      </div>
-      <div id="president-files" class="tab-content active">
-        <h3>Fichiers Présidentiels</h3>
-        <form id="add-president-file-form">
-          <input type="text" id="president-file-category" placeholder="Catégorie" required>
-          <input type="file" id="president-file" accept="application/pdf,image/*" required>
-          <button type="submit" class="cta-button">Ajouter</button>
-        </form>
-        <input type="text" id="president-files-search" placeholder="Rechercher un fichier..." class="search-bar">
-        <div id="president-files-list"></div>
-      </div>
-    </section>
+<section id="president" class="page">
+  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2>Espace Président</h2>
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('president-settings')">Paramètres de Sécurité</button>
+  </div>
+  <div id="president-settings" class="tab-content active">
+    <h3>Configurer les Codes de Suppression</h3>
+    <form id="set-president-codes-form">
+      <input type="password" id="member-deletion-code" placeholder="Code pour supprimer un membre" required>
+      <input type="password" id="contribution-deletion-code" placeholder="Code pour supprimer une cotisation" required>
+      <button type="submit" class="cta-button">Enregistrer</button>
+    </form>
+  </div>
+</section>
 
     <!-- Espace Secrétaire -->
     <section id="secretary" class="page">
