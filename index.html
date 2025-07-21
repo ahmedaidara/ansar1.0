@@ -145,13 +145,14 @@
         </form>
       </div>
       <div id="edit-member" class="tab-content">
-        <h3>Modifier/Supprimer un Membre</h3>
-        
-        <div id="edit-members-list"></div>
-        <form id="delete-member-form" style="display: none;">
-          <input type="text" id="delete-member-code" placeholder="Code président (0000)" required>
-          <button type="submit" class="cta-button">Confirmer la suppression</button>
-        </form>
+<h3>Modifier/Supprimer un Membre</h3>
+<div id="edit-members-list"></div>
+<form id="delete-member-form" style="display: none;">
+  <p>Entrez le code président pour confirmer la suppression :</p>
+  <input type="password" id="delete-member-code" placeholder="Code président" required>
+  <button type="submit" class="cta-button">Confirmer la suppression</button>
+  <button type="button" class="cta-button" onclick="showPage('admin-members')">Annuler</button>
+</form>
       </div>
       
     
