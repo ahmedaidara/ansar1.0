@@ -21,16 +21,18 @@ body {
 }
 
 .top-nav {
-  display: none; /* Supprimé car remplacé par header-content */
+  display: none;
 }
 
 .header {
   position: relative;
-  height: 250px;
+  height: 200px;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   margin: 0;
   padding: 0;
+  width: 100vw;
 }
 
 .header-content {
@@ -66,7 +68,12 @@ body {
   bottom: 0;
   width: 100%;
   padding: 10px;
-  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.ad-text {
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .ad-text h2 {
@@ -79,6 +86,23 @@ body {
   margin: 5px 0 0;
   font-size: 14px;
   text-align: left;
+  line-height: 1.4;
+}
+
+.image-card {
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+  border: 2px solid #000;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 10px auto;
+}
+
+.image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .association-title {
@@ -273,16 +297,19 @@ input, textarea, select {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
+  justify-content: center;
 }
 
 .gallery-item {
   flex: 0 0 auto;
+  max-width: 100%;
 }
 
 .gallery-image {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  display: block;
 }
 
 .member-card, .contribution-card, .event-card, .suggestion-card, .note-card, .file-card {
@@ -360,7 +387,7 @@ canvas {
   }
 
   .header {
-    height: 200px;
+    height: 150px;
   }
 
   .chatbot-container {
@@ -369,5 +396,14 @@ canvas {
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .image-card {
+    width: 90%;
+    height: 150px;
+  }
+
+  .gallery-image {
+    max-width: 90%;
   }
 }
