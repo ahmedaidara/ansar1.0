@@ -106,34 +106,71 @@ async function uploadFile(file, path) {
 
 // ==================== FONCTIONS D'INTERFACE ====================
 
+// ==================== FONCTIONS D'INTERFACE ====================
+
 function showPage(pageId) {
   try {
+    // Retirer la classe .active de toutes les sections .page
     const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+      page.classList.remove('active');
+      page.style.display = 'none'; // Forcer le masquage pour éviter tout conflit
+    });
+
+    // Retirer la classe .active de tous les éléments de navigation
     const navItems = document.querySelectorAll('.nav-item');
-    
-    pages.forEach(page => page.classList.remove('active'));
     navItems.forEach(item => item.classList.remove('active'));
 
-    const pageElement = document.querySelector(`#${pageId}`);
+    // Vérifier si la page existe
+    const pageElement = document.getElementById(pageId);
+    if (!pageElement) {
+      console.error(`Page avec l'ID ${pageId} non trouvée`);
+      showPage('home'); // Revenir à la page d'accueil si pageId est invalide
+      return;
+    }
+
+    // Ajouter .active à la page demandée
+    pageElement.classList.add('active');
+    pageElement.style.display = 'block'; // Forcer l'affichage
+
+    // Ajouter .active à l'élément de navigation correspondant
     const navElement = document.querySelector(`a[onclick="showPage('${pageId}')"]`);
+    if (navElement) {
+      navElement.classList.add('active');
+    } else {
+      console.warn(`Élément de navigation pour ${pageId} non trouvé`);
+    }
 
-    if (pageElement) pageElement.classList.add('active');
-    if (navElement) navElement.classList.add('active');
-
+    // Mettre à jour le contenu en fonction de la page
     switch (pageId) {
-      case 'members': updateMembersList(); break;
-      case 'events': updateEventsList(); break;
-      case 'gallery': updateGalleryContent(); break;
-      case 'messages': updateMessagesList(); break;
-      case 'coran': updateCoranContent(); break;
-      case 'personal': updatePersonalPage(); break;
-      case 'library': updateLibraryContent(); break;
-      case 'home': 
-        updateMessagePopups();
-        updateHomeGallery(); // Appeler explicitement pour tous les utilisateurs
+      case 'members':
+        updateMembersList();
         break;
-      case 'settings': break;
-      case 'secret': 
+      case 'events':
+        updateEventsList();
+        break;
+      case 'gallery':
+        updateGalleryContent();
+        break;
+      case 'messages':
+        updateMessagesList();
+        break;
+      case 'coran':
+        updateCoranContent();
+        break;
+      case 'personal':
+        updatePersonalPage();
+        break;
+      case 'library':
+        updateLibraryContent();
+        break;
+      case 'home':
+        updateMessagePopups();
+        updateHomeGallery();
+        break;
+      case 'settings':
+        break;
+      case 'secret':
         if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
           showTab('add-member');
         } else {
@@ -152,30 +189,48 @@ function showPage(pageId) {
           showPage('home');
         }
         break;
-      case 'treasurer-monthly': updateTreasurerMonthlyList(); break;
-      case 'treasurer-member-monthly': break;
-      case 'treasurer-global': updateContributionsAdminList(); break;
-      case 'treasurer-global-manage': break;
-      case 'president': 
+      case 'treasurer-monthly':
+        updateTreasurerMonthlyList();
+        break;
+      case 'treasurer-member-monthly':
+        break;
+      case 'treasurer-global':
+        updateContributionsAdminList();
+        break;
+      case 'treasurer-global-manage':
+        break;
+      case 'president':
         if (currentUser?.role === 'president') {
           showTab('president-settings');
         } else {
           showPage('home');
         }
         break;
-      case 'secretary': 
+      case 'secretary':
         if (currentUser?.role === 'secretaire') {
           showTab('secretary-files');
         } else {
           showPage('home');
         }
         break;
+      default:
+        console.warn(`Page non reconnue : ${pageId}`);
+        showPage('home');
+        break;
     }
+
+    // Faire défiler vers le haut de la page
+    window.scrollTo(0, 0);
   } catch (error) {
-    console.error('Erreur showPage:', error);
+    console.error('Erreur dans showPage:', error);
+    showPage('home'); // Revenir à la page d'accueil en cas d'erreur
   }
 }
 
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+  showPage('home'); // Forcer l'affichage de la page d'accueil
+});
 
 // Mettre à jour la fonction showTab
 function showTab(tabId) {
