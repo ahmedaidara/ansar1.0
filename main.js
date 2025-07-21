@@ -469,10 +469,12 @@ function initializeContributions() {
 // Remplacer la fonction updateMembersList
 async function updateMembersList() {
   try {
+    console.log('Début updateMembersList');
     const members = await loadData('members');
-    const list = document.querySelector('#edit-members-list');
+    console.log('Membres récupérés:', members);
+    const list = document.querySelector('#members-list');
     if (!list) {
-      console.error('Élément #edit-members-list introuvable');
+      console.error('Élément #members-list introuvable');
       alert('Erreur : conteneur de la liste des membres introuvable');
       return;
     }
@@ -480,21 +482,15 @@ async function updateMembersList() {
     list.innerHTML = members
       .map(m => `
         <div class="member-card">
-          <img src="https://via.placeholder.com/150" alt="${m.firstname} ${m.lastname}" class="member-photo">
-          <p><strong>${m.firstname} ${m.lastname}</strong></p>
-          <p><small>${m.code} • ${m.role}</small></p>
-          <button class="cta-button" onclick="editMember('${m.id}')">Modifier</button>
-          <button class="cta-button danger" onclick="deleteMember('${m.id}', '${m.firstname} ${m.lastname}')">Supprimer</button>
+          <img src="https://picsum.photos/150" alt="${m.firstname} ${m.lastname}" class="member-photo" onerror="this.src='assets/images/placeholder.jpg'">
+          <div>
+            <p><strong>${m.firstname} ${m.lastname}</strong></p>
+            <p><small>${m.code} • ${m.role}</small></p>
+          </div>
         </div>
       `).join('') || '<p>Aucun membre trouvé</p>';
 
-    // Réinitialiser l'affichage au cas où le formulaire de suppression était visible
-    const deleteForm = document.querySelector('#delete-member-form');
-    const addForm = document.querySelector('#add-member-form');
-    const title = document.querySelector('#admin-members h3');
-    if (deleteForm) deleteForm.style.display = 'none';
-    if (addForm) addForm.style.display = 'block';
-    if (title) title.textContent = 'Modifier/Supprimer un Membre';
+    console.log('Liste des membres mise à jour');
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
     alert('Erreur lors du chargement de la liste des membres');
