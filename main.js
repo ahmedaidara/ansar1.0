@@ -128,7 +128,10 @@ function showPage(pageId) {
       case 'coran': updateCoranContent(); break;
       case 'personal': updatePersonalPage(); break;
       case 'library': updateLibraryContent(); break;
-      case 'home': updateMessagePopups(); break;
+      case 'home': 
+        updateMessagePopups();
+        updateHomeGallery(); // Appeler explicitement pour tous les utilisateurs
+        break;
       case 'settings': break;
       case 'secret': 
         if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
@@ -137,18 +140,25 @@ function showPage(pageId) {
           showPage('home');
         }
         break;
-case 'treasurer':
-  if (currentUser?.role !== 'tresorier') {
-    showPage('home');
-  }
-  break;
+      case 'admin-members':
+        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
+          updateEditMembersList();
+        } else {
+          showPage('home');
+        }
+        break;
+      case 'treasurer':
+        if (currentUser?.role !== 'tresorier') {
+          showPage('home');
+        }
+        break;
       case 'treasurer-monthly': updateTreasurerMonthlyList(); break;
       case 'treasurer-member-monthly': break;
       case 'treasurer-global': updateContributionsAdminList(); break;
       case 'treasurer-global-manage': break;
       case 'president': 
         if (currentUser?.role === 'president') {
-          showTab('president-files');
+          showTab('president-settings');
         } else {
           showPage('home');
         }
@@ -165,6 +175,7 @@ case 'treasurer':
     console.error('Erreur showPage:', error);
   }
 }
+
 
 // Mettre à jour la fonction showTab
 function showTab(tabId) {
@@ -459,30 +470,34 @@ function initializeContributions() {
 async function updateMembersList() {
   try {
     const members = await loadData('members');
-    const search = document.querySelector('#members-search')?.value.toLowerCase() || '';
-    const list = document.querySelector('#members-list');
-    if (!list) return;
+    const list = document.querySelector('#edit-members-list');
+    if (!list) {
+      console.error('Élément #edit-members-list introuvable');
+      alert('Erreur : conteneur de la liste des membres introuvable');
+      return;
+    }
 
     list.innerHTML = members
-      .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
       .map(m => `
         <div class="member-card">
-          <img src="${m.photo || 'assets/images/default-photo.png'}" alt="${m.firstname} ${m.lastname}" class="member-photo">
-          <div>
-            <p><strong>${m.firstname} ${m.lastname}</strong></p>
-            <p><small>${m.code} • ${m.role}</small></p>
-          </div>
+          <img src="https://via.placeholder.com/150" alt="${m.firstname} ${m.lastname}" class="member-photo">
+          <p><strong>${m.firstname} ${m.lastname}</strong></p>
+          <p><small>${m.code} • ${m.role}</small></p>
+          <button class="cta-button" onclick="editMember('${m.id}')">Modifier</button>
+          <button class="cta-button danger" onclick="deleteMember('${m.id}', '${m.firstname} ${m.lastname}')">Supprimer</button>
         </div>
-      `).join('');
+      `).join('') || '<p>Aucun membre trouvé</p>';
 
-    // Supprimer tout écouteur d'événements existant sur .member-card
-    const memberCards = document.querySelectorAll('.member-card');
-    memberCards.forEach(card => {
-      card.removeEventListener('click', showMemberDetail); // Supprime tout écouteur précédent
-      card.style.cursor = 'default'; // Indique visuellement que le clic n'est pas interactif
-    });
+    // Réinitialiser l'affichage au cas où le formulaire de suppression était visible
+    const deleteForm = document.querySelector('#delete-member-form');
+    const addForm = document.querySelector('#add-member-form');
+    const title = document.querySelector('#admin-members h3');
+    if (deleteForm) deleteForm.style.display = 'none';
+    if (addForm) addForm.style.display = 'block';
+    if (title) title.textContent = 'Modifier/Supprimer un Membre';
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
+    alert('Erreur lors du chargement de la liste des membres');
   }
 }
 
@@ -492,7 +507,11 @@ async function updateEditMembersList() {
     const search = document.querySelector('#edit-member-search')?.value.toLowerCase() || '';
     const filter = document.querySelector('#edit-member-filter')?.value || 'all';
     const list = document.querySelector('#edit-members-list');
-    if (!list) return;
+    if (!list) {
+      console.error('Élément #edit-members-list introuvable');
+      alert('Erreur : conteneur de la liste des membres introuvable');
+      return;
+    }
 
     const filteredMembers = members.filter(m => {
       const matchesSearch = `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search);
@@ -505,14 +524,14 @@ async function updateEditMembersList() {
     list.innerHTML = filteredMembers
       .map(m => `
         <div class="member-card">
-          <img src="${m.photo}" alt="${m.firstname} ${m.lastname}" class="member-photo">
+          <img src="https://via.placeholder.com/150" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
           </div>
           <div class="member-actions">
-            <button class="cta-button small" onclick="editMember('${m.code}')">Modifier</button>
-            <button class="cta-button small danger" onclick="confirmDeleteMember('${m.code}')">Supprimer</button>
+            <button class="cta-button small" onclick="editMember('${m.id}')">Modifier</button>
+            <button class="cta-button small danger" onclick="deleteMember('${m.id}', '${m.firstname} ${m.lastname}')">Supprimer</button>
           </div>
         </div>
       `).join('') || '<p>Aucun membre trouvé</p>';
@@ -521,8 +540,10 @@ async function updateEditMembersList() {
     document.querySelector('#edit-member-filter')?.addEventListener('change', updateEditMembersList);
   } catch (error) {
     console.error('Erreur updateEditMembersList:', error);
+    alert('Erreur lors du chargement de la liste des membres');
   }
 }
+
 
 async function editMember(code) {
   try {
@@ -574,6 +595,7 @@ async function deleteMember(memberId, memberName) {
     membersList.style.display = 'none';
     if (addForm) addForm.style.display = 'none';
     deleteForm.style.display = 'block';
+    document.querySelector('#delete-member-code').value = ''; // Réinitialiser le champ
 
     // Mettre à jour le titre pour indiquer quel membre est supprimé
     const title = document.querySelector('#admin-members h3');
@@ -602,6 +624,12 @@ async function confirmDeleteMember(memberId, memberName) {
     const presidentCodes = codesDoc.exists ? codesDoc.data() : { memberDeletionCode: '0000' };
     const presidentInput = document.querySelector('#delete-member-code')?.value.trim();
 
+    if (!presidentInput) {
+      console.log('Code président manquant');
+      alert('Veuillez entrer le code président');
+      return;
+    }
+
     if (presidentInput !== presidentCodes.memberDeletionCode) {
       console.log('Code président incorrect:', presidentInput);
       alert('Code président incorrect');
@@ -613,6 +641,16 @@ async function confirmDeleteMember(memberId, memberName) {
     showPage('admin-members');
     console.log('Membre supprimé:', memberName);
     alert('Membre supprimé avec succès');
+
+    // Réinitialiser l'affichage
+    const membersList = document.querySelector('#edit-members-list');
+    const addForm = document.querySelector('#add-member-form');
+    const deleteForm = document.querySelector('#delete-member-form');
+    const title = document.querySelector('#admin-members h3');
+    if (membersList) membersList.style.display = 'block';
+    if (addForm) addForm.style.display = 'block';
+    if (deleteForm) deleteForm.style.display = 'none';
+    if (title) title.textContent = 'Modifier/Supprimer un Membre';
   } catch (error) {
     console.error('Erreur confirmDeleteMember:', error);
     alert('Erreur lors de la suppression du membre');
@@ -1511,50 +1549,91 @@ async function updatePresidentFilesList() {
   }
 }
 
+// Ajouter un fichier secrétaire
 document.querySelector('#add-secretary-file-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const fileInput = document.querySelector('#secretary-file');
-  const file = fileInput?.files[0];
-  if (!file) {
-    alert('Veuillez sélectionner un fichier');
-    return;
-  }
+  const fileData = {
+    name: document.querySelector('#secretary-file-name')?.value.trim() || 'Fichier sans nom',
+    category: document.querySelector('#secretary-file-category')?.value.trim() || '',
+    url: document.querySelector('#secretary-file-url')?.value.trim() || '',
+    createdAt: new Date().toISOString()
+  };
 
   try {
-    const fileData = {
-      name: file.name,
-      category: document.querySelector('#secretary-file-category').value.trim(),
-      url: fileUrl,
-      createdAt: new Date().toISOString()
-    };
-
+    if (!fileData.url.match(/\.(jpeg|jpg|png|gif)$/i)) {
+      throw new Error('Lien d\'image invalide. Utilisez un lien vers une image (jpg, png, gif).');
+    }
     await saveData('secretaryFiles', fileData);
     document.querySelector('#add-secretary-file-form').reset();
     await updateSecretaryFilesList();
-    alert('Fichier ajouté avec succès');
+    await updateHomeGallery();
+    alert('Image ajoutée avec succès');
   } catch (error) {
     console.error('Erreur addSecretaryFile:', error);
-    alert('Erreur lors de l\'ajout du fichier');
+    alert('Erreur lors de l\'ajout de l\'image : ' + error.message);
   }
 });
 
+// Mettre à jour la liste des fichiers secrétaire
 async function updateSecretaryFilesList() {
   try {
     const files = await loadData('secretaryFiles');
     const search = document.querySelector('#secretary-files-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#secretary-files-list');
-    if (!list) return;
+    if (!list) {
+      console.error('Élément #secretary-files-list introuvable');
+      return;
+    }
 
     list.innerHTML = files
-      .filter(f => f.name.toLowerCase().includes(search) || f.category.toLowerCase().includes(search))
+      .filter(f => f.name.toLowerCase().includes(search) || f.category.toLowerCase().includes(search) || f.url.toLowerCase().includes(search))
       .map(f => `
         <div class="file-card">
-          <p><strong>${f.category}</strong>: <a href="${f.url}" target="_blank">${f.name}</a></p>
+          <p><strong>${f.category}</strong>: ${f.name}</p>
+          <p><a href="${f.url}" target="_blank">${f.url}</a></p>
           <p class="file-date">${formatDate(f.createdAt)}</p>
+          <button class="cta-button danger" onclick="deleteSecretaryFile('${f.id}')">Supprimer</button>
         </div>
       `).join('') || '<p>Aucun fichier disponible</p>';
   } catch (error) {
     console.error('Erreur updateSecretaryFilesList:', error);
+    alert('Erreur lors du chargement des fichiers');
+  }
+}
+
+// Supprimer un fichier secrétaire
+async function deleteSecretaryFile(fileId) {
+  try {
+    await firebase.firestore().collection('secretaryFiles').doc(fileId).delete();
+    console.log('Fichier supprimé:', fileId);
+    await updateSecretaryFilesList();
+    await updateHomeGallery();
+    alert('Image supprimée avec succès');
+  } catch (error) {
+    console.error('Erreur deleteSecretaryFile:', error);
+    alert('Erreur lors de la suppression de l\'image');
+  }
+}
+
+// Mettre à jour la galerie dans la page d'accueil
+async function updateHomeGallery() {
+  try {
+    const files = await loadData('secretaryFiles');
+    const gallery = document.querySelector('#home-gallery');
+    if (!gallery) {
+      console.error('Élément #home-gallery introuvable');
+      return;
+    }
+
+    gallery.innerHTML = files
+      .map(f => `
+        <div class="gallery-item">
+          <img src="${f.url}" alt="${f.name}" class="gallery-image">
+        </div>
+      `).join('') || '<p>Aucune image disponible</p>';
+  } catch (error) {
+    console.error('Erreur updateHomeGallery:', error);
+    alert('Erreur lors du chargement de la galerie');
   }
 }
 
