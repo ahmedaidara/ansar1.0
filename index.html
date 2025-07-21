@@ -97,33 +97,73 @@
     </section>
 
     <!-- Espace personnel -->
-    <section id="personal" class="page">
-      <div id="personal-login" style="display: block;">
-        <h2>Espace Personnel</h2>
-        <form id="personal-login-form">
-          <label for="personal-member-code">Numéro de Membre</label>
-          <input type="text" id="personal-member-code" placeholder="Ex. : 001" required>
-          <label for="personal-password">Mot de passe (Date de naissance : JJMMAAAA)</label>
-          <input type="password" id="personal-password" placeholder="Ex. : 10012005" required>
-          <button type="submit" class="cta-button">Se connecter</button>
-        </form>
-        <p id="personal-error-message" style="color: red; display: none;"></p>
+<section id="personal" class="page">
+  <div id="personal-login" style="display: block;">
+    <div class="top-section">
+      <div class="profile-container">
+        <div class="profile-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        <p class="user-name">Espace Personnel</p>
       </div>
-      <div id="personal-content" style="display: none;">
-        <h2 id="personal-title">Mon Espace Personnel</h2>
-        <div id="personal-info"></div>
-        <h3>Mes Cotisations</h3>
-        <div id="personal-contributions"></div>
-        <button class="cta-button" onclick="payViaWave()">Payer via Wave</button>
-        <button class="cta-button" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
-        <h3>Suggestions</h3>
-        <form id="suggestion-form">
-          <textarea id="suggestion-text" placeholder="Votre suggestion..." required></textarea>
-          <button type="submit" class="cta-button">Envoyer</button>
-        </form>
-        <button class="cta-button logout-button" onclick="logoutPersonal()">Se déconnecter</button>
+    </div>
+    <div class="bottom-section">
+      <div class="container">
+        <h1>Connexion</h1>
+        <div class="section info-section">
+          <form id="personal-login-form">
+            <label for="personal-member-code">Numéro de Membre</label>
+            <input type="text" id="personal-member-code" placeholder="Ex. : 001" required>
+            <label for="personal-password">Mot de passe (Date de naissance : JJMMAAAA)</label>
+            <input type="password" id="personal-password" placeholder="Ex. : 10012005" required>
+            <button type="submit" class="cta-button">Se connecter</button>
+          </form>
+          <p id="personal-error-message" style="color: #ff6b6b; display: none;"></p>
+        </div>
       </div>
-    </section>
+    </div>
+  </div>
+  <div id="personal-content" style="display: none;">
+    <div class="top-section">
+      <div class="profile-container">
+        <div class="profile-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        <p id="personal-title" class="user-name"></p>
+      </div>
+    </div>
+    <div class="bottom-section">
+      <div class="container">
+        <h1>Compte</h1>
+        <div class="section info-section" id="personal-info">
+          <!-- Informations du membre seront insérées ici via JavaScript -->
+        </div>
+        <div class="section cotisations-section">
+          <h2>Mes Cotisations</h2>
+          <div id="personal-contributions">
+            <!-- Cotisations mensuelles et globales seront insérées ici via JavaScript -->
+          </div>
+          <div class="payment-methods">
+            <button class="payment-btn" onclick="payViaWave()">Payer via Wave</button>
+            <button class="payment-btn" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
+          </div>
+        </div>
+        <div class="section suggestions-section">
+          <h2>Suggestions</h2>
+          <form id="suggestion-form">
+            <textarea id="suggestion-text" placeholder="Écrivez vos suggestions ici..." rows="4" required></textarea>
+            <button type="submit">Envoyer</button>
+          </form>
+        </div>
+        <button class="logout-btn" onclick="logoutPersonal()">Se Déconnecter</button>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- Espace Secret Général -->
     <section id="secret" class="page">
