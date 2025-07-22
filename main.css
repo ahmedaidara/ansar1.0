@@ -967,3 +967,121 @@ canvas {
     max-width: 100%;
   }
 }
+
+/* Styles pour la page des messages */
+ /* Styles pour la page des messages */
+/* Styles pour la page des messages */
+#messages.page {
+  background-color: var(--bg-color); /* Fond #073332 */
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+}
+
+.messages-header-container {
+  max-width: 600px;
+  margin: 20px auto;
+  background: var(--primary-color); /* Fond #073332 */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+.messages-header {
+  text-align: center;
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-color); /* Texte #ffffff */
+}
+
+.messages-list-container {
+  max-width: 95% !important;
+  margin: 0 auto; /* Centrage sans fond ni contour */
+}
+
+.messages-list .message-card {
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 5px; /* Espacement pour séparer les messages */
+background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Ombre légère pour effet de bloc */
+}
+
+.messages-list .message-card .title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  color: #fbffb7 !important; /* Texte #ffffff */
+}
+
+.messages-list .message-card .title img {
+  width: 40px; /* Taille fixe d'environ 1 cm */
+  height: 40px;
+  border-radius: 50%; /* Forme ronde */
+  margin-right: 8px;
+  object-fit: cover; /* S'assure que l'image est bien ajustée */
+}
+
+.messages-list .message-card .message {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  color: #ffffff !important; /* Texte #ffffff */
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.messages-list .message-card .separator {
+  border-top: 1px solid var(--accent-color); /* Trait horizontal #9b9c28 */
+  margin: 10px 0;
+}
+
+.messages-list .message-card .date {
+  font-size: 16px !important; /* Même taille que le titre */
+  color: #d8d9c2 !important; /* Gris clair pour la date */
+  text-align: right !important;
+  margin-top: 0;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 600px) {
+  .messages-header-container {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .messages-header {
+    font-size: 18px;
+    padding: 10px;
+  }
+
+  .messages-list-container {
+    margin: 0 5px;
+  }
+
+  .messages-list .message-card {
+    margin: 10px 5px; /* Espacement réduit pour mobile */
+    padding: 10px;
+  }
+
+  .messages-list .message-card .title {
+    font-size: 14px;
+  }
+
+  .messages-list .message-card .title img {
+    width: 32px; /* Légèrement plus petit sur mobile */
+    height: 32px;
+  }
+
+  .messages-list .message-card .message {
+    font-size: 13px;
+  }
+
+  .messages-list .message-card .date {
+    font-size: 14px !important; /* Même taille que le titre sur mobile */
+  }
+
+  .messages-list .message-card .separator {
+    margin: 8px 0; /* Ajustement pour mobile */
+  }
+}
