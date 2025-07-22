@@ -188,7 +188,7 @@ main {
 
 #personal .profile-container {
   position: absolute;
-  bottom: -125px; /* Changé de -70px */
+  bottom: -150px; /* Changé de -70px */
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -223,7 +223,7 @@ main {
 #personal .bottom-section {
   flex: 1;
   background-color: var(--secondary-color);
-  padding-top: 125px; /* Changé de 90px */
+  padding-top: 100px; /* Changé de 90px */
 }
 
 #personal .container {
@@ -456,7 +456,7 @@ main {
   }
   /* Ligne à ajouter */
   #personal .bottom-section {
-    padding-top: 100px; /* Ajouté pour aligner la frontière au centre de l'icône sur mobile */
+    padding-top: 80px; /* Ajouté pour aligner la frontière au centre de l'icône sur mobile */
   }
 }
 
