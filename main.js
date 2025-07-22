@@ -503,8 +503,19 @@ document.querySelector('#add-member-form')?.addEventListener('submit', async (e)
 });
 
 async function generateMemberCode() {
-  const members = await loadData('members');
-  return `${(members.length + 1).toString().padStart(3, '0')}`;
+  try {
+    const members = await loadData('members');
+    const usedCodes = members.map(m => parseInt(m.code, 10)).filter(code => !isNaN(code)).sort((a, b) => a - b);
+    let newCode = 1;
+    for (let i = 0; i < usedCodes.length; i++) {
+      if (usedCodes[i] !== newCode) break;
+      newCode++;
+    }
+    return `${newCode.toString().padStart(3, '0')}`;
+  } catch (error) {
+    console.error('Erreur generateMemberCode:', error);
+    return `${(Math.floor(Math.random() * 1000) + 1).toString().padStart(3, '0')}`;
+  }
 }
 
 
@@ -574,13 +585,12 @@ async function updateEditMembersList() {
     list.innerHTML = filteredMembers
       .map(m => `
         <div class="member-card">
-          <img src="https://via.placeholder.com/150" alt="${m.firstname} ${m.lastname}" class="member-photo">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
           </div>
           <div class="member-actions">
-            <button class="cta-button small" onclick="editMember('${m.id}')">Modifier</button>
+            <button class="cta-button small" onclick="editMember('${m.code}')">Modifier</button>
             <button class="cta-button small danger" onclick="deleteMember('${m.id}', '${m.firstname} ${m.lastname}')">Supprimer</button>
           </div>
         </div>
@@ -595,10 +605,10 @@ async function updateEditMembersList() {
 }
 
 
-async function editMember(id) {
+async function editMember(code) {
   try {
     const members = await loadData('members');
-    const member = members.find(m => m.id === id);
+    const member = members.find(m => m.code === code);
     if (!member) {
       alert('Membre introuvable');
       return;
@@ -607,7 +617,7 @@ async function editMember(id) {
     const form = document.querySelector('#add-member-form');
     if (!form) return;
 
-    form.dataset.editing = member.id;
+    form.dataset.editing = member.id; // On garde l'ID pour la sauvegarde dans Firestore
     document.getElementById('new-member-firstname').value = member.firstname || '';
     document.getElementById('new-member-lastname').value = member.lastname || '';
     document.getElementById('new-member-age').value = member.age || '';
@@ -641,21 +651,17 @@ async function deleteMember(memberId, memberName) {
       return;
     }
 
-    // Cacher la liste et le formulaire d'ajout, afficher le formulaire de suppression
     membersList.style.display = 'none';
     if (addForm) addForm.style.display = 'none';
     deleteForm.style.display = 'block';
-    document.querySelector('#delete-member-code').value = ''; // Réinitialiser le champ
+    document.querySelector('#delete-member-code').value = '';
 
-    // Mettre à jour le titre pour indiquer quel membre est supprimé
     const title = document.querySelector('#admin-members h3');
     if (title) title.textContent = `Supprimer ${memberName}`;
 
-    // Nettoyer les écouteurs précédents pour éviter les duplications
     const newForm = deleteForm.cloneNode(true);
     deleteForm.parentNode.replaceChild(newForm, deleteForm);
 
-    // Ajouter un nouvel écouteur pour la soumission
     newForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       await confirmDeleteMember(memberId, memberName);
@@ -692,7 +698,6 @@ async function confirmDeleteMember(memberId, memberName) {
     console.log('Membre supprimé:', memberName);
     alert('Membre supprimé avec succès');
 
-    // Réinitialiser l'affichage
     const membersList = document.querySelector('#edit-members-list');
     const addForm = document.querySelector('#add-member-form');
     const deleteForm = document.querySelector('#delete-member-form');
@@ -706,7 +711,6 @@ async function confirmDeleteMember(memberId, memberName) {
     alert('Erreur lors de la suppression du membre');
   }
 }
-
 
 async function updateAllMemberLists() {
   await Promise.all([
@@ -906,11 +910,19 @@ document.querySelector('#add-message-form')?.addEventListener('submit', async (e
 
 async function updateMessagesList() {
   try {
+    console.log('Début updateMessagesList');
     const messages = await loadData('messages');
+    console.log('Messages récupérés:', messages);
     const list = document.querySelector('#messages-list');
-    if (!list) return;
+    if (!list) {
+      console.error('Élément #messages-list introuvable');
+      return;
+    }
 
-    list.innerHTML = messages.map(msg => `
+    // Trier les messages par date en ordre décroissant (nouveaux en haut)
+    const sortedMessages = messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    list.innerHTML = sortedMessages.map(msg => `
       <div class="message-card">
         <div class="title">
           <img src="assets/images/logo.png" alt="Logo">
@@ -920,9 +932,12 @@ async function updateMessagesList() {
         <div class="separator"></div>
         <div class="date">${formatDate(msg.date)}</div>
       </div>
-    `).join('');
+    `).join('') || '<p>Aucun message disponible</p>';
+
+    console.log('Liste des messages mise à jour');
   } catch (error) {
     console.error('Erreur updateMessagesList:', error);
+    alert('Erreur lors du chargement des messages');
   }
 }
 
