@@ -1196,12 +1196,14 @@ canvas {
 #messages.page {
   background-color: var(--bg-color); /* Fond #073332 */
   min-height: calc(100vh - 80px);
-  padding: 20px;
+  padding: 10px 5px; /* Réduit l'espacement latéral */
+
 }
 
 .messages-header-container {
-  max-width: 600px;
-  margin: 20px auto;
+max-width: 100%; /* Augmentez ce pourcentage */
+  margin: 20px auto 10px; /* Réduisez les marges latérales */
+  padding: 0 5px; /* Réduisez le padding */
   background: var(--primary-color); /* Fond #073332 */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
@@ -1216,16 +1218,18 @@ canvas {
 }
 
 .messages-list-container {
-  max-width: 95% !important;
-  margin: 0 auto; /* Centrage sans fond ni contour */
+  max-width: 92%; /* Pleine largeur */
+  margin: 0 auto;
+  padding: 0;
 }
-
 .messages-list .message-card {
   padding: 15px;
   border-radius: 8px;
-  margin: 15px 5px; /* Espacement pour séparer les messages */
+  margin: 0 auto; /* Centrage */
 background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Ombre légère pour effet de bloc */
+    width: 100%; /* Prend toute la largeur disponible */
+
 }
 
 .messages-list .message-card .title {
