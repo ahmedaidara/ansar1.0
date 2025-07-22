@@ -913,9 +913,13 @@ async function updateMessagesList() {
 
     list.innerHTML = messages.map(msg => `
       <div class="message-card">
-        <h4>${msg.title}</h4>
-        <p>${msg.text}</p>
-        <p class="message-date">${formatDate(msg.date)}</p>
+        <div class="title">
+          <img src="assets/images/logo.png" alt="Logo">
+          ${msg.title}
+        </div>
+        <div class="message">${msg.text}</div>
+        <div class="separator"></div>
+        <div class="date">${formatDate(msg.date)}</div>
       </div>
     `).join('');
   } catch (error) {
