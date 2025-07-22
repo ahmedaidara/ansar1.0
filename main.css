@@ -539,8 +539,10 @@ main {
   padding: 15px;
   background-color: var(--secondary-color);
   border-radius: 8px;
-  margin: 15px;
+  margin: 15px auto; /* Centrage horizontal */
   display: none; /* Reste caché par défaut */
+    max-width: 300px; /* Largeur maximale */
+    text-align: center; /* Centrage du contenu */
   z-index: 1200; /* Au-dessus de tout */
 }
 
