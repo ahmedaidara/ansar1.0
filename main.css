@@ -104,19 +104,23 @@ body {
 }
 
 .image-card {
-  width: 100%;
-  max-width: 300px;
-  height: 200px;
+  width: 95%; /* Prend 90% de la largeur parente (laisse 5% de marge de chaque côté) */
+  max-width: 300px !importan; /* Largeur maximale (ajustable) */
+  height: 300px !important; /* Hauteur fixe = largeur pour un carré parfait */
+  margin: 20px auto; /* Espacement vertical + centrage horizontal */
   border: 2px solid #000;
   border-radius: 15px;
   overflow: hidden;
-  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--secondary-color); /* Fond uni si l'image ne couvre pas tout */
 }
 
 .image-card img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Couvre tout l'espace sans déformation */
 }
 
 .association-title {
@@ -152,6 +156,10 @@ body {
   cursor: pointer;
   font-family: 'Open Sans', sans-serif;
   color: white;
+    width: calc(100% - 40px);
+    margin: 10px;
+
+
 }
 
 .item-text {
@@ -641,12 +649,26 @@ input, textarea, select {
 }
 
 .gallery-item {
-  flex: 0 0 auto;
-  max-width: 100%;
+  flex: 0 0 calc(33.333% - 15px); /* 3 colonnes avec espace */
+  max-width: calc(33.333% - 15px);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center; /* Centre le contenu de chaque item */
+}
+
+#home-gallery.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centre les éléments horizontalement */
+  gap: 15px;
+  margin: 0 auto;
+  padding: 0 15px;
+  max-width: 1200px;
 }
 
 .gallery-image {
-  max-width: 100%;
+  width: 100%;
+  max-width: 100%; /* Empêche les images de déborder */
   height: auto;
   border-radius: 8px;
   display: block;
@@ -921,4 +943,26 @@ canvas {
   margin-top: 15px; /* Espace au-dessus pour mobile */
   margin-bottom: 25px; /* Espace en dessous pour mobile */
 }
+}
+
+.gallery-title {
+  text-align: center;
+  width: 100%;
+  margin: 20px 0 10px;
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .gallery-item {
+    flex: 0 0 calc(50% - 15px); /* 2 colonnes sur tablette */
+    max-width: calc(50% - 15px);
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-item {
+    flex: 0 0 100%; /* 1 colonne sur mobile */
+    max-width: 100%;
+  }
 }
