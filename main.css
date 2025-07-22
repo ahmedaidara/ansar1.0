@@ -1087,3 +1087,17 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
     margin: 8px 0; /* Ajustement pour mobile */
   }
 }
+
+#members h2 {
+  max-width: 90%; /* Aligné avec .messages-header-container */
+  margin: 20px auto;
+  background: var(--primary-color); /* Fond #073332 */
+  border: 2px solid var(--accent-color); /* Contour jaune #9b9c28 */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre comme Boîte de réception */
+  text-align: center;
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-color); /* Texte #ffffff */
+}
