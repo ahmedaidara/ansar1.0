@@ -535,15 +535,16 @@ main {
 
 /* Conteneur du champ secret */
 #secret-entry {
-  position: relative; /* Changez de absolute/static si nécessaire */
+  display: none;
+  position: relative; /* Position relative au conteneur parent */
+  width: 90%; /* Largeur réduite pour rester dans le cadre */
+  max-width: 1000px; /* Largeur maximale */
+  margin: 5px auto; /* Centrage horizontal */
   padding: 15px;
   background-color: var(--secondary-color);
   border-radius: 8px;
-  margin: 15px auto; /* Centrage horizontal */
-  display: none; /* Reste caché par défaut */
-    max-width: 300px; /* Largeur maximale */
-    text-align: center; /* Centrage du contenu */
-  z-index: 1200; /* Au-dessus de tout */
+  box-sizing: border-box; /* Inclut padding dans le calcul de la largeur */
+  text-align: center;
 }
 
 /* Quand il est visible */
@@ -554,14 +555,15 @@ main {
 
 /* Champ de saisie */
 #secret-password {
-  width: 100%;
+  width: calc(100% - 30px); /* Largeur adaptative avec padding */
   padding: 12px 15px;
+  margin: 0 auto 10px; /* Centrage */
   background-color: var(--bg-color);
   border: 2px solid var(--accent-color);
   border-radius: 5px;
   color: white;
   font-size: 16px;
-  margin-bottom: 10px;
+  display: block; /* Pour que margin auto fonctionne */
 }
 
 /* Bouton de validation */
