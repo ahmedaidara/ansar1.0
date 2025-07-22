@@ -530,7 +530,52 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.3s ease;
-  z-index: 1001; /* Assure que le bouton reste au-dessus */
+  z-index: 1000; /* Assure que le bouton reste au-dessus */
+}
+
+/* Conteneur du champ secret */
+#secret-entry {
+  position: relative; /* Changez de absolute/static si nécessaire */
+  padding: 15px;
+  background-color: var(--secondary-color);
+  border-radius: 8px;
+  margin: 15px;
+  display: none; /* Reste caché par défaut */
+  z-index: 1200; /* Au-dessus de tout */
+}
+
+/* Quand il est visible */
+#secret-entry.visible {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Champ de saisie */
+#secret-password {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: var(--bg-color);
+  border: 2px solid var(--accent-color);
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Bouton de validation */
+#secret-entry button {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .chatbot-button:hover {
@@ -574,14 +619,7 @@ main {
 }
 
 /* Styles pour la zone des messages */
-/* Styles pour la zone des messages */
-.chatbot-messages {
-  flex: 1; /* Prend tout l'espace disponible au-dessus des contrôles et du formulaire */
-  max-height: calc(80vh - 190px); /* Ajuste pour laisser de l'espace à l'en-tête, aux contrôles et au formulaire */
-  overflow-y: auto; /* Défilement vertical pour les messages */
-  padding: 1rem;
-  background: rgba(42, 77, 69, 0.9); /* Vert sombre #2a4d45 avec opacité */
-}
+
 
 /* Styles pour la zone des messages */
 /* Styles pour la zone des messages */
@@ -593,6 +631,58 @@ main {
   background: rgba(42, 77, 69, 0.9); /* Vert sombre #2a4d45 avec opacité */
 }
 
+* Styles pour les messages envoyés (utilisateur) */
+#chatbot-messages .chat-message.user {
+  background: #a8e6cf !important; /* Vert clair pour contraste */
+  color: #073332 !important; /* Texte sombre pour lisibilité */
+  margin-left: auto !important; /* Aligné à droite */
+  margin-right: 1rem !important; /* Marge à droite pour espacement */
+  border: 2px solid var(--primary-color) !important; /* Bordure #073332 */
+  border-radius: 12px 12px 0 12px !important; /* Coin inférieur droit non arrondi */
+  display: block !important; /* Forcer l'affichage en bloc */
+}
+
+/* Styles pour les messages reçus (bot) */
+.chat-message.bot {
+  align-self: flex-start;
+  background-color: #ffffff; /* Fond blanc */
+  border-color: #e5e5ea; /* Bordure grise */
+  color: #000; /* Texte noir */
+  border-top-left-radius: 5px; /* Coin gauche supérieur moins arrondi */
+}
+
+#chatbot-controls {
+  position: absolute;
+  bottom: 78px; /* Position au-dessus du formulaire */
+  left: 10px; /* Ajouté pour aligner à gauche */
+  right: auto; /* Annule le right: 0 précédent */
+  padding: 10px;
+background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+
+
+.chat-message strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.8em;
+}
+.chatbot-message {
+  margin: 0.5rem 1rem !important; /* Marge autour de chaque message pour espacement */
+  padding: 0.8rem 1.2rem !important; /* Padding interne pour effet "bulle" */
+  border-radius: 12px !important; /* Coins arrondis pour effet palette */
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  max-width: 70% !important; /* Limite la largeur pour éviter que les messages soient trop larges */
+  word-wrap: break-word !important; /* Gère les longs mots */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important; /* Ombre pour effet de bulle */
+}
+
 /* Styles pour les contrôles du chatbot (bouton Effacer) */
 .chatbot-controls {
   padding: 0.5rem 1rem; /* Espacement interne */
@@ -601,17 +691,22 @@ main {
   text-align: right; /* Bouton à droite */
 }
 
+/* Styles pour les messages envoyés */
 .sent {
-  background: var(--accent-color);
-  color: white;
-  text-align: right;
-  margin-left: 20%;
+  background: #a8e6cf !important; /* Vert clair pour meilleur contraste (au lieu de #9b9c28) */
+  color: #073332 !important; /* Texte sombre pour lisibilité */
+  margin-left: auto !important; /* Aligné à droite */
+  border: 2px solid var(--primary-color) !important; /* Bordure #073332 */
+  border-radius: 12px 12px 0 12px !important; /* Coin inférieur droit non arrondi pour style bulle */
 }
 
+/* Styles pour les messages reçus */
 .received {
-  background: var(--secondary-color);
-  color: white;
-  margin-right: 20%;
+  background: #3a5f56 !important; /* Vert moyen pour contraste (au lieu de #1f4a49) */
+  color: white !important; /* Texte blanc pour lisibilité */
+  margin-right: auto !important; /* Aligné à gauche */
+  border: 2px solid var(--accent-color) !important; /* Bordure jaune #9b9c28 */
+  border-radius: 12px 12px 12px 0 !important; /* Coin inférieur gauche non arrondi pour style bulle */
 }
 
 
@@ -662,12 +757,39 @@ main {
   transition: background-color 0.2s ease;
 }
 
+.chat-message {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  margin: 5px 0;
+  position: relative;
+  word-wrap: break-word;
+  border: 1px solid;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background-color: #dcf8c6; /* Fond vert clair */
+  border-color: #b3e6a1; /* Bordure verte */
+  color: #000; /* Texte noir */
+  border-top-right-radius: 5px; /* Coin droit supérieur moins arrondi */
+}
+
+#chatbot-messages {
+  padding: 10px;
+  overflow-y: auto;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 #chatbot-form button:hover, #secret-entry button:hover {
   background: #8cc7a1; /* Couleur au survol pour cohérence */
 }
 
 /* Styles pour le bouton de suppression de l'historique */
-.chatbot-controls .clear-history {
+.chatbot-controls {
   background: #ff6b6b;
   color: white;
   padding: 0.8rem 1.2rem;
@@ -678,6 +800,25 @@ main {
   transition: background-color 0.2s ease;
   margin: 0.5rem 1rem;
 }
+
+#chatbot-messages {
+  padding-bottom: 50px; /* Espace pour le bouton fixe */
+}
+
+.clear-history {
+  background: none !important;
+  color: var(--accent-color) !important;
+    margin-right: auto !important; /* Pousse le bouton à gauche */
+
+  border: none !important;
+  padding: 8px 15px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
 
 .chatbot-controls .clear-history:hover {
   background: #e55a5a;
