@@ -1101,3 +1101,18 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   font-weight: bold;
   color: var(--text-color); /* Texte #ffffff */
 }
+
+.event-countdown {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--text-color);
+  text-align: center;
+  margin: 20px auto;
+  padding: 15px;
+  background-color: var(--primary-color);
+  border: 2px solid var(--accent-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 90%;
+  font-family: 'Open Sans', sans-serif;
+}
