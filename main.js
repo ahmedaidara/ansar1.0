@@ -803,44 +803,32 @@ document.addEventListener('DOMContentLoaded', () => {
 document.querySelector('#add-event-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   try {
-    console.log('Soumission add-event-form');
-    const name = document.querySelector('#event-name').value.trim();
-    const dateInput = document.querySelector('#event-date').value;
-    const timeInput = document.querySelector('#event-time').value;
-    const description = document.querySelector('#event-description').value.trim();
+    console.log('Soumission add-event-form à', new Date().toISOString());
+    const name = document.querySelector('#event-name')?.value.trim();
+    const dateInput = document.querySelector('#event-date')?.value;
+    const timeInput = document.querySelector('#event-time')?.value;
+    const description = document.querySelector('#event-description')?.value.trim();
 
-    // Validation des champs
+    // Vérification de base des champs
     if (!name || !dateInput || !timeInput || !description) {
-      console.error('Champs manquants dans add-event-form');
+      console.error('Champs manquants:', { name, dateInput, timeInput, description });
       alert('Veuillez remplir tous les champs');
       return;
     }
 
-    // Validation du format de la date (YYYY-MM-DD)
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(dateInput)) {
-      console.error('Format de date invalide:', dateInput);
-      alert('La date doit être au format AAAA-MM-JJ (ex. : 2025-07-23)');
-      return;
-    }
+    console.log('Valeurs brutes:', { dateInput, timeInput });
 
-    // Validation du format de l'heure (HH:mm)
-    const timeRegex = /^\d{2}:\d{2}$/;
-    if (!timeRegex.test(timeInput)) {
-      console.error('Format d\'heure invalide:', timeInput);
-      alert('L\'heure doit être au format HH:MM (ex. : 14:00)');
-      return;
-    }
-
-    // Création de l'objet Date
+    // Création de la date (format attendu : YYYY-MM-DD et HH:mm)
     const eventDate = new Date(`${dateInput}T${timeInput}:00`);
+    console.log('Date construite:', eventDate, 'ISO:', eventDate.toISOString());
+
     if (isNaN(eventDate.getTime())) {
-      console.error('Date invalide:', dateInput, timeInput);
-      alert('La date ou l\'heure saisie est invalide');
+      console.error('Date invalide:', { dateInput, timeInput });
+      alert('Erreur : La date ou l\'heure saisie est invalide (ex. : 2025-07-23, 14:00).');
       return;
     }
 
-    // Vérifier que la date est future
+    // Vérification simple que la date est future
     const now = new Date();
     if (eventDate <= now) {
       console.error('Date dans le passé:', eventDate);
@@ -854,10 +842,11 @@ document.querySelector('#add-event-form')?.addEventListener('submit', async (e) 
       description,
     };
 
+    console.log('Données de l\'événement à enregistrer:', eventData);
     await saveData('events', eventData);
     document.querySelector('#add-event-form').reset();
     await updateEventsAdminList();
-    await updateEventCountdowns(); // Rafraîchir les comptes à rebours
+    await updateEventCountdowns();
     console.log('Événement ajouté:', name, eventDate);
     alert('Événement ajouté avec succès');
   } catch (error) {
@@ -929,73 +918,85 @@ let countdownInterval = null;
 
 async function updateEventCountdowns() {
   try {
-    console.log('Début updateEventCountdowns');
-    const events = await loadData('events');
+    console.log('Début updateEventCountdowns à', new Date().toISOString());
     const countdownContainer = document.querySelector('#event-countdowns');
     if (!countdownContainer) {
-      console.error('Élément #event-countdowns introuvable');
+      console.error('Élément #event-countdowns introuvable dans le DOM');
+      alert('Erreur : Conteneur des comptes à rebours introuvable');
       return;
     }
 
-    // Arrêter l'intervalle précédent, si existant
+    const events = await loadData('events');
+    console.log('Événements récupérés:', events);
+
     if (countdownInterval) {
       clearInterval(countdownInterval);
+      console.log('Intervalle précédent arrêté');
     }
 
-    // Filtrer les événements futurs et trier par date
     const now = new Date();
     const futureEvents = events
-      .filter(e => new Date(e.date) > now)
+      .filter(e => {
+        const eventDate = new Date(e.date);
+        if (isNaN(eventDate.getTime())) {
+          console.warn('Date invalide pour l\'événement:', e);
+          return false;
+        }
+        return eventDate > now;
+      })
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
+    console.log('Événements futurs:', futureEvents);
+
     if (futureEvents.length === 0) {
-      countdownContainer.innerHTML = '<p>Aucun événement à venir</p>';
-      console.log('Aucun événement futur');
+      countdownContainer.innerHTML = '<p class="event-countdown">Aucun événement à venir</p>';
+      console.log('Aucun événement futur trouvé');
       return;
     }
 
-    // Prendre le premier événement (le plus proche)
-    const nextEvent = futureEvents[0];
-    console.log('Prochain événement:', nextEvent.name, nextEvent.date);
-
-    // Fonction pour mettre à jour le compte à rebours
-    const updateCountdown = () => {
-      const eventTime = new Date(nextEvent.date);
+    const updateCountdowns = () => {
       const now = new Date();
-      const timeDiff = eventTime - now;
+      let html = '';
 
-      if (timeDiff <= 0) {
-        clearInterval(countdownInterval);
-        countdownContainer.innerHTML = `<p class="event-countdown">${nextEvent.name} EN COURS...</p>`;
-        console.log('Événement en cours:', nextEvent.name);
-        return;
-      }
+      futureEvents.forEach(event => {
+        const eventTime = new Date(event.date);
+        if (isNaN(eventTime.getTime())) {
+          console.warn('Date invalide dans updateCountdowns:', event);
+          html += `<p class="event-countdown">${event.name} - Date invalide</p>`;
+          return;
+        }
 
-      if (timeDiff <= 2 * 60 * 1000) { // Moins de 2 minutes
-        countdownContainer.innerHTML = `<p class="event-countdown">${nextEvent.name} EN COURS...</p>`;
-        console.log('Moins de 2 minutes, événement en cours:', nextEvent.name);
-        return;
-      }
+        const timeDiff = eventTime - now;
 
-      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        if (timeDiff <= 0 || timeDiff <= 2 * 60 * 1000) { // Moins de 2 minutes
+          html += `<p class="event-countdown">${event.name} EN COURS...</p>`;
+          console.log('Événement en cours ou trop proche:', event.name);
+          return;
+        }
 
-      countdownContainer.innerHTML = `
-        <p class="event-countdown">${nextEvent.name} - ${days} JOURS ${hours}H ${minutes}MN ${seconds}S</p>
-      `;
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+        html += `
+          <p class="event-countdown">${event.name} - ${days} JOURS ${hours}H ${minutes}MN ${seconds}S</p>
+        `;
+      });
+
+      countdownContainer.innerHTML = html || '<p class="event-countdown">Aucun événement à venir</p>';
+      console.log('Comptes à rebours mis à jour:', futureEvents.length, 'événements');
     };
 
-    // Mettre à jour immédiatement et toutes les secondes
-    updateCountdown();
-    countdownInterval = setInterval(updateCountdown, 1000);
-    console.log('Compte à rebours démarré pour:', nextEvent.name);
+    updateCountdowns();
+    countdownInterval = setInterval(updateCountdowns, 1000);
+    console.log('Comptes à rebours démarrés pour:', futureEvents.length, 'événements');
   } catch (error) {
     console.error('Erreur updateEventCountdowns:', error);
-    countdownContainer.innerHTML = '<p>Erreur lors du chargement de l\'événement</p>';
+    countdownContainer.innerHTML = '<p class="event-countdown">Erreur lors du chargement des événements</p>';
   }
 }
+
 // ==================== FONCTIONS MESSAGES ====================
 
 document.querySelector('#add-message-form')?.addEventListener('submit', async (e) => {
