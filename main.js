@@ -537,7 +537,6 @@ async function updateMembersList() {
     list.innerHTML = members
       .map(m => `
         <div class="member-card">
-          <img src="https://picsum.photos/150" alt="${m.firstname} ${m.lastname}" class="member-photo" onerror="this.src='assets/images/placeholder.jpg'">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
@@ -596,10 +595,10 @@ async function updateEditMembersList() {
 }
 
 
-async function editMember(code) {
+async function editMember(id) {
   try {
     const members = await loadData('members');
-    const member = members.find(m => m.code === code);
+    const member = members.find(m => m.id === id);
     if (!member) {
       alert('Membre introuvable');
       return;
@@ -1418,6 +1417,7 @@ function goBackToTreasurerGlobal() {
   console.log('Retour à treasurer-global'); // Journal
   showPage('treasurer-global');
 }
+
 async function updateTreasurerMonthlyList() {
   try {
     const members = await loadData('members');
@@ -1438,8 +1438,7 @@ async function updateTreasurerMonthlyList() {
 
     list.innerHTML = filteredMembers
       .map(m => `
-<div class="member-card" onclick="manageMemberMonthlyContributions('${m.code}')">
-          <img src="https://via.placeholder.com/150" alt="${m.firstname} ${m.lastname}" class="member-photo">
+        <div class="member-card" onclick="manageMemberMonthlyContributions('${m.code}')">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
             <p><small>${m.code} • ${m.role}</small></p>
