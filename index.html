@@ -27,59 +27,48 @@
   </header>
   <main>
     <!-- Page d'accueil -->
-<!-- Page d'accueil -->
-<section id="home" class="page active">
-  <div class="header" style="background-image: url('assets/images/photo1.png');">
-    <div class="header-content">
-      <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
-      <button class="settings" onclick="showPage('settings')"><i class="fas fa-cog"></i></button>
-    </div>
-    <div class="ad-banner">
-      <div class="ad-text banner-text">
-        <h2>ANSAR ALMOUYASSAR</h2>
-        <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
+    <section id="home" class="page active">
+      <div class="header" style="background-image: url('assets/images/photo1.png');">
+        <div class="header-content">
+          <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+          <button class="settings" onclick="showPage('settings')"><i class="fas fa-cog"></i></button>
+        </div>
+        <div class="ad-banner">
+          <div class="ad-text banner-text">
+            <h2>ANSAR ALMOUYASSAR</h2>
+            <p>Sous la direction de notre président, <strong>Mouhamed Niang</strong>, notre association œuvre pour le développement communautaire et spirituel.</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="association-title">
-    <span>ANSAR ALMOUYASSAR</span>
-  </div>
-  <div class="image-card">
-    <img src="assets/images/photo2.png" alt="Image">
-  </div>
-  <div class="grid">
-    <div class="item" onclick="showPage('members')"><span class="item-text">Membres</span><i class="fas fa-users icon"></i></div>
-    <div class="item" onclick="showPage('events')"><span class="item-text">Événements</span><i class="fas fa-calendar-alt icon"></i></div>
-    <div class="item" onclick="showPage('coran')"><span class="item-text">Coran</span><i class="fas fa-book icon"></i></div>
-    <div class="item" onclick="showPage('library')"><span class="item-text">Bibliothèque</span><i class="fas fa-book-open icon"></i></div>
-  </div>
-  <div id="event-countdowns"></div>
-  <div id="message-popups"></div>
-  <h3>Galerie</h3>
-  <div id="home-gallery" class="gallery-grid"></div>
-</section>
+      <div class="association-title">
+        <span>ANSAR ALMOUYASSAR</span>
+      </div>
+      <div class="image-card">
+        <img src="assets/images/photo2.png" alt="Image">
+      </div>
+      <div class="grid">
+        <div class="item" onclick="showPage('members')"><span class="item-text">Membres</span><i class="fas fa-users icon"></i></div>
+        <div class="item" onclick="showPage('events')"><span class="item-text">Événements</span><i class="fas fa-calendar-alt icon"></i></div>
+        <div class="item" onclick="showPage('coran')"><span class="item-text">Coran</span><i class="fas fa-book icon"></i></div>
+        <div class="item" onclick="showPage('library')"><span class="item-text">Bibliothèque</span><i class="fas fa-book-open icon"></i></div>
+      </div>
+      <div id="event-countdowns"></div>
+      <div id="message-popups"></div>
+      <h3>Galerie</h3>
+      <div id="home-gallery" class="gallery-grid"></div>
+    </section>
 
     <!-- Page des membres -->
-<!-- Page des membres -->
-<section id="members" class="page">
-  <h2>Liste des Membres</h2>
-  <div id="members-list"></div>
-</section>
+    <section id="members" class="page">
+      <h2>Liste des Membres</h2>
+      <div id="members-list"></div>
+    </section>
 
     <!-- Page des événements -->
     <section id="events" class="page">
       <h2>Événements à venir</h2>
       <input type="text" id="events-search" placeholder="Rechercher un événement..." class="search-bar">
       <div id="events-list"></div>
-    </section>
-
-    <!-- Page de la galerie -->
-
-
-    <!-- Page des messages -->
-    <section id="messages" class="page">
-      <h2>Messages</h2>
-      <div id="messages-list"></div>
     </section>
 
     <!-- Page Coran -->
@@ -97,73 +86,74 @@
     </section>
 
     <!-- Espace personnel -->
-<section id="personal" class="page">
-  <div id="personal-login" style="display: block;">
-    <div class="top-section">
-      <div class="profile-container">
-        <div class="profile-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-        </div>
-        <p class="user-name">Espace Personnel</p>
+ <!-- Espace personnel -->
+    <section id="personal" class="page">
+      <div id="personal-login" style="display: block;">
+        <h2>Espace Personnel</h2>
+        <form id="personal-login-form">
+          <label for="personal-member-code">Numéro de Membre</label>
+          <input type="text" id="personal-member-code" placeholder="Ex. : 001" required>
+          <label for="personal-password">Mot de passe (Date de naissance : JJMMAAAA)</label>
+          <input type="password" id="personal-password" placeholder="Ex. : 10012005" required>
+          <button type="submit" class="cta-button">Se connecter</button>
+        </form>
+        <p id="personal-error-message" style="color: red; display: none;"></p>
       </div>
-    </div>
-    <div class="bottom-section">
-      <div class="container">
-        <h1>Connexion</h1>
-        <div class="section info-section">
-          <form id="personal-login-form">
-            <label for="personal-member-code">Numéro de Membre</label>
-            <input type="text" id="personal-member-code" placeholder="Ex. : 001" required>
-            <label for="personal-password">Mot de passe (Date de naissance : JJMMAAAA)</label>
-            <input type="password" id="personal-password" placeholder="Ex. : 10012005" required>
-            <button type="submit" class="cta-button">Se connecter</button>
-          </form>
-          <p id="personal-error-message" style="color: #ff6b6b; display: none;"></p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="personal-content" style="display: none;">
-    <div class="top-section">
-      <div class="profile-container">
-        <div class="profile-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-        </div>
-        <p id="personal-title" class="user-name"></p>
-      </div>
-    </div>
-    <div class="bottom-section">
-      <div class="container">
-        <h1>Compte</h1>
-        <div class="section info-section" id="personal-info">
-          <!-- Informations du membre seront insérées ici via JavaScript -->
-        </div>
-        <div class="section cotisations-section">
-          <h2>Mes Cotisations</h2>
-          <div id="personal-contributions">
-            <!-- Cotisations mensuelles et globales seront insérées ici via JavaScript -->
+      <div id="personal-content" style="display: none;">
+        <div class="main">
+          <!-- Partie haute en vert avec profil -->
+          <div class="top-section">
+            <div class="profile-container">
+              <div class="profile-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+              <p id="personal-title" class="user-name"></p>
+              <p id="personal-role" class="user-role"></p> <!-- Nouvel élément pour le rôle -->
+            </div>
           </div>
-          <div class="payment-methods">
-            <button class="payment-btn" onclick="payViaWave()">Payer via Wave</button>
-            <button class="payment-btn" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
+
+          <!-- Partie basse avec contenu -->
+          <div class="bottom-section">
+            <div class="container">
+              <h1>Compte</h1>
+
+              <!-- Section 1 : Informations personnelles -->
+              <div id="personal-info" class="section info-section">
+                <!-- Contenu rempli dynamiquement par JS, sans le rôle -->
+              </div>
+
+              <!-- Section 2 : Cotisations -->
+              <div id="personal-contributions" class="section cotisations-section">
+                <h2>Cotisations Mensuelles</h2> <!-- Transformé en titre -->
+                <div id="cotisations-content"></div> <!-- Contenu des cotisations -->
+                <h2>Cotisations Globales</h2> <!-- Titre pour cotisations globales -->
+                <div id="global-cotisations-content"></div> <!-- Contenu des cotisations globales -->
+              </div>
+
+              <!-- Méthodes de paiement -->
+              <div class="payment-methods">
+                <button class="payment-btn" onclick="payViaWave()">Payer via Wave</button>
+                <button class="payment-btn" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
+              </div>
+
+              <!-- Section 3 : Suggestions -->
+              <div class="section suggestions-section">
+                <h2>Suggestions</h2>
+                <form id="suggestion-form">
+                  <textarea id="suggestion-text" placeholder="Écrivez vos suggestions ici..." rows="4" required></textarea>
+                  <button type="submit" class="cta-button">Envoyer</button>
+                </form>
+              </div>
+
+              <!-- Bouton Déconnexion -->
+              <button class="logout-btn" onclick="logoutPersonal()">Se Déconnexion</button>
+            </div>
           </div>
         </div>
-        <div class="section suggestions-section">
-          <h2>Suggestions</h2>
-          <form id="suggestion-form">
-            <textarea id="suggestion-text" placeholder="Écrivez vos suggestions ici..." rows="4" required></textarea>
-            <button type="submit">Envoyer</button>
-          </form>
-        </div>
-        <button class="logout-btn" onclick="logoutPersonal()">Se Déconnecter</button>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
     <!-- Espace Secret Général -->
     <section id="secret" class="page">
@@ -208,17 +198,15 @@
         </form>
       </div>
       <div id="edit-member" class="tab-content">
-<h3>Modifier/Supprimer un Membre</h3>
-<div id="edit-members-list"></div>
-<form id="delete-member-form" style="display: none;">
-  <p>Entrez le code président pour confirmer la suppression :</p>
-  <input type="password" id="delete-member-code" placeholder="Code président" required>
-  <button type="submit" class="cta-button">Confirmer la suppression</button>
-  <button type="button" class="cta-button" onclick="showPage('admin-members')">Annuler</button>
-</form>
+        <h3>Modifier/Supprimer un Membre</h3>
+        <div id="edit-members-list"></div>
+        <form id="delete-member-form" style="display: none;">
+          <p>Entrez le code président pour confirmer la suppression :</p>
+          <input type="password" id="delete-member-code" placeholder="Code président" required>
+          <button type="submit" class="cta-button">Confirmer la suppression</button>
+          <button type="button" class="cta-button" onclick="showPage('admin-members')">Annuler</button>
+        </form>
       </div>
-      
-    
       <div id="events-admin" class="tab-content">
         <h3>Ajouter un Événement</h3>
         <form id="add-event-form">
@@ -226,7 +214,6 @@
           <input type="date" id="event-date" required>
           <input type="time" id="event-time" required>
           <textarea id="event-description" placeholder="Description" required></textarea>
-         
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
         <input type="text" id="events-admin-search" placeholder="Rechercher un événement..." class="search-bar">
@@ -256,7 +243,6 @@
         <h3>Documents Internes</h3>
         <form id="add-internal-doc-form">
           <input type="text" id="internal-doc-category" placeholder="Catégorie" required>
-          
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
         <input type="text" id="internal-docs-search" placeholder="Rechercher un document..." class="search-bar">
@@ -278,7 +264,6 @@
         <h3>Appels Vidéo & Audio</h3>
         <div class="search-filter-container">
           <input type="text" id="video-calls-search" placeholder="Rechercher un membre..." class="search-bar">
-
         </div>
         <div id="members-call-list"></div>
         <input type="checkbox" id="call-all" onchange="toggleCallAll()">
@@ -312,101 +297,83 @@
     </section>
 
     <!-- Page des Cotisations Mensuelles -->
-<section id="treasurer-monthly" class="page">
-  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2>Cotisations Mensuelles</h2>
-  <input type="text" id="treasurer-monthly-search" placeholder="Rechercher un membre..." class="search-bar">
-  <select id="treasurer-monthly-filter" class="filter-select">
-    <option value="all">Tous</option>
-    <option value="paid">Payé</option>
-    <option value="unpaid">Non payé</option>
-  </select>
-  <div id="treasurer-monthly-list"></div>
-</section>
+    <section id="treasurer-monthly" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Cotisations Mensuelles</h2>
+      <input type="text" id="treasurer-monthly-search" placeholder="Rechercher un membre..." class="search-bar">
+      <select id="treasurer-monthly-filter" class="filter-select">
+        <option value="all">Tous</option>
+        <option value="paid">Payé</option>
+        <option value="unpaid">Non payé</option>
+      </select>
+      <div id="treasurer-monthly-list"></div>
+    </section>
 
-    <!-- Page des Cotisations Mensuelles d'un Membre -->
-<!-- Page des Cotisations Mensuelles -->
-<section id="treasurer-monthly" class="page">
-  <button class="cta-button back-button" onclick="goBackToTreasurer()"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2>Gestion des Cotisations Mensuelles</h2>
-  <div class="search-filter-container">
-    <input type="text" id="treasurer-monthly-search" placeholder="Rechercher un membre..." class="search-bar">
-    <select id="treasurer-monthly-filter" class="filter-select">
-      <option value="all">Tous</option>
-      <option value="paid">Payé</option>
-      <option value="unpaid">Non payé</option>
-    </select>
-  </div>
-  <div id="treasurer-monthly-list"></div>
-</section>
-
-<!-- Page des Cotisations Globales -->
-<section id="treasurer-global" class="page">
-  <button class="cta-button back-button" onclick="goBackToTreasurer()"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2>Gestion des Cotisations Globales</h2>
-  <form id="add-contribution-form">
-    <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL 2000F)" required>
-    <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
-    <button type="submit" class="cta-button">Confirmer</button>
-    <button type="button" class="cta-button cancel-button" onclick="document.getElementById('add-contribution-form').reset()">Annuler</button>
-  </form>
-  <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
-  <div id="contributions-admin-list"></div>
-</section>
+    <!-- Page des Cotisations Globales -->
+    <section id="treasurer-global" class="page">
+      <button class="cta-button back-button" onclick="goBackToTreasurer()"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Gestion des Cotisations Globales</h2>
+      <form id="add-contribution-form">
+        <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL 2000F)" required>
+        <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
+        <button type="submit" class="cta-button">Confirmer</button>
+        <button type="button" class="cta-button cancel-button" onclick="document.getElementById('add-contribution-form').reset()">Annuler</button>
+      </form>
+      <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
+      <div id="contributions-admin-list"></div>
+    </section>
 
     <!-- Page de Gestion des Paiements d'une Cotisation Globale -->
     <section id="treasurer-global-manage" class="page">
       <button class="cta-button back-button" onclick="showPage('treasurer-global')"><span class="material-icons">arrow_back</span> Retour</button>
       <h2 id="treasurer-global-title">Gérer les Paiements</h2>
-
       <div id="global-contribution-members"></div>
     </section>
 
     <!-- Page des Cotisations Mensuelles d'un Membre -->
-<section id="treasurer-member-monthly" class="page">
-  <button class="cta-button back-button" onclick="goBackToTreasurerMonthly()"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2 id="treasurer-member-title">Cotisations du Membre</h2>
-  <button class="cta-button" onclick="saveMonthlyContributions()">Enregistrer</button>
-  <div id="treasurer-monthly-content"></div>
-</section>
+    <section id="treasurer-member-monthly" class="page">
+      <button class="cta-button back-button" onclick="goBackToTreasurerMonthly()"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2 id="treasurer-member-title">Cotisations du Membre</h2>
+      <button class="cta-button" onclick="saveMonthlyContributions()">Enregistrer</button>
+      <div id="treasurer-monthly-content"></div>
+    </section>
 
     <!-- Espace Président -->
-<section id="president" class="page">
-  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2>Espace Président</h2>
-  <div class="tabs">
-    <button class="tab-button active" onclick="showTab('president-settings')">Paramètres de Sécurité</button>
-  </div>
-  <div id="president-settings" class="tab-content active">
-    <h3>Configurer les Codes de Suppression</h3>
-    <form id="set-president-codes-form">
-      <input type="password" id="member-deletion-code" placeholder="Code pour supprimer un membre" required>
-      <input type="password" id="contribution-deletion-code" placeholder="Code pour supprimer une cotisation" required>
-      <button type="submit" class="cta-button">Enregistrer</button>
-    </form>
-  </div>
-</section>
+    <section id="president" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Président</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('president-settings')">Paramètres de Sécurité</button>
+      </div>
+      <div id="president-settings" class="tab-content active">
+        <h3>Configurer les Codes de Suppression</h3>
+        <form id="set-president-codes-form">
+          <input type="password" id="member-deletion-code" placeholder="Code pour supprimer un membre" required>
+          <input type="password" id="contribution-deletion-code" placeholder="Code pour supprimer une cotisation" required>
+          <button type="submit" class="cta-button">Enregistrer</button>
+        </form>
+      </div>
+    </section>
 
     <!-- Espace Secrétaire -->
-<!-- Espace Secrétaire -->
-<section id="secretary" class="page">
-  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-  <h2>Espace Secrétaire</h2>
-  <div class="tabs">
-    <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
-  </div>
-  <div id="secretary-files" class="tab-content active">
-    <h3>Fichiers Secrétaire</h3>
-    <form id="add-secretary-file-form">
-      <input type="text" id="secretary-file-name" placeholder="Nom du fichier" required>
-      <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
-      <input type="text" id="secretary-file-url" placeholder="Lien de l'image (ex. : https://i.imgur.com/XXXXX.jpg)" required>
-      <button type="submit" class="cta-button">Ajouter</button>
-    </form>
-    <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
-    <div id="secretary-files-list"></div>
-  </div>
-</section>
+    <section id="secretary" class="page">
+      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+      <h2>Espace Secrétaire</h2>
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
+      </div>
+      <div id="secretary-files" class="tab-content active">
+        <h3>Fichiers Secrétaire</h3>
+        <form id="add-secretary-file-form">
+          <input type="text" id="secretary-file-name" placeholder="Nom du fichier" required>
+          <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
+          <input type="text" id="secretary-file-url" placeholder="Lien de l'image (ex. : https://i.imgur.com/XXXXX.jpg)" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
+        <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
+        <div id="secretary-files-list"></div>
+      </div>
+    </section>
 
     <!-- Page des paramètres -->
     <section id="settings" class="page">
@@ -462,4 +429,3 @@
   </div>
 </body>
 </html>
-
