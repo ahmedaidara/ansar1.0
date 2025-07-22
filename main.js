@@ -338,8 +338,12 @@ function appendChatMessage(sender, message) {
 
   const messageElement = document.createElement('div');
   messageElement.className = sender === 'Vous' ? 'chat-message user' : 'chat-message bot';
-  messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+  
+  // Suppression du préfixe - affiche uniquement le message
+  messageElement.textContent = message; 
+  
   messages.appendChild(messageElement);
+  messages.scrollTop = messages.scrollHeight;
 }
 
 function clearChatHistory() {
