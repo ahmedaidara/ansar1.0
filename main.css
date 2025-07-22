@@ -519,6 +519,7 @@ main {
   color: white;
 }
 
+/* Styles pour le bouton du chatbot */
 .chatbot-button {
   position: fixed;
   bottom: 90px;
@@ -529,85 +530,141 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.3s ease;
+  z-index: 1001; /* Assure que le bouton reste au-dessus */
 }
 
 .chatbot-button:hover {
   transform: scale(1.1);
 }
 
+/* Styles pour la fenêtre du chatbot */
+/* Styles pour la fenêtre du chatbot */
+/* Styles pour la fenêtre du chatbot */
 .chatbot-container {
   position: fixed;
-  bottom: 140px;
-  right: 20px;
-  width: 300px;
+  bottom: 90px; /* Décalé en bas */
+  right: 20px; /* Décalé à droite */
+  width: 80vw; /* 80% de la largeur de l'écran */
+  height: 80vh; /* 80% de la hauteur de l'écran */
   background: url('assets/images/chatbot-bg.jpg') no-repeat center center;
-  background-size: contain;
-  border: 1px solid var(--secondary-color);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  background-size: cover; /* L'image couvre tout l'espace sans zoom ni coupure */
+  border: 2px solid var(--accent-color); /* Contour jaune #9b9c28 */
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre légère */
+  z-index: 1000; /* Au-dessus du contenu */
+  display: none; /* Caché par défaut */
+  overflow: auto; /* Défilement si nécessaire */
+}
+/* Assure que la fenêtre est visible quand ouverte */
+.chatbot-container.active {
+  display: block;
 }
 
+/* Styles pour l'en-tête du chatbot */
 .chatbot-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
+  padding: 1rem;
   background: var(--primary-color);
   color: white;
-  border-radius: 10px 10px 0 0;
+  border-bottom: 2px solid var(--accent-color); /* Bordure pour séparation */
 }
 
+/* Styles pour la zone des messages */
 .chatbot-messages {
-  max-height: 300px;
+  max-height: calc(100vh - 150px); /* Ajuste la hauteur pour laisser de l'espace à l'en-tête et au formulaire */
   overflow-y: auto;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9); /* Fond légèrement opaque pour lisibilité */
 }
+
 
 .chatbot-message {
   margin: 0.5rem 0;
-  padding: 0.5rem;
-  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .sent {
   background: var(--accent-color);
   color: white;
   text-align: right;
+  margin-left: 20%;
 }
 
 .received {
   background: var(--secondary-color);
   color: white;
+  margin-right: 20%;
 }
 
+
+/* Styles pour le formulaire du chatbot */
+/* Styles pour le formulaire du chatbot */
 #chatbot-form {
   display: flex;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  background: rgba(42, 77, 69, 0.9); /* Vert sombre #2a4d45 avec opacité */
+  position: sticky;
+  bottom: 0;
+  border-top: 2px solid var(--accent-color); /* Bordure pour séparation */
 }
+
 
 #chatbot-input {
   flex-grow: 1;
   margin-right: 0.5rem;
   background: var(--secondary-color);
   color: white;
-  border: 1px solid #ccc;
+  border: 2px solid var(--accent-color); /* Bordure cohérente */
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 1rem;
 }
+
 
 #secret-entry input {
   background: var(--secondary-color);
   color: white;
-  border: 1px solid #ccc;
+  border: 2px solid var(--accent-color); /* Bordure cohérente */
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 1rem;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 400px;
-  margin: 0 auto;
+#chatbot-form button, #secret-entry button {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#chatbot-form button:hover, #secret-entry button:hover {
+  background: #8cc7a1; /* Couleur au survol pour cohérence */
+}
+
+/* Styles pour le bouton de suppression de l'historique */
+.chatbot-controls .clear-history {
+  background: #ff6b6b;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid var(--accent-color);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0.5rem 1rem;
+}
+
+.chatbot-controls .clear-history:hover {
+  background: #e55a5a;
 }
 
 input, textarea, select {
@@ -823,6 +880,8 @@ canvas {
   text-align: center;
   z-index: 10 !important;
 }
+
+
 
 #personal-login .profile-icon {
   width: 150px !important;
