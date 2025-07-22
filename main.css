@@ -128,13 +128,15 @@ body {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  background: var(--secondary-color);
+  background: var(--primary-color); /* Fond #073332, comme Boîte de réception */
+  border: 2px solid var(--accent-color); /* Contour jaune #9b9c28 */
   border-radius: 10px;
   margin: 10px;
   font-size: 20px;
   font-weight: bold;
   color: white;
   width: calc(100% - 40px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre comme Boîte de réception */
 }
 
 .grid {
