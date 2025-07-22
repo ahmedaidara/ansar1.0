@@ -862,24 +862,17 @@ document.querySelector('#add-event-form')?.addEventListener('submit', async (e) 
 async function updateEventsList() {
   try {
     const events = await loadData('events');
-    const search = document.querySelector('#events-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#events-list');
-    if (!list) return;
-
-    list.innerHTML = events
-      .filter(e => e.name.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
-      .map(e => `
-        <div class="event-card">
-          ${e.image ? `<img src="${e.image}" alt="${e.name}" class="event-image">` : ''}
-          <div class="event-details">
-            <h4>${e.name}</h4>
-            <p>${e.description}</p>
-            <p class="event-date">${formatDate(e.datetime)}</p>
-          </div>
-        </div>
-      `).join('');
+    
+    list.innerHTML = events.map(event => `
+      <div class="event-card">
+        <h4>${event.name}</h4>
+        <p>${event.description}</p>
+        <p class="event-date">${formatEventDate(event.date)}</p>
+      </div>
+    `).join('') || '<p>Aucun événement disponible</p>';
   } catch (error) {
-    console.error('Erreur updateEventsList:', error);
+    console.error('Error updating events:', error);
   }
 }
 
@@ -2143,4 +2136,23 @@ function goBackToTreasurerMonthly() {
 function goBackToTreasurer() {
   console.log('Retour à treasurer'); // Journal pour débogage
   showPage('treasurer');
+}
+
+function formatEventDate(dateString) {
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) throw new Error('Invalid date');
+    
+    return date.toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Date à confirmer'; // Message de repli
+  }
 }
