@@ -494,8 +494,9 @@ main {
 }
 
 .nav-item {
-  background: var(--secondary-color);
-  border: none;
+  background: transparent !important; /* Supprime le fond */
+  border: none !important; /* Supprime les bordures */
+  box-shadow: none !important; /* Supprime les ombres éventuelles */
   cursor: pointer;
   font-size: 12px;
   display: flex;
