@@ -553,7 +553,9 @@ main {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre légère */
   z-index: 1000; /* Au-dessus du contenu */
   display: none; /* Caché par défaut */
-  overflow: auto; /* Défilement si nécessaire */
+  overflow: hidden; /* Empêche le débordement global */
+  display: flex; /* Utilise flexbox pour organiser les enfants */
+  flex-direction: column; /* Organise les enfants verticalement */
 }
 /* Assure que la fenêtre est visible quand ouverte */
 .chatbot-container.active {
@@ -572,20 +574,31 @@ main {
 }
 
 /* Styles pour la zone des messages */
+/* Styles pour la zone des messages */
 .chatbot-messages {
-  max-height: calc(100vh - 150px); /* Ajuste la hauteur pour laisser de l'espace à l'en-tête et au formulaire */
-  overflow-y: auto;
+  flex: 1; /* Prend tout l'espace disponible au-dessus des contrôles et du formulaire */
+  max-height: calc(80vh - 190px); /* Ajuste pour laisser de l'espace à l'en-tête, aux contrôles et au formulaire */
+  overflow-y: auto; /* Défilement vertical pour les messages */
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.9); /* Fond légèrement opaque pour lisibilité */
+  background: rgba(42, 77, 69, 0.9); /* Vert sombre #2a4d45 avec opacité */
 }
 
+/* Styles pour la zone des messages */
+/* Styles pour la zone des messages */
+.chatbot-messages {
+  flex: 1; /* Prend tout l'espace disponible au-dessus des contrôles et du formulaire */
+  max-height: calc(80vh - 190px) !important; /* Ajuste pour l'en-tête (~50px), contrôles (~40px), et formulaire (~50px) */
+  overflow-y: auto; /* Défilement vertical pour les messages */
+  padding: 1rem;
+  background: rgba(42, 77, 69, 0.9); /* Vert sombre #2a4d45 avec opacité */
+}
 
-.chatbot-message {
-  margin: 0.5rem 0;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  line-height: 1.5;
+/* Styles pour les contrôles du chatbot (bouton Effacer) */
+.chatbot-controls {
+  padding: 0.5rem 1rem; /* Espacement interne */
+  background: rgba(42, 77, 69, 0.9); /* Même fond que le formulaire */
+  border-top: 2px solid var(--accent-color); /* Bordure pour séparation */
+  text-align: right; /* Bouton à droite */
 }
 
 .sent {
@@ -604,12 +617,15 @@ main {
 
 /* Styles pour le formulaire du chatbot */
 /* Styles pour le formulaire du chatbot */
+/* Styles pour le formulaire du chatbot */
 #chatbot-form {
   display: flex;
   padding: 1rem;
   background: rgba(42, 77, 69, 0.9); /* Vert sombre #2a4d45 avec opacité */
-  position: sticky;
-  bottom: 0;
+  position: absolute; /* Fixe le formulaire en bas */
+  bottom: 0; /* Collé au bas de la fenêtre */
+  left: 0; /* Aligné à gauche */
+  right: 0; /* S'étend sur toute la largeur */
   border-top: 2px solid var(--accent-color); /* Bordure pour séparation */
 }
 
