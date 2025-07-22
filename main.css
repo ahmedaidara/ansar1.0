@@ -168,7 +168,7 @@ main {
 }
 
 #personal {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Open Sans', sans-serif !important;
 }
 
 /* Styles spécifiques pour la page personnelle */
@@ -188,10 +188,11 @@ main {
 
 #personal .profile-container {
   position: absolute;
-  bottom: -150px; /* Changé de -70px */
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: -155px !important; /* Forcé pour centrer l'icône */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   text-align: center;
+  z-index: 10 !important; /* Assure que l'icône est au-dessus */
 }
 
 #personal .profile-icon {
@@ -222,8 +223,8 @@ main {
 
 #personal .bottom-section {
   flex: 1;
-  background-color: var(--secondary-color);
-  padding-top: 100px; /* Changé de 90px */
+  background-color: transparent !important;
+  padding-top: 125px !important; /* Forcé pour aligner la frontière */
 }
 
 #personal .container {
@@ -408,7 +409,7 @@ main {
 #personal .user-role {
   color: var(--accent-color); /* Même couleur que les titres pour cohérence */
   font-size: 1.2rem;
-  margin: 5px 0 0;
+  margin: 5px 0 20px;
   text-align: center;
 }
 
@@ -428,7 +429,7 @@ main {
 }
 
 #personal .profile-container {
-  bottom: -100px; /* Ajusté pour mobile */
+  bottom: -110px; /* Ajusté pour mobile */
 }
 
   #personal .user-name {
@@ -457,7 +458,7 @@ main {
   }
   /* Ligne à ajouter */
   #personal .bottom-section {
-    padding-top: 80px; /* Ajouté pour aligner la frontière au centre de l'icône sur mobile */
+    padding-top: 90px; /* Ajouté pour aligner la frontière au centre de l'icône sur mobile */
   }
 }
 
@@ -758,4 +759,156 @@ canvas {
   margin: 8px 0;
   font-size: 0.9rem;
   color: var(--text-color);
+}
+
+
+/* Styles pour la page de connexion personnelle */
+#personal-login .main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color); /* #073332 */
+  margin: 0 !important; /* Supprime toute marge */
+  padding: 0 !important; /* Supprime tout padding */
+  width: 100vw; /* Couvre toute la largeur */
+}
+
+#personal-login .top-section {
+  height: 250px;
+  background-color: var(--accent-color); /* Vert #9b9c28 */
+  position: relative;
+  border-bottom: 3px solid var(--secondary-color); /* Contour inférieur */
+}
+
+#personal-login .profile-container {
+  position: absolute;
+  bottom: -170px !important; /* Forcé, même valeur que #personal-content */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  text-align: center;
+  z-index: 10 !important;
+}
+
+#personal-login .profile-icon {
+  width: 150px !important;
+  height: 150px !important;
+  border-radius: 50%;
+  border: 4px solid var(--secondary-color); /* Contour bleu #1f4a49 */
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#personal-login .profile-icon svg {
+  width: 100px;
+  height: 100px;
+}
+
+#personal-login .bottom-section {
+  flex: 1;
+  background-color: transparent !important; /* Bleu #1f4a49 */
+  padding-top: 140px !important; /* Forcé, même valeur que #personal-content */
+}
+
+#personal-login .container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+#personal-login .login-section {
+  background-color: #2a4d45; /* Fond comme #personal .section */
+  border: 2px solid var(--accent-color); /* Contour vert #9b9c28 */
+  border-radius: 10px;
+  padding: 15px;
+  margin: 0 10px 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+#personal-login .login-section label {
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+#personal-login .login-section input {
+  width: calc(100% - 30px); /* Compense padding */
+  margin: 5px 15px 10px 15px;
+  box-sizing: border-box;
+}
+
+#personal-login .login-section button {
+  background-color: #a8e6cf;
+  color: var(--primary-color);
+  padding: 10px 20px;
+  border: 2px solid var(--accent-color); /* Contour vert */
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: auto;
+  margin: 10px auto;
+  display: block;
+}
+
+#personal-login .login-section button:hover {
+  background-color: #8cc7a1;
+}
+
+#personal-login h2 {
+  font-family: 'Open Sans', sans-serif !important;
+  color: var(--accent-color);
+  font-size: 1.6rem;
+  text-align: center;
+  margin-top: 20px; /* Ajoute espace au-dessus du titre */
+  margin-bottom: 30px; /* Augmente pour plus d'espace sous le titre */
+}
+
+/* Responsive pour mobile */
+@media (max-width: 600px) {
+#personal-login .top-section {
+  height: 200px;
+  width: 100vw; /* Couvre toute la largeur */
+  margin: 0 !important;
+}
+
+  #personal-login .profile-icon {
+    width: 120px;
+    height: 120px;
+  }
+
+  #personal-login .profile-icon svg {
+    width: 80px;
+    height: 80px;
+  }
+
+  #personal-login .profile-container {
+    bottom: -108px !important; /* Forcé pour mobile */
+  }
+
+  #personal-login .bottom-section {
+    padding-top: 120px !important; /* Forcé pour mobile */
+  }
+
+  #personal-login .login-section {
+    margin: 0 5px 15px;
+    padding: 10px;
+  }
+
+  #personal-login .login-section input {
+    width: calc(100% - 20px); /* Compense padding mobile */
+    margin: 5px 10px 10px 10px;
+  }
+
+#personal-login h2 {
+  font-family: 'Open Sans', sans-serif !important;
+  font-size: 1.4rem;
+  margin-top: 15px; /* Espace au-dessus pour mobile */
+  margin-bottom: 25px; /* Espace en dessous pour mobile */
+}
 }
