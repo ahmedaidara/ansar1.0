@@ -26,13 +26,23 @@ body {
 
 .header {
   position: relative;
-  height: 200px;
-  background-size: cover;
+  height: 200px; /* Hauteur fixe (ajustez selon vos besoins) */
+  background-size: cover !important;
   background-position: center;
   background-repeat: no-repeat;
   margin: 0;
   padding: 0;
-  width: 100vw;
+  width: 100vw; /* Prend toute la largeur de l'écran */
+  left: 50%; /* Centrage */
+  transform: translateX(-50%); /* Compensation pour le centrage */
+  overflow: hidden; /* Cache tout débordement */
+  border: none !important; /* Supprime toutes les bordures */
+}
+
+@media (max-width: 600px) {
+  .header {
+    height: 150px; /* Réduit la hauteur sur mobile */
+  }
 }
 
 .header-content {
