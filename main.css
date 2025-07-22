@@ -359,7 +359,7 @@ main {
 }
 
 #personal .suggestions-section textarea {
-  width: 100%;
+  width: calc(100% - 30px);
   padding: 10px;
   border: 2px solid var(--accent-color); /* Contour autour du textarea */
   border-radius: 8px;
@@ -368,6 +368,7 @@ main {
   resize: vertical;
   font-size: 0.9rem;
   margin-bottom: 10px;
+  
 }
 
 #personal .suggestions-section button {
