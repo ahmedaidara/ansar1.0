@@ -733,32 +733,27 @@ async function showMemberDetail(code) {
       personalLogin.style.display = 'none';
       personalContent.style.display = 'block';
       document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
+      document.querySelector('#personal-role').textContent = `Rôle: ${member.role}`; // Ajout du rôle
       document.querySelector('#personal-info').innerHTML = `
         <p><strong>Code:</strong> ${member.code}</p>
         <p><strong>Nom:</strong> ${member.firstname} ${member.lastname}</p>
-        <p><strong>Rôle:</strong> ${member.role}</p>
         <p><strong>Statut:</strong> ${member.status}</p>
         ${member.email ? `<p><strong>Email:</strong> ${member.email}</p>` : ''}
         ${member.phone ? `<p><strong>Téléphone:</strong> ${member.phone}</p>` : ''}
       `;
       const contributions = await loadData('contributions');
-      document.querySelector('#personal-contributions').innerHTML = `
-        <p><strong>Cotisations Mensuelles:</strong></p>
-        ${Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
-          <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
-        `).join('')}
-        <p><strong>Cotisations Globales:</strong></p>
-        ${contributions.map(c => `
-          <p>${c.name} (${c.amount} FCFA): ${member.contributions.globalContributions?.[c.name]?.paid ? '✅ Payé' : '❌ Non payé'}</p>
-        `).join('') || '<p>Aucune cotisation globale</p>'}
-      `;
+      document.querySelector('#cotisations-content').innerHTML = Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
+        <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
+      `).join('');
+      document.querySelector('#global-cotisations-content').innerHTML = contributions.map(c => `
+        <p>${c.name} (${c.amount} FCFA): ${member.contributions.globalContributions?.[c.name]?.paid ? '✅ Payé' : '❌ Non payé'}</p>
+      `).join('') || '<p>Aucune cotisation globale</p>';
     }
   } catch (error) {
     console.error('Erreur showMemberDetail:', error);
     alert('Erreur lors de l\'affichage des détails du membre');
   }
 }
-
 
 // ==================== FONCTIONS GAL ====================
 async function setPresidentCodes(event) {
