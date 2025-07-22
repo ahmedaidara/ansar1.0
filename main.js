@@ -167,6 +167,7 @@ function showPage(pageId) {
       case 'home':
         updateMessagePopups();
         updateHomeGallery();
+        updateEventCountdowns(); // Ajout pour initialiser le compte à rebours
         break;
       case 'settings':
         break;
@@ -801,27 +802,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.querySelector('#add-event-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const fileInput = document.querySelector('#event-file');
-  const file = fileInput?.files[0];
-  const eventDate = document.querySelector('#event-date').value;
-  const eventTime = document.querySelector('#event-time').value;
-
-  const eventData = {
-    name: document.querySelector('#event-name').value.trim(),
-    description: document.querySelector('#event-description').value.trim(),
-    datetime: new Date(`${eventDate}T${eventTime}`).toISOString(),
-    createdAt: new Date().toISOString()
-  };
-
   try {
+    console.log('Soumission add-event-form');
+    const name = document.querySelector('#event-name').value.trim();
+    const dateInput = document.querySelector('#event-date').value;
+    const timeInput = document.querySelector('#event-time').value;
+    const description = document.querySelector('#event-description').value.trim();
+
+    // Validation des champs
+    if (!name || !dateInput || !timeInput || !description) {
+      console.error('Champs manquants dans add-event-form');
+      alert('Veuillez remplir tous les champs');
+      return;
+    }
+
+    // Validation du format de la date (YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(dateInput)) {
+      console.error('Format de date invalide:', dateInput);
+      alert('La date doit être au format AAAA-MM-JJ (ex. : 2025-07-23)');
+      return;
+    }
+
+    // Validation du format de l'heure (HH:mm)
+    const timeRegex = /^\d{2}:\d{2}$/;
+    if (!timeRegex.test(timeInput)) {
+      console.error('Format d\'heure invalide:', timeInput);
+      alert('L\'heure doit être au format HH:MM (ex. : 14:00)');
+      return;
+    }
+
+    // Création de l'objet Date
+    const eventDate = new Date(`${dateInput}T${timeInput}:00`);
+    if (isNaN(eventDate.getTime())) {
+      console.error('Date invalide:', dateInput, timeInput);
+      alert('La date ou l\'heure saisie est invalide');
+      return;
+    }
+
+    // Vérifier que la date est future
+    const now = new Date();
+    if (eventDate <= now) {
+      console.error('Date dans le passé:', eventDate);
+      alert('L\'événement doit être prévu à une date future');
+      return;
+    }
+
+    const eventData = {
+      name,
+      date: eventDate.toISOString(),
+      description,
+    };
+
     await saveData('events', eventData);
     document.querySelector('#add-event-form').reset();
-    await updateEventsList();
     await updateEventsAdminList();
+    await updateEventCountdowns(); // Rafraîchir les comptes à rebours
+    console.log('Événement ajouté:', name, eventDate);
     alert('Événement ajouté avec succès');
   } catch (error) {
-    console.error('Erreur addEvent:', error);
-    alert('Erreur lors de l\'ajout de l\'événement');
+    console.error('Erreur add-event-form:', error);
+    alert('Erreur lors de l’ajout de l’événement : ' + error.message);
   }
 });
 
@@ -884,6 +925,77 @@ async function deleteEvent(id) {
   }
 }
 
+let countdownInterval = null;
+
+async function updateEventCountdowns() {
+  try {
+    console.log('Début updateEventCountdowns');
+    const events = await loadData('events');
+    const countdownContainer = document.querySelector('#event-countdowns');
+    if (!countdownContainer) {
+      console.error('Élément #event-countdowns introuvable');
+      return;
+    }
+
+    // Arrêter l'intervalle précédent, si existant
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+
+    // Filtrer les événements futurs et trier par date
+    const now = new Date();
+    const futureEvents = events
+      .filter(e => new Date(e.date) > now)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (futureEvents.length === 0) {
+      countdownContainer.innerHTML = '<p>Aucun événement à venir</p>';
+      console.log('Aucun événement futur');
+      return;
+    }
+
+    // Prendre le premier événement (le plus proche)
+    const nextEvent = futureEvents[0];
+    console.log('Prochain événement:', nextEvent.name, nextEvent.date);
+
+    // Fonction pour mettre à jour le compte à rebours
+    const updateCountdown = () => {
+      const eventTime = new Date(nextEvent.date);
+      const now = new Date();
+      const timeDiff = eventTime - now;
+
+      if (timeDiff <= 0) {
+        clearInterval(countdownInterval);
+        countdownContainer.innerHTML = `<p class="event-countdown">${nextEvent.name} EN COURS...</p>`;
+        console.log('Événement en cours:', nextEvent.name);
+        return;
+      }
+
+      if (timeDiff <= 2 * 60 * 1000) { // Moins de 2 minutes
+        countdownContainer.innerHTML = `<p class="event-countdown">${nextEvent.name} EN COURS...</p>`;
+        console.log('Moins de 2 minutes, événement en cours:', nextEvent.name);
+        return;
+      }
+
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+      countdownContainer.innerHTML = `
+        <p class="event-countdown">${nextEvent.name} - ${days} JOURS ${hours}H ${minutes}MN ${seconds}S</p>
+      `;
+    };
+
+    // Mettre à jour immédiatement et toutes les secondes
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
+    console.log('Compte à rebours démarré pour:', nextEvent.name);
+  } catch (error) {
+    console.error('Erreur updateEventCountdowns:', error);
+    countdownContainer.innerHTML = '<p>Erreur lors du chargement de l\'événement</p>';
+  }
+}
 // ==================== FONCTIONS MESSAGES ====================
 
 document.querySelector('#add-message-form')?.addEventListener('submit', async (e) => {
@@ -1188,10 +1300,16 @@ document.querySelector('#suggestion-form')?.addEventListener('submit', async (e)
 
 async function updateSuggestionsList() {
   try {
+    console.log('Début updateSuggestionsList');
     const suggestions = await loadData('suggestions');
+    console.log('Suggestions récupérées:', suggestions);
     const search = document.querySelector('#suggestions-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#suggestions-list');
-    if (!list) return;
+    if (!list) {
+      console.error('Élément #suggestions-list introuvable');
+      alert('Erreur : conteneur des suggestions introuvable');
+      return;
+    }
 
     list.innerHTML = suggestions
       .filter(s => s.text.toLowerCase().includes(search) || s.memberCode.toLowerCase().includes(search))
@@ -1199,10 +1317,32 @@ async function updateSuggestionsList() {
         <div class="suggestion-card">
           <p><strong>${s.memberCode}</strong>: ${s.text}</p>
           <p class="suggestion-date">${formatDate(s.createdAt)}</p>
+          <button class="cta-button danger small" onclick="deleteSuggestion('${s.id}')">Supprimer</button>
         </div>
       `).join('') || '<p>Aucune suggestion disponible</p>';
+
+    console.log('Liste des suggestions mise à jour');
   } catch (error) {
     console.error('Erreur updateSuggestionsList:', error);
+    alert('Erreur lors du chargement des suggestions');
+  }
+}
+
+async function deleteSuggestion(suggestionId) {
+  console.log('deleteSuggestion appelé avec ID:', suggestionId);
+  try {
+    if (!confirm('Voulez-vous vraiment supprimer cette suggestion ?')) {
+      console.log('Suppression annulée par l\'utilisateur');
+      return;
+    }
+
+    await deleteData('suggestions', suggestionId);
+    await updateSuggestionsList();
+    console.log('Suggestion supprimée:', suggestionId);
+    alert('Suggestion supprimée avec succès');
+  } catch (error) {
+    console.error('Erreur deleteSuggestion:', error);
+    alert('Erreur lors de la suppression de la suggestion : ' + error.message);
   }
 }
 
