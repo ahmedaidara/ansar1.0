@@ -415,6 +415,7 @@
     </section>
 
     <!-- Espace Président -->
+    <!-- Espace Président -->
     <section id="president" class="page">
       <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Espace Président</h2>
@@ -428,6 +429,37 @@
           <input type="password" id="contribution-deletion-code" placeholder="Code pour supprimer une cotisation" required>
           <button type="submit" class="cta-button">Enregistrer</button>
         </form>
+          <!-- Nouveaux codes d'accès -->
+  <form id="set-access-codes-form">
+    <h4>Codes d'Accès aux Espaces</h4>
+    
+    <!-- Code Président -->
+  <div class="code-input-group">
+    <label>Code Président:</label>
+    <input type="password" id="president-code-input" placeholder="Nouveau code président">
+    <button onclick="updateCode('presidentAccessCode')" class="cta-button">Mettre à jour</button>
+  </div>
+
+    
+    <div class="code-input-group">
+      <label>Code Espace Secret (Administration):</label>
+      <input type="password" id="secret-access-code" placeholder="Code pour l'espace secret" required>
+      <button type="button" class="cta-button small" onclick="saveSingleCode('secret-access-code', 'secretAccessCode')">Enregistrer</button>
+    </div>
+    
+    <div class="code-input-group">
+      <label>Code Espace Trésorier:</label>
+      <input type="password" id="treasurer-access-code" placeholder="Code pour l'espace trésorier" required>
+      <button type="button" class="cta-button small" onclick="saveSingleCode('treasurer-access-code', 'treasurerAccessCode')">Enregistrer</button>
+    </div>
+    
+    <div class="code-input-group">
+      <label>Code Espace Secrétaire:</label>
+      <input type="password" id="secretary-access-code" placeholder="Code pour l'espace secrétaire" required>
+      <button type="button" class="cta-button small" onclick="saveSingleCode('secretary-access-code', 'secretaryAccessCode')">Enregistrer</button>
+    </div>
+  </form>
+ 
       </div>
     </section>
 
