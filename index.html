@@ -394,17 +394,30 @@
       <div class="tabs">
         <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
       </div>
-      <div id="secretary-files" class="tab-content active">
-        <h3>Fichiers Secrétaire</h3>
-        <form id="add-secretary-file-form">
-          <input type="text" id="secretary-file-name" placeholder="Nom du fichier" required>
-          <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
-          <input type="text" id="secretary-file-url" placeholder="Lien de l'image (ex. : https://i.imgur.com/XXXXX.jpg)" required>
-          <button type="submit" class="cta-button">Ajouter</button>
-        </form>
-        <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
-        <div id="secretary-files-list"></div>
-      </div>
+<div id="secretary-files" class="tab-content active">
+  <h3>Fichiers Secrétaire</h3>
+  
+  <!-- Formulaire pour les images (existant) -->
+  <form id="add-secretary-file-form">
+    <input type="text" id="secretary-file-name" placeholder="Nom du fichier" required>
+    <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
+    <input type="text" id="secretary-file-url" placeholder="Lien de l'image (ex: https://i.imgur.com/XXXXX.jpg)" required>
+    <button type="submit" class="cta-button">Ajouter Image</button>
+  </form>
+
+  <!-- Nouveau formulaire pour les livres -->
+  <form id="add-library-book-form">
+    <h4>Ajouter un livre</h4>
+    <input type="text" id="book-title" placeholder="Titre du livre" required>
+    <input type="text" id="book-category" placeholder="Catégorie" required>
+    <input type="text" id="book-cover-url" placeholder="Lien de la couverture (image)" required>
+    <input type="text" id="book-pdf-url" placeholder="Lien du PDF (direct)" required>
+    <button type="submit" class="cta-button">Ajouter Livre</button>
+  </form>
+
+  <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
+  <div id="secretary-files-list"></div>
+</div>
     </section>
 
     <!-- Page des paramètres -->
