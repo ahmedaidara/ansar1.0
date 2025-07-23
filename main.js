@@ -2100,21 +2100,29 @@ function logoutPersonal() {
 }
 
 function payViaWave() {
-  // URL de paiement Wave
-  const wavePaymentUrl = 'https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/';
+  // URL pour mobile (avec l'application Wave)
+  const waveAppUrl = 'itms-apps://apps.apple.com/sn/app/wave-mobile-money/id1523884528';
   
-  // Option 1 : Redirection simple
-  window.location.href = wavePaymentUrl;
+  // URL pour web/desktop
+  const waveWebUrl = 'https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/';
   
-  // Option 2 : Ouverture dans un nouvel onglet (recommandé)
-  // window.open(wavePaymentUrl, '_blank');
+  // Vérifier si c'est un appareil mobile
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   
-  // Option 3 : Avec confirmation
-  /*
-  if (confirm('Vous allez être redirigé vers Wave pour effectuer le paiement. Continuer ?')) {
-    window.open(wavePaymentUrl, '_blank');
+  if (isMobile) {
+    // Essayer d'ouvrir l'application
+    window.location.href = waveAppUrl;
+    
+    // Fallback au site web si l'application n'est pas installée
+    setTimeout(() => {
+      if (!document.hidden) {
+        window.location.href = waveWebUrl;
+      }
+    }, 500);
+  } else {
+    // Ouvrir le site web pour les ordinateurs
+    window.open(waveWebUrl, '_blank');
   }
-  */
 }
 
 function payViaOrangeMoney() {
