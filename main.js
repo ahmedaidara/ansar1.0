@@ -465,9 +465,9 @@ function getChatbotResponse(message) {
     case 'bonjour':
       return 'Bonjour ! Comment puis-je vous aider aujourd\'hui ?';
     case 'salut':
-      return 'Salut ! Posez-moi une question ou entrez un code d\'accès.';
+      return 'Salut ! Posez-moi une question.';
     default:
-      return 'Désolé, je ne comprends pas votre demande. Essayez un code d\'accès ou une question comme "bonjour".';
+      return 'Désolé, je suis en phase de développement, demander a Ahmed Said Aidara.  ';
   }
 }
 // ==================== FONCTIONS MEMBRES ====================
