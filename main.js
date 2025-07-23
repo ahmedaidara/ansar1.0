@@ -2100,7 +2100,21 @@ function logoutPersonal() {
 }
 
 function payViaWave() {
-  alert('Paiement via Wave non implémenté. Redirigez vers l\'application Wave.');
+  // URL de paiement Wave
+  const wavePaymentUrl = 'https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/';
+  
+  // Option 1 : Redirection simple
+  window.location.href = wavePaymentUrl;
+  
+  // Option 2 : Ouverture dans un nouvel onglet (recommandé)
+  // window.open(wavePaymentUrl, '_blank');
+  
+  // Option 3 : Avec confirmation
+  /*
+  if (confirm('Vous allez être redirigé vers Wave pour effectuer le paiement. Continuer ?')) {
+    window.open(wavePaymentUrl, '_blank');
+  }
+  */
 }
 
 function payViaOrangeMoney() {
