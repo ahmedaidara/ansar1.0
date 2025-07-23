@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Charger les données initiales
   updateMessagePopups();
   checkAutoMessages();
+  
 
   // Ajouter les écouteurs d'événements
   document.querySelector('#refresh-data')?.addEventListener('click', () => {
@@ -171,13 +172,12 @@ function showPage(pageId) {
         break;
       case 'settings':
         break;
-      case 'secret':
-        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
-          showTab('add-member');
-        } else {
-          showPage('home');
-        }
-        break;
+    case 'secret':
+      if (currentUser?.role !== 'admin') {
+        showPage('home');
+        return;
+      }
+      break;
       case 'admin-members':
         if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
           updateEditMembersList();
@@ -185,11 +185,12 @@ function showPage(pageId) {
           showPage('home');
         }
         break;
-      case 'treasurer':
-        if (currentUser?.role !== 'tresorier') {
-          showPage('home');
-        }
-        break;
+    case 'treasurer':
+      if (currentUser?.role !== 'tresorier') {
+        showPage('home');
+        return;
+      }
+      break;
       case 'treasurer-monthly':
         updateTreasurerMonthlyList();
         break;
@@ -207,13 +208,12 @@ function showPage(pageId) {
           showPage('home');
         }
         break;
-      case 'secretary':
-        if (currentUser?.role === 'secretaire') {
-          showTab('secretary-files');
-        } else {
-          showPage('home');
-        }
-        break;
+    case 'secretary':
+      if (currentUser?.role !== 'secretaire') {
+        showPage('home');
+        return;
+      }
+      break;
       default:
         console.warn(`Page non reconnue : ${pageId}`);
         showPage('home');
@@ -354,87 +354,62 @@ function clearChatHistory() {
 }
 
 async function checkSecretPassword() {
-  const password = document.querySelector('#secret-password')?.value.trim();
-  const secretCodes = [
-    'ADMIN12301012000',
-    '00000000',
-    '11111111',
-    '22222222',
-    'JESUISMEMBRE66',
-    '33333333',
-    '44444444',
-    '55555555'
-  ];
-  const treasurerCodes = [
-    'ADMIN12301012000',
-    '00000000',
-    '11111111',
-    '22222222',
-    'JESUISTRESORIER444',
-    '66666666',
-    '77777777',
-    '88888888'
-  ];
-  const presidentCodes = [
-    'ADMIN12301012000',
-    '00000000',
-    '11111111',
-    '22222222',
-    'PRESIDENT000',
-    '99999999',
-    '11112222',
-    '33334444'
-  ];
-  const secretaryCodes = [
-    'ADMIN12301012000',
-    '00000000',
-    '11111111',
-    '22222222',
-    'SECRETAIRE000',
-    '55556666',
-    '77778888',
-    '99990000'
-  ];
-
   try {
-    const members = await loadData('members');
-    const adminMember = members.find(m => m.role === 'president' || m.role === 'secretaire');
-    const dynamicAdminCode = adminMember ? `ADMIN${adminMember.code}${adminMember.dob}` : null;
+    const password = document.querySelector('#secret-password')?.value.trim();
+    if (!password) {
+      appendChatMessage('Assistant ANSAR', 'Veuillez entrer un code valide.');
+      return;
+    }
 
-    if (password) {
-      if (secretCodes.includes(password) || (dynamicAdminCode && password === dynamicAdminCode)) {
-        currentUser = adminMember ? { code: adminMember.code, role: adminMember.role } : { code: 'anonymous', role: 'admin' };
-        showPage('secret');
-        clearChatHistory();
-      } else if (treasurerCodes.includes(password)) {
-        currentUser = { code: 'treasurer', role: 'tresorier' };
-        showPage('treasurer');
-        clearChatHistory();
-      } else if (presidentCodes.includes(password)) {
-        currentUser = { code: 'president', role: 'president' };
-        showPage('president');
-        clearChatHistory();
-      } else if (secretaryCodes.includes(password)) {
-        currentUser = { code: 'secretary', role: 'secretaire' };
-        showPage('secretary');
-        clearChatHistory();
-      } else {
-        appendChatMessage('Assistant ANSAR', 'Mot de passe incorrect.');
-      }
+    const accessCodes = await loadAccessCodes();
+    
+    if (password === accessCodes.presidentAccessCode || password === 'PRESIDENT000') {
+      currentUser = { role: 'president' };
+      showPage('president');
+      clearChatHistory();
+    }
+    else if (password === accessCodes.secretAccessCode) {
+      currentUser = { role: 'admin' };
+      showPage('secret');
+      clearChatHistory();
+    } 
+    else if (password === accessCodes.treasurerAccessCode) {
+      currentUser = { role: 'tresorier' };
+      showPage('treasurer');
+      clearChatHistory();
+    }
+    else if (password === accessCodes.secretaryAccessCode) {
+      currentUser = { role: 'secretaire' };
+      showPage('secretary');
+      clearChatHistory();
+    }
+    else {
+      appendChatMessage('Assistant ANSAR', 'Code incorrect. Accès refusé.');
     }
   } catch (error) {
     console.error('Erreur checkSecretPassword:', error);
-    appendChatMessage('Assistant ANSAR', 'Erreur lors de la vérification du mot de passe.');
+    appendChatMessage('Assistant ANSAR', 'Erreur système. Réessayez plus tard.');
   }
 }
 
 function getChatbotResponse(message) {
+  const trimmedMsg = message.trim().toUpperCase(); // Convertir en majuscules et supprimer les espaces
+
+  // Réponses pour les salutations
+  if (trimmedMsg === 'BONJOUR') return 'Bonjour ! Comment puis-je vous aider aujourd\'hui ?';
+  if (trimmedMsg === 'SALUT') return 'Salut ! Posez-moi une question ';
+
+  // Vérifier si c'est un mot-clé d'accès
+  if (['ADMIN', 'TRESORIER', 'SECRETAIRE', 'PRESIDENT'].includes(trimmedMsg)) {
+    return 'secret';
+  }
+
+  // Vérifier les codes secrets
   const secretCodes = [
     'ADMIN12301012000',
-    '00000000',
-    '11111111',
-    '22222222',
-    'JESUISMEMBRE66',
+    'JESUISTRESORIER444',
+    'SECRETAIRE000',
+    'PRESIDENT000',
     '33333333',
     '44444444',
     '55555555',
@@ -465,9 +440,9 @@ function getChatbotResponse(message) {
     case 'bonjour':
       return 'Bonjour ! Comment puis-je vous aider aujourd\'hui ?';
     case 'salut':
-      return 'Salut ! Posez-moi une question.';
+      return 'Salut ! Posez-moi une question ou entrez un code d\'accès.';
     default:
-      return 'Désolé, je suis en phase de développement, demander a Ahmed Said Aidara.  ';
+      return 'Désolé, je ne comprends pas votre demande. Essayez un code d\'accès ou une question comme "bonjour".';
   }
 }
 // ==================== FONCTIONS MEMBRES ====================
@@ -2100,29 +2075,7 @@ function logoutPersonal() {
 }
 
 function payViaWave() {
-  // URL pour mobile (avec l'application Wave)
-  const waveAppUrl = 'itms-apps://apps.apple.com/sn/app/wave-mobile-money/id1523884528';
-  
-  // URL pour web/desktop
-  const waveWebUrl = 'https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/';
-  
-  // Vérifier si c'est un appareil mobile
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  
-  if (isMobile) {
-    // Essayer d'ouvrir l'application
-    window.location.href = waveAppUrl;
-    
-    // Fallback au site web si l'application n'est pas installée
-    setTimeout(() => {
-      if (!document.hidden) {
-        window.location.href = waveWebUrl;
-      }
-    }, 500);
-  } else {
-    // Ouvrir le site web pour les ordinateurs
-    window.open(waveWebUrl, '_blank');
-  }
+  alert('Paiement via Wave non implémenté. Redirigez vers l\'application Wave.');
 }
 
 function payViaOrangeMoney() {
@@ -2300,5 +2253,155 @@ function formatEventDate(dateString) {
   } catch (error) {
     console.error('Error formatting date:', error);
     return 'Date à confirmer'; // Message de repli
+  }
+}
+
+// Charger les codes d'accès
+async function loadAccessCodes() {
+  try {
+    const doc = await db.collection('securitySettings').doc('accessCodes').get();
+    if (!doc.exists) {
+      // Si le document n'existe pas, initialisez-le avec des valeurs par défaut
+      await initializeDefaultCodes();
+      return {
+        secretAccessCode: 'ADMIN123',
+        treasurerAccessCode: 'TRESORIER66',
+        secretaryAccessCode: 'SECRETAIRE33',
+        presidentAccessCode: 'PRESIDENT000'
+      };
+    }
+    return doc.data();
+  } catch (error) {
+    console.error('Erreur loadAccessCodes:', error);
+    return null;
+  }
+}
+
+// Sauvegarder un code individuel
+async function saveSingleCode(inputId, codeType) {
+  try {
+    const codeValue = document.getElementById(inputId).value.trim();
+    if (!codeValue) {
+      alert('Veuillez entrer un code valide');
+      return;
+    }
+
+    const currentCodes = await loadAccessCodes();
+    await db.collection('securitySettings').doc('accessCodes').set({
+      ...currentCodes,
+      [codeType]: codeValue
+    }, { merge: true });
+
+    alert('Code mis à jour avec succès!');
+  } catch (error) {
+    console.error('Erreur saveSingleCode:', error);
+    alert('Erreur lors de la mise à jour du code');
+  }
+}
+
+// Initialiser les champs de code
+async function initCodeFields() {
+  if (currentUser?.role !== 'president') return;
+
+  try {
+    const codes = await loadAccessCodes();
+    document.getElementById('secret-access-code').value = codes.secretAccessCode || '';
+    document.getElementById('treasurer-access-code').value = codes.treasurerAccessCode || '';
+    document.getElementById('secretary-access-code').value = codes.secretaryAccessCode || '';
+  } catch (error) {
+    console.error('Erreur initCodeFields:', error);
+  }
+}
+
+// Modifier la fonction checkSecretPassword
+async function checkSecretPassword() {
+  try {
+    const password = document.querySelector('#secret-password')?.value.trim().toUpperCase();
+    if (!password) {
+      appendChatMessage('Assistant ANSAR', 'Veuillez entrer un code valide.');
+      return;
+    }
+
+    // Charger les codes depuis Firestore
+    const accessCodes = await loadAccessCodes();
+    
+    // Vérifier chaque code
+    if (password === accessCodes.presidentAccessCode || password === 'PRESIDENT000') {
+      currentUser = { role: 'president' };
+      showPage('president');
+      clearChatHistory();
+    }
+    else if (password === accessCodes.secretAccessCode || password === 'ADMIN12301012000') {
+      currentUser = { role: 'admin' };
+      showPage('secret');
+      clearChatHistory();
+    } 
+    else if (password === accessCodes.treasurerAccessCode || password === 'JESUISTRESORIER444') {
+      currentUser = { role: 'tresorier' };
+      showPage('treasurer');
+      clearChatHistory();
+    }
+    else if (password === accessCodes.secretaryAccessCode || password === 'SECRETAIRE000') {
+      currentUser = { role: 'secretaire' };
+      showPage('secretary');
+      clearChatHistory();
+    }
+    else {
+      appendChatMessage('Assistant ANSAR', 'Code incorrect. Accès refusé.');
+    }
+  } catch (error) {
+    console.error('Erreur checkSecretPassword:', error);
+    appendChatMessage('Assistant ANSAR', 'Erreur système. Réessayez plus tard.');
+  }
+}
+
+async function initializeDefaultCodes() {
+  try {
+    await db.collection('securitySettings').doc('accessCodes').set({
+      secretAccessCode: 'ADMIN12301012000',  // Pour l'espace admin
+      treasurerAccessCode: 'JESUISTRESORIER444', // Pour l'espace trésorier
+      secretaryAccessCode: 'SECRETAIRE000',  // Pour l'espace secrétaire
+      presidentAccessCode: 'PRESIDENT000'    // Pour l'espace président
+    });
+    console.log("Codes d'accès initialisés avec succès");
+  } catch (error) {
+    console.error("Erreur lors de l'initialisation des codes:", error);
+  }
+}
+
+
+// À exécuter une seule fois dans la console :
+// initializeDefaultCodes();
+
+// À exécuter une seule fois dans la console :
+// initializeDefaultCodes();
+// Appeler cette fonction une seule fois depuis la console :
+// initializeDefaultCodes();
+
+async function updateCode(codeType) {
+  try {
+    const inputId = `${codeType.replace('AccessCode', '-code-input')}`;
+    const newCode = document.getElementById(inputId).value.trim();
+    
+    if (!newCode || newCode.length < 6) {
+      alert('Le code doit contenir au moins 6 caractères');
+      return;
+    }
+
+    await db.collection('securitySettings').doc('accessCodes').set({
+      [codeType]: newCode
+    }, { merge: true });
+
+    alert('Code mis à jour avec succès!');
+    
+    // Recharger les codes
+    const codes = await loadAccessCodes();
+    document.getElementById('president-code-input').value = codes.presidentAccessCode || '';
+    document.getElementById('admin-code-input').value = codes.secretAccessCode || '';
+    document.getElementById('treasurer-code-input').value = codes.treasurerAccessCode || '';
+    document.getElementById('secretary-code-input').value = codes.secretaryAccessCode || '';
+  } catch (error) {
+    console.error('Erreur updateCode:', error);
+    alert('Erreur lors de la mise à jour du code');
   }
 }
