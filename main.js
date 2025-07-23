@@ -57,11 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadData(collection) {
   try {
-    const snapshot = await db.collection(collection).get();
+    const snapshot = await firebase.firestore().collection(collection).get();
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error(`Erreur loadData(${collection}):`, error);
-    return [];
+    console.error(`Erreur lors du chargement de ${collection}:`, error);
+    throw error;
   }
 }
 
@@ -1908,116 +1908,152 @@ function convertToDirectDownloadLink(url) {
   
   return url; // Retourne l'URL originale si aucune conversion n'est possible
 }
+
+
 // ==================== FONCTIONS STATISTIQUES ====================
 
 async function updateStats() {
   try {
+    console.log('Début updateStats à', new Date().toISOString());
+    const members = await loadData('members');
+    console.log('Membres chargés:', members);
+    const contributions = await loadData('contributions');
+    console.log('Cotisations chargées:', contributions);
+
+    // Remplir le sélecteur des cotisations globales
+    const globalSelect = document.querySelector('#global-contribution');
+    if (globalSelect) {
+      globalSelect.innerHTML = contributions
+        .map(c => `<option value="${c.name}">${c.name} (${c.amount} FCFA)</option>`)
+        .join('') || '<option value="">Aucune cotisation globale</option>';
+    } else {
+      console.warn('Sélecteur #global-contribution introuvable');
+    }
+
+    // Gérer le changement de type de cotisation
+    const statsTypeSelect = document.querySelector('#stats-type');
+    if (statsTypeSelect) {
+      statsTypeSelect.addEventListener('change', () => {
+        const monthlySelection = document.querySelector('#monthly-selection');
+        const globalSelection = document.querySelector('#global-selection');
+        if (monthlySelection && globalSelection) {
+          monthlySelection.style.display = statsTypeSelect.value === 'monthly' ? 'block' : 'none';
+          globalSelection.style.display = statsTypeSelect.value === 'global' ? 'block' : 'none';
+          // Afficher un graphique par défaut lors du changement
+          renderStatsChart('bar');
+        }
+      });
+    } else {
+      console.warn('Sélecteur #stats-type introuvable');
+    }
+
+    // Ajouter des écouteurs pour les changements de mois et d'année
+    const statsMonth = document.querySelector('#stats-month');
+    const statsYear = document.querySelector('#stats-year');
+    const globalContribution = document.querySelector('#global-contribution');
+
+    if (statsMonth) statsMonth.addEventListener('change', () => renderStatsChart('bar'));
+    if (statsYear) statsYear.addEventListener('change', () => renderStatsChart('bar'));
+    if (globalContribution) globalContribution.addEventListener('change', () => renderStatsChart('bar'));
+
+    // Afficher un graphique par défaut
+    renderStatsChart('bar');
+} catch (error) {
+    console.error('Erreur updateStats:', error.message, error.stack);
+    alert('Erreur lors du chargement des statistiques : ' + error.message);
+  }
+}
+
+// Fonction pour afficher les graphiques statistiques
+async function renderStatsChart(chartType) {
+  try {
+    console.log('Début renderStatsChart avec type:', chartType);
+    
+    // Récupérer les données nécessaires
     const members = await loadData('members');
     const contributions = await loadData('contributions');
     
-    const totalAmount = members.reduce((sum, m) => {
-      return sum + Object.entries(m.contributions).reduce((s, [name, years]) => {
-        return s + Object.values(years).reduce((t, months) => {
-          return t + months.filter(Boolean).length * (contributions.find(c => c.name === name)?.amount || 2000);
-        }, 0);
-      }, 0);
-    }, 0);
+    // Récupérer les sélections
+    const statsType = document.querySelector('#stats-type').value;
+    const ctx = document.getElementById('stats-chart').getContext('2d');
+    
+    // Détruire le graphique précédent s'il existe
+    if (window.statsChart) {
+      window.statsChart.destroy();
+    }
 
-    const memberCount = members.length;
-    const statusCounts = members.reduce((acc, m) => {
-      acc[m.status] = (acc[m.status] || 0) + 1;
-      return acc;
-    }, {});
+    // Préparer les données selon le type de statistique
+    let chartData;
+    if (statsType === 'monthly') {
+      // Statistiques mensuelles
+      const month = parseInt(document.querySelector('#stats-month').value);
+      const year = document.querySelector('#stats-year').value;
+      
+      const paidCount = members.filter(m => 
+        m.contributions?.Mensuelle?.[year]?.[month]
+      ).length;
+      
+      const unpaidCount = members.length - paidCount;
+      
+      chartData = {
+        labels: ['Payé', 'Non payé'],
+        datasets: [{
+          label: `Cotisations ${months[month]} ${year}`,
+          data: [paidCount, unpaidCount],
+          backgroundColor: ['#4CAF50', '#F44336']
+        }]
+      };
+    } else {
+      // Statistiques globales
+      const contributionName = document.querySelector('#global-contribution').value;
+      const contribution = contributions.find(c => c.name === contributionName);
+      
+      if (!contribution) {
+        console.error('Cotisation globale non trouvée');
+        return;
+      }
+      
+      const paidCount = members.filter(m => 
+        m.contributions?.globalContributions?.[contributionName]?.paid
+      ).length;
+      
+      const unpaidCount = members.length - paidCount;
+      
+      chartData = {
+        labels: ['Payé', 'Non payé'],
+        datasets: [{
+          label: `Cotisation ${contributionName}`,
+          data: [paidCount, unpaidCount],
+          backgroundColor: ['#4CAF50', '#F44336']
+        }]
+      };
+    }
 
-    const ctxTotal = document.getElementById('stats-total-amount')?.getContext('2d');
-    if (ctxTotal) {
-      ```chartjs
-      {
-        type: 'bar',
-        data: {
-          labels: ['Montant Total'],
-          datasets: [{
-            label: 'Montant des Cotisations (FCFA)',
-            data: [totalAmount],
-            backgroundColor: '#4CAF50',
-            borderColor: '#388E3C',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: { beginAtZero: true }
+    // Créer le graphique selon le type demandé
+    window.statsChart = new Chart(ctx, {
+      type: chartType,
+      data: chartData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Statistiques des Cotisations'
           }
         }
       }
-      ```
-    }
-
-    const ctxMembers = document.getElementById('stats-members')?.getContext('2d');
-    if (ctxMembers) {
-      ```chartjs
-      {
-        type: 'pie',
-        data: {
-          labels: ['Membres'],
-          datasets: [{
-            label: 'Nombre de Membres',
-            data: [memberCount],
-            backgroundColor: ['#2196F3'],
-            borderColor: ['#1976D2'],
-            borderWidth: 1
-          }]
-        }
-      }
-      ```
-    }
-
-    const ctxStatus = document.getElementById('stats-status')?.getContext('2d');
-    if (ctxStatus) {
-      ```chartjs
-      {
-        type: 'pie',
-        data: {
-          labels: Object.keys(statusCounts),
-          datasets: [{
-            label: 'Statut des Membres',
-            data: Object.values(statusCounts),
-            backgroundColor: ['#4CAF50', '#F44336', '#FFC107'],
-            borderColor: ['#388E3C', '#D32F2F', '#FFA000'],
-            borderWidth: 1
-          }]
-        }
-      }
-      ```
-    }
-
-    const ctxContributions = document.getElementById('stats-contributions')?.getContext('2d');
-    if (ctxContributions) {
-      ```chartjs
-      {
-        type: 'bar',
-        data: {
-          labels: contributions.map(c => c.name),
-          datasets: [{
-            label: 'Montant des Cotisations',
-            data: contributions.map(c => c.amount),
-            backgroundColor: '#FF9800',
-            borderColor: '#F57C00',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      }
-      ```
-    }
+    });
+    
+    console.log('Graphique généré avec succès');
   } catch (error) {
-    console.error('Erreur updateStats:', error);
+    console.error('Erreur dans renderStatsChart:', error);
+    alert('Erreur lors de la génération du graphique: ' + error.message);
   }
 }
+
 
 // ==================== FONCTIONS ESPACE PERSONNEL ====================
 
