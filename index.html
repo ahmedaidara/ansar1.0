@@ -285,13 +285,56 @@
         <div id="suggestions-list"></div>
       </div>
       <button class="tab-button" onclick="showTab('suggestions-admin')">Suggestions</button>
-      <div id="stats" class="tab-content">
-        <h3>Statistiques</h3>
-        <canvas id="stats-total-amount"></canvas>
-        <canvas id="stats-members"></canvas>
-        <canvas id="stats-status"></canvas>
-        <canvas id="stats-contributions"></canvas>
-      </div>
+ <div id="stats" class="tab-content">
+  <h3>Statistiques</h3>
+  <div id="stats-selection">
+    <label for="stats-type">Type de cotisation :</label>
+    <select id="stats-type">
+      <option value="monthly">Cotisations Mensuelles</option>
+      <option value="global">Cotisations Globales</option>
+    </select>
+
+    <!-- Sélection pour les cotisations mensuelles -->
+    <div id="monthly-selection" style="display: block;">
+      <label for="stats-month">Mois :</label>
+      <select id="stats-month">
+        <option value="0">Janvier</option>
+        <option value="1">Février</option>
+        <option value="2">Mars</option>
+        <option value="3">Avril</option>
+        <option value="4">Mai</option>
+        <option value="5">Juin</option>
+        <option value="6">Juillet</option>
+        <option value="7">Août</option>
+        <option value="8">Septembre</option>
+        <option value="9">Octobre</option>
+        <option value="10">Novembre</option>
+        <option value="11">Décembre</option>
+      </select>
+      <label for="stats-year">Année :</label>
+      <select id="stats-year">
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+      </select>
+    </div>
+
+    <!-- Sélection pour les cotisations globales -->
+    <div id="global-selection" style="display: none;">
+      <label for="global-contribution">Cotisation Globale :</label>
+      <select id="global-contribution">
+        <!-- Options remplies dynamiquement via JavaScript -->
+      </select>
+    </div>
+
+    <div id="chart-type-selection">
+      <button class="cta-button" onclick="renderStatsChart('bar')">Diagramme à Barres</button>
+      <button class="cta-button" onclick="renderStatsChart('pie')">Diagramme Circulaire</button>
+      <button class="cta-button" onclick="renderStatsChart('line')">Diagramme en Ligne</button>
+    </div>
+  </div>
+  <canvas id="stats-chart" style="max-width: 600px; margin: 20px auto;"></canvas>
+</div>
       <div id="video-calls" class="tab-content">
         <h3>Appels Vidéo & Audio</h3>
         <div class="search-filter-container">
