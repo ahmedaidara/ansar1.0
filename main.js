@@ -1839,6 +1839,75 @@ async function updateHomeGallery() {
   }
 }
 
+
+// Ajouter un livre à la bibliothèque
+// Ajouter un livre à la bibliothèque
+document.querySelector('#add-library-book-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const bookData = {
+    title: document.querySelector('#book-title').value.trim(),
+    category: document.querySelector('#book-category').value.trim(),
+    coverUrl: document.querySelector('#book-cover-url').value.trim(),
+    pdfUrl: document.querySelector('#book-pdf-url').value.trim(),
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    // Validation de l'URL de couverture
+    if (!bookData.coverUrl.match(/\.(jpeg|jpg|png|gif)$/i)) {
+      throw new Error('Lien de couverture invalide. Utilisez un lien vers une image (jpg, png, gif).');
+    }
+    
+    // Nouvelle validation améliorée pour les PDF
+    if (!isValidPdfUrl(bookData.pdfUrl)) {
+      throw new Error('Lien PDF invalide. Utilisez un lien direct .pdf ou un lien Google Drive valide');
+    }
+
+    // Convertir les liens Google Drive en liens de téléchargement direct
+    bookData.pdfUrl = convertToDirectDownloadLink(bookData.pdfUrl);
+
+    await saveData('books', bookData);
+    document.querySelector('#add-library-book-form').reset();
+    await updateLibraryContent();
+    alert('Livre ajouté avec succès!');
+  } catch (error) {
+    console.error('Erreur addLibraryBook:', error);
+    alert('Erreur: ' + error.message);
+  }
+});
+
+// Fonction de validation des URLs PDF
+function isValidPdfUrl(url) {
+  // Accepte :
+  // - Les liens se terminant par .pdf
+  // - Les liens Google Drive
+  // - Les liens Dropbox
+  const validPatterns = [
+    /\.pdf$/i, // Termine par .pdf
+    /drive\.google\.com\/file\/d\//i, // Lien Google Drive standard
+    /drive\.google\.com\/uc\?export=download/i, // Lien Google Drive direct
+    /dropbox\.com\/s\//i // Lien Dropbox
+  ];
+  
+  return validPatterns.some(pattern => pattern.test(url));
+}
+
+// Fonction pour convertir les liens Google Drive en liens de téléchargement direct
+function convertToDirectDownloadLink(url) {
+  // Si c'est déjà un lien direct, ne rien faire
+  if (url.includes('uc?export=download')) return url;
+  
+  // Conversion des liens Google Drive standard
+  if (url.includes('drive.google.com/file/d/')) {
+    const fileId = url.match(/\/file\/d\/([^\/]+)/)?.[1];
+    if (fileId) {
+      return `https://drive.google.com/uc?export=download&id=${fileId}`;
+    }
+  }
+  
+  return url; // Retourne l'URL originale si aucune conversion n'est possible
+}
 // ==================== FONCTIONS STATISTIQUES ====================
 
 async function updateStats() {
@@ -2027,20 +2096,39 @@ async function updateLibraryContent() {
     const books = await loadData('books');
     const search = document.querySelector('#library-search')?.value.toLowerCase() || '';
     const content = document.querySelector('#library-content');
+    
     if (!content) return;
 
     content.innerHTML = books
-      .filter(b => b.title?.toLowerCase().includes(search) || b.category?.toLowerCase().includes(search))
+      .filter(b => 
+        b.title?.toLowerCase().includes(search) || 
+        b.category?.toLowerCase().includes(search)
+      )
       .map(b => `
         <div class="book-item">
-          <h4>${b.title || 'Sans titre'}</h4>
-          <p>Catégorie: ${b.category || 'Non spécifié'}</p>
-          ${b.url ? `<a href="${b.url}" target="_blank">Télécharger</a>` : ''}
+          <div class="book-cover" onclick="downloadPDF('${b.pdfUrl}', '${b.title.replace(/'/g, "\\'")}')">
+            <img src="${b.coverUrl}" alt="${b.title}">
+          </div>
+          <div class="book-info">
+            <h4>${b.title || 'Sans titre'}</h4>
+            <p>Catégorie: ${b.category || 'Non spécifié'}</p>
+          </div>
         </div>
       `).join('') || '<p>Aucun livre disponible</p>';
   } catch (error) {
     console.error('Erreur updateLibraryContent:', error);
   }
+}
+
+// Télécharger le PDF
+function downloadPDF(pdfUrl, fileName) {
+  const link = document.createElement('a');
+  link.href = pdfUrl;
+  link.download = fileName || 'document';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 // ==================== FONCTIONS MESSAGES POPUPS ====================
