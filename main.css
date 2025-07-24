@@ -1375,3 +1375,19 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 .book-info {
   flex: 1;
 }
+
+.privacy-policy-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+    text-align: center;
+    color: #666;
+}
+
+.privacy-policy-link a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.privacy-policy-link a:hover {
+    text-decoration: underline;
+}
