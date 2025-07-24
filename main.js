@@ -400,7 +400,7 @@ function getChatbotResponse(message) {
   if (trimmedMsg === 'SALUT') return 'Salut ! Posez-moi une question ';
 
   // Vérifier si c'est un mot-clé d'accès
-  if (['ADMIN', 'TRESORIER', 'SECRETAIRE', 'PRESIDENT'].includes(trimmedMsg)) {
+  if (['ADMIN0000', 'TRESORIE0000R', 'SECRET0000AIRE', 'PRESID0000ENT'].includes(trimmedMsg)) {
     return 'secret';
   }
 
