@@ -1,12 +1,28 @@
 {
-  "dir": "auto",
-  "display": "fullscreen",
-  "name": "placeholder",
-  "short_name": "placeholder",
-  "scope": "/",
-  "lang": "fr",
-  "description": "placeholder description",
-  "theme_color": "#000000",
-  "background_color": "#000000",
-  "start_url": "/ansar1.0/index.html"
+  "name": "ANSAR ALMOUYASSAR",
+  "short_name": "ANSAR",
+  "start_url": "https://ahmedaidara.github.io/ansar1.0/?source=pwa",
+  "display": "standalone",
+  "theme_color": "#2C3E50",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
