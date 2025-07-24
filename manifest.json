@@ -1,19 +1,14 @@
 {
   "name": "ANSAR ALMOUYASSAR",
   "short_name": "ANSAR",
-  "start_url": "index.html",
+  "start_url": "/ansar1.0/index.html",
   "display": "standalone",
   "background_color": "#778152",
   "theme_color": "#3a6241",
   "icons": [
     {
-      "src": "assets/images/logo.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/images/logo-512x512.png",   
-      "sizes": "512x512",                       
+      "src": "/ansar1.0/assets/images/logo-512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
