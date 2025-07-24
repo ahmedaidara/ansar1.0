@@ -1,3 +1,6 @@
+
+
+
 :root {
   --primary-color: #073332;
   --secondary-color: #1f4a49;
@@ -1390,4 +1393,112 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 
 .privacy-policy-link a:hover {
     text-decoration: underline;
+}
+
+/* Style pour l'icône dans le header */
+.header-icons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.social-icon {
+  cursor: pointer;
+  color: #fff;
+  background-color: #3498db;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 24px;
+  transition: transform 0.3s;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Style pour la page des réseaux sociaux */
+.social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.social-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.social-link i {
+  font-size: 24px;
+  margin-right: 15px;
+  width: 30px;
+  text-align: center;
+}
+
+ /* Styles réseaux sociaux */
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 300px;
+  margin: 0 auto 20px;
+}
+
+.social-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.social-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Couleurs spécifiques par réseau */
+.social-item:nth-child(1) { color: #1877f2; } /* Facebook */
+.social-item:nth-child(2) { color: #1da1f2; } /* Twitter */
+.social-item:nth-child(3) { color: #e4405f; } /* Instagram */
+.social-item:nth-child(4) { color: #ff0000; } /* YouTube */
+.social-item:nth-child(5) { color: #25d366; } /* WhatsApp */
+
+/* Mode sombre */
+.dark-mode .social-item {
+  background: rgba(255,255,255,0.1);
+}
+
+.dark-mode .social-item:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.settings-icon.fa-users {
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 900 !important;
+}
+
+.social-item:nth-child(6) { /* TikTok */
+  color: #000000; /* Noir pour TikTok */
+}
+
+.social-item:nth-child(7) { /* Snapchat */
+  color: #FFFC00; /* Jaune Snapchat */
 }
