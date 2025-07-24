@@ -515,9 +515,7 @@ function initializeContributions() {
 // Remplacer la fonction updateMembersList
 async function updateMembersList() {
   try {
-    console.log('Début updateMembersList');
     const members = await loadData('members');
-    console.log('Membres récupérés:', members);
     const list = document.querySelector('#members-list');
     if (!list) {
       console.error('Élément #members-list introuvable');
@@ -525,22 +523,32 @@ async function updateMembersList() {
       return;
     }
 
+    // Mapper les rôles aux noms d'affichage
+    const roleDisplayMap = {
+      'membre': 'Membre',
+      'tresorier': 'Trésorier',
+      'vice-tresorier': 'Vice-Trésorière',
+      'president': 'Président',
+      'vice-president': 'Vice-Présidente',
+      'secretaire': 'Secrétaire',
+      'vice-secretaire': 'Vice-Secrétaire'
+    };
+
     list.innerHTML = members
       .map(m => `
         <div class="member-card">
           <div>
             <p><strong>${m.firstname} ${m.lastname}</strong></p>
-            <p><small>${m.code} • ${m.role}</small></p>
+            <p><small>${m.code} • ${roleDisplayMap[m.role] || m.role}</small></p>
           </div>
         </div>
       `).join('') || '<p>Aucun membre trouvé</p>';
-
-    console.log('Liste des membres mise à jour');
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
     alert('Erreur lors du chargement de la liste des membres');
   }
 }
+
 
 async function updateEditMembersList() {
   try {
@@ -712,22 +720,50 @@ async function showMemberDetail(code) {
     showPage('personal');
     const personalContent = document.querySelector('#personal-content');
     const personalLogin = document.querySelector('#personal-login');
+    
     if (personalContent && personalLogin) {
       personalLogin.style.display = 'none';
       personalContent.style.display = 'block';
+      
+      // Mapper les rôles aux noms d'affichage
+      const roleDisplayMap = {
+        'membre': 'Membre',
+        'tresorier': 'Trésorier',
+        'vice-tresorier': 'Vice-Trésorière',
+        'president': 'Président',
+        'vice-president': 'Vice-Présidente',
+        'secretaire': 'Secrétaire',
+        'vice-secretaire': 'Vice-Secrétaire'
+      };
+      
       document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
-      document.querySelector('#personal-role').textContent = `Rôle: ${member.role}`; // Ajout du rôle
+      document.querySelector('#personal-role').textContent = `Rôle: ${roleDisplayMap[member.role] || member.role}`;
+      
+      // Fonction pour afficher proprement les informations (vide si non renseigné)
+      const displayInfo = (value, label) => {
+        return value ? `<p><strong>${label}:</strong> ${value}</p>` : '';
+      };
+
+      // Afficher toutes les informations personnelles
       document.querySelector('#personal-info').innerHTML = `
-        <p><strong>Code:</strong> ${member.code}</p>
-        <p><strong>Nom:</strong> ${member.firstname} ${member.lastname}</p>
-        <p><strong>Statut:</strong> ${member.status}</p>
-        ${member.email ? `<p><strong>Email:</strong> ${member.email}</p>` : ''}
-        ${member.phone ? `<p><strong>Téléphone:</strong> ${member.phone}</p>` : ''}
+        ${displayInfo(member.code, 'Code')}
+        ${displayInfo(member.status, 'Statut')}
+        ${displayInfo(member.age, 'Âge')}
+        ${displayInfo(member.dob, 'Date de naissance')}
+        ${displayInfo(member.birthplace, 'Lieu de naissance')}
+        ${displayInfo(member.email, 'Email')}
+        ${displayInfo(member.phone, 'Téléphone')}
+        ${displayInfo(member.activity, 'Activité actuelle')}
+        ${displayInfo(member.address, 'Adresse')}
+        ${displayInfo(member.residence, 'Résidence actuelle')}
       `;
-      const contributions = await loadData('contributions');
+
+      // Afficher les cotisations
       document.querySelector('#cotisations-content').innerHTML = Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
         <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
       `).join('');
+
+      const contributions = await loadData('contributions');
       document.querySelector('#global-cotisations-content').innerHTML = contributions.map(c => `
         <p>${c.name} (${c.amount} FCFA): ${member.contributions.globalContributions?.[c.name]?.paid ? '✅ Payé' : '❌ Non payé'}</p>
       `).join('') || '<p>Aucune cotisation globale</p>';
@@ -850,6 +886,7 @@ async function updateEventsList() {
     console.error('Error updating events:', error);
   }
 }
+
 
 async function updateEventsAdminList() {
   try {
