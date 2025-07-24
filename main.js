@@ -2075,7 +2075,11 @@ function logoutPersonal() {
 }
 
 function payViaWave() {
-  alert('Paiement via Wave non implémenté. Redirigez vers l\'application Wave.');
+  // Ouvrir le lien Wave dans un nouvel onglet
+  window.open('https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/', '_blank');
+  
+  // Alternative : rediriger dans la même fenêtre
+  // window.location.href = 'https://pay.wave.com/m/M_sn_dyIw8DZWV46K/c/sn/';
 }
 
 function payViaOrangeMoney() {
