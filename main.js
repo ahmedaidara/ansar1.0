@@ -1754,27 +1754,56 @@ document.querySelector('#add-secretary-file-form')?.addEventListener('submit', a
 // Mettre à jour la liste des fichiers secrétaire
 async function updateSecretaryFilesList() {
   try {
+    // Charger à la fois les fichiers et les livres
     const files = await loadData('secretaryFiles');
+    const books = await loadData('books');
     const search = document.querySelector('#secretary-files-search')?.value.toLowerCase() || '';
     const list = document.querySelector('#secretary-files-list');
-    if (!list) {
-      console.error('Élément #secretary-files-list introuvable');
-      return;
-    }
+    
+    if (!list) return;
 
-    list.innerHTML = files
-      .filter(f => f.name.toLowerCase().includes(search) || f.category.toLowerCase().includes(search) || f.url.toLowerCase().includes(search))
-      .map(f => `
+    // Afficher les fichiers et livres ensemble
+    list.innerHTML = [
+      ...files.map(f => `
         <div class="file-card">
           <p><strong>${f.category}</strong>: ${f.name}</p>
           <p><a href="${f.url}" target="_blank">${f.url}</a></p>
           <p class="file-date">${formatDate(f.createdAt)}</p>
           <button class="cta-button danger" onclick="deleteSecretaryFile('${f.id}')">Supprimer</button>
         </div>
-      `).join('') || '<p>Aucun fichier disponible</p>';
+      `),
+      ...books.map(b => `
+        <div class="file-card">
+          <p><strong>Livre: ${b.title}</strong> (${b.category})</p>
+          <p>Couverture: <a href="${b.coverUrl}" target="_blank">Lien</a></p>
+          <p>PDF: <a href="${b.pdfUrl}" target="_blank">Télécharger</a></p>
+          <p class="file-date">${formatDate(b.createdAt)}</p>
+          <button class="cta-button danger" onclick="deleteLibraryBook('${b.id}')">Supprimer</button>
+        </div>
+      `)
+    ].join('') || '<p>Aucun fichier ou livre disponible</p>';
   } catch (error) {
     console.error('Erreur updateSecretaryFilesList:', error);
-    alert('Erreur lors du chargement des fichiers');
+  }
+}
+
+async function deleteLibraryBook(bookId) {
+  if (!confirm('Voulez-vous vraiment supprimer ce livre ? Cette action est irréversible.')) {
+    return;
+  }
+
+  try {
+    // Supprimer le livre de la collection 'books'
+    await deleteData('books', bookId);
+    
+    // Mettre à jour les deux listes
+    await updateSecretaryFilesList();
+    await updateLibraryContent();
+    
+    alert('Livre supprimé avec succès !');
+  } catch (error) {
+    console.error('Erreur deleteLibraryBook:', error);
+    alert('Erreur lors de la suppression du livre');
   }
 }
 
@@ -2127,6 +2156,11 @@ async function updateLibraryContent() {
           <div class="book-info">
             <h4>${b.title || 'Sans titre'}</h4>
             <p>Catégorie: ${b.category || 'Non spécifié'}</p>
+            ${currentUser?.role === 'secretaire' ? `
+              <button class="cta-button danger small" onclick="deleteLibraryBook('${b.id}')">
+                Supprimer
+              </button>
+            ` : ''}
           </div>
         </div>
       `).join('') || '<p>Aucun livre disponible</p>';
