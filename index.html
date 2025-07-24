@@ -180,7 +180,7 @@
               </div>
 
               <!-- Bouton Déconnexion -->
-              <button class="logout-btn" onclick="logoutPersonal()">Se Déconnexion</button>
+              <button class="logout-btn" onclick="logoutPersonal()">Se Déconnecter</button>
             </div>
           </div>
         </div>
@@ -190,7 +190,7 @@
     <!-- Espace Secret Général -->
     <section id="secret" class="page">
       <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Espace Secret - Administration</h2>
+      <h2>Espace Administration</h2>
       <div class="tabs">
         <button class="tab-button active" onclick="showTab('add-member')">Ajouter un Membre</button>
         <button class="tab-button" onclick="showTab('edit-member')">Modifier un Membre</button>
@@ -199,7 +199,6 @@
         <button class="tab-button" onclick="showTab('notes')">Notes</button>
         <button class="tab-button" onclick="showTab('suggestions-admin')">Suggestions</button>
         <button class="tab-button" onclick="showTab('stats')">Statistiques</button>
-        <button class="tab-button" onclick="showTab('video-calls')">Appels</button>
         <button class="tab-button" onclick="showTab('auto-messages')">Messages Automatisés</button>
       </div>
       <div id="add-member" class="tab-content active">
@@ -218,8 +217,11 @@
           <select id="new-member-role">
             <option value="membre">Membre Simple</option>
             <option value="tresorier">Trésorier</option>
+            <option value="tresorier">Vice-Trésoriere</option>
             <option value="president">Président</option>
+            <option value="president">Vice-Présidente</option>
             <option value="secretaire">Secrétaire</option>
+            <option value="secretaire">Vice-Secrétaire</option>
           </select>
           <select id="new-member-status">
             <option value="actif">Actif</option>
@@ -248,8 +250,7 @@
           <textarea id="event-description" placeholder="Description" required></textarea>
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
-        <input type="text" id="events-admin-search" placeholder="Rechercher un événement..." class="search-bar">
-        <div id="events-admin-list"></div>
+         <div id="events-admin-list"></div>
       </div>
       <div id="messages-admin" class="tab-content">
         <h3>Gérer les Messages</h3>
@@ -258,8 +259,7 @@
           <textarea id="message-text" placeholder="Contenu du message" required></textarea>
           <button type="submit" class="cta-button">Envoyer</button>
         </form>
-        <input type="text" id="messages-admin-search" placeholder="Rechercher un message..." class="search-bar">
-        <div id="messages-admin-list"></div>
+         <div id="messages-admin-list"></div>
       </div>
       <div id="notes" class="tab-content">
         <h3>Notes</h3>
@@ -268,8 +268,7 @@
           <textarea id="note-text" placeholder="Contenu de la note" required></textarea>
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
-        <input type="text" id="notes-search" placeholder="Rechercher une note..." class="search-bar">
-        <div id="notes-list"></div>
+         <div id="notes-list"></div>
       </div>
       <div id="internal-docs" class="tab-content">
         <h3>Documents Internes</h3>
@@ -277,13 +276,11 @@
           <input type="text" id="internal-doc-category" placeholder="Catégorie" required>
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
-        <input type="text" id="internal-docs-search" placeholder="Rechercher un document..." class="search-bar">
-        <div id="internal-docs-list"></div>
+         <div id="internal-docs-list"></div>
       </div>
       <div id="suggestions-admin" class="tab-content">
         <h3>Suggestions des Membres</h3>
-        <input type="text" id="suggestions-search" placeholder="Rechercher une suggestion..." class="search-bar">
-        <div id="suggestions-list"></div>
+         <div id="suggestions-list"></div>
       </div>
       <button class="tab-button" onclick="showTab('suggestions-admin')">Suggestions</button>
  <div id="stats" class="tab-content">
@@ -329,25 +326,14 @@
     </div>
 
     <div id="chart-type-selection">
-      <button class="cta-button" onclick="renderStatsChart('bar')">Diagramme à Barres</button>
-      <button class="cta-button" onclick="renderStatsChart('pie')">Diagramme Circulaire</button>
-      <button class="cta-button" onclick="renderStatsChart('line')">Diagramme en Ligne</button>
+      <button class="cta-button" onclick="renderStatsChart('bar')">D. à Barres</button>
+      <button class="cta-button" onclick="renderStatsChart('pie')">D. Circulaire</button>
+      <button class="cta-button" onclick="renderStatsChart('line')">D. en Ligne</button>
     </div>
   </div>
   <canvas id="stats-chart" style="max-width: 600px; margin: 20px auto;"></canvas>
 </div>
-      <div id="video-calls" class="tab-content">
-        <h3>Appels Vidéo & Audio</h3>
-        <div class="search-filter-container">
-          <input type="text" id="video-calls-search" placeholder="Rechercher un membre..." class="search-bar">
-        </div>
-        <div id="members-call-list"></div>
-        <input type="checkbox" id="call-all" onchange="toggleCallAll()">
-        <label for="call-all">Cocher tout</label>
-        <button class="cta-button" onclick="startCall('video')">Appel Vidéo</button>
-        <button class="cta-button" onclick="startCall('audio')">Appel Audio</button>
-        <div id="video-call-container" style="width: 100%; height: 500px;"></div>
-      </div>
+ 
       <div id="auto-messages" class="tab-content">
         <h3>Messages Automatisés</h3>
         <form id="add-auto-message-form">
@@ -357,8 +343,7 @@
           <input type="time" id="auto-message-time" required>
           <button type="submit" class="cta-button">Ajouter</button>
         </form>
-        <input type="text" id="auto-messages-search" placeholder="Rechercher un message automatisé..." class="search-bar">
-        <div id="auto-messages-list"></div>
+         <div id="auto-messages-list"></div>
       </div>
     </section>
 
@@ -368,7 +353,7 @@
       <h2>Espace Trésorier</h2>
       <div class="tabs">
         <button class="tab-button active" onclick="showPage('treasurer-monthly')">Cotisations Mensuelles</button>
-        <button class="tab-button" onclick="showPage('treasurer-global')">Cotisations Globales</button>
+        <button class="tab-button" onclick="showPage('treasurer-global')">Autres Cotisations</button>
       </div>
     </section>
 
@@ -377,32 +362,27 @@
       <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Cotisations Mensuelles</h2>
       <input type="text" id="treasurer-monthly-search" placeholder="Rechercher un membre..." class="search-bar">
-      <select id="treasurer-monthly-filter" class="filter-select">
-        <option value="all">Tous</option>
-        <option value="paid">Payé</option>
-        <option value="unpaid">Non payé</option>
-      </select>
+       
       <div id="treasurer-monthly-list"></div>
     </section>
 
     <!-- Page des Cotisations Globales -->
     <section id="treasurer-global" class="page">
       <button class="cta-button back-button" onclick="goBackToTreasurer()"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Gestion des Cotisations Globales</h2>
+      <h2>Gestion des autres Cotisations</h2>
       <form id="add-contribution-form">
-        <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL 2000F)" required>
+        <input type="text" id="contribution-name" placeholder="Nom (ex. : SET SETAL 500F)" required>
         <input type="number" id="contribution-amount" placeholder="Montant (FCFA)" required>
         <button type="submit" class="cta-button">Confirmer</button>
         <button type="button" class="cta-button cancel-button" onclick="document.getElementById('add-contribution-form').reset()">Annuler</button>
       </form>
-      <input type="text" id="contributions-admin-search" placeholder="Rechercher une cotisation..." class="search-bar">
-      <div id="contributions-admin-list"></div>
+       <div id="contributions-admin-list"></div>
     </section>
 
     <!-- Page de Gestion des Paiements d'une Cotisation Globale -->
     <section id="treasurer-global-manage" class="page">
       <button class="cta-button back-button" onclick="showPage('treasurer-global')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2 id="treasurer-global-title">Gérer les Paiements</h2>
+      <h2 id="treasurer-global-title">Gérer</h2>
       <div id="global-contribution-members"></div>
     </section>
 
@@ -423,10 +403,10 @@
         <button class="tab-button active" onclick="showTab('president-settings')">Paramètres de Sécurité</button>
       </div>
       <div id="president-settings" class="tab-content active">
-        <h3>Configurer les Codes de Suppression</h3>
+        <h3>Codes de Suppression</h3>
         <form id="set-president-codes-form">
-          <input type="password" id="member-deletion-code" placeholder="Code pour supprimer un membre" required>
-          <input type="password" id="contribution-deletion-code" placeholder="Code pour supprimer une cotisation" required>
+          <input type="password" id="member-deletion-code" placeholder="Supprimer un membre" required>
+          <input type="password" id="contribution-deletion-code" placeholder="Supprimer une cotisation" required>
           <button type="submit" class="cta-button">Enregistrer</button>
         </form>
           <!-- Nouveaux codes d'accès -->
@@ -442,19 +422,19 @@
 
     
     <div class="code-input-group">
-      <label>Code Espace Secret (Administration):</label>
+      <label>Administration:</label>
       <input type="password" id="secret-access-code" placeholder="Code pour l'espace secret" required>
       <button type="button" class="cta-button small" onclick="saveSingleCode('secret-access-code', 'secretAccessCode')">Enregistrer</button>
     </div>
     
     <div class="code-input-group">
-      <label>Code Espace Trésorier:</label>
+      <label>Trésorier:</label>
       <input type="password" id="treasurer-access-code" placeholder="Code pour l'espace trésorier" required>
       <button type="button" class="cta-button small" onclick="saveSingleCode('treasurer-access-code', 'treasurerAccessCode')">Enregistrer</button>
     </div>
     
     <div class="code-input-group">
-      <label>Code Espace Secrétaire:</label>
+      <label>Secrétaire:</label>
       <input type="password" id="secretary-access-code" placeholder="Code pour l'espace secrétaire" required>
       <button type="button" class="cta-button small" onclick="saveSingleCode('secretary-access-code', 'secretaryAccessCode')">Enregistrer</button>
     </div>
@@ -471,28 +451,27 @@
         <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
       </div>
 <div id="secretary-files" class="tab-content active">
-  <h3>Fichiers Secrétaire</h3>
+  <h3>Ajouter une affiche</h3>
   
   <!-- Formulaire pour les images (existant) -->
   <form id="add-secretary-file-form">
-    <input type="text" id="secretary-file-name" placeholder="Nom du fichier" required>
+    <input type="text" id="secretary-file-name" placeholder="Nom" required>
     <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
-    <input type="text" id="secretary-file-url" placeholder="Lien de l'image (ex: https://i.imgur.com/XXXXX.jpg)" required>
-    <button type="submit" class="cta-button">Ajouter Image</button>
+    <input type="text" id="secretary-file-url" placeholder="Lien (ex: postimages.org)" required>
+    <button type="submit" class="cta-button">Ajouter</button>
   </form>
 
   <!-- Nouveau formulaire pour les livres -->
   <form id="add-library-book-form">
-    <h4>Ajouter un livre</h4>
+    <h3>Ajouter un livre</h3>
     <input type="text" id="book-title" placeholder="Titre du livre" required>
-    <input type="text" id="book-category" placeholder="Catégorie" required>
-    <input type="text" id="book-cover-url" placeholder="Lien de la couverture (image)" required>
-    <input type="text" id="book-pdf-url" placeholder="Lien du PDF (direct)" required>
-    <button type="submit" class="cta-button">Ajouter Livre</button>
+    <input type="text" id="book-category" placeholder="RUBRIQUE" required>
+    <input type="text" id="book-cover-url" placeholder="Lien de la couverture (postimages.org)" required>
+    <input type="text" id="book-pdf-url" placeholder="Lien du PDF (Drive)" required>
+    <button type="submit" class="cta-button">Ajouter a la bibliotheque</button>
   </form>
 
-  <input type="text" id="secretary-files-search" placeholder="Rechercher un fichier..." class="search-bar">
-  <div id="secretary-files-list"></div>
+   <div id="secretary-files-list"></div>
 </div>
     </section>
 
@@ -537,7 +516,7 @@
     </div>
     <div id="chatbot-messages"></div>
     <div id="chatbot-controls">
-      <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> Effacer</button>
+      <button class="cta-button clear-history" onclick="clearChatHistory()"><span class="material-icons">delete</span> </button>
     </div>
     <form id="chatbot-form">
       <input type="text" id="chatbot-input" placeholder="Posez une question...">
