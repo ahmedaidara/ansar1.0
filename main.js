@@ -449,13 +449,17 @@ function getChatbotResponse(message) {
 
 document.querySelector('#add-member-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const isEditing = e.target.dataset.editing;
-  const photoInput = document.getElementById('new-member-photo');
-
+  
+  // Récupérer le premier code disponible
+  const availableCodes = await findAvailableCodes();
+  const memberCode = availableCodes.length > 0 
+    ? availableCodes[0] 
+    : await generateMemberCode();
+  
   const memberData = {
-    code: isEditing || (await generateMemberCode()),
-    firstname: document.getElementById('new-member-firstname')?.value.trim() || '',
-    lastname: document.getElementById('new-member-lastname')?.value.trim() || '',
+    code: memberCode, // Utiliser le code généré
+    firstname: document.getElementById('new-member-firstname').value.trim(),
+    lastname: document.getElementById('new-member-lastname').value.trim(),
     age: parseInt(document.getElementById('new-member-age')?.value) || null,
     dob: document.getElementById('new-member-dob')?.value || null,
     birthplace: document.getElementById('new-member-birthplace')?.value.trim() || null,
@@ -471,34 +475,60 @@ document.querySelector('#add-member-form')?.addEventListener('submit', async (e)
   };
 
   try {
-    await saveData('members', memberData, isEditing);
+    await saveData('members', memberData);
+    alert(`Membre ajouté avec le code: ${memberCode}`);
     document.getElementById('add-member-form').reset();
-    delete e.target.dataset.editing;
-    await updateAllMemberLists();
-    alert(`Membre ${isEditing ? 'modifié' : 'ajouté'} avec succès!`);
+    updateMembersList();
   } catch (error) {
-    console.error("Erreur addMember:", error);
-    alert(`Erreur lors de ${isEditing ? 'la modification' : "l'ajout"} du membre`);
+    console.error("Erreur ajout membre:", error);
+    alert("Erreur lors de l'ajout du membre");
   }
 });
 
 async function generateMemberCode() {
   try {
     const members = await loadData('members');
-    const usedCodes = members.map(m => parseInt(m.code, 10)).filter(code => !isNaN(code)).sort((a, b) => a - b);
-    let newCode = 1;
-    for (let i = 0; i < usedCodes.length; i++) {
-      if (usedCodes[i] !== newCode) break;
-      newCode++;
-    }
-    return `${newCode.toString().padStart(3, '0')}`;
+    
+    // 1. Collecter tous les codes numériques existants
+    const existingCodes = members
+      .map(m => parseInt(m.code))
+      .filter(code => !isNaN(code));
+    
+    // 2. Trouver le code maximum
+    const maxCode = existingCodes.length > 0 ? Math.max(...existingCodes) : 0;
+    
+    // 3. Trouver tous les "trous" dans la numérotation
+    const allPossibleCodes = Array.from({length: maxCode}, (_, i) => i + 1);
+    const missingCodes = allPossibleCodes.filter(
+      code => !existingCodes.includes(code)
+    );
+    
+    // 4. Retourner le premier code manquant ou le suivant
+    return (missingCodes.length > 0 
+      ? missingCodes[0] 
+      : maxCode + 1).toString().padStart(3, '0');
+      
   } catch (error) {
-    console.error('Erreur generateMemberCode:', error);
-    return `${(Math.floor(Math.random() * 1000) + 1).toString().padStart(3, '0')}`;
+    console.error("Erreur génération code:", error);
+    // Solution de secours
+    return (Math.floor(Math.random() * 900) + 100).toString();
   }
 }
 
 
+async function findAvailableCodes() {
+  const members = await loadData('members');
+  const existingCodes = members.map(m => parseInt(m.code)).filter(c => !isNaN(c));
+  
+  if (existingCodes.length === 0) return ['001'];
+  
+  const maxCode = Math.max(...existingCodes);
+  const allCodes = Array.from({length: maxCode}, (_, i) => i + 1);
+  
+  return allCodes
+    .filter(code => !existingCodes.includes(code))
+    .map(code => code.toString().padStart(3, '0'));
+}
 
 // Remplacer la fonction initializeContributions
 function initializeContributions() {
@@ -534,7 +564,16 @@ async function updateMembersList() {
       'vice-secretaire': 'Vice-Secrétaire'
     };
 
-    list.innerHTML = members
+    // 1. Trier les membres par code numérique
+    const sortedMembers = members.sort((a, b) => {
+      // Convertir les codes en nombres pour comparer
+      const codeA = parseInt(a.code) || 0; // Si conversion échoue, utilise 0
+      const codeB = parseInt(b.code) || 0;
+      return codeA - codeB;
+    });
+
+    // 2. Générer le HTML avec les membres triés
+    list.innerHTML = sortedMembers
       .map(m => `
         <div class="member-card">
           <div>
@@ -543,6 +582,7 @@ async function updateMembersList() {
           </div>
         </div>
       `).join('') || '<p>Aucun membre trouvé</p>';
+
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
     alert('Erreur lors du chargement de la liste des membres');
