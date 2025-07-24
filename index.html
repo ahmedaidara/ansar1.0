@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="main.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:,">
   <!-- Scripts Firebase -->
@@ -20,12 +22,15 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <nav class="top-nav">
-      <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
-      <span class="material-icons settings-icon" onclick="showPage('settings')">settings</span>
-    </nav>
-  </header>
+<header>
+  <nav class="top-nav">
+    <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+    <div class="header-icons">
+      <span class="material-icons social-icon" onclick="showPage('social')">share</span>
+     <i class="fas fa-share-alt settings-icon" onclick="showPage('settings')"></i>
+    </div>
+  </nav>
+</header>
   <main>
     <!-- Page d'accueil -->
     <section id="home" class="page active">
@@ -64,6 +69,34 @@
       <h2>Liste des Membres</h2>
       <div id="members-list"></div>
     </section>
+    
+    
+    <!-- Page des réseaux sociaux -->
+<section id="social" class="page">
+  <h2>Nos Réseaux Sociaux</h2>
+  <div class="social-links">
+    <a href="https://facebook.com/votrepage" target="_blank" class="social-link facebook">
+      <i class="fab fa-facebook-f"></i>
+      <span>Facebook</span>
+    </a>
+    <a href="https://twitter.com/votrecompte" target="_blank" class="social-link twitter">
+      <i class="fab fa-twitter"></i>
+      <span>Twitter</span>
+    </a>
+    <a href="https://instagram.com/votrecompte" target="_blank" class="social-link instagram">
+      <i class="fab fa-instagram"></i>
+      <span>Instagram</span>
+    </a>
+    <a href="https://wa.me/votrenumero" target="_blank" class="social-link whatsapp">
+      <i class="fab fa-whatsapp"></i>
+      <span>WhatsApp</span>
+    </a>
+    <a href="https://youtube.com/votrechaine" target="_blank" class="social-link youtube">
+      <i class="fab fa-youtube"></i>
+      <span>YouTube</span>
+    </a>
+  </div>
+</section>
 
     <!-- Page des événements -->
     <section id="events" class="page">
@@ -479,20 +512,41 @@
     <!-- Page des paramètres -->
     <section id="settings" class="page">
       <h2>Paramètres</h2>
-      <label>Mode sombre/clair</label>
-      <button class="cta-button" onclick="toggleTheme()">Changer le thème</button>
-      <label>Langue</label>
-      <select id="settings-language">
-        <option value="fr">Français</option>
-        <option value="en">English</option>
-        <option value="ar">العربية</option>
-      </select>
+
+       <!-- Nouvelle section Réseaux sociaux -->
+ <!-- Page des paramètres - Section réseaux sociaux -->
+<h3>Nous suivre</h3>
+<div class="social-grid">
+
+  <a href="https://twitter.com/votrecompte" target="_blank" class="social-item">
+    <i class="fab fa-twitter"></i>
+  </a>
+    <a href="https://tiktok.com/@votrecompte" target="_blank" class="social-item">
+    <i class="fab fa-tiktok"></i>
+  </a>
+  <a href="https://instagram.com/votrecompte" target="_blank" class="social-item">
+    <i class="fab fa-instagram"></i>
+  </a>
+    <a href="https://snapchat.com/add/votrecompte" target="_blank" class="social-item">
+    <i class="fab fa-snapchat-ghost"></i>
+  </a>
+  <a href="https://youtube.com/votrechaine" target="_blank" class="social-item">
+    <i class="fab fa-youtube"></i>
+  </a>
+
+</div>
+  
       <h3>Liens Utiles</h3>
       <div class="links-container">
-        <a href="https://www.almouyassar.com" target="_blank" class="link-button">www.almouyassar.com</a>
-        <a href="https://www.ansar.com" target="_blank" class="link-button">www.ansar.com</a>
-        <a href="https://www.lavoiedusalut.com" target="_blank" class="link-button">www.lavoiedusalut.com</a>
-        <a href="#" target="_blank" class="link-button">Politique de confidentialité</a>
+        <a href="https://ahmedaidara.github.io/ansaralmouyassar/?#" target="_blank" class="link-button">
+  Ansar Al Mouyassar
+</a>
+        <a href="https://www.schoolandcollegelistings.com/SN/Dakar/1042239852495002/Institut-Al-Mouyassar" target="_blank" class="link-button">
+  Institut Al Mouyassar
+</a>
+<a href="https://ahmedaidara.github.io/ansar1.0/privacy-policy.html" target="_blank" class="link-button">
+  Politique de confidentialité
+</a>
       </div>
     </section>
   </main>
