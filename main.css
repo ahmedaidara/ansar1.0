@@ -1530,4 +1530,13 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   border-radius: 8px;
 }
 
-
+#motivation-text {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border: 2px solid var(--accent-color) !important;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 10px;
+}
