@@ -1518,9 +1518,9 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   min-height: 100px;
   padding: 10px;
   margin-bottom: 10px;
-  background: var(--secondary-color);
-  color: rgb(1, 71, 25);
-  border: 1px solid var(--accent-color);
+  background: var(--primary-color) !important; /* Fond plus foncé pour la zone de texte */
+  color: white !important;
+  border: 1px solid var(--accent-color) !important;
 }
 
 #current-motivation {
