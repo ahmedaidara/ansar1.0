@@ -1495,10 +1495,37 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   font-weight: 900 !important;
 }
 
-.social-item:nth-child(6) { /* TikTok */
+.social-item:nth-child(1) { /* TikTok */
   color: #000000; /* Noir pour TikTok */
 }
 
 .social-item:nth-child(7) { /* Snapchat */
   color: #FFFC00; /* Jaune Snapchat */
+}
+
+/* Style pour les messages motivationnels */
+.motivation-card {
+  background: rgba(31, 74, 73, 0.8); /* var(--secondary-color) avec transparence */
+  border-left: 4px solid var(--accent-color);
+  padding: 15px;
+  margin: 20px 10px;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#add-motivation-form textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--secondary-color);
+  color: white;
+  border: 1px solid var(--accent-color);
+}
+
+#current-motivation {
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--secondary-color);
+  border-radius: 8px;
 }
