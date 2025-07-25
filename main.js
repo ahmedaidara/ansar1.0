@@ -2004,17 +2004,18 @@ document.querySelector('#add-motivation-form')?.addEventListener('submit', async
   }
 
   try {
-    await saveData('motivations', {
+    // Ajouter le message à Firestore
+    await db.collection('motivations').add({
       text,
-      author: 'Secrétaire',
-      createdAt: new Date().toISOString()
+      author: 'Secrétaire', // ou le nom de l'utilisateur actuel
+      createdAt: firebase.firestore.FieldValue.serverTimestamp() // Date serveur
     });
     
     document.querySelector('#motivation-text').value = '';
     await updateMotivationDisplay();
     alert('Message publié avec succès !');
   } catch (error) {
-    console.error('Erreur addMotivation:', error);
+    console.error('Erreur:', error);
     alert('Erreur lors de la publication');
   }
 });
@@ -2037,31 +2038,56 @@ async function deleteMotivation() {
 // Mise à jour de l'affichage
 async function updateMotivationDisplay() {
   try {
-    const motivations = await loadData('motivations');
-    const latest = motivations[0]; // On garde seulement le dernier message
+    // Récupérer le dernier message
+    const snapshot = await db.collection('motivations')
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .get();
     
-    // Dans l'espace secrétaire
+    const latest = snapshot.docs[0]?.data();
+
+    // 1. Afficher dans l'espace secrétaire
     const display = document.querySelector('#displayed-motivation');
     if (display) {
       display.textContent = latest?.text || 'Aucun message actuellement';
     }
     
-    // Sur la page d'accueil
+    // 2. Afficher sur la page d'accueil
     const homeMotivation = document.querySelector('#home-motivation');
     if (homeMotivation) {
       if (latest) {
         homeMotivation.innerHTML = `
           <div class="motivation-card">
             <p>${latest.text}</p>
-            <small>Posté le ${formatDate(latest.createdAt)}</small>
+            <small>Posté le ${formatDate(latest.createdAt?.toDate())}</small>
           </div>
         `;
       } else {
         homeMotivation.innerHTML = '';
       }
     }
+
+    // 3. Ajouter un écouteur en temps réel pour les mises à jour
+    db.collection('motivations')
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .onSnapshot((snapshot) => {
+        const realTimeLatest = snapshot.docs[0]?.data();
+        if (realTimeLatest) {
+          // Mettre à jour toutes les instances
+          if (display) display.textContent = realTimeLatest.text;
+          if (homeMotivation) {
+            homeMotivation.innerHTML = `
+              <div class="motivation-card">
+                <p>${realTimeLatest.text}</p>
+                <small>Posté le ${formatDate(realTimeLatest.createdAt?.toDate())}</small>
+              </div>
+            `;
+          }
+        }
+      });
   } catch (error) {
-    console.error('Erreur updateMotivationDisplay:', error);
+    console.error('Erreur:', error);
   }
 }
 
