@@ -49,6 +49,8 @@
       <div class="association-title">
         <span>ANSAR ALMOUYASSAR</span>
       </div>
+      <!-- Après la deuxième image -->
+<div id="home-motivation"></div>
       <div class="image-card">
         <img src="assets/images/photo2.png" alt="Image">
       </div>
@@ -99,11 +101,12 @@
 </section>
 
     <!-- Page des événements -->
-    <section id="events" class="page">
-      <h2>Événements à venir</h2>
-      <input type="text" id="events-search" placeholder="Rechercher un événement..." class="search-bar">
-      <div id="events-list"></div>
-    </section>
+<!-- Page des événements -->
+<section id="events" class="page">
+  <div class="association-title">Événements à venir</div>
+  
+  <div id="events-list"></div>
+</section>
 
     <!-- Page Coran -->
 <!-- Page Coran -->
@@ -114,12 +117,15 @@
   </iframe>
 </section>
 
-    <!-- Page Bibliothèque -->
-    <section id="library" class="page">
-      <h2>Bibliothèque</h2>
-      <input type="text" id="library-search" placeholder="Rechercher un livre..." class="search-bar">
-      <div id="library-content"></div>
-    </section>
+ <!-- Page Bibliothèque -->
+<section id="library" class="page">
+  <div class="messages-header-container">
+    <div class="messages-header">Bibliothèques</div>
+  </div>
+  <div class="messages-list-container">
+    <div id="library-content"></div>
+  </div>
+</section>
 
     
     <!-- Page des Messages -->
@@ -475,78 +481,91 @@
   </form>
  
       </div>
+      
     </section>
 
    <!-- Espace Secrétaire -->
+<!-- Espace Secrétaire -->
     <section id="secretary" class="page">
       <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
       <h2>Espace Secrétaire</h2>
       <div class="tabs">
         <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
+        <button class="tab-button" onclick="showTab('secretary-motivation')">Message Motivationnel</button>
       </div>
-<div id="secretary-files" class="tab-content active">
-  <h3>Ajouter une affiche</h3>
-  
-  <!-- Formulaire pour les images (existant) -->
-  <form id="add-secretary-file-form">
-    <input type="text" id="secretary-file-name" placeholder="Nom" required>
-    <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
-    <input type="text" id="secretary-file-url" placeholder="Lien (ex: postimages.org)" required>
-    <button type="submit" class="cta-button">Ajouter</button>
-  </form>
+      <div id="secretary-files" class="tab-content active">
+        <h3>Ajouter une affiche</h3>
+        
+        <!-- Formulaire pour les images (existant) -->
+        <form id="add-secretary-file-form">
+          <input type="text" id="secretary-file-name" placeholder="Nom" required>
+          <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
+          <input type="text" id="secretary-file-url" placeholder="Lien (ex: postimages.org)" required>
+          <button type="submit" class="cta-button">Ajouter</button>
+        </form>
 
-  <!-- Nouveau formulaire pour les livres -->
-  <form id="add-library-book-form">
-    <h3>Ajouter un livre</h3>
-    <input type="text" id="book-title" placeholder="Titre du livre" required>
-    <input type="text" id="book-category" placeholder="RUBRIQUE" required>
-    <input type="text" id="book-cover-url" placeholder="Lien de la couverture (postimages.org)" required>
-    <input type="text" id="book-pdf-url" placeholder="Lien du PDF (Drive)" required>
-    <button type="submit" class="cta-button">Ajouter a la bibliotheque</button>
-  </form>
+        <!-- Nouveau formulaire pour les livres -->
+        <form id="add-library-book-form">
+          <h3>Ajouter un livre</h3>
+          <input type="text" id="book-title" placeholder="Titre du livre" required>
+          <input type="text" id="book-category" placeholder="RUBRIQUE" required>
+          <input type="text" id="book-cover-url" placeholder="Lien de la couverture (postimages.org)" required>
+          <input type="text" id="book-pdf-url" placeholder="Lien du PDF (Drive)" required>
+          <button type="submit" class="cta-button">Ajouter a la bibliotheque</button>
+        </form>
 
-   <div id="secretary-files-list"></div>
-</div>
+        <div id="secretary-files-list"></div>
+      </div>
+      <!-- Dans la section secrétaire -->
+      <div id="secretary-motivation" class="tab-content">
+        <h3>Message Motivationnel</h3>
+        <form id="add-motivation-form">
+          <textarea id="motivation-text" placeholder="Écrivez un message motivant..." required></textarea>
+          <button type="submit" class="cta-button">Publier</button>
+        </form>
+        <div id="current-motivation">
+          <h4>Message actuel :</h4>
+          <p id="displayed-motivation"></p>
+          <button class="cta-button danger" onclick="deleteMotivation()">Supprimer</button>
+        </div>
+      </div>
     </section>
 
-    <!-- Page des paramètres -->
-    <section id="settings" class="page">
-      <h2>Paramètres</h2>
-
-       <!-- Nouvelle section Réseaux sociaux -->
- <!-- Page des paramètres - Section réseaux sociaux -->
-<h3>Nous suivre</h3>
-<div class="social-grid">
-
-
+ <!-- Page des paramètres -->
+<section id="settings" class="page">
+  <div class="association-title">Paramètres</div>
+  
+  <!-- Nouvelle section Réseaux sociaux -->
+  <h3>Nous suivre</h3>
+  <div class="social-grid">
     <a href="https://www.tiktok.com/@ansaralmouyassar?_t=ZM-8yJ6XeNaLLB&_r=1" target="_blank" class="social-item">
-    <i class="fab fa-tiktok"></i>
-  </a>
-  <a href="https://www.instagram.com/ansaralmouyassar?igsh=c3AxamJzeXlrenh1" target="_blank" class="social-item">
-    <i class="fab fa-instagram"></i>
-  </a>
+      <i class="fab fa-tiktok"></i>
+    </a>
+    <a href="https://www.instagram.com/ansaralmouyassar?igsh=c3AxamJzeXlrenh1" target="_blank" class="social-item">
+      <i class="fab fa-instagram"></i>
+    </a>
     <a href="https://www.snapchat.com/add/ansar102023?share_id=rr0qM35WH9U&locale=fr-FR" target="_blank" class="social-item">
-    <i class="fab fa-snapchat-ghost"></i>
-  </a>
-  <a href="https://youtube.com/@almouyassartv?feature=shared" target="_blank" class="social-item">
-    <i class="fab fa-youtube"></i>
-  </a>
-
-</div>
+      <i class="fab fa-snapchat-ghost"></i>
+    </a>
+    <a href="https://youtube.com/@almouyassartv?feature=shared" target="_blank" class="social-item">
+      <i class="fab fa-youtube"></i>
+    </a>
+  </div>
   
-      <h3>Liens Utiles</h3>
-      <div class="links-container">
-        <a href="https://ahmedaidara.github.io/ansaralmouyassar/?#" target="_blank" class="link-button">
-  Ansar Al Mouyassar
-</a>
-        <a href="https://www.schoolandcollegelistings.com/SN/Dakar/1042239852495002/Institut-Al-Mouyassar" target="_blank" class="link-button">
-  Institut Al Mouyassar
-</a>
-<a href="https://ahmedaidara.github.io/ansar1.0/privacy-policy.html" target="_blank" class="link-button">
-  Politique de confidentialité
-</a>
-      </div>
-    </section>
+  <h3>Liens Utiles</h3>
+  <div class="links-container">
+    <a href="https://ahmedaidara.github.io/ansaralmouyassar/?#" target="_blank" class="link-button">
+      Ansar Al Mouyassar
+    </a>
+    <a href="https://www.schoolandcollegelistings.com/SN/Dakar/1042239852495002/Institut-Al-Mouyassar" target="_blank" class="link-button">
+      Institut Al Mouyassar
+    </a>
+    <a href="https://ahmedaidara.github.io/ansar1.0/privacy-policy.html" target="_blank" class="link-button">
+      Politique de confidentialité
+    </a>
+  </div>
+</section>
+    
   </main>
   <footer>
     <nav class="bottom-nav">
