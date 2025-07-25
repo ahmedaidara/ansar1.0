@@ -1519,7 +1519,7 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   padding: 10px;
   margin-bottom: 10px;
   background: var(--secondary-color);
-  color: white;
+  color: rgb(1, 71, 25);
   border: 1px solid var(--accent-color);
 }
 
