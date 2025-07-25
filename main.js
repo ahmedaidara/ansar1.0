@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateEventsList();
     updateGalleryContent();
     updateMessagesList();
+updateMotivationDisplay();
     updateCoranContent();
     updateLibraryContent();
   });
@@ -1990,6 +1991,79 @@ function convertToDirectDownloadLink(url) {
   return url; // Retourne l'URL originale si aucune conversion n'est possible
 }
 
+// ==================== FONCTIONS MESSAGES MOTIVATIONNELS ====================
+
+// Gestion de l'envoi
+document.querySelector('#add-motivation-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = document.querySelector('#motivation-text').value.trim();
+  
+  if (!text) {
+    alert('Veuillez écrire un message');
+    return;
+  }
+
+  try {
+    await saveData('motivations', {
+      text,
+      author: 'Secrétaire',
+      createdAt: new Date().toISOString()
+    });
+    
+    document.querySelector('#motivation-text').value = '';
+    await updateMotivationDisplay();
+    alert('Message publié avec succès !');
+  } catch (error) {
+    console.error('Erreur addMotivation:', error);
+    alert('Erreur lors de la publication');
+  }
+});
+
+// Suppression du message
+async function deleteMotivation() {
+  if (!confirm('Supprimer ce message motivationnel ?')) return;
+  
+  try {
+    const motivations = await loadData('motivations');
+    if (motivations.length > 0) {
+      await deleteData('motivations', motivations[0].id);
+    }
+    await updateMotivationDisplay();
+  } catch (error) {
+    console.error('Erreur deleteMotivation:', error);
+  }
+}
+
+// Mise à jour de l'affichage
+async function updateMotivationDisplay() {
+  try {
+    const motivations = await loadData('motivations');
+    const latest = motivations[0]; // On garde seulement le dernier message
+    
+    // Dans l'espace secrétaire
+    const display = document.querySelector('#displayed-motivation');
+    if (display) {
+      display.textContent = latest?.text || 'Aucun message actuellement';
+    }
+    
+    // Sur la page d'accueil
+    const homeMotivation = document.querySelector('#home-motivation');
+    if (homeMotivation) {
+      if (latest) {
+        homeMotivation.innerHTML = `
+          <div class="motivation-card">
+            <p>${latest.text}</p>
+            <small>Posté le ${formatDate(latest.createdAt)}</small>
+          </div>
+        `;
+      } else {
+        homeMotivation.innerHTML = '';
+      }
+    }
+  } catch (error) {
+    console.error('Erreur updateMotivationDisplay:', error);
+  }
+}
 
 // ==================== FONCTIONS STATISTIQUES ====================
 
