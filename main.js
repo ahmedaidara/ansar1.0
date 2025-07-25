@@ -1,62 +1,3 @@
-ser?.role !== 'admin') {
-        showPage('home');
-        return;
-      }
-      break;
-      case 'admin-members':
-        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
-          updateEditMembersList();
-        } else {
-          showPage('home');
-        }
-        break;
-    case 'treasurer':
-      if (currentUser?.role !== 'tresorier') {
-        showPage('home');
-        return;
-      }
-      break;
-      case 'treasurer-monthly':
-        updateTreasurerMonthlyList();
-        break;
-      case 'treasurer-member-monthly':
-        break;
-      case 'treasurer-global':
-        updateContributionsAdminList();
-        break;
-      case 'treasurer-global-manage':
-        break;
-      case 'president':
-        if (currentUser?.role === 'president') {
-          showTab('president-settings');
-        } else {
-          showPage('home');
-        }
-        break;
-    case 'secretary':
-      if (currentUser?.role !== 'secretaire') {
-        showPage('home');
-        return;
-      }
-      break;
-      default:
-        console.warn(`Page non reconnue : ${pageId}`);
-        showPage('home');
-        break;
-    }
-
-    // Faire défiler vers le haut de la page
-    window.scrollTo(0, 0);
-  } catch (error) {
-    console.error('Erreur dans showPage:', error);
-    showPage('home'); // Revenir à la page d'accueil en cas d'erreur
-  }
-}
-
-// Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', () => {
-  showPage('home'); // Forcer l'affichage de la page d'accueil
-});
 // Configuration Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
@@ -87,7 +28,6 @@ const presidentCode = '0000';
 const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
 // ==================== INITIALISATION ====================
-
 document.addEventListener('DOMContentLoaded', () => {
   // Initialiser le thème
   if (localStorage.getItem('darkMode') === 'true') {
@@ -100,7 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Charger les données initiales
   updateMessagePopups();
   checkAutoMessages();
-  
+  updateMotivationDisplay(); // Initialiser l'affichage des messages
+
+  // Force l'affichage même si Firebase est lent
+  updateMotivationDisplay();
+  setInterval(updateMotivationDisplay, 300000); // Actualise toutes les 5 minutes
 
   // Ajouter les écouteurs d'événements
   document.querySelector('#refresh-data')?.addEventListener('click', () => {
@@ -108,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateEventsList();
     updateGalleryContent();
     updateMessagesList();
+    updateMotivationDisplay();
     updateCoranContent();
     updateLibraryContent();
   });
@@ -170,14 +115,19 @@ async function uploadFile(file, path) {
 
 function showPage(pageId) {
   try {
-    // Retirer la classe .active de toutes les sections .page
+    // [1] NETTOYAGE - Arrêter l'écouteur précédent s'il existe
+    if (window.motivationListener) {
+      window.motivationListener(); // Cette ligne arrête l'écouteur
+      window.motivationListener = null; // On nettoie la référence
+    }
+
+    // [2] CODE EXISTANT - Tout ce que vous avez déjà
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => {
       page.classList.remove('active');
-      page.style.display = 'none'; // Forcer le masquage pour éviter tout conflit
+      page.style.display = 'none';
     });
 
-    // Retirer la classe .active de tous les éléments de navigation
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => item.classList.remove('active'));
 
@@ -232,7 +182,70 @@ function showPage(pageId) {
       case 'settings':
         break;
     case 'secret':
-      if (currentU
+      if (currentUser?.role !== 'admin') {
+        showPage('home');
+        return;
+      }
+      break;
+      case 'admin-members':
+        if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
+          updateEditMembersList();
+        } else {
+          showPage('home');
+        }
+        break;
+    case 'treasurer':
+      if (currentUser?.role !== 'tresorier') {
+        showPage('home');
+        return;
+      }
+      break;
+      case 'treasurer-monthly':
+        updateTreasurerMonthlyList();
+        break;
+      case 'treasurer-member-monthly':
+        break;
+      case 'treasurer-global':
+        updateContributionsAdminList();
+        break;
+      case 'treasurer-global-manage':
+        break;
+      case 'president':
+        if (currentUser?.role === 'president') {
+          showTab('president-settings');
+        } else {
+          showPage('home');
+        }
+        break;
+    case 'secretary':
+      if (currentUser?.role !== 'secretaire') {
+        showPage('home');
+        return;
+      }
+      break;
+      default:
+        console.warn(`Page non reconnue : ${pageId}`);
+        showPage('home');
+        break;
+    }
+
+// [3] REACTIVATION - Si on va sur une page qui a besoin des messages
+    if (pageId === 'home' || pageId === 'secretary') {
+      updateMotivationDisplay(); // Recrée un nouvel écouteur
+    }
+
+    window.scrollTo(0, 0);
+  } catch (error) {
+    console.error('Erreur dans showPage:', error);
+    showPage('home');
+  }
+}
+
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+  showPage('home'); // Forcer l'affichage de la page d'accueil
+});
+
 // Mettre à jour la fonction showTab
 function showTab(tabId) {
   const tabContent = document.querySelector(`#${tabId}`);
@@ -449,13 +462,17 @@ function getChatbotResponse(message) {
 
 document.querySelector('#add-member-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const isEditing = e.target.dataset.editing;
-  const photoInput = document.getElementById('new-member-photo');
-
+  
+  // Récupérer le premier code disponible
+  const availableCodes = await findAvailableCodes();
+  const memberCode = availableCodes.length > 0 
+    ? availableCodes[0] 
+    : await generateMemberCode();
+  
   const memberData = {
-    code: isEditing || (await generateMemberCode()),
-    firstname: document.getElementById('new-member-firstname')?.value.trim() || '',
-    lastname: document.getElementById('new-member-lastname')?.value.trim() || '',
+    code: memberCode, // Utiliser le code généré
+    firstname: document.getElementById('new-member-firstname').value.trim(),
+    lastname: document.getElementById('new-member-lastname').value.trim(),
     age: parseInt(document.getElementById('new-member-age')?.value) || null,
     dob: document.getElementById('new-member-dob')?.value || null,
     birthplace: document.getElementById('new-member-birthplace')?.value.trim() || null,
@@ -471,34 +488,60 @@ document.querySelector('#add-member-form')?.addEventListener('submit', async (e)
   };
 
   try {
-    await saveData('members', memberData, isEditing);
+    await saveData('members', memberData);
+    alert(`Membre ajouté avec le code: ${memberCode}`);
     document.getElementById('add-member-form').reset();
-    delete e.target.dataset.editing;
-    await updateAllMemberLists();
-    alert(`Membre ${isEditing ? 'modifié' : 'ajouté'} avec succès!`);
+    updateMembersList();
   } catch (error) {
-    console.error("Erreur addMember:", error);
-    alert(`Erreur lors de ${isEditing ? 'la modification' : "l'ajout"} du membre`);
+    console.error("Erreur ajout membre:", error);
+    alert("Erreur lors de l'ajout du membre");
   }
 });
 
 async function generateMemberCode() {
   try {
     const members = await loadData('members');
-    const usedCodes = members.map(m => parseInt(m.code, 10)).filter(code => !isNaN(code)).sort((a, b) => a - b);
-    let newCode = 1;
-    for (let i = 0; i < usedCodes.length; i++) {
-      if (usedCodes[i] !== newCode) break;
-      newCode++;
-    }
-    return `${newCode.toString().padStart(3, '0')}`;
+    
+    // 1. Collecter tous les codes numériques existants
+    const existingCodes = members
+      .map(m => parseInt(m.code))
+      .filter(code => !isNaN(code));
+    
+    // 2. Trouver le code maximum
+    const maxCode = existingCodes.length > 0 ? Math.max(...existingCodes) : 0;
+    
+    // 3. Trouver tous les "trous" dans la numérotation
+    const allPossibleCodes = Array.from({length: maxCode}, (_, i) => i + 1);
+    const missingCodes = allPossibleCodes.filter(
+      code => !existingCodes.includes(code)
+    );
+    
+    // 4. Retourner le premier code manquant ou le suivant
+    return (missingCodes.length > 0 
+      ? missingCodes[0] 
+      : maxCode + 1).toString().padStart(3, '0');
+      
   } catch (error) {
-    console.error('Erreur generateMemberCode:', error);
-    return `${(Math.floor(Math.random() * 1000) + 1).toString().padStart(3, '0')}`;
+    console.error("Erreur génération code:", error);
+    // Solution de secours
+    return (Math.floor(Math.random() * 900) + 100).toString();
   }
 }
 
 
+async function findAvailableCodes() {
+  const members = await loadData('members');
+  const existingCodes = members.map(m => parseInt(m.code)).filter(c => !isNaN(c));
+  
+  if (existingCodes.length === 0) return ['001'];
+  
+  const maxCode = Math.max(...existingCodes);
+  const allCodes = Array.from({length: maxCode}, (_, i) => i + 1);
+  
+  return allCodes
+    .filter(code => !existingCodes.includes(code))
+    .map(code => code.toString().padStart(3, '0'));
+}
 
 // Remplacer la fonction initializeContributions
 function initializeContributions() {
@@ -534,7 +577,16 @@ async function updateMembersList() {
       'vice-secretaire': 'Vice-Secrétaire'
     };
 
-    list.innerHTML = members
+    // 1. Trier les membres par code numérique
+    const sortedMembers = members.sort((a, b) => {
+      // Convertir les codes en nombres pour comparer
+      const codeA = parseInt(a.code) || 0; // Si conversion échoue, utilise 0
+      const codeB = parseInt(b.code) || 0;
+      return codeA - codeB;
+    });
+
+    // 2. Générer le HTML avec les membres triés
+    list.innerHTML = sortedMembers
       .map(m => `
         <div class="member-card">
           <div>
@@ -543,6 +595,7 @@ async function updateMembersList() {
           </div>
         </div>
       `).join('') || '<p>Aucun membre trouvé</p>';
+
   } catch (error) {
     console.error('Erreur updateMembersList:', error);
     alert('Erreur lors du chargement de la liste des membres');
@@ -747,7 +800,6 @@ async function showMemberDetail(code) {
       // Afficher toutes les informations personnelles
       document.querySelector('#personal-info').innerHTML = `
         ${displayInfo(member.code, 'Code')}
-        ${displayInfo(`${member.firstname} ${member.lastname}`, 'Nom complet')}
         ${displayInfo(member.status, 'Statut')}
         ${displayInfo(member.age, 'Âge')}
         ${displayInfo(member.dob, 'Date de naissance')}
@@ -887,6 +939,7 @@ async function updateEventsList() {
     console.error('Error updating events:', error);
   }
 }
+
 
 async function updateEventsAdminList() {
   try {
@@ -1047,7 +1100,7 @@ async function updateMessagesList() {
     list.innerHTML = sortedMessages.map(msg => `
       <div class="message-card">
         <div class="title">
-          <img src="assets/images/logo-512*512.png" alt="Logo">
+          <img src="assets/images/logo.png" alt="Logo">
           ${msg.title}
         </div>
         <div class="message">${msg.text}</div>
@@ -1950,6 +2003,78 @@ function convertToDirectDownloadLink(url) {
   return url; // Retourne l'URL originale si aucune conversion n'est possible
 }
 
+// ==================== FONCTIONS MESSAGES MOTIVATIONNELS ====================
+
+// Gestion de l'envoi
+// Remplacez toute la fonction par cette version garantie
+function updateMotivationDisplay() {
+  const motivationRef = db.collection("motivations").orderBy("createdAt", "desc").limit(1);
+  
+  motivationRef.get().then((snapshot) => {
+    if (!snapshot.empty) {
+      const doc = snapshot.docs[0];
+      const data = doc.data();
+      const date = data.createdAt?.toDate() || new Date();
+      
+      const homeDisplay = document.getElementById('home-motivation');
+      if (homeDisplay) {
+        homeDisplay.innerHTML = `
+          <p>"${data.text || "Aucun message disponible"}"</p>
+          <small>Posté le ${formatDate(date)}</small>
+        `;
+      }
+    }
+  }).catch((error) => {
+    console.error("Erreur motivation:", error);
+  });
+}
+
+// Mise à jour de l'affichage
+async function updateMotivationDisplay() {
+  try {
+    // Nettoyer l'ancien écouteur s'il existe
+    if (window.motivationUnsubscribe) {
+      window.motivationUnsubscribe();
+    }
+
+    // Créer un nouvel écouteur en temps réel
+    window.motivationUnsubscribe = db.collection("motivations")
+      .orderBy("createdAt", "desc")
+      .limit(1)
+      .onSnapshot(
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const latest = snapshot.docs[0].data();
+            const formattedDate = formatDate(latest.createdAt?.toDate());
+            
+            // Mise à jour dans l'interface admin
+            const adminDisplay = document.querySelector('#displayed-motivation');
+            if (adminDisplay) {
+              adminDisplay.textContent = latest.text || "Aucun message";
+            }
+            
+            // Mise à jour sur la page d'accueil
+            const homeDisplay = document.querySelector('#home-motivation');
+            if (homeDisplay) {
+              homeDisplay.innerHTML = `
+                <div class="motivation-card">
+                  <p>${latest.text || "Aucun message motivationnel"}</p>
+                  ${latest.createdAt ? `<small>Posté le ${formattedDate}</small>` : ''}
+                </div>
+              `;
+            }
+          }
+        },
+        (error) => {
+          console.error("Erreur d'écoute des messages motivationnels:", error);
+        }
+      );
+
+  } catch (error) {
+    console.error("Erreur dans updateMotivationDisplay:", error);
+  }
+}
+
 
 // ==================== FONCTIONS STATISTIQUES ====================
 
@@ -2480,3 +2605,6 @@ async function updateCode(codeType) {
     alert('Erreur lors de la mise à jour du code');
   }
 }
+
+
+
