@@ -2006,75 +2006,106 @@ function convertToDirectDownloadLink(url) {
 // ==================== FONCTIONS MESSAGES MOTIVATIONNELS ====================
 
 // Gestion de l'envoi
-// Remplacez toute la fonction par cette version garantie
-function updateMotivationDisplay() {
-  const motivationRef = db.collection("motivations").orderBy("createdAt", "desc").limit(1);
+// ==================== FONCTIONS MESSAGES MOTIVATIONNELS ====================
+
+let motivationListener = null;
+
+function initMotivationSystem() {
+  // Initialisation de l'écouteur
+  setupMotivationListener();
   
-  motivationRef.get().then((snapshot) => {
-    if (!snapshot.empty) {
-      const doc = snapshot.docs[0];
-      const data = doc.data();
-      const date = data.createdAt?.toDate() || new Date();
-      
-      const homeDisplay = document.getElementById('home-motivation');
-      if (homeDisplay) {
-        homeDisplay.innerHTML = `
-          <p>"${data.text || "Aucun message disponible"}"</p>
-          <small>Posté le ${formatDate(date)}</small>
-        `;
-      }
-    }
-  }).catch((error) => {
-    console.error("Erreur motivation:", error);
-  });
-}
-
-// Mise à jour de l'affichage
-async function updateMotivationDisplay() {
-  try {
-    // Nettoyer l'ancien écouteur s'il existe
-    if (window.motivationUnsubscribe) {
-      window.motivationUnsubscribe();
-    }
-
-    // Créer un nouvel écouteur en temps réel
-    window.motivationUnsubscribe = db.collection("motivations")
-      .orderBy("createdAt", "desc")
-      .limit(1)
-      .onSnapshot(
-        (snapshot) => {
-          if (!snapshot.empty) {
-            const latest = snapshot.docs[0].data();
-            const formattedDate = formatDate(latest.createdAt?.toDate());
-            
-            // Mise à jour dans l'interface admin
-            const adminDisplay = document.querySelector('#displayed-motivation');
-            if (adminDisplay) {
-              adminDisplay.textContent = latest.text || "Aucun message";
-            }
-            
-            // Mise à jour sur la page d'accueil
-            const homeDisplay = document.querySelector('#home-motivation');
-            if (homeDisplay) {
-              homeDisplay.innerHTML = `
-                <div class="motivation-card">
-                  <p>${latest.text || "Aucun message motivationnel"}</p>
-                  ${latest.createdAt ? `<small>Posté le ${formattedDate}</small>` : ''}
-                </div>
-              `;
-            }
-          }
-        },
-        (error) => {
-          console.error("Erreur d'écoute des messages motivationnels:", error);
-        }
-      );
-
-  } catch (error) {
-    console.error("Erreur dans updateMotivationDisplay:", error);
+  // Gestion du formulaire admin
+  const form = document.getElementById('add-motivation-form');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('motivation-text').value.trim();
+      if (text) await addMotivationMessage(text);
+    });
+  }
+  
+  // Gestion du bouton de suppression
+  const deleteBtn = document.getElementById('delete-motivation-btn');
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', deleteMotivationMessage);
   }
 }
 
+function setupMotivationListener() {
+  // Nettoyer l'ancien écouteur
+  if (motivationListener) motivationListener();
+  
+  // Nouvel écouteur temps réel
+  motivationListener = db.collection("motivations")
+    .orderBy("createdAt", "desc")
+    .limit(1)
+    .onSnapshot(handleMotivationUpdate);
+}
+
+function handleMotivationUpdate(snapshot) {
+  if (!snapshot.empty) {
+    const doc = snapshot.docs[0];
+    const data = doc.data();
+    const date = data.createdAt?.toDate();
+    
+    updateMotivationUI(data.text, date);
+  } else {
+    updateMotivationUI("Aucun message disponible", null);
+  }
+}
+
+function updateMotivationUI(text, date) {
+  // Mise à jour page d'accueil
+  const homeElement = document.getElementById('home-motivation');
+  if (homeElement) {
+    homeElement.innerHTML = `
+      <div class="motivation-card">
+        <p>${text}</p>
+        ${date ? `<small>Posté le ${formatDate(date)}</small>` : ''}
+      </div>
+    `;
+  }
+  
+  // Mise à jour espace admin
+  const adminElement = document.getElementById('displayed-motivation');
+  if (adminElement) adminElement.textContent = text;
+}
+
+async function addMotivationMessage(text) {
+  try {
+    await db.collection("motivations").add({
+      text: text,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    alert("Message publié avec succès !");
+    document.getElementById('motivation-text').value = '';
+  } catch (error) {
+    console.error("Erreur publication:", error);
+    alert("Erreur lors de la publication");
+  }
+}
+
+async function deleteMotivationMessage() {
+  if (!confirm("Supprimer le message actuel ?")) return;
+  
+  try {
+    const snapshot = await db.collection("motivations")
+      .orderBy("createdAt", "desc")
+      .limit(1)
+      .get();
+
+    if (!snapshot.empty) {
+      await db.collection("motivations").doc(snapshot.docs[0].id).delete();
+      alert("Message supprimé !");
+    }
+  } catch (error) {
+    console.error("Erreur suppression:", error);
+    alert("Erreur lors de la suppression");
+  }
+}
+
+// Initialiser au chargement
+document.addEventListener('DOMContentLoaded', initMotivationSystem);
 // ==================== FONCTIONS STATISTIQUES ====================
 
 async function updateStats() {
