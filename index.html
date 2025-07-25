@@ -486,50 +486,77 @@
 
    <!-- Espace Secrétaire -->
 <!-- Espace Secrétaire -->
-    <section id="secretary" class="page">
-      <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2>Espace Secrétaire</h2>
-      <div class="tabs">
-        <button class="tab-button active" onclick="showTab('secretary-files')">Fichiers Secrétaire</button>
-        <button class="tab-button" onclick="showTab('secretary-motivation')">Message Motivationnel</button>
-      </div>
-      <div id="secretary-files" class="tab-content active">
-        <h3>Ajouter une affiche</h3>
-        
-        <!-- Formulaire pour les images (existant) -->
-        <form id="add-secretary-file-form">
-          <input type="text" id="secretary-file-name" placeholder="Nom" required>
-          <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
-          <input type="text" id="secretary-file-url" placeholder="Lien (ex: postimages.org)" required>
-          <button type="submit" class="cta-button">Ajouter</button>
-        </form>
+<section id="secretary" class="page">
+  <button class="cta-button back-button" onclick="showPage('home')"><span class="material-icons">arrow_back</span> Retour</button>
+  <h2>Espace Secrétaire</h2>
+  
+  <!-- Barre de boutons en haut -->
+  <div class="button-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <button class="tab-button active" onclick="showSecretarySection('affiche')" style="flex: 1;">Ajouter une affiche</button>
+    <button class="tab-button" onclick="showSecretarySection('livre')" style="flex: 1;">Ajouter un livre</button>
+    <button class="tab-button" onclick="showSecretarySection('message')" style="flex: 1;">Message (page d'accueil)</button>
+  </div>
 
-        <!-- Nouveau formulaire pour les livres -->
-        <form id="add-library-book-form">
-          <h3>Ajouter un livre</h3>
-          <input type="text" id="book-title" placeholder="Titre du livre" required>
-          <input type="text" id="book-category" placeholder="RUBRIQUE" required>
-          <input type="text" id="book-cover-url" placeholder="Lien de la couverture (postimages.org)" required>
-          <input type="text" id="book-pdf-url" placeholder="Lien du PDF (Drive)" required>
-          <button type="submit" class="cta-button">Ajouter a la bibliotheque</button>
-        </form>
+  <!-- Section Ajouter une affiche -->
+  <div id="affiche-section" class="secretary-content" style="display: block;">
+    <form id="add-secretary-file-form">
+      <h3>Ajouter une affiche</h3>
+      <input type="text" id="secretary-file-name" placeholder="Nom" required>
+      <input type="text" id="secretary-file-category" placeholder="Catégorie" required>
+      <input type="text" id="secretary-file-url" placeholder="Lien (ex: postimages.org)" required>
+      <button type="submit" class="cta-button">Ajouter</button>
+    </form>
 
-        <div id="secretary-files-list"></div>
+    <!-- Liste des affiches -->
+    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+      <h4>Affiches existantes</h4>
+      <div id="secretary-files-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+        <!-- Contenu généré dynamiquement par le JS existant -->
       </div>
-      <!-- Dans la section secrétaire -->
-      <div id="secretary-motivation" class="tab-content">
-        <h3>Message (page d'acceuil)</h3>
-        <form id="add-motivation-form">
-          <textarea id="motivation-text" placeholder="Écrivez un message..." required></textarea>
-          <button type="submit" class="cta-button">Publier</button>
-        </form>
-        <div id="current-motivation">
-          <h4>Message actuel :</h4>
-          <p id="displayed-motivation"></p>
-          <button class="cta-button danger" onclick="deleteMotivation()">Supprimer</button>
-        </div>
+    </div>
+  </div>
+
+  <!-- Section Ajouter un livre -->
+  <div id="livre-section" class="secretary-content" style="display: none;">
+    <form id="add-library-book-form">
+      <h3>Ajouter un livre</h3>
+      <input type="text" id="book-title" placeholder="Titre du livre" required>
+      <input type="text" id="book-category" placeholder="RUBRIQUE" required>
+      <input type="text" id="book-cover-url" placeholder="Lien de la couverture (postimages.org)" required>
+      <input type="text" id="book-pdf-url" placeholder="Lien du PDF (Drive)" required>
+      <button type="submit" class="cta-button">Ajouter à la bibliothèque</button>
+    </form>
+
+    <!-- Liste des livres -->
+    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+      <h4>Voir la liste dans la section affiche</h4>
+      <div id="library-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+        <!-- Contenu généré dynamiquement par le JS existant -->
       </div>
-    </section>
+    </div>
+  </div>
+
+  <!-- Section Message page d'accueil -->
+  <div id="message-section" class="secretary-content" style="display: none;">
+    <div id="motivation-admin">
+      <h3>Message (page d'accueil)</h3>
+      <textarea id="motivation-text" placeholder="Entrez votre message motivationnel..." style="width: 100%; min-height: 100px; margin-bottom: 10px;"></textarea>
+      <div style="display: flex; gap: 10px;">
+        <button id="send-motivation-btn" class="cta-button">Envoyer</button>
+        <button id="delete-motivation-btn" class="cta-button danger">Supprimer le dernier</button>
+      </div>
+      <div id="displayed-motivation" style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">Aucun message affiché</div>
+    </div>
+
+    <!-- Historique des messages -->
+    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+       
+      <div id="motivation-history" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+        <!-- Contenu généré dynamiquement par le JS existant -->
+      </div>
+    </div>
+  </div>
+</section>
 
  <!-- Page des paramètres -->
 <section id="settings" class="page">
@@ -600,9 +627,24 @@
     </div>
   </div>
 </body>
+  <script>
+// Fonction pour afficher les sections (à ajouter à la fin du body)
+function showSecretarySection(section) {
+  // Masquer tous les contenus
+  document.querySelectorAll('.secretary-content').forEach(el => {
+    el.style.display = 'none';
+  });
+  
+  // Désactiver tous les boutons
+  document.querySelectorAll('.button-group .tab-button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Afficher la section sélectionnée
+  document.getElementById(section + '-section').style.display = 'block';
+  
+  // Activer le bouton cliqué
+  event.target.classList.add('active');
+}
+</script>
 </html>
-
-
-
-
-
