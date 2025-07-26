@@ -433,11 +433,15 @@ Marie|Diop|28|marie@ex.com|776543210|secretaire|actif|456 Ave|Médecin|Thiès|Sa
     </section>
 
     <!-- Page de Gestion des Paiements d'une Cotisation Globale -->
-    <section id="treasurer-global-manage" class="page">
-      <button class="cta-button back-button" onclick="showPage('treasurer-global')"><span class="material-icons">arrow_back</span> Retour</button>
-      <h2 id="treasurer-global-title">Gérer</h2>
-      <div id="global-contribution-members"></div>
-    </section>
+<section id="treasurer-global-manage" class="page">
+  <button class="cta-button back-button" onclick="goBackToTreasurerGlobal()">
+    <span class="material-icons">arrow_back</span> Retour
+  </button>
+  <h2 id="treasurer-global-title">Gérer les Paiements</h2>
+  <input type="text" id="global-contribution-search" placeholder="Rechercher un membre...">
+  <div id="global-contribution-members"></div>
+  <div id="treasurer-global-manage"></div>
+</section>
 
     <!-- Page des Cotisations Mensuelles d'un Membre -->
     <section id="treasurer-member-monthly" class="page">
