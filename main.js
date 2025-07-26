@@ -1004,17 +1004,11 @@ async function updateEventCountdowns() {
           console.warn('Date invalide pour l\'événement:', e);
           return false;
         }
-        return eventDate > now;
+        return true; // On garde tous les événements, passés et futurs
       })
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    console.log('Événements futurs:', futureEvents);
-
-    if (futureEvents.length === 0) {
-      countdownContainer.innerHTML = '<p class="event-countdown">Aucun événement à venir</p>';
-      console.log('Aucun événement futur trouvé');
-      return;
-    }
+    console.log('Tous les événements:', futureEvents);
 
     const updateCountdowns = () => {
       const now = new Date();
@@ -1030,20 +1024,21 @@ async function updateEventCountdowns() {
 
         const timeDiff = eventTime - now;
 
-        if (timeDiff <= 0 || timeDiff <= 2 * 60 * 1000) { // Moins de 2 minutes
-          html += `<p class="event-countdown">${event.name} EN COURS...</p>`;
-          console.log('Événement en cours ou trop proche:', event.name);
-          return;
+        if (timeDiff <= 0) {
+          // Événement en cours ou passé
+          html += `<p class="event-countdown">${event.name} - EN COURS</p>`;
+          console.log('Événement en cours ou passé:', event.name);
+        } else {
+          // Événement futur
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+          html += `
+            <p class="event-countdown">${event.name} - ${days} JOURS ${hours}H ${minutes}MN ${seconds}S</p>
+          `;
         }
-
-        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-        html += `
-          <p class="event-countdown">${event.name} - ${days} JOURS ${hours}H ${minutes}MN ${seconds}S</p>
-        `;
       });
 
       countdownContainer.innerHTML = html || '<p class="event-countdown">Aucun événement à venir</p>';
@@ -1055,9 +1050,12 @@ async function updateEventCountdowns() {
     console.log('Comptes à rebours démarrés pour:', futureEvents.length, 'événements');
   } catch (error) {
     console.error('Erreur updateEventCountdowns:', error);
-    countdownContainer.innerHTML = '<p class="event-countdown">Erreur lors du chargement des événements</p>';
+    if (countdownContainer) {
+      countdownContainer.innerHTML = '<p class="event-countdown">Erreur lors du chargement des événements</p>';
+    }
   }
 }
+
 
 // ==================== FONCTIONS MESSAGES ====================
 
@@ -2774,6 +2772,5 @@ async function updateCode(codeType) {
     alert('Erreur lors de la mise à jour du code');
   }
 }
-
 
 
