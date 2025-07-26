@@ -1540,3 +1540,73 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   min-height: 100px;
   margin-bottom: 10px;
 }
+
+.global-contribution-note {
+  margin-top: 5px;
+  padding: 5px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#global-cotisations-content small {
+  display: block;
+  margin-top: 5px;
+  color: #555;
+}
+
+#treasurer-global-manage {
+  padding: 20px;
+}
+
+#global-contribution-members {
+  margin-top: 20px;
+}
+
+.member-card {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.global-contribution-checkbox,
+.global-contribution-note {
+  margin-top: 5px;
+}
+
+.global-contribution-note {
+  padding: 5px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#save-contributions {
+  margin: 10px 0;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  background-color: #9b9b22;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  background-color: #9b9b22;
+}
+
+.back-button {
+  background-color: #555;
+}
+
+.back-button:hover {
+  background-color: #444;
+}
+
