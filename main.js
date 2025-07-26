@@ -761,44 +761,65 @@ async function updateAllMemberLists() {
   ]);
 }
 
+// Fonction showMemberDetail mise à jour
 async function showMemberDetail(code) {
+  console.log('showMemberDetail appelé avec code:', code);
   try {
+    // Charger les données des membres depuis Firestore
     const members = await loadData('members');
     const member = members.find(m => m.code === code);
     if (!member) {
+      console.error('Membre introuvable pour code:', code);
       alert('Membre introuvable');
       return;
     }
 
+    console.log('Membre trouvé:', {
+      firstname: member.firstname,
+      lastname: member.lastname,
+      code: member.code,
+      contributions: JSON.stringify(member.contributions, null, 2)
+    });
+
+    // Mettre à jour currentUser
+    currentUser = member;
+
+    // Afficher la page personnelle
     showPage('personal');
     const personalContent = document.querySelector('#personal-content');
     const personalLogin = document.querySelector('#personal-login');
     
-    if (personalContent && personalLogin) {
-      personalLogin.style.display = 'none';
-      personalContent.style.display = 'block';
-      
-      // Mapper les rôles aux noms d'affichage
-      const roleDisplayMap = {
-        'membre': 'Membre',
-        'tresorier': 'Trésorier',
-        'vice-tresorier': 'Vice-Trésorière',
-        'president': 'Président',
-        'vice-president': 'Vice-Présidente',
-        'secretaire': 'Secrétaire',
-        'vice-secretaire': 'Vice-Secrétaire'
-      };
-      
-      document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
-      document.querySelector('#personal-role').textContent = `Rôle: ${roleDisplayMap[member.role] || member.role}`;
-      
-      // Fonction pour afficher proprement les informations (vide si non renseigné)
-      const displayInfo = (value, label) => {
-        return value ? `<p><strong>${label}:</strong> ${value}</p>` : '';
-      };
+    if (!personalContent || !personalLogin) {
+      console.error('Éléments DOM manquants:', {
+        personalContent: !!personalContent,
+        personalLogin: !!personalLogin
+      });
+      alert('Erreur : conteneur de l\'espace personnel introuvable');
+      return;
+    }
 
-      // Afficher toutes les informations personnelles
-      document.querySelector('#personal-info').innerHTML = `
+    personalLogin.style.display = 'none';
+    personalContent.style.display = 'block';
+    
+    // Mapper les rôles
+    const roleDisplayMap = {
+      'membre': 'Membre',
+      'tresorier': 'Trésorier',
+      'vice-tresorier': 'Vice-Trésorière',
+      'president': 'Président',
+      'vice-president': 'Vice-Présidente',
+      'secretaire': 'Secrétaire',
+      'vice-secretaire': 'Vice-Secrétaire'
+    };
+    
+    document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
+    document.querySelector('#personal-role').textContent = `Rôle: ${roleDisplayMap[member.role] || member.role}`;
+    
+    // Afficher les informations personnelles
+    const personalInfo = document.querySelector('#personal-info');
+    if (personalInfo) {
+      const displayInfo = (value, label) => value ? `<p><strong>${label}:</strong> ${value}</p>` : '';
+      personalInfo.innerHTML = `
         ${displayInfo(member.code, 'Code')}
         ${displayInfo(member.status, 'Statut')}
         ${displayInfo(member.age, 'Âge')}
@@ -810,20 +831,172 @@ async function showMemberDetail(code) {
         ${displayInfo(member.address, 'Adresse')}
         ${displayInfo(member.residence, 'Résidence actuelle')}
       `;
+    } else {
+      console.error('Élément #personal-info introuvable');
+    }
 
-      // Afficher les cotisations
-      document.querySelector('#cotisations-content').innerHTML = Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
+    // Afficher les cotisations mensuelles
+    const cotisationsContent = document.querySelector('#cotisations-content');
+    if (cotisationsContent) {
+      cotisationsContent.innerHTML = Object.entries(member.contributions?.Mensuelle || {}).map(([year, paidMonths]) => `
         <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
-      `).join('');
+      `).join('') || '<p>Aucune cotisation mensuelle</p>';
+    } else {
+      console.error('Élément #cotisations-content introuvable');
+    }
 
-      const contributions = await loadData('contributions');
-      document.querySelector('#global-cotisations-content').innerHTML = contributions.map(c => `
-        <p>${c.name} (${c.amount} FCFA): ${member.contributions.globalContributions?.[c.name]?.paid ? '✅ Payé' : '❌ Non payé'}</p>
-      `).join('') || '<p>Aucune cotisation globale</p>';
+    // Afficher les cotisations globales
+    const contributions = await loadData('contributions');
+    console.log('Cotisations globales chargées:', JSON.stringify(contributions, null, 2));
+    const globalCotisationsContent = document.querySelector('#global-cotisations-content');
+    if (globalCotisationsContent) {
+      if (!contributions || contributions.length === 0) {
+        console.warn('Aucune cotisation globale trouvée dans Firestore');
+        globalCotisationsContent.innerHTML = '<p>Aucune cotisation globale disponible</p>';
+      } else {
+        globalCotisationsContent.innerHTML = contributions.map(c => {
+          const contributionData = member.contributions?.globalContributions?.[c.name] || { paid: false, note: '' };
+          console.log(`Affichage cotisation ${c.name} pour ${member.firstname}:`, {
+            paid: contributionData.paid,
+            note: contributionData.note,
+            amount: c.amount
+          });
+          return `
+            <div class="contribution-item">
+              <p><strong>${c.name}</strong> (${c.amount} FCFA): ${contributionData.paid ? '✅ Payé' : '❌ Non payé'}
+                ${contributionData.note ? `<br><small>Note: ${contributionData.note}</small>` : ''}
+              </p>
+            </div>
+          `;
+        }).join('');
+      }
+    } else {
+      console.error('Élément #global-cotisations-content introuvable');
+      alert('Erreur : conteneur des cotisations globales introuvable');
     }
   } catch (error) {
     console.error('Erreur showMemberDetail:', error);
     alert('Erreur lors de l\'affichage des détails du membre');
+  }
+}
+
+// Fonction manageGlobalContribution mise à jour
+async function manageGlobalContribution(contributionId, contributionName) {
+  console.log('manageGlobalContribution appelé:', contributionId, contributionName);
+  try {
+    const members = await loadData('members');
+    showPage('treasurer-global-manage');
+    const globalManage = document.querySelector('#treasurer-global-manage');
+    if (!globalManage) {
+      console.error('Élément #treasurer-global-manage introuvable');
+      alert('Erreur : conteneur des paiements introuvable');
+      return;
+    }
+
+    globalManage.innerHTML = `
+      <button class="cta-button back-button" onclick="goBackToTreasurerGlobal()">
+        <span class="material-icons">arrow_back</span> Retour
+      </button>
+      <h2 id="treasurer-global-title">Gérer les Paiements: ${contributionName}</h2>
+      <button id="save-contributions" class="cta-button">Enregistrer</button>
+      <input type="text" id="global-contribution-search" placeholder="Rechercher un membre...">
+      <div id="global-contribution-members"></div>
+    `;
+
+    const membersList = document.querySelector('#global-contribution-members');
+    if (!membersList) {
+      console.error('Élément #global-contribution-members introuvable après insertion');
+      alert('Erreur : conteneur des membres introuvable');
+      return;
+    }
+
+    const updateMembersList = async () => {
+      const search = document.querySelector('#global-contribution-search')?.value.toLowerCase() || '';
+      console.log('Mise à jour de la liste des membres avec recherche:', search);
+      membersList.innerHTML = members
+        .filter(m => `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search))
+        .map(m => `
+          <div class="member-card">
+            <p><strong>${m.firstname} ${m.lastname}</strong> (${m.code})</p>
+            <label>
+              <input type="checkbox" class="global-contribution-checkbox" data-member-id="${m.id}" data-contribution-id="${contributionId}" data-contribution-name="${contributionName}" ${m.contributions?.globalContributions?.[contributionName]?.paid ? 'checked' : ''}>
+              Payé
+            </label>
+            <label>
+              <input type="text" class="global-contribution-note" data-member-id="${m.id}" data-contribution-name="${contributionName}" value="${m.contributions?.globalContributions?.[contributionName]?.note || ''}" placeholder="Ajouter une note">
+            </label>
+          </div>
+        `).join('') || '<p>Aucun membre trouvé</p>';
+    };
+
+    await updateMembersList();
+
+    const searchInput = document.querySelector('#global-contribution-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', updateMembersList);
+      console.log('Écouteur input ajouté à #global-contribution-search');
+    } else {
+      console.warn('Champ de recherche #global-contribution-search introuvable');
+    }
+
+    const saveButton = document.querySelector('#save-contributions');
+    if (saveButton) {
+      saveButton.addEventListener('click', async () => {
+        console.log('Bouton Enregistrer cliqué');
+        try {
+          const checkboxes = document.querySelectorAll('.global-contribution-checkbox');
+          const noteInputs = document.querySelectorAll('.global-contribution-note');
+          const updatedMembers = await loadData('members');
+
+          for (const checkbox of checkboxes) {
+            const memberId = checkbox.dataset.memberId;
+            const contribName = checkbox.dataset.contributionName;
+            const paid = checkbox.checked;
+
+            const noteInput = Array.from(noteInputs).find(input => input.dataset.memberId === memberId && input.dataset.contributionName === contribName);
+            const note = noteInput ? noteInput.value.trim() : '';
+
+            const member = updatedMembers.find(m => m.id === memberId);
+            if (!member) {
+              console.warn(`Membre ${memberId} introuvable dans les données mises à jour`);
+              continue;
+            }
+
+            const updatedContributions = {
+              ...member.contributions,
+              globalContributions: {
+                ...member.contributions?.globalContributions,
+                [contribName]: {
+                  id: contributionId,
+                  paid,
+                  note
+                }
+              }
+            };
+            await saveData('members', { contributions: updatedContributions }, memberId);
+            console.log('Mise à jour pour', member.firstname, member.lastname, ': payé=', paid, 'note=', note);
+
+            if (currentUser?.code === member.code) {
+              console.log('Mise à jour de currentUser et rafraîchissement de l\'espace personnel pour', member.firstname);
+              await new Promise(resolve => setTimeout(resolve, 1000)); // Attendre 1000ms
+              currentUser = { ...member, contributions: updatedContributions };
+              await showMemberDetail(member.code);
+            }
+          }
+
+          alert('Modifications enregistrées avec succès');
+        } catch (error) {
+          console.error('Erreur lors de l\'enregistrement des modifications:', error);
+          alert('Erreur lors de l\'enregistrement des modifications');
+        }
+      });
+    } else {
+      console.error('Bouton #save-contributions introuvable');
+      alert('Erreur : bouton Enregistrer introuvable');
+    }
+  } catch (error) {
+    console.error('Erreur manageGlobalContribution:', error);
+    alert('Erreur lors du chargement des paiements');
   }
 }
 
@@ -1568,10 +1741,21 @@ async function manageGlobalContribution(contributionId, contributionName) {
       return;
     }
 
-    document.querySelector('#treasurer-global-title').textContent = `Gérer les Paiements: ${contributionName}`;
+    // Initialiser le contenu avec le titre, le bouton Enregistrer et le champ de recherche
+    globalManage.innerHTML = `
+      <button class="cta-button back-button" onclick="goBackToTreasurerGlobal()">
+        <span class="material-icons">arrow_back</span> Retour
+      </button>
+      <h2 id="treasurer-global-title">Gérer les Paiements: ${contributionName}</h2>
+      <button id="save-contributions" class="cta-button">Enregistrer</button>
+      <input type="text" id="global-contribution-search" placeholder="Rechercher un membre...">
+      <div id="global-contribution-members"></div>
+    `;
+
+    // S'assurer que #global-contribution-members existe après l'insertion
     const membersList = document.querySelector('#global-contribution-members');
     if (!membersList) {
-      console.error('Élément #global-contribution-members introuvable');
+      console.error('Élément #global-contribution-members introuvable après insertion');
       alert('Erreur : conteneur des membres introuvable');
       return;
     }
@@ -1588,50 +1772,73 @@ async function manageGlobalContribution(contributionId, contributionName) {
               <input type="checkbox" class="global-contribution-checkbox" data-member-id="${m.id}" data-contribution-id="${contributionId}" data-contribution-name="${contributionName}" ${m.contributions?.globalContributions?.[contributionName]?.paid ? 'checked' : ''}>
               Payé
             </label>
+            <label>
+              <input type="text" class="global-contribution-note" data-member-id="${m.id}" data-contribution-name="${contributionName}" value="${m.contributions?.globalContributions?.[contributionName]?.note || ''}" placeholder="Ajouter une note">
+            </label>
           </div>
         `).join('') || '<p>Aucun membre trouvé</p>';
     };
 
+    // Mettre à jour la liste des membres immédiatement
     await updateMembersList();
 
+    // Ajouter l'écouteur pour la recherche
     const searchInput = document.querySelector('#global-contribution-search');
     if (searchInput) {
       searchInput.addEventListener('input', updateMembersList);
       console.log('Écouteur input ajouté à #global-contribution-search');
+    } else {
+      console.warn('Champ de recherche #global-contribution-search introuvable');
     }
 
-    const checkboxes = document.querySelectorAll('.global-contribution-checkbox');
-    console.log('Nombre de checkboxes trouvées:', checkboxes.length);
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', async (e) => {
-        console.log('Checkbox changé:', e.target.dataset.memberId, e.target.dataset.contributionName, e.target.checked);
-        const memberId = e.target.dataset.memberId;
-        const contribName = e.target.dataset.contributionName;
-        const paid = e.target.checked;
-
+    // Gérer le clic sur le bouton Enregistrer
+    const saveButton = document.querySelector('#save-contributions');
+    if (saveButton) {
+      saveButton.addEventListener('click', async () => {
+        console.log('Bouton Enregistrer cliqué');
         try {
-          const member = members.find(m => m.id === memberId);
-          const updatedContributions = {
-            ...member.contributions,
-            globalContributions: {
-              ...member.contributions?.globalContributions,
-              [contribName]: {
-                id: contributionId,
-                paid
+          const checkboxes = document.querySelectorAll('.global-contribution-checkbox');
+          const noteInputs = document.querySelectorAll('.global-contribution-note');
+
+          for (const checkbox of checkboxes) {
+            const memberId = checkbox.dataset.memberId;
+            const contribName = checkbox.dataset.contributionName;
+            const paid = checkbox.checked;
+
+            const noteInput = Array.from(noteInputs).find(input => input.dataset.memberId === memberId && input.dataset.contributionName === contribName);
+            const note = noteInput ? noteInput.value.trim() : '';
+
+            const member = members.find(m => m.id === memberId);
+            const updatedContributions = {
+              ...member.contributions,
+              globalContributions: {
+                ...member.contributions?.globalContributions,
+                [contribName]: {
+                  id: contributionId,
+                  paid,
+                  note
+                }
               }
+            };
+            await saveData('members', { contributions: updatedContributions }, memberId);
+            console.log('Mise à jour pour', member.firstname, member.lastname, ': payé=', paid, 'note=', note);
+
+            // Mettre à jour l'espace personnel si nécessaire
+            if (currentUser?.code === member.code) {
+              showMemberDetail(member.code);
             }
-          };
-          await saveData('members', { contributions: updatedContributions }, memberId);
-          if (currentUser?.code === member.code) {
-            showMemberDetail(member.code);
           }
-          console.log('Paiement mis à jour pour', member.firstname, member.lastname);
+
+          alert('Modifications enregistrées avec succès');
         } catch (error) {
-          console.error('Erreur mise à jour paiement:', error);
-          alert('Erreur lors de la mise à jour du paiement');
+          console.error('Erreur lors de l\'enregistrement des modifications:', error);
+          alert('Erreur lors de l\'enregistrement des modifications');
         }
       });
-    });
+    } else {
+      console.error('Bouton #save-contributions introuvable');
+      alert('Erreur : bouton Enregistrer introuvable');
+    }
   } catch (error) {
     console.error('Erreur manageGlobalContribution:', error);
     alert('Erreur lors du chargement des paiements');
