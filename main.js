@@ -1151,10 +1151,17 @@ async function deleteMessage(id) {
 
 document.querySelector('#add-auto-message-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
+  
+  // Nouveau code avec correction de fuseau horaire
+  const dateStr = document.querySelector('#auto-message-date').value;
+  const timeStr = document.querySelector('#auto-message-time').value;
+  const localDate = new Date(`${dateStr}T${timeStr}`);
+  const utcDate = new Date(localDate.getTime() - (localDate.getTimezoneOffset() * 60000));
+
   const autoMessageData = {
     name: document.querySelector('#auto-message-name').value.trim(),
     text: document.querySelector('#auto-message-text').value.trim(),
-    datetime: new Date(`${document.querySelector('#auto-message-date').value}T${document.querySelector('#auto-message-time').value}`).toISOString(),
+    datetime: utcDate.toISOString(), // Stockage en UTC
     createdAt: new Date().toISOString()
   };
 
@@ -1173,9 +1180,11 @@ async function checkAutoMessages() {
   try {
     const autoMessages = await loadData('autoMessages');
     const now = new Date();
+    const nowUTC = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
 
     for (const msg of autoMessages) {
-      if (new Date(msg.datetime) <= now) {
+      const msgDate = new Date(msg.datetime);
+      if (msgDate <= nowUTC) {
         await saveData('messages', {
           title: msg.name,
           text: msg.text,
@@ -2774,3 +2783,83 @@ async function updateCode(codeType) {
 }
 
 
+async function importMembersBulk() {
+  const rawData = document.getElementById('mass-members-data').value;
+  if (!rawData.trim()) {
+    alert('Veuillez entrer des données à importer');
+    return;
+  }
+
+  const lines = rawData.split('\n')
+                      .filter(line => line.trim() !== '' && !line.startsWith('Prénom')); // Ignore l'en-tête
+  const progress = document.getElementById('import-progress');
+  progress.innerHTML = `Préparation: ${lines.length} membres à importer...`;
+
+  // Désactiver le bouton pendant l'import
+  const importBtn = document.querySelector('#mass-import .cta-button');
+  importBtn.disabled = true;
+  importBtn.textContent = 'Import en cours...';
+
+  try {
+    let imported = 0;
+    let errors = 0;
+
+    for (const [index, line] of lines.entries()) {
+      const parts = line.split('|').map(part => part.trim());
+      
+      // Mise à jour de la progression
+      progress.innerHTML = `Traitement ${index+1}/${lines.length} | Importés: ${imported} | Erreurs: ${errors}<br>`;
+      progress.innerHTML += `En cours: ${parts[0] || ''} ${parts[1] || ''}`;
+
+      if (parts.length < 6) { // Au moins Prénom, Nom, Âge, Email, Téléphone, Rôle
+        errors++;
+        progress.innerHTML += `<br>→ Erreur: format incorrect (${parts.length} champs)`;
+        continue;
+      }
+
+      try {
+        const memberCode = await generateMemberCode();
+        
+        const memberData = {
+          code: memberCode,
+          firstname: parts[0],
+          lastname: parts[1],
+          age: parts[2] ? parseInt(parts[2]) : null,
+          email: parts[3] || null,
+          phone: parts[4] || null,
+          role: parts[5] || 'membre',
+          status: parts[6] || 'actif',
+          address: parts[7] || null,
+          activity: parts[8] || null,
+          residence: parts[9] || null,
+          birthplace: parts[10] || null,
+          dob: parts[11] || null,
+          contributions: initializeContributions(),
+          createdAt: new Date().toISOString()
+        };
+
+        await saveData('members', memberData);
+        imported++;
+      } catch (error) {
+        errors++;
+        progress.innerHTML += `<br>→ Erreur: ${error.message}`;
+      }
+      
+      // Pause pour éviter de surcharger
+      if (index % 10 === 0) await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    progress.innerHTML += `<br><br><strong>Import terminé!</strong><br>
+                          Membres importés: ${imported}<br>
+                          Erreurs: ${errors}`;
+    
+    // Mettre à jour les listes
+    updateMembersList();
+    updateEditMembersList();
+  } catch (error) {
+    progress.innerHTML += `<br><strong>ERREUR GLOBALE:</strong> ${error.message}`;
+  } finally {
+    importBtn.disabled = false;
+    importBtn.textContent = 'Importer';
+  }
+}
