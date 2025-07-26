@@ -16,13 +16,25 @@
       "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-192x192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
