@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+  // Configuration Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
+    authDomain: "ansar-69617.firebaseapp.com",
+    projectId: "ansar-69617",
+    storageBucket: "ansar-69617.firebasestorage.app",
+    messagingSenderId: "1075104578958",
+    appId: "1:1075104578958:web:b5d55c76def4d1d430b8df",
+    measurementId: "G-5XLSPLXH81"
+  };
+
+  // Initialiser Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ansar Projet</title>
@@ -244,75 +261,9 @@
                
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
-                <!-- Sample Business Card 1 -->
-                <div class="business-card bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div class="h-48 bg-blue-500 flex items-center justify-center">
-                        <i class="fas fa-paint-brush text-white text-6xl"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Designer Graphique</h3>
-                        <p class="text-gray-600 mb-4">Jean Dupont</p>
-                        <div class="flex items-center text-gray-600 mb-2">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            <span>5 ans d'expérience</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mb-4">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
-                            <span>Paris, France</span>
-                        </div>
-                        <button onclick="showBusinessDetails(1)" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                            En savoir plus
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Sample Business Card 2 -->
-                <div class="business-card bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div class="h-48 bg-green-500 flex items-center justify-center">
-                        <i class="fas fa-code text-white text-6xl"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Développeur Web</h3>
-                        <p class="text-gray-600 mb-4">Marie Martin</p>
-                        <div class="flex items-center text-gray-600 mb-2">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            <span>3 ans d'expérience</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mb-4">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
-                            <span>Lyon, France</span>
-                        </div>
-                        <button onclick="showBusinessDetails(2)" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                            En savoir plus
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Sample Business Card 3 -->
-                <div class="business-card bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div class="h-48 bg-yellow-500 flex items-center justify-center">
-                        <i class="fas fa-camera text-white text-6xl"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Photographe</h3>
-                        <p class="text-gray-600 mb-4">Sophie Lambert</p>
-                        <div class="flex items-center text-gray-600 mb-2">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            <span>7 ans d'expérience</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mb-4">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
-                            <span>Marseille, France</span>
-                        </div>
-                        <button onclick="showBusinessDetails(3)" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                            En savoir plus
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
+  <!-- Les cartes seront générées dynamiquement -->
+</div>
         <!-- Business Details Modal -->
         <div id="business-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -673,61 +624,27 @@
 
     <script>
         // Business data (simulating database)
-        let businesses = [
-            {
-                id: 1,
-                nom: "Jean Dupont",
-                metier: "Designer Graphique",
-                experience: 5,
-                adresse: "Paris, France",
-                description: "Designer graphique spécialisé dans la création d'identités visuelles et de supports print. Passionné par le design minimaliste et efficace.",
-                contact: "+33 6 12 34 56 78",
-                email: "jean.dupont@example.com",
-                image: "https://i.postimg.cc/9FQZxZJ3/designer.jpg",
-                services: ["site web", "affiche", "portfolio"]
-            },
-            {
-                id: 2,
-                nom: "Marie Martin",
-                metier: "Développeur Web",
-                experience: 3,
-                adresse: "Lyon, France",
-                description: "Développeuse web full-stack avec une spécialisation en React et Node.js. Création de sites web sur mesure et applications web.",
-                contact: "+33 6 23 45 67 89",
-                email: "marie.martin@example.com",
-                image: "https://i.postimg.cc/8CJQ7ZJq/developpeur.jpg",
-                services: ["site web"]
-            },
-            {
-                id: 3,
-                nom: "Sophie Lambert",
-                metier: "Photographe",
-                experience: 7,
-                adresse: "Marseille, France",
-                description: "Photographe professionnelle spécialisée en portrait et mariage. Capturer des moments uniques avec sensibilité et créativité.",
-                contact: "+33 6 34 56 78 90",
-                email: "sophie.lambert@example.com",
-                image: "https://i.postimg.cc/0jYQZJZQ/photographe.jpg",
-                services: ["portfolio"]
-            }
-        ];
+        let businesses = [];
 
         // Projects data
         let projects = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Afficher l'interface principale
-            document.getElementById('main-interface').classList.remove('hidden-section');
-            
-            // Masquer toutes les sections
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
-        });
+  // Afficher l'interface principale
+  document.getElementById('main-interface').classList.remove('hidden-section');
+  
+  // Masquer toutes les sections
+  document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+    el.classList.add('hidden-section');
+    if (el.classList.contains('form-container')) {
+      el.classList.remove('active');
+    }
+  });
+
+  // Charger les données des professionnels
+  loadBusinesses();
+});
 
         // Show section function
         function showSection(section) {
@@ -849,53 +766,52 @@
 
         // Business details functions
         function showBusinessDetails(id) {
-            const business = businesses.find(b => b.id === id);
-            if (!business) return;
-            
-            document.getElementById('modal-title').textContent = business.metier;
-            
-            const content = `
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="md:w-1/3">
-                        <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
-                            <img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">
-                        </div>
-                        <h4 class="text-xl font-bold text-gray-800">${business.nom}</h4>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            <span>${business.experience} ans d'expérience</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
-                            <span>${business.adresse}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-phone mr-2"></i>
-                            <span>${business.contact}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-envelope mr-2"></i>
-                            <span>${business.email}</span>
-                        </div>
-                    </div>
-                    <div class="md:w-2/3">
-                        <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
-                        <p class="text-gray-600 mb-4">${business.description}</p>
-                        
-                        <h4 class="text-lg font-bold text-gray-800 mb-2">Services proposés</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${business.services.map(service => `
-                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">${service}</span>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('modal-content').innerHTML = content;
-            document.getElementById('business-modal').classList.remove('hidden');
-        }
+  const business = businesses.find(b => b.id === id);
+  if (!business) return;
 
+  document.getElementById('modal-title').textContent = business.metier;
+
+  const content = `
+    <div class="flex flex-col md:flex-row gap-6">
+      <div class="md:w-1/3">
+        <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
+          ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
+            `<i class="fas fa-briefcase text-gray-600 text-6xl"></i>`}
+        </div>
+        <h4 class="text-xl font-bold text-gray-800">${business.nom}</h4>
+        <div class="flex items-center text-gray-600 mt-2">
+          <i class="fas fa-calendar-alt mr-2"></i>
+          <span>${business.experience} ans d'expérience</span>
+        </div>
+        <div class="flex items-center text-gray-600 mt-2">
+          <i class="fas fa-map-marker-alt mr-2"></i>
+          <span>${business.adresse}</span>
+        </div>
+        <div class="flex items-center text-gray-600 mt-2">
+          <i class="fas fa-phone mr-2"></i>
+          <span>${business.contact}</span>
+        </div>
+        <div class="flex items-center text-gray-600 mt-2">
+          <i class="fas fa-envelope mr-2"></i>
+          <span>${business.email}</span>
+        </div>
+      </div>
+      <div class="md:w-2/3">
+        <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
+        <p class="text-gray-600 mb-4">${business.description}</p>
+        <h4 class="text-lg font-bold text-gray-800 mb-2">Services proposés</h4>
+        <div class="flex flex-wrap gap-2">
+          ${business.services.map(service => `
+            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">${service}</span>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('modal-content').innerHTML = content;
+  document.getElementById('business-modal').classList.remove('hidden');
+}
         function hideBusinessDetails() {
             document.getElementById('business-modal').classList.add('hidden');
         }
@@ -987,29 +903,33 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function saveBusiness() {
-            const businessData = {
-                id: businesses.length + 1,
-                nom: document.getElementById('a-nom').value,
-                dob: document.getElementById('a-dob').value,
-                membre: document.getElementById('a-membre').value,
-                metier: document.getElementById('a-metier').value,
-                experience: document.getElementById('a-experience').value,
-                description: document.getElementById('a-description').value,
-                adresse: document.getElementById('a-adresse').value,
-                contact: document.getElementById('a-contact').value,
-                email: document.getElementById('a-email').value,
-                image: document.getElementById('a-image').value,
-                services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value)
-            };
-            
-            businesses.push(businessData);
-            document.getElementById('adminPromotionForm').reset();
-            alert("Métier enregistré avec succès !");
-            updateBusinessList();
-            showAdminBusinessList();
-        }
+        async function saveBusiness() {
+  const businessData = {
+    nom: document.getElementById('a-nom').value,
+    dob: document.getElementById('a-dob').value || null,
+    membre: document.getElementById('a-membre').value,
+    metier: document.getElementById('a-metier').value,
+    experience: parseInt(document.getElementById('a-experience').value),
+    description: document.getElementById('a-description').value,
+    adresse: document.getElementById('a-adresse').value,
+    contact: document.getElementById('a-contact').value,
+    email: document.getElementById('a-email').value || null,
+    image: document.getElementById('a-image').value || null,
+    services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value),
+    createdAt: new Date().toISOString()
+  };
 
+  try {
+    await saveData('businesses', businessData);
+    document.getElementById('adminPromotionForm').reset();
+    alert('Métier enregistré avec succès !');
+    await loadBusinesses(); // Recharge les données pour mettre à jour l'affichage
+    showAdminBusinessList();
+  } catch (error) {
+    console.error('Erreur lors de l\'enregistrement du métier:', error);
+    alert('Erreur lors de l\'enregistrement du métier');
+  }
+}
         function saveProject() {
             const projectData = {
                 id: projects.length + 1,
@@ -1031,44 +951,84 @@
             showAdminProjectList();
         }
 
-        function editBusiness(id) {
-            const business = businesses.find(b => b.id === id);
-            if (!business) return;
-            
-            document.getElementById('a-nom').value = business.nom;
-            document.getElementById('a-dob').value = business.dob || '';
-            document.getElementById('a-membre').value = business.membre || 'non';
-            document.getElementById('a-metier').value = business.metier;
-            document.getElementById('a-experience').value = business.experience;
-            document.getElementById('a-description').value = business.description;
-            document.getElementById('a-adresse').value = business.adresse;
-            document.getElementById('a-contact').value = business.contact;
-            document.getElementById('a-email').value = business.email || '';
-            document.getElementById('a-image').value = business.image || '';
-            
-            document.querySelectorAll('input[name="a-services"]').forEach(checkbox => {
-                checkbox.checked = business.services.includes(checkbox.value);
-            });
-            
-            document.getElementById('admin-promotion-form').classList.remove('hidden-section');
-            document.getElementById('admin-promotion-form').classList.add('active');
-            document.getElementById('admin-financement-form').classList.add('hidden-section');
-            document.getElementById('admin-financement-form').classList.remove('active');
-            document.getElementById('admin-business-list').classList.add('hidden-section');
-            document.getElementById('admin-business-list').classList.remove('active');
-            document.getElementById('admin-project-list').classList.add('hidden-section');
-            document.getElementById('admin-project-list').classList.remove('active');
-            
-            document.getElementById('admin-promotion-form').scrollIntoView({ behavior: 'smooth' });
-        }
+        async function loadBusinesses() {
+  try {
+    const snapshot = await firebase.firestore().collection('businesses').get();
+    businesses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    updateBusinessList();
+    updateBusinessCards();
+  } catch (error) {
+    console.error('Erreur lors du chargement des professionnels:', error);
+    alert('Erreur lors du chargement des professionnels');
+  }
+}
+        
+        async function editBusiness(id) {
+  const business = businesses.find(b => b.id === id);
+  if (!business) return;
 
-        function deleteBusiness(id) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce professionnel ?")) {
-                businesses = businesses.filter(b => b.id !== id);
-                updateBusinessList();
-                alert("Professionnel supprimé avec succès !");
-            }
-        }
+  document.getElementById('a-nom').value = business.nom;
+  document.getElementById('a-dob').value = business.dob || '';
+  document.getElementById('a-membre').value = business.membre || 'non';
+  document.getElementById('a-metier').value = business.metier;
+  document.getElementById('a-experience').value = business.experience;
+  document.getElementById('a-description').value = business.description;
+  document.getElementById('a-adresse').value = business.adresse;
+  document.getElementById('a-contact').value = business.contact;
+  document.getElementById('a-email').value = business.email || '';
+  document.getElementById('a-image').value = business.image || '';
+
+  document.querySelectorAll('input[name="a-services"]').forEach(checkbox => {
+    checkbox.checked = business.services.includes(checkbox.value);
+  });
+
+  // Modifier la fonction saveBusiness pour gérer l'édition
+  document.getElementById('adminPromotionForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const updatedData = {
+      nom: document.getElementById('a-nom').value,
+      dob: document.getElementById('a-dob').value || null,
+      membre: document.getElementById('a-membre').value,
+      metier: document.getElementById('a-metier').value,
+      experience: parseInt(document.getElementById('a-experience').value),
+      description: document.getElementById('a-description').value,
+      adresse: document.getElementById('a-adresse').value,
+      contact: document.getElementById('a-contact').value,
+      email: document.getElementById('a-email').value || null,
+      image: document.getElementById('a-image').value || null,
+      services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value),
+      updatedAt: new Date().toISOString()
+    };
+
+    try {
+      await saveData('businesses', updatedData, id);
+      document.getElementById('adminPromotionForm').reset();
+      document.getElementById('adminPromotionForm').onsubmit = null; // Réinitialiser l'événement
+      alert('Métier mis à jour avec succès !');
+      await loadBusinesses();
+      showAdminBusinessList();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour:', error);
+      alert('Erreur lors de la mise à jour');
+    }
+  };
+
+  showAdminForm('promotion');
+}
+        
+
+        async function deleteBusiness(id) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?')) {
+    try {
+      await deleteData('businesses', id);
+      await loadBusinesses();
+      alert('Professionnel supprimé avec succès !');
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      alert('Erreur lors de la suppression');
+    }
+  }
+}
 
         function editProject(id) {
             const project = projects.find(p => p.id === id);
@@ -1130,6 +1090,33 @@
                 tableBody.appendChild(row);
             });
         }
+
+        function updateBusinessCards() {
+  const businessCards = document.getElementById('business-cards');
+  businessCards.innerHTML = businesses.map(business => `
+    <div class="business-card bg-white rounded-lg shadow-lg overflow-hidden">
+      <div class="h-48 bg-blue-500 flex items-center justify-center">
+        ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
+          `<i class="fas fa-briefcase text-white text-6xl"></i>`}
+      </div>
+      <div class="p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-2">${business.metier}</h3>
+        <p class="text-gray-600 mb-4">${business.nom}</p>
+        <div class="flex items-center text-gray-600 mb-2">
+          <i class="fas fa-calendar-alt mr-2"></i>
+          <span>${business.experience} ans d'expérience</span>
+        </div>
+        <div class="flex items-center text-gray-600 mb-4">
+          <i class="fas fa-map-marker-alt mr-2"></i>
+          <span>${business.adresse}</span>
+        </div>
+        <button onclick="showBusinessDetails('${business.id}')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+          En savoir plus
+        </button>
+      </div>
+    </div>
+  `).join('') || '<p>Aucun professionnel trouvé</p>';
+}
 
         function updateProjectList() {
             const tableBody = document.getElementById('project-table-body');
