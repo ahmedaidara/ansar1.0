@@ -283,28 +283,28 @@
 
         <!-- Success Messages -->
         <div id="success-promotion" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+  <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
                 <div class="text-green-500 text-5xl mb-4">
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
                 <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 48 à 72h.</p>
                 <button onclick="hideSuccessMessage('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
-                    OK
-                </button>
+      OK
+    </button>
             </div>
         </div>
 
         <div id="success-financement" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+  <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
                 <div class="text-green-500 text-5xl mb-4">
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
                 <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 3 à 5 jours.</p>
                 <button onclick="hideSuccessMessage('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
-                    OK
-                </button>
+      OK
+    </button>
             </div>
         </div>
 
@@ -609,6 +609,15 @@
     </div>
 
    <script>
+       // Ajoutez ceci au début de vos fonctions JavaScript
+function hideSuccessMessage(type) {
+  if (type === 'promotion') {
+    document.getElementById('success-promotion').classList.add('hidden-section');
+  } else if (type === 'financement') {
+    document.getElementById('success-financement').classList.add('hidden-section');
+  }
+  showMainInterface(); // Retour à l'interface principale
+}
     // Business data (simulating database)
     let businesses = [
         { id: '1', nom: 'Jean Dupont', metier: 'Designer Graphique', experience: 5, adresse: 'Paris, France', contact: '0123456789', email: 'jean.dupont@example.com', description: 'Spécialiste en design', services: ['site web', 'affiche'], image: null },
