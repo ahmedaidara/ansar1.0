@@ -174,20 +174,22 @@ function showPage(pageId) {
         case 'projet':
   const projetIframe = document.getElementById('projet-iframe');
   if (projetIframe) {
-    // Bloquer tout chargement automatique de l'admin
+    projetIframe.src = '';
+    projetIframe.src = 'projet.html?nocache=' + Date.now();
     projetIframe.onload = function() {
       try {
         const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
-        iframeDoc.getElementById('admin-section').style.display = 'none';
+        const adminSection = iframeDoc.getElementById('admin-section');
+        if (adminSection) {
+          adminSection.style.display = 'none';
+        }
+        iframeDoc.alert = function() {};
       } catch (e) {
         console.log("Sécurité iframe: " + e.message);
       }
     };
-    
-    // Charger l'iframe seulement si nécessaire
-    if (!projetIframe.src || projetIframe.src === '') {
-      projetIframe.src = 'projet.html';
-    }
+  } else {
+    console.error("Élément #projet-iframe introuvable");
   }
   break;
       case 'library':
