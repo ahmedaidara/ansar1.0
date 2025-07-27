@@ -171,6 +171,14 @@ function showPage(pageId) {
       case 'personal':
         updatePersonalPage();
         break;
+        case 'projet':
+  const projetIframe = document.getElementById('projet-iframe');
+  if (projetIframe) {
+    projetIframe.src = projetIframe.src; // Recharge l'iframe pour s'assurer qu'il est à jour
+  } else {
+    console.error("Iframe Projet Ansar introuvable");
+  }
+  break;
       case 'library':
         updateLibraryContent();
         break;
