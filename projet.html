@@ -2,22 +2,22 @@
 <html lang="fr">
 <head>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script>
-  // Configuration Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
-    authDomain: "ansar-69617.firebaseapp.com",
-    projectId: "ansar-69617",
-    storageBucket: "ansar-69617.firebasestorage.app",
-    messagingSenderId: "1075104578958",
-    appId: "1:1075104578958:web:b5d55c76def4d1d430b8df",
-    measurementId: "G-5XLSPLXH81"
-  };
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
+            authDomain: "ansar-69617.firebaseapp.com",
+            projectId: "ansar-69617",
+            storageBucket: "ansar-69617.firebasestorage.app",
+            messagingSenderId: "1075104578958",
+            appId: "1:1075104578958:web:b5d55c76def4d1d430b8df",
+            measurementId: "G-5XLSPLXH81"
+        };
 
-  // Initialiser Firebase
-  firebase.initializeApp(firebaseConfig);
-</script>
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ansar Projet</title>
@@ -71,19 +71,16 @@
 
             <!-- Admin Link -->
             <div class="text-center mt-12">
-                <a href="#" onclick="showAdminSection()" class="text-gray-500 hover:text-gray-700 underline">Ceci est la page réservée à l'administration</a>
+                <a href="#" onclick="showAdminSection()" class="text-gray-500 hover:text-gray-700 underline">Espace réservé aux membres</a>
             </div>
         </div>
 
         <!-- Promotion Form -->
         <div id="promotion-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
-          <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 
-                </button>
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
             <h2 class="text-2xl font-bold text-blue-700 mb-6">Promotion des Métiers (Visibilité)</h2>
-            <div class="mb-6">
-                
-            </div>
             <p class="text-gray-600 mb-6">Objectif : Mettre en avant les compétences des membres</p>
             
             <form id="promotionForm" class="space-y-4">
@@ -170,13 +167,10 @@
 
         <!-- Financement Form -->
         <div id="financement-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
-          <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 
-                </button>
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
             <h2 class="text-2xl font-bold text-green-700 mb-6">Financement d'un Projet</h2>
-            <div class="mb-6">
-                
-            </div>
             
             <form id="financementForm" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -253,17 +247,16 @@
 
         <!-- Business Section -->
         <div id="business-section" class="hidden-section">
-          <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 
-                </button>
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
             <h2 class="text-3xl font-bold text-purple-700 mb-8 text-center">Nos Professionnels</h2>
-            <div class="mb-6 text-center">
-               
-            </div>
             
-           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
-  <!-- Les cartes seront générées dynamiquement -->
-</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
+                <!-- Les cartes seront générées dynamiquement -->
+            </div>
+        </div>
+
         <!-- Business Details Modal -->
         <div id="business-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -345,30 +338,25 @@
 
         <!-- Admin Dashboard -->
         <div id="admin-dashboard" class="hidden-section">
-           <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 
-                </button>
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
             <h2 class="text-3xl font-bold text-indigo-800 mb-6">Tableau de bord Admin</h2>
-            <div class="mb-6">
-                
+            <div class="flex flex-nowrap overflow-x-auto justify-start gap-4 mb-8 px-2">
+                <button onclick="showAdminForm('promotion')" class="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
+                </button>
+                <button onclick="showAdminForm('financement')" class="flex-shrink-0 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
+                </button>
+                <button onclick="showAdminBusinessList()" class="flex-shrink-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-briefcase mr-2"></i> Gérer Business
+                </button>
+                <button onclick="showAdminProjectList()" class="flex-shrink-0 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-project-diagram mr-2"></i> Gérer Projets
+                </button>
             </div>
-        <div class="flex flex-nowrap overflow-x-auto justify-start gap-4 mb-8 px-2">
-  <button onclick="showAdminForm('promotion')" class="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-    <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
-  </button>
-  <button onclick="showAdminForm('financement')" class="flex-shrink-0 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-    <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
-  </button>
-  <button onclick="showAdminBusinessList()" class="flex-shrink-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-    <i class="fas fa-briefcase mr-2"></i> Gérer Business
-  </button>
-  <button onclick="showAdminProjectList()" class="flex-shrink-0 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-    <i class="fas fa-project-diagram mr-2"></i> Gérer Projets
-  </button>
-</div>
 
-
-            
             <!-- Admin Promotion Form -->
             <div id="admin-promotion-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
                 <h2 class="text-2xl font-bold text-blue-700 mb-6">Ajouter un Métier</h2>
@@ -553,15 +541,14 @@
                                 <td class="py-3 px-4">5 ans</td>
                                 <td class="py-3 px-4">Paris, France</td>
                                 <td class="py-3 px-4 text-center">
-                                    <button onclick="editBusiness(1)" class="text-blue-600 hover:text-blue-800 mr-3">
+                                    <button onclick="editBusiness('1')" class="text-blue-600 hover:text-blue-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button onclick="deleteBusiness(1)" class="text-red-600 hover:text-red-800">
+                                    <button onclick="deleteBusiness('1')" class="text-red-600 hover:text-red-800">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
                             </tr>
-                            
                             <!-- Sample Row 2 -->
                             <tr>
                                 <td class="py-3 px-4">Marie Martin</td>
@@ -569,15 +556,14 @@
                                 <td class="py-3 px-4">3 ans</td>
                                 <td class="py-3 px-4">Lyon, France</td>
                                 <td class="py-3 px-4 text-center">
-                                    <button onclick="editBusiness(2)" class="text-blue-600 hover:text-blue-800 mr-3">
+                                    <button onclick="editBusiness('2')" class="text-blue-600 hover:text-blue-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button onclick="deleteBusiness(2)" class="text-red-600 hover:text-red-800">
+                                    <button onclick="deleteBusiness('2')" class="text-red-600 hover:text-red-800">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
                             </tr>
-                            
                             <!-- Sample Row 3 -->
                             <tr>
                                 <td class="py-3 px-4">Sophie Lambert</td>
@@ -585,10 +571,10 @@
                                 <td class="py-3 px-4">7 ans</td>
                                 <td class="py-3 px-4">Marseille, France</td>
                                 <td class="py-3 px-4 text-center">
-                                    <button onclick="editBusiness(3)" class="text-blue-600 hover:text-blue-800 mr-3">
+                                    <button onclick="editBusiness('3')" class="text-blue-600 hover:text-blue-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button onclick="deleteBusiness(3)" class="text-red-600 hover:text-red-800">
+                                    <button onclick="deleteBusiness('3')" class="text-red-600 hover:text-red-800">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
@@ -624,61 +610,65 @@
 
     <script>
         // Business data (simulating database)
-        let businesses = [];
+        let businesses = [
+            { id: '1', nom: 'Jean Dupont', metier: 'Designer Graphique', experience: 5, adresse: 'Paris, France', contact: '0123456789', email: 'jean.dupont@example.com', description: 'Spécialiste en design', services: ['site web', 'affiche'], image: null },
+            { id: '2', nom: 'Marie Martin', metier: 'Développeur Web', experience: 3, adresse: 'Lyon, France', contact: '0987654321', email: 'marie.martin@example.com', description: 'Développement web moderne', services: ['site web', 'portfolio'], image: null },
+            { id: '3', nom: 'Sophie Lambert', metier: 'Photographe', experience: 7, adresse: 'Marseille, France', contact: '0567891234', email: 'sophie.lambert@example.com', description: 'Photographie professionnelle', services: ['portfolio'], image: null }
+        ];
 
         // Projects data
         let projects = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-  // Afficher l'interface principale
-  document.getElementById('main-interface').classList.remove('hidden-section');
-  
-  // Masquer toutes les sections
-  document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
-    el.classList.add('hidden-section');
-    if (el.classList.contains('form-container')) {
-      el.classList.remove('active');
-    }
-  });
+            // Afficher l'interface principale
+            document.getElementById('main-interface').classList.remove('hidden-section');
+            
+            // Masquer toutes les sections
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
+            });
 
-  // Charger les données des professionnels
-  loadBusinesses();
-});
+            // Charger les données des professionnels
+            loadBusinesses();
+        });
 
         // Show section function
         function showSection(section) {
-    // Masquer toutes les sections
-    document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-        el.classList.add('hidden-section');
-        if (el.classList.contains('form-container')) {
-            el.classList.remove('active');
+            // Masquer toutes les sections
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Masquer l'interface principale
+            document.getElementById('main-interface').classList.add('hidden-section');
+
+            // Afficher la section demandée
+            if (section === 'promotion') {
+                document.getElementById('promotion-form').classList.remove('hidden-section');
+                document.getElementById('promotion-form').classList.add('active');
+            } else if (section === 'financement') {
+                document.getElementById('financement-form').classList.remove('hidden-section');
+                document.getElementById('financement-form').classList.add('active');
+            } else if (section === 'business') {
+                document.getElementById('business-section').classList.remove('hidden-section');
+                updateBusinessCards();
+            }
+
+            // Faire défiler vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    });
-
-    // Masquer l'interface principale
-    document.getElementById('main-interface').classList.add('hidden-section');
-
-    // Afficher la section demandée
-    if (section === 'promotion') {
-        document.getElementById('promotion-form').classList.remove('hidden-section');
-        document.getElementById('promotion-form').classList.add('active');
-    } else if (section === 'financement') {
-        document.getElementById('financement-form').classList.remove('hidden-section');
-        document.getElementById('financement-form').classList.add('active');
-    } else if (section === 'business') {
-        document.getElementById('business-section').classList.remove('hidden-section');
-        updateBusinessCards(); // Assure que les cartes sont mises à jour
-    }
-
-    // Faire défiler vers le haut
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
         // Show main interface function
         function showMainInterface() {
             // Masquer toutes les sections
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
                 el.classList.add('hidden-section');
                 if (el.classList.contains('form-container')) {
                     el.classList.remove('active');
@@ -694,7 +684,6 @@
 
         // Submit form functions
         function submitPromotionForm() {
-            // Collect form data
             const formData = {
                 nom: document.getElementById('nom').value,
                 dob: document.getElementById('dob').value,
@@ -708,31 +697,12 @@
                 besoins: Array.from(document.querySelectorAll('input[name="besoins"]:checked')).map(el => el.value)
             };
             
-            // Create email body
-            const subject = encodeURIComponent("Nouvelle demande de promotion de métier");
-            const body = encodeURIComponent(
-                `Nom & Prénom: ${formData.nom}\n` +
-                `Date de Naissance: ${formData.dob}\n` +
-                `Membre de l'association: ${formData.membre}\n` +
-                `Métier: ${formData.metier}\n` +
-                `Années d'expérience: ${formData.experience}\n` +
-                `Description: ${formData.description}\n` +
-                `Adresse: ${formData.adresse}\n` +
-                `Contact: ${formData.contact}\n` +
-                `Email: ${formData.email}\n` +
-                `Besoins: ${formData.besoins.join(', ')}`
-            );
-            
-            // Send email (simulated)
             console.log("Form data:", formData);
             document.getElementById('success-promotion').classList.remove('hidden-section');
-            
-            // Reset form
             document.getElementById('promotionForm').reset();
         }
 
         function submitFinancementForm() {
-            // Collect form data
             const formData = {
                 nom: document.getElementById('f-nom').value,
                 dob: document.getElementById('f-dob').value,
@@ -744,75 +714,60 @@
                 besoins: Array.from(document.querySelectorAll('input[name="f-besoins"]:checked')).map(el => el.value)
             };
             
-            // Create email body
-            const subject = encodeURIComponent("Nouvelle demande de financement de projet");
-            const body = encodeURIComponent(
-                `Nom & Prénom: ${formData.nom}\n` +
-                `Date de Naissance: ${formData.dob}\n` +
-                `Membre de l'association: ${formData.membre}\n` +
-                `Titre du projet: ${formData.titre}\n` +
-                `Description: ${formData.description}\n` +
-                `Budget: ${formData.budget}\n` +
-                `Délai: ${formData.delai}\n` +
-                `Besoins: ${formData.besoins.join(', ')}`
-            );
-            
-            // Send email (simulated)
             console.log("Form data:", formData);
             document.getElementById('success-financement').classList.remove('hidden-section');
-            
-            // Reset form
             document.getElementById('financementForm').reset();
         }
 
         // Business details functions
         function showBusinessDetails(id) {
-  const business = businesses.find(b => b.id === id);
-  if (!business) return;
+            const business = businesses.find(b => b.id === id);
+            if (!business) return;
 
-  document.getElementById('modal-title').textContent = business.metier;
+            document.getElementById('modal-title').textContent = business.metier;
 
-  const content = `
-    <div class="flex flex-col md:flex-row gap-6">
-      <div class="md:w-1/3">
-        <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
-          ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
-            `<i class="fas fa-briefcase text-gray-600 text-6xl"></i>`}
-        </div>
-        <h4 class="text-xl font-bold text-gray-800">${business.nom}</h4>
-        <div class="flex items-center text-gray-600 mt-2">
-          <i class="fas fa-calendar-alt mr-2"></i>
-          <span>${business.experience} ans d'expérience</span>
-        </div>
-        <div class="flex items-center text-gray-600 mt-2">
-          <i class="fas fa-map-marker-alt mr-2"></i>
-          <span>${business.adresse}</span>
-        </div>
-        <div class="flex items-center text-gray-600 mt-2">
-          <i class="fas fa-phone mr-2"></i>
-          <span>${business.contact}</span>
-        </div>
-        <div class="flex items-center text-gray-600 mt-2">
-          <i class="fas fa-envelope mr-2"></i>
-          <span>${business.email}</span>
-        </div>
-      </div>
-      <div class="md:w-2/3">
-        <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
-        <p class="text-gray-600 mb-4">${business.description}</p>
-        <h4 class="text-lg font-bold text-gray-800 mb-2">Services proposés</h4>
-        <div class="flex flex-wrap gap-2">
-          ${business.services.map(service => `
-            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">${service}</span>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-  `;
+            const content = `
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/3">
+                        <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
+                            ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
+                              `<i class="fas fa-briefcase text-gray-600 text-6xl flex items-center justify-center h-full"></i>`}
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-800">${business.nom}</h4>
+                        <div class="flex items-center text-gray-600 mt-2">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <span>${business.experience} ans d'expérience</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mt-2">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>${business.adresse}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mt-2">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>${business.contact}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mt-2">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>${business.email}</span>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
+                        <p class="text-gray-600 mb-4">${business.description}</p>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Services proposés</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${business.services.map(service => `
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">${service}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
 
-  document.getElementById('modal-content').innerHTML = content;
-  document.getElementById('business-modal').classList.remove('hidden');
-}
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('business-modal').classList.remove('hidden');
+        }
+
         function hideBusinessDetails() {
             document.getElementById('business-modal').classList.add('hidden');
         }
@@ -828,23 +783,15 @@
 
         // Admin section functions
         function showAdminSection() {
-    // Masquer toutes les sections
-    document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
-        el.classList.add('hidden-section');
-        if (el.classList.contains('form-container')) {
-            el.classList.remove('active');
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #main-interface').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
+            });
+            document.getElementById('admin-section').classList.remove('hidden-section');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    });
-
-    // Masquer l'interface principale
-    document.getElementById('main-interface').classList.add('hidden-section');
-
-    // Afficher la section admin
-    document.getElementById('admin-section').classList.remove('hidden-section');
-
-    // Faire défiler vers le haut
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
         function hideAdminSection() {
             document.getElementById('admin-section').classList.add('hidden-section');
@@ -904,6 +851,7 @@
             });
             document.getElementById('admin-business-list').classList.remove('hidden-section');
             document.getElementById('admin-business-list').classList.add('active');
+            updateBusinessList();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -919,32 +867,35 @@
         }
 
         async function saveBusiness() {
-  const businessData = {
-    nom: document.getElementById('a-nom').value,
-    dob: document.getElementById('a-dob').value || null,
-    membre: document.getElementById('a-membre').value,
-    metier: document.getElementById('a-metier').value,
-    experience: parseInt(document.getElementById('a-experience').value),
-    description: document.getElementById('a-description').value,
-    adresse: document.getElementById('a-adresse').value,
-    contact: document.getElementById('a-contact').value,
-    email: document.getElementById('a-email').value || null,
-    image: document.getElementById('a-image').value || null,
-    services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value),
-    createdAt: new Date().toISOString()
-  };
+            const businessData = {
+                id: (businesses.length + 1).toString(),
+                nom: document.getElementById('a-nom').value,
+                dob: document.getElementById('a-dob').value || null,
+                membre: document.getElementById('a-membre').value,
+                metier: document.getElementById('a-metier').value,
+                experience: parseInt(document.getElementById('a-experience').value),
+                description: document.getElementById('a-description').value,
+                adresse: document.getElementById('a-adresse').value,
+                contact: document.getElementById('a-contact').value,
+                email: document.getElementById('a-email').value || null,
+                image: document.getElementById('a-image').value || null,
+                services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value),
+                createdAt: new Date().toISOString()
+            };
 
-  try {
-    await saveData('businesses', businessData);
-    document.getElementById('adminPromotionForm').reset();
-    alert('Métier enregistré avec succès !');
-    await loadBusinesses(); // Recharge les données pour mettre à jour l'affichage
-    showAdminBusinessList();
-  } catch (error) {
-    console.error('Erreur lors de l\'enregistrement du métier:', error);
-    alert('Erreur lors de l\'enregistrement du métier');
-  }
-}
+            try {
+                businesses.push(businessData); // Simulate Firebase save
+                document.getElementById('adminPromotionForm').reset();
+                alert('Métier enregistré avec succès !');
+                updateBusinessList();
+                updateBusinessCards();
+                showAdminBusinessList();
+            } catch (error) {
+                console.error('Erreur lors de l\'enregistrement du métier:', error);
+                alert('Erreur lors de l\'enregistrement du métier');
+            }
+        }
+
         function saveProject() {
             const projectData = {
                 id: projects.length + 1,
@@ -967,83 +918,83 @@
         }
 
         async function loadBusinesses() {
-  try {
-    const snapshot = await firebase.firestore().collection('businesses').get();
-    businesses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    updateBusinessList();
-    updateBusinessCards();
-  } catch (error) {
-    console.error('Erreur lors du chargement des professionnels:', error);
-    alert('Erreur lors du chargement des professionnels');
-  }
-}
-        
+            try {
+                // Simulate Firebase data fetch
+                updateBusinessList();
+                updateBusinessCards();
+            } catch (error) {
+                console.error('Erreur lors du chargement des professionnels:', error);
+                alert('Erreur lors du chargement des professionnels');
+            }
+        }
+
         async function editBusiness(id) {
-  const business = businesses.find(b => b.id === id);
-  if (!business) return;
+            const business = businesses.find(b => b.id === id);
+            if (!business) return;
 
-  document.getElementById('a-nom').value = business.nom;
-  document.getElementById('a-dob').value = business.dob || '';
-  document.getElementById('a-membre').value = business.membre || 'non';
-  document.getElementById('a-metier').value = business.metier;
-  document.getElementById('a-experience').value = business.experience;
-  document.getElementById('a-description').value = business.description;
-  document.getElementById('a-adresse').value = business.adresse;
-  document.getElementById('a-contact').value = business.contact;
-  document.getElementById('a-email').value = business.email || '';
-  document.getElementById('a-image').value = business.image || '';
+            document.getElementById('a-nom').value = business.nom;
+            document.getElementById('a-dob').value = business.dob || '';
+            document.getElementById('a-membre').value = business.membre || 'non';
+            document.getElementById('a-metier').value = business.metier;
+            document.getElementById('a-experience').value = business.experience;
+            document.getElementById('a-description').value = business.description;
+            document.getElementById('a-adresse').value = business.adresse;
+            document.getElementById('a-contact').value = business.contact;
+            document.getElementById('a-email').value = business.email || '';
+            document.getElementById('a-image').value = business.image || '';
 
-  document.querySelectorAll('input[name="a-services"]').forEach(checkbox => {
-    checkbox.checked = business.services.includes(checkbox.value);
-  });
+            document.querySelectorAll('input[name="a-services"]').forEach(checkbox => {
+                checkbox.checked = business.services.includes(checkbox.value);
+            });
 
-  // Modifier la fonction saveBusiness pour gérer l'édition
-  document.getElementById('adminPromotionForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const updatedData = {
-      nom: document.getElementById('a-nom').value,
-      dob: document.getElementById('a-dob').value || null,
-      membre: document.getElementById('a-membre').value,
-      metier: document.getElementById('a-metier').value,
-      experience: parseInt(document.getElementById('a-experience').value),
-      description: document.getElementById('a-description').value,
-      adresse: document.getElementById('a-adresse').value,
-      contact: document.getElementById('a-contact').value,
-      email: document.getElementById('a-email').value || null,
-      image: document.getElementById('a-image').value || null,
-      services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value),
-      updatedAt: new Date().toISOString()
-    };
+            document.getElementById('adminPromotionForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const updatedData = {
+                    id: id,
+                    nom: document.getElementById('a-nom').value,
+                    dob: document.getElementById('a-dob').value || null,
+                    membre: document.getElementById('a-membre').value,
+                    metier: document.getElementById('a-metier').value,
+                    experience: parseInt(document.getElementById('a-experience').value),
+                    description: document.getElementById('a-description').value,
+                    adresse: document.getElementById('a-adresse').value,
+                    contact: document.getElementById('a-contact').value,
+                    email: document.getElementById('a-email').value || null,
+                    image: document.getElementById('a-image').value || null,
+                    services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value),
+                    updatedAt: new Date().toISOString()
+                };
 
-    try {
-      await saveData('businesses', updatedData, id);
-      document.getElementById('adminPromotionForm').reset();
-      document.getElementById('adminPromotionForm').onsubmit = null; // Réinitialiser l'événement
-      alert('Métier mis à jour avec succès !');
-      await loadBusinesses();
-      showAdminBusinessList();
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour:', error);
-      alert('Erreur lors de la mise à jour');
-    }
-  };
+                try {
+                    businesses = businesses.map(b => b.id === id ? updatedData : b);
+                    document.getElementById('adminPromotionForm').reset();
+                    document.getElementById('adminPromotionForm').onsubmit = null;
+                    alert('Métier mis à jour avec succès !');
+                    updateBusinessList();
+                    updateBusinessCards();
+                    showAdminBusinessList();
+                } catch (error) {
+                    console.error('Erreur lors de la mise à jour:', error);
+                    alert('Erreur lors de la mise à jour');
+                }
+            };
 
-  showAdminForm('promotion');
-}
-        
+            showAdminForm('promotion');
+        }
 
         async function deleteBusiness(id) {
-  if (confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?')) {
-    try {
-      await deleteData('businesses', id);
-      await loadBusinesses();
-      alert('Professionnel supprimé avec succès !');
-    } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
-      alert('Erreur lors de la suppression');
-    }
-  }
-}
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?')) {
+                try {
+                    businesses = businesses.filter(b => b.id !== id);
+                    updateBusinessList();
+                    updateBusinessCards();
+                    alert('Professionnel supprimé avec succès !');
+                } catch (error) {
+                    console.error('Erreur lors de la suppression:', error);
+                    alert('Erreur lors de la suppression');
+                }
+            }
+        }
 
         function editProject(id) {
             const project = projects.find(p => p.id === id);
@@ -1094,10 +1045,10 @@
                     <td class="py-3 px-4">${business.experience} ans</td>
                     <td class="py-3 px-4">${business.adresse}</td>
                     <td class="py-3 px-4 text-center">
-                        <button onclick="editBusiness(${business.id})" class="text-blue-600 hover:text-blue-800 mr-3">
+                        <button onclick="editBusiness('${business.id}')" class="text-blue-600 hover:text-blue-800 mr-3">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="deleteBusiness(${business.id})" class="text-red-600 hover:text-red-800">
+                        <button onclick="deleteBusiness('${business.id}')" class="text-red-600 hover:text-red-800">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -1107,31 +1058,31 @@
         }
 
         function updateBusinessCards() {
-  const businessCards = document.getElementById('business-cards');
-  businessCards.innerHTML = businesses.map(business => `
-    <div class="business-card bg-white rounded-lg shadow-lg overflow-hidden">
-      <div class="h-48 bg-blue-500 flex items-center justify-center">
-        ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
-          `<i class="fas fa-briefcase text-white text-6xl"></i>`}
-      </div>
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-2">${business.metier}</h3>
-        <p class="text-gray-600 mb-4">${business.nom}</p>
-        <div class="flex items-center text-gray-600 mb-2">
-          <i class="fas fa-calendar-alt mr-2"></i>
-          <span>${business.experience} ans d'expérience</span>
-        </div>
-        <div class="flex items-center text-gray-600 mb-4">
-          <i class="fas fa-map-marker-alt mr-2"></i>
-          <span>${business.adresse}</span>
-        </div>
-        <button onclick="showBusinessDetails('${business.id}')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-          En savoir plus
-        </button>
-      </div>
-    </div>
-  `).join('') || '<p>Aucun professionnel trouvé</p>';
-}
+            const businessCards = document.getElementById('business-cards');
+            businessCards.innerHTML = businesses.map(business => `
+                <div class="business-card bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="h-48 bg-blue-500 flex items-center justify-center">
+                        ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
+                          `<i class="fas fa-briefcase text-white text-6xl"></i>`}
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">${business.metier}</h3>
+                        <p class="text-gray-600 mb-4">${business.nom}</p>
+                        <div class="flex items-center text-gray-600 mb-2">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <span>${business.experience} ans d'expérience</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>${business.adresse}</span>
+                        </div>
+                        <button onclick="showBusinessDetails('${business.id}')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            En savoir plus
+                        </button>
+                    </div>
+                </div>
+            `).join('') || '<p>Aucun professionnel trouvé</p>';
+        }
 
         function updateProjectList() {
             const tableBody = document.getElementById('project-table-body');
