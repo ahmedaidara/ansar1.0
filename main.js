@@ -174,14 +174,20 @@ function showPage(pageId) {
         case 'projet':
   const projetIframe = document.getElementById('projet-iframe');
   if (projetIframe) {
-    projetIframe.onload = () => console.log('Iframe Projet chargé avec succès');
-    projetIframe.onerror = () => console.error('Erreur de chargement de l\'iframe Projet');
-    if (!projetIframe.src.includes('projet.html')) {
+    // Bloquer tout chargement automatique de l'admin
+    projetIframe.onload = function() {
+      try {
+        const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
+        iframeDoc.getElementById('admin-section').style.display = 'none';
+      } catch (e) {
+        console.log("Sécurité iframe: " + e.message);
+      }
+    };
+    
+    // Charger l'iframe seulement si nécessaire
+    if (!projetIframe.src || projetIframe.src === '') {
       projetIframe.src = 'projet.html';
     }
-  } else {
-    console.error("Iframe Projet Ansar introuvable");
-    alert('Erreur : Impossible de charger la page Projet');
   }
   break;
       case 'library':
