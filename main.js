@@ -174,9 +174,14 @@ function showPage(pageId) {
         case 'projet':
   const projetIframe = document.getElementById('projet-iframe');
   if (projetIframe) {
-    projetIframe.src = projetIframe.src; // Recharge l'iframe pour s'assurer qu'il est à jour
+    projetIframe.onload = () => console.log('Iframe Projet chargé avec succès');
+    projetIframe.onerror = () => console.error('Erreur de chargement de l\'iframe Projet');
+    if (!projetIframe.src.includes('projet.html')) {
+      projetIframe.src = 'projet.html';
+    }
   } else {
     console.error("Iframe Projet Ansar introuvable");
+    alert('Erreur : Impossible de charger la page Projet');
   }
   break;
       case 'library':
