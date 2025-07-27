@@ -620,24 +620,30 @@
     let projects = [];
 
     // ================ INITIALISATION ================
-    document.addEventListener('DOMContentLoaded', function() {
-        // FORCER la section admin à être cachée au départ
-        document.getElementById('admin-section').classList.add('hidden-section');
-        
-        // Afficher uniquement l'interface principale
-        document.getElementById('main-interface').classList.remove('hidden-section');
-        
-        // Masquer toutes les autres sections
-        document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
-            el.classList.add('hidden-section');
-            if (el.classList.contains('form-container')) {
-                el.classList.remove('active');
-            }
-        });
+   // MODIFIEZ le code d'initialisation comme ceci :
+document.addEventListener('DOMContentLoaded', function() {
+  // FORCER la section admin à être cachée
+  document.getElementById('admin-section').style.display = 'none';
+  document.getElementById('admin-section').classList.add('hidden-section');
+  
+  // Afficher uniquement l'interface principale
+  document.getElementById('main-interface').style.display = 'block';
+  document.getElementById('main-interface').classList.remove('hidden-section');
+  
+  // Masquer toutes les autres sections
+  document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+    el.style.display = 'none';
+    el.classList.add('hidden-section');
+    if (el.classList.contains('form-container')) {
+      el.classList.remove('active');
+    }
+  });
 
-        // Charger les professionnels
-        loadBusinesses();
-    });
+  // Désactiver tout affichage automatique de l'admin
+  window.onload = function() {
+    document.getElementById('admin-section').style.display = 'none';
+  };
+});
 
     // ================ FONCTIONS PRINCIPALES ================
     function showSection(section) {
@@ -998,6 +1004,23 @@
   window.onload = function() {
     document.getElementById('admin-section').classList.add('hidden-section');
   };
+</script>
+    <script>
+  // Solution garantie contre l'affichage automatique
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      const adminSection = document.getElementById('admin-section');
+      if (adminSection) {
+        adminSection.style.display = 'none';
+        adminSection.classList.add('hidden-section');
+      }
+    }, 100);
+    
+    // Double vérification après chargement complet
+    window.addEventListener('load', function() {
+      document.getElementById('admin-section').style.display = 'none';
+    });
+  });
 </script>
 </body>
 </html>
