@@ -1103,5 +1103,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     </script>
+    <script>
+  // Garantir que la section admin est cachée au chargement
+  window.onload = function() {
+    document.getElementById('admin-section').classList.add('hidden-section');
+  };
+</script>
 </body>
 </html>
