@@ -171,30 +171,25 @@ function showPage(pageId) {
       case 'personal':
         updatePersonalPage();
         break;
-       case 'projet':
-    const projetIframe = document.getElementById('projet-iframe');
-    if (projetIframe) {
-        // Réinitialiser l'iframe pour éviter tout état persistant
-        projetIframe.src = '';
-        projetIframe.src = 'projet.html?nocache=' + Date.now();
-        projetIframe.onload = function() {
-            try {
-                const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
-                // Masquer la section admin
-                const adminSection = iframeDoc.getElementById('admin-section');
-                if (adminSection) {
-                    adminSection.style.display = 'none';
-                }
-                // Neutraliser les alertes dans l'iframe
-                projetIframe.contentWindow.alert = function() {};
-            } catch (e) {
-                console.log("Sécurité iframe: " + e.message);
-            }
-        };
-    } else {
-        console.error("Élément #projet-iframe introuvable");
+        case 'projet':
+  const projetIframe = document.getElementById('projet-iframe');
+  if (projetIframe) {
+    // Bloquer tout chargement automatique de l'admin
+    projetIframe.onload = function() {
+      try {
+        const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
+        iframeDoc.getElementById('admin-section').style.display = 'none';
+      } catch (e) {
+        console.log("Sécurité iframe: " + e.message);
+      }
+    };
+    
+    // Charger l'iframe seulement si nécessaire
+    if (!projetIframe.src || projetIframe.src === '') {
+      projetIframe.src = 'projet.html';
     }
-    break;
+  }
+  break;
       case 'library':
         updateLibraryContent();
         break;
@@ -3094,3 +3089,91 @@ async function importMembersBulk() {
     importBtn.textContent = 'Importer';
   }
 }
+
+// Gestion de la page Projet
+let projetBusinessData = []; // Stocke les données des professionnels
+
+function showProjetSection(section) {
+  // Masquer toutes les sections
+  document.querySelectorAll('#projet-promotion, #projet-financement, #projet-business, #projet-admin')
+    .forEach(el => el.classList.add('hidden'));
+  
+  // Afficher la section demandée
+  if (section === 'promotion') {
+    document.getElementById('projet-promotion').classList.remove('hidden');
+  } else if (section === 'financement') {
+    document.getElementById('projet-financement').classList.remove('hidden');
+  } else if (section === 'business') {
+    document.getElementById('projet-business').classList.remove('hidden');
+    loadProjetBusinessData();
+  }
+}
+
+function showProjetAdmin() {
+  document.querySelectorAll('#projet-promotion, #projet-financement, #projet-business')
+    .forEach(el => el.classList.add('hidden'));
+  document.getElementById('projet-admin').classList.remove('hidden');
+}
+
+function checkProjetAdminCode() {
+  const code = document.getElementById('projet-admin-code').value;
+  // Code admin simple (à changer pour la production)
+  if (code === "admin123") {
+    alert("Accès admin autorisé");
+    // Ici vous pourriez afficher plus d'options admin
+  } else {
+    alert("Code incorrect");
+  }
+}
+
+function submitProjetPromotion() {
+  const form = document.getElementById('projet-promotion-form');
+  const formData = {
+    name: form.querySelector('input[type="text"]').value,
+    metier: form.querySelectorAll('input[type="text"]')[1].value,
+    description: form.querySelector('textarea').value
+  };
+  
+  console.log("Données soumises (Promotion):", formData);
+  alert("Merci ! Votre demande a été envoyée.");
+  form.reset();
+  showPage('home'); // Retour à l'accueil
+}
+
+function submitProjetFinancement() {
+  const form = document.getElementById('projet-financement-form');
+  const formData = {
+    titre: form.querySelector('input[type="text"]').value,
+    budget: form.querySelector('input[type="number"]').value
+  };
+  
+  console.log("Données soumises (Financement):", formData);
+  alert("Merci ! Votre demande a été envoyée.");
+  form.reset();
+  showPage('home'); // Retour à l'accueil
+}
+
+function loadProjetBusinessData() {
+  // Données simulées (en production, charger depuis Firebase)
+  projetBusinessData = [
+    { id: 1, name: "Jean Dupont", metier: "Designer", description: "Spécialiste en design graphique" },
+    { id: 2, name: "Marie Martin", metier: "Développeur", description: "Développement web et mobile" }
+  ];
+  
+  const businessList = document.getElementById('projet-business-list');
+  businessList.innerHTML = projetBusinessData.map(business => `
+    <div class="business-card">
+      <h3>${business.metier}</h3>
+      <p><strong>${business.name}</strong></p>
+      <p>${business.description}</p>
+    </div>
+  `).join('');
+}
+
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+  // Si on est sur la page projet, afficher la section promotion par défaut
+  if (window.location.hash === '#projet') {
+    showProjetSection('promotion');
+  }
+});
