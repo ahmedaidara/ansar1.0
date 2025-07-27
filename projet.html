@@ -4,8 +4,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
-        // Neutraliser les alertes
-window.alert = function() {};
         // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
@@ -292,19 +290,6 @@ window.alert = function() {};
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
                 <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 48 à 72h.</p>
                 <button onclick="hideSuccessMessage('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
-                    OK
-                </button>
-            </div>
-        </div>
-
-        <div id="success-financement" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
-                <div class="text-green-500 text-5xl mb-4">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
-                <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 3 à 5 jours.</p>
-                <button onclick="hideSuccessMessage('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
                     OK
                 </button>
             </div>
@@ -622,33 +607,31 @@ window.alert = function() {};
         let projects = [];
 
         // Initialize
-        // Initialize
-document.addEventListener('DOMContentLoaded', function() {
-    // Neutraliser les alertes
-    window.alert = function() {};
-    
-    // Afficher l'interface principale
-    document.getElementById('main-interface').classList.remove('hidden-section');
-    
-    // Masquer toutes les sections
-    document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-        el.classList.add('hidden-section');
-        if (el.classList.contains('form-container')) {
-            el.classList.remove('active');
-        }
-    });
-    
-    // Masquer explicitement les messages de succès
-    document.getElementById('success-promotion').classList.add('hidden-section');
-    document.getElementById('success-financement').classList.add('hidden-section');
-    
-    // Charger les données des professionnels
-    loadBusinesses();
-    
-    // Log pour débogage
-    console.log('Chargement de projet.html - Vérification de success-financement');
-    console.log(document.getElementById('success-financement').classList.contains('hidden-section'));
-});
+        document.addEventListener('DOMContentLoaded', function() {
+            // Neutraliser les alertes
+            window.alert = function() {};
+            
+            // Afficher l'interface principale
+            document.getElementById('main-interface').classList.remove('hidden-section');
+            
+            // Masquer toutes les sections
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Masquer explicitement le message de succès promotion
+            document.getElementById('success-promotion').classList.add('hidden-section');
+
+            // Charger les données des professionnels
+            loadBusinesses();
+            
+            // Log pour débogage
+            console.log('Chargement de projet.html - Initialisation terminée');
+        });
+
         // Show section function
         function showSection(section) {
             document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
@@ -720,8 +703,8 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             console.log("Form data:", formData);
-            document.getElementById('success-financement').classList.remove('hidden-section');
             document.getElementById('financementForm').reset();
+            console.log("Formulaire de financement soumis avec succès");
         }
 
         // Business details functions
@@ -781,8 +764,6 @@ document.addEventListener('DOMContentLoaded', function() {
         function hideSuccessMessage(type) {
             if (type === 'promotion') {
                 document.getElementById('success-promotion').classList.add('hidden-section');
-            } else if (type === 'financement') {
-                document.getElementById('success-financement').classList.add('hidden-section');
             }
         }
 
@@ -819,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('code1').value = "";
                 document.getElementById('code2').value = "";
             } else {
-                alert("Codes incorrects. Veuillez réessayer.");
+                console.log("Codes incorrects. Veuillez réessayer.");
             }
         }
 
@@ -891,13 +872,13 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 businesses.push(businessData);
                 document.getElementById('adminPromotionForm').reset();
-                alert('Métier enregistré avec succès !');
+                console.log('Métier enregistré avec succès !');
                 updateBusinessList();
                 updateBusinessCards();
                 showAdminBusinessList();
             } catch (error) {
                 console.error('Erreur lors de l\'enregistrement du métier:', error);
-                alert('Erreur lors de l\'enregistrement du métier');
+                console.log('Erreur lors de l\'enregistrement du métier');
             }
         }
 
@@ -917,7 +898,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             projects.push(projectData);
             document.getElementById('adminFinancementForm').reset();
-            alert("Projet enregistré avec succès !");
+            console.log("Projet enregistré avec succès !");
             updateProjectList();
             showAdminProjectList();
         }
@@ -928,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateBusinessCards();
             } catch (error) {
                 console.error('Erreur lors du chargement des professionnels:', error);
-                alert('Erreur lors du chargement des professionnels');
+                console.log('Erreur lors du chargement des professionnels');
             }
         }
 
@@ -973,13 +954,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     businesses = businesses.map(b => b.id === id ? updatedData : b);
                     document.getElementById('adminPromotionForm').reset();
                     document.getElementById('adminPromotionForm').onsubmit = null;
-                    alert('Métier mis à jour avec succès !');
+                    console.log('Métier mis à jour avec succès !');
                     updateBusinessList();
                     updateBusinessCards();
                     showAdminBusinessList();
                 } catch (error) {
                     console.error('Erreur lors de la mise à jour:', error);
-                    alert('Erreur lors de la mise à jour');
+                    console.log('Erreur lors de la mise à jour');
                 }
             };
 
@@ -992,10 +973,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     businesses = businesses.filter(b => b.id !== id);
                     updateBusinessList();
                     updateBusinessCards();
-                    alert('Professionnel supprimé avec succès !');
+                    console.log('Professionnel supprimé avec succès !');
                 } catch (error) {
                     console.error('Erreur lors de la suppression:', error);
-                    alert('Erreur lors de la suppression');
+                    console.log('Erreur lors de la suppression');
                 }
             }
         }
@@ -1033,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
                 projects = projects.filter(p => p.id !== id);
                 updateProjectList();
-                alert("Projet supprimé avec succès !");
+                console.log("Projet supprimé avec succès !");
             }
         }
 
