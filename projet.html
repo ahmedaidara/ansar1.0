@@ -4,6 +4,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
+        // Neutraliser les alertes
+window.alert = function() {};
         // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
@@ -620,22 +622,33 @@
         let projects = [];
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Afficher l'interface principale
-            document.getElementById('main-interface').classList.remove('hidden-section');
-            
-            // Masquer toutes les sections
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
-
-            // Charger les données des professionnels
-            loadBusinesses();
-        });
-
+        // Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Neutraliser les alertes
+    window.alert = function() {};
+    
+    // Afficher l'interface principale
+    document.getElementById('main-interface').classList.remove('hidden-section');
+    
+    // Masquer toutes les sections
+    document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+        el.classList.add('hidden-section');
+        if (el.classList.contains('form-container')) {
+            el.classList.remove('active');
+        }
+    });
+    
+    // Masquer explicitement les messages de succès
+    document.getElementById('success-promotion').classList.add('hidden-section');
+    document.getElementById('success-financement').classList.add('hidden-section');
+    
+    // Charger les données des professionnels
+    loadBusinesses();
+    
+    // Log pour débogage
+    console.log('Chargement de projet.html - Vérification de success-financement');
+    console.log(document.getElementById('success-financement').classList.contains('hidden-section'));
+});
         // Show section function
         function showSection(section) {
             document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
