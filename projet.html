@@ -608,186 +608,76 @@
         </div>
     </div>
 
-    <script>
-        // Business data (simulating database)
-        let businesses = [
-            { id: '1', nom: 'Jean Dupont', metier: 'Designer Graphique', experience: 5, adresse: 'Paris, France', contact: '0123456789', email: 'jean.dupont@example.com', description: 'Spécialiste en design', services: ['site web', 'affiche'], image: null },
-            { id: '2', nom: 'Marie Martin', metier: 'Développeur Web', experience: 3, adresse: 'Lyon, France', contact: '0987654321', email: 'marie.martin@example.com', description: 'Développement web moderne', services: ['site web', 'portfolio'], image: null },
-            { id: '3', nom: 'Sophie Lambert', metier: 'Photographe', experience: 7, adresse: 'Marseille, France', contact: '0567891234', email: 'sophie.lambert@example.com', description: 'Photographie professionnelle', services: ['portfolio'], image: null }
-        ];
+   <script>
+    // Business data (simulating database)
+    let businesses = [
+        { id: '1', nom: 'Jean Dupont', metier: 'Designer Graphique', experience: 5, adresse: 'Paris, France', contact: '0123456789', email: 'jean.dupont@example.com', description: 'Spécialiste en design', services: ['site web', 'affiche'], image: null },
+        { id: '2', nom: 'Marie Martin', metier: 'Développeur Web', experience: 3, adresse: 'Lyon, France', contact: '0987654321', email: 'marie.martin@example.com', description: 'Développement web moderne', services: ['site web', 'portfolio'], image: null },
+        { id: '3', nom: 'Sophie Lambert', metier: 'Photographe', experience: 7, adresse: 'Marseille, France', contact: '0567891234', email: 'sophie.lambert@example.com', description: 'Photographie professionnelle', services: ['portfolio'], image: null }
+    ];
 
-        // Projects data
-        let projects = [];
+    // Projects data
+    let projects = [];
 
-        // Initialize
-        // Initialize
-document.addEventListener('DOMContentLoaded', function() {
-  // Afficher l'interface principale
-  document.getElementById('main-interface').classList.remove('hidden-section');
-  
-  // Masquer toutes les sections (y compris admin-section)
-  document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-    el.classList.add('hidden-section');
-    if (el.classList.contains('form-container')) {
-      el.classList.remove('active');
+    // ================ INITIALISATION ================
+    document.addEventListener('DOMContentLoaded', function() {
+        // FORCER la section admin à être cachée au départ
+        document.getElementById('admin-section').classList.add('hidden-section');
+        
+        // Afficher uniquement l'interface principale
+        document.getElementById('main-interface').classList.remove('hidden-section');
+        
+        // Masquer toutes les autres sections
+        document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+            el.classList.add('hidden-section');
+            if (el.classList.contains('form-container')) {
+                el.classList.remove('active');
+            }
+        });
+
+        // Charger les professionnels
+        loadBusinesses();
+    });
+
+    // ================ FONCTIONS PRINCIPALES ================
+    function showSection(section) {
+        // Cacher tout sauf la section demandée
+        document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+            el.classList.add('hidden-section');
+            if (el.classList.contains('form-container')) {
+                el.classList.remove('active');
+            }
+        });
+
+        document.getElementById('main-interface').classList.add('hidden-section');
+
+        if (section === 'promotion') {
+            document.getElementById('promotion-form').classList.remove('hidden-section');
+            document.getElementById('promotion-form').classList.add('active');
+        } else if (section === 'financement') {
+            document.getElementById('financement-form').classList.remove('hidden-section');
+            document.getElementById('financement-form').classList.add('active');
+        } else if (section === 'business') {
+            document.getElementById('business-section').classList.remove('hidden-section');
+            updateBusinessCards();
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  });
 
-  // FORCER la section admin à rester cachée
-  document.getElementById('admin-section').classList.add('hidden-section');
-  
-  // Charger les données des professionnels
-  loadBusinesses();
-});
-
-        // Show section function
-        function showSection(section) {
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
-
-            document.getElementById('main-interface').classList.add('hidden-section');
-
-            if (section === 'promotion') {
-                document.getElementById('promotion-form').classList.remove('hidden-section');
-                document.getElementById('promotion-form').classList.add('active');
-            } else if (section === 'financement') {
-                document.getElementById('financement-form').classList.remove('hidden-section');
-                document.getElementById('financement-form').classList.add('active');
-            } else if (section === 'business') {
-                document.getElementById('business-section').classList.remove('hidden-section');
-                updateBusinessCards();
+    function showAdminSection() {
+        // Cacher tout sauf la section admin
+        document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #main-interface').forEach(el => {
+            el.classList.add('hidden-section');
+            if (el.classList.contains('form-container')) {
+                el.classList.remove('active');
             }
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Show main interface function
-        function showMainInterface() {
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
-            
-            document.getElementById('main-interface').classList.remove('hidden-section');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Submit form functions
-        function submitPromotionForm() {
-            const formData = {
-                nom: document.getElementById('nom').value,
-                dob: document.getElementById('dob').value,
-                membre: document.querySelector('input[name="membre"]:checked').value,
-                metier: document.getElementById('metier').value,
-                experience: document.getElementById('experience').value,
-                description: document.getElementById('description').value,
-                adresse: document.getElementById('adresse').value,
-                contact: document.getElementById('contact').value,
-                email: document.getElementById('email').value,
-                besoins: Array.from(document.querySelectorAll('input[name="besoins"]:checked')).map(el => el.value)
-            };
-            
-            console.log("Form data:", formData);
-            document.getElementById('success-promotion').classList.remove('hidden-section');
-            document.getElementById('promotionForm').reset();
-        }
-
-        function submitFinancementForm() {
-            const formData = {
-                nom: document.getElementById('f-nom').value,
-                dob: document.getElementById('f-dob').value,
-                membre: document.querySelector('input[name="f-membre"]:checked').value,
-                titre: document.getElementById('titre-projet').value,
-                description: document.getElementById('description-projet').value,
-                budget: document.getElementById('budget').value,
-                delai: document.getElementById('delai').value,
-                besoins: Array.from(document.querySelectorAll('input[name="f-besoins"]:checked')).map(el => el.value)
-            };
-            
-            console.log("Form data:", formData);
-            document.getElementById('success-financement').classList.remove('hidden-section');
-            document.getElementById('financementForm').reset();
-        }
-
-        // Business details functions
-        function showBusinessDetails(id) {
-            const business = businesses.find(b => b.id === id);
-            if (!business) return;
-
-            document.getElementById('modal-title').textContent = business.metier;
-
-            const content = `
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="md:w-1/3">
-                        <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
-                            ${business.image ? `<img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">` : 
-                              `<i class="fas fa-briefcase text-gray-600 text-6xl flex items-center justify-center h-full"></i>`}
-                        </div>
-                        <h4 class="text-xl font-bold text-gray-800">${business.nom}</h4>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            <span>${business.experience} ans d'expérience</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
-                            <span>${business.adresse}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-phone mr-2"></i>
-                            <span>${business.contact}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600 mt-2">
-                            <i class="fas fa-envelope mr-2"></i>
-                            <span>${business.email}</span>
-                        </div>
-                    </div>
-                    <div class="md:w-2/3">
-                        <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
-                        <p class="text-gray-600 mb-4">${business.description}</p>
-                        <h4 class="text-lg font-bold text-gray-800 mb-2">Services proposés</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${business.services.map(service => `
-                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">${service}</span>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('modal-content').innerHTML = content;
-            document.getElementById('business-modal').classList.remove('hidden');
-        }
-
-        function hideBusinessDetails() {
-            document.getElementById('business-modal').classList.add('hidden');
-        }
-
-        // Success message functions
-        function hideSuccessMessage(type) {
-            if (type === 'promotion') {
-                document.getElementById('success-promotion').classList.add('hidden-section');
-            } else if (type === 'financement') {
-                document.getElementById('success-financement').classList.add('hidden-section');
-            }
-        }
-
-        // Admin section functions
-        function showAdminSection() {
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #main-interface').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
-            document.getElementById('admin-section').classList.remove('hidden-section');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        });
+        
+        // Afficher UNIQUEMENT quand on clique sur le lien
+        document.getElementById('admin-section').classList.remove('hidden-section');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
         function hideAdminSection() {
             document.getElementById('admin-section').classList.add('hidden-section');
