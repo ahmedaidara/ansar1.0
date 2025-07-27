@@ -119,19 +119,578 @@
 </section>
 
     <!-- Page projet -->
-<section id="projet" class="page" style="display: none;">
-  <div id="projet-container">
-    <iframe id="projet-iframe" 
-            src="projet.html" 
-            style="width:100%; height:100vh; border:none;" 
-            title="Projet Ansar"
-            onerror="handleIframeError()">
-    </iframe>
-    <div id="projet-error" style="display: none; color: red; text-align: center;">
-      <p>Erreur : Impossible de charger la page Projet. Vérifiez que le fichier projet.html est accessible.</p>
+<!-- Page projet -->
+<!-- Page projet -->
+<section id="projet" class="page">
+  <button onclick="showPage('home')" class="back-button">
+    <i class="fas fa-arrow-left"></i> Retour
+  </button>
+
+  <div class="projet-container">
+    <!-- Header -->
+    <header class="projet-header">
+      <h1>Ansar Projet</h1>
+      <p>Plateforme de développement professionnel</p>
+    </header>
+
+    <!-- Main Buttons -->
+    <div class="projet-buttons">
+      <button onclick="showProjetSection('promotion')" class="projet-btn bg-blue">
+        <i class="fas fa-bullhorn"></i> Promotion des Métiers
+      </button>
+      <button onclick="showProjetSection('financement')" class="projet-btn bg-green">
+        <i class="fas fa-money-bill-wave"></i> Financement
+      </button>
+      <button onclick="showProjetSection('business')" class="projet-btn bg-purple">
+        <i class="fas fa-briefcase"></i> Business
+      </button>
     </div>
-  </div>
+
+    <!-- Admin Link -->
+    <div class="text-center mt-4">
+      <a href="#" onclick="showProjetAdmin()" class="admin-link">
+        <i class="fas fa-lock"></i> Espace réservé aux membres
+      </a>
+    </div>
+
+    <!-- Promotion Form -->
+          <!-- Promotion Form -->
+        <div id="promotion-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
+            <h2 class="text-2xl font-bold text-blue-700 mb-6">Promotion des Métiers (Visibilité)</h2>
+            <p class="text-gray-600 mb-6">Objectif : Mettre en avant les compétences des membres</p>
+            
+            <form id="promotionForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="nom">Nom & Prénom</label>
+                        <input type="text" id="nom" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="dob">Date de Naissance</label>
+                        <input type="date" id="dob" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2">Êtes-vous membre de l'association ?</label>
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="membre" value="oui" class="h-5 w-5 text-blue-600" required>
+                            <span class="ml-2 text-gray-700">Oui</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="membre" value="non" class="h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Non</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="metier">Métier</label>
+                    <input type="text" id="metier" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="experience">Années d'expérience</label>
+                    <input type="number" id="experience" min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="description">Description</label>
+                    <textarea id="description" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="adresse">Emplacement (Adresse)</label>
+                    <input type="text" id="adresse" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="contact">Contact</label>
+                    <input type="tel" id="contact" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="email">Adresse Gmail <span class="text-red-500">*</span></label>
+                    <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                
+                <div class="pt-4">
+                    <label class="block text-gray-700 mb-2">J'ai besoin de :</label>
+                    <div class="flex flex-wrap gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="besoins" value="site web" class="h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Un site web</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="besoins" value="affiche" class="h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Une affiche</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="besoins" value="portfolio" class="h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Un portfolio</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-6">
+                    <button type="button" onclick="submitPromotionForm()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                        Envoyer mon dossier
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    <!-- Financement Form -->
+          <!-- Financement Form -->
+        <div id="financement-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
+            <h2 class="text-2xl font-bold text-green-700 mb-6">Financement d'un Projet</h2>
+            
+            <form id="financementForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="f-nom">Nom & Prénom</label>
+                        <input type="text" id="f-nom" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="f-dob">Date de Naissance</label>
+                        <input type="date" id="f-dob" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2">Êtes-vous membre de l'association ?</label>
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="f-membre" value="oui" class="h-5 w-5 text-green-600" required>
+                            <span class="ml-2 text-gray-700">Oui</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="f-membre" value="non" class="h-5 w-5 text-green-600">
+                            <span class="ml-2 text-gray-700">Non</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="titre-projet">Titre de votre projet <span class="text-red-500">*</span></label>
+                    <input type="text" id="titre-projet" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2" for="description-projet">Description détaillée <span class="text-red-500">*</span></label>
+                    <textarea id="description-projet" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="budget">Budget <span class="text-red-500">*</span></label>
+                        <input type="number" id="budget" min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="delai">Délai <span class="text-red-500">*</span></label>
+                        <input type="text" id="delai" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Ex: 3 mois" required>
+                    </div>
+                </div>
+                
+                <div class="pt-4">
+                    <label class="block text-gray-700 mb-2">J'ai besoin de :</label>
+                    <div class="flex flex-wrap gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="f-besoins" value="site web" class="h-5 w-5 text-green-600">
+                            <span class="ml-2 text-gray-700">Un site web</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="f-besoins" value="affiche" class="h-5 w-5 text-green-600">
+                            <span class="ml-2 text-gray-700">Une affiche</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="f-besoins" value="portfolio" class="h-5 w-5 text-green-600">
+                            <span class="ml-2 text-gray-700">Un portfolio</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-6">
+                    <button type="button" onclick="submitFinancementForm()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                        Envoyer mon dossier
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Business Section -->
+        <div id="business-section" class="hidden-section">
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
+            <h2 class="text-3xl font-bold text-purple-700 mb-8 text-center">Nos Professionnels</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
+                <!-- Les cartes seront générées dynamiquement -->
+            </div>
+        </div>
+
+        <!-- Business Details Modal -->
+        <div id="business-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 id="modal-title" class="text-2xl font-bold text-gray-800"></h3>
+                        <button onclick="hideBusinessDetails()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="modal-content" class="space-y-4">
+                        <!-- Content will be loaded here -->
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="hideBusinessDetails()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Messages -->
+        <div id="success-promotion" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+                <div class="text-green-500 text-5xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
+                <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 48 à 72h.</p>
+                <button onclick="hideSuccessMessage('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+                    OK
+                </button>
+            </div>
+        </div>
+
+        <div id="success-financement" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+                <div class="text-green-500 text-5xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
+                <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 3 à 5 jours.</p>
+                <button onclick="hideSuccessMessage('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+                    OK
+                </button>
+            </div>
+        </div>
+
+    <!-- Admin Section -->
+       <!-- Admin Section -->
+        <div id="admin-section" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">ESPACE RÉSERVÉ À L'ADMINISTRATION</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="code1">Code secret 1</label>
+                        <input type="password" id="code1" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="code2">Code secret 2</label>
+                        <input type="password" id="code2" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    
+                    <div class="pt-4 flex justify-between">
+                        <button onclick="hideAdminSection()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            Annuler
+                        </button>
+                        <button onclick="verifyAdminCodes()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            Valider
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="hidden-section">
+            <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </button>
+            <h2 class="text-3xl font-bold text-indigo-800 mb-6">Tableau de bord Admin</h2>
+            <div class="flex flex-nowrap overflow-x-auto justify-start gap-4 mb-8 px-2">
+                <button onclick="showAdminForm('promotion')" class="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
+                </button>
+                <button onclick="showAdminForm('financement')" class="flex-shrink-0 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
+                </button>
+                <button onclick="showAdminBusinessList()" class="flex-shrink-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-briefcase mr-2"></i> Gérer Business
+                </button>
+                <button onclick="showAdminProjectList()" class="flex-shrink-0 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-project-diagram mr-2"></i> Gérer Projets
+                </button>
+            </div>
+
+            <!-- Admin Promotion Form -->
+            <div id="admin-promotion-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
+                <h2 class="text-2xl font-bold text-blue-700 mb-6">Ajouter un Métier</h2>
+                
+                <form id="adminPromotionForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="a-nom">Nom & Prénom</label>
+                            <input type="text" id="a-nom" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="a-dob">Date de Naissance</label>
+                            <input type="date" id="a-dob" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-membre">Membre de l'association</label>
+                        <select id="a-membre" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="oui">Oui</option>
+                            <option value="non">Non</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-metier">Métier</label>
+                        <input type="text" id="a-metier" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-experience">Années d'expérience</label>
+                        <input type="number" id="a-experience" min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-description">Description</label>
+                        <textarea id="a-description" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-adresse">Emplacement (Adresse)</label>
+                        <input type="text" id="a-adresse" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-contact">Contact</label>
+                        <input type="tel" id="a-contact" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-email">Adresse Email</label>
+                        <input type="email" id="a-email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="a-image">Lien de l'image (PostImages ou autre)</label>
+                        <input type="url" id="a-image" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://postimages.org/example.jpg">
+                    </div>
+                    
+                    <div class="pt-4">
+                        <label class="block text-gray-700 mb-2">Services proposés</label>
+                        <div class="flex flex-wrap gap-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="a-services" value="site web" class="h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">Site web</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="a-services" value="affiche" class="h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">Affiche</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="a-services" value="portfolio" class="h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">Portfolio</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-6">
+                        <button type="button" onclick="saveBusiness()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Admin Financement Form -->
+            <div id="admin-financement-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
+                <h2 class="text-2xl font-bold text-green-700 mb-6">Ajouter un Projet</h2>
+                
+                <form id="adminFinancementForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="af-nom">Nom & Prénom</label>
+                            <input type="text" id="af-nom" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="af-dob">Date de Naissance</label>
+                            <input type="date" id="af-dob" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="af-membre">Membre de l'association</label>
+                        <select id="af-membre" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="oui">Oui</option>
+                            <option value="non">Non</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="af-titre">Titre du projet</label>
+                        <input type="text" id="af-titre" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="af-description">Description</label>
+                        <textarea id="af-description" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="af-budget">Budget</label>
+                            <input type="number" id="af-budget" min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="af-delai">Délai</label>
+                            <input type="text" id="af-delai" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Ex: 3 mois" required>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="af-image">Lien de l'image (PostImages ou autre)</label>
+                        <input type="url" id="af-image" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="https://postimages.org/example.jpg">
+                    </div>
+                    
+                    <div class="pt-4">
+                        <label class="block text-gray-700 mb-2">Besoins</label>
+                        <div class="flex flex-wrap gap-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="af-besoins" value="site web" class="h-5 w-5 text-green-600">
+                                <span class="ml-2 text-gray-700">Site web</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="af-besoins" value="affiche" class="h-5 w-5 text-green-600">
+                                <span class="ml-2 text-gray-700">Affiche</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="af-besoins" value="portfolio" class="h-5 w-5 text-green-600">
+                                <span class="ml-2 text-gray-700">Portfolio</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-6">
+                        <button type="button" onclick="saveProject()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Admin Business List -->
+            <div id="admin-business-list" class="form-container hidden-section">
+                <h2 class="text-2xl font-bold text-purple-700 mb-6">Gérer les Professionnels</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                        <thead class="bg-purple-600 text-white">
+                            <tr>
+                                <th class="py-3 px-4 text-left">Nom</th>
+                                <th class="py-3 px-4 text-left">Métier</th>
+                                <th class="py-3 px-4 text-left">Expérience</th>
+                                <th class="py-3 px-4 text-left">Localisation</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="business-table-body">
+                            <!-- Sample Row 1 -->
+                            <tr>
+                                <td class="py-3 px-4">Jean Dupont</td>
+                                <td class="py-3 px-4">Designer Graphique</td>
+                                <td class="py-3 px-4">5 ans</td>
+                                <td class="py-3 px-4">Paris, France</td>
+                                <td class="py-3 px-4 text-center">
+                                    <button onclick="editBusiness('1')" class="text-blue-600 hover:text-blue-800 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteBusiness('1')" class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Sample Row 2 -->
+                            <tr>
+                                <td class="py-3 px-4">Marie Martin</td>
+                                <td class="py-3 px-4">Développeur Web</td>
+                                <td class="py-3 px-4">3 ans</td>
+                                <td class="py-3 px-4">Lyon, France</td>
+                                <td class="py-3 px-4 text-center">
+                                    <button onclick="editBusiness('2')" class="text-blue-600 hover:text-blue-800 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteBusiness('2')" class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Sample Row 3 -->
+                            <tr>
+                                <td class="py-3 px-4">Sophie Lambert</td>
+                                <td class="py-3 px-4">Photographe</td>
+                                <td class="py-3 px-4">7 ans</td>
+                                <td class="py-3 px-4">Marseille, France</td>
+                                <td class="py-3 px-4 text-center">
+                                    <button onclick="editBusiness('3')" class="text-blue-600 hover:text-blue-800 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteBusiness('3')" class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Project List -->
+            <div id="admin-project-list" class="form-container hidden-section">
+                <h2 class="text-2xl font-bold text-teal-700 mb-6">Gérer les Projets</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                        <thead class="bg-teal-600 text-white">
+                            <tr>
+                                <th class="py-3 px-4 text-left">Nom</th>
+                                <th class="py-3 px-4 text-left">Titre du projet</th>
+                                <th class="py-3 px-4 text-left">Budget</th>
+                                <th class="py-3 px-4 text-left">Délai</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="project-table-body">
+                            <!-- Projects will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>
+    
 <script>
 function handleIframeError() {
   console.error('Erreur de chargement de l\'iframe Projet');
