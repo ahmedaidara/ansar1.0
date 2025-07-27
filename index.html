@@ -119,15 +119,27 @@
 </section>
 
     <!-- Page projet -->
-<section id="projet" class="page">
-  <iframe src="projet.html" 
-          style="width:100%; height:100vh; border:none;" 
-          title="Projet Ansar"
-          id="projet-iframe">
-    <p>Erreur : Impossible de charger le projet. Vérifiez votre connexion ou contactez l'administrateur.</p>
-  </iframe>
+<section id="projet" class="page" style="display: none;">
+  <div id="projet-container">
+    <iframe id="projet-iframe" 
+            src="projet.html" 
+            style="width:100%; height:100vh; border:none;" 
+            title="Projet Ansar"
+            onerror="handleIframeError()">
+    </iframe>
+    <div id="projet-error" style="display: none; color: red; text-align: center;">
+      <p>Erreur : Impossible de charger la page Projet. Vérifiez que le fichier projet.html est accessible.</p>
+    </div>
+  </div>
 </section>
-
+<script>
+function handleIframeError() {
+  console.error('Erreur de chargement de l\'iframe Projet');
+  document.getElementById('projet-error').style.display = 'block';
+  document.getElementById('projet-iframe').style.display = 'none';
+}
+</script>
+    
 
  <!-- Page Bibliothèque -->
 <section id="library" class="page">
