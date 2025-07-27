@@ -55,7 +55,7 @@
         </header>
 
         <!-- Main Interface -->
-        <div id="main-interface" class="hidden-section">
+        <div id="main-interface">
             <!-- Main Buttons -->
             <div class="flex flex-col md:flex-row justify-center gap-6 mb-12">
                 <button onclick="showSection('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
@@ -638,7 +638,6 @@
 
         // Show section function
         function showSection(section) {
-            // Masquer toutes les sections
             document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
                 el.classList.add('hidden-section');
                 if (el.classList.contains('form-container')) {
@@ -646,10 +645,8 @@
                 }
             });
 
-            // Masquer l'interface principale
             document.getElementById('main-interface').classList.add('hidden-section');
 
-            // Afficher la section demandée
             if (section === 'promotion') {
                 document.getElementById('promotion-form').classList.remove('hidden-section');
                 document.getElementById('promotion-form').classList.add('active');
@@ -661,13 +658,11 @@
                 updateBusinessCards();
             }
 
-            // Faire défiler vers le haut
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Show main interface function
         function showMainInterface() {
-            // Masquer toutes les sections
             document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
                 el.classList.add('hidden-section');
                 if (el.classList.contains('form-container')) {
@@ -675,10 +670,7 @@
                 }
             });
             
-            // Afficher l'interface principale
             document.getElementById('main-interface').classList.remove('hidden-section');
-            
-            // Faire défiler vers le haut
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -884,7 +876,7 @@
             };
 
             try {
-                businesses.push(businessData); // Simulate Firebase save
+                businesses.push(businessData);
                 document.getElementById('adminPromotionForm').reset();
                 alert('Métier enregistré avec succès !');
                 updateBusinessList();
@@ -919,7 +911,6 @@
 
         async function loadBusinesses() {
             try {
-                // Simulate Firebase data fetch
                 updateBusinessList();
                 updateBusinessCards();
             } catch (error) {
