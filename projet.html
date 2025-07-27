@@ -71,8 +71,8 @@
 
             <!-- Admin Link -->
             <div class="text-center mt-12">
-                <a href="#" onclick="showAdminSection()" class="text-gray-500 hover:text-gray-700 underline">Espace réservé aux membres</a>
-            </div>
+  <a href="#" onclick="showAdminSection()" class="text-gray-500 hover:text-gray-700 underline">Espace réservé aux membres</a>
+</div>
         </div>
 
         <!-- Promotion Form -->
@@ -620,21 +620,25 @@
         let projects = [];
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Afficher l'interface principale
-            document.getElementById('main-interface').classList.remove('hidden-section');
-            
-            // Masquer toutes les sections
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
+        // Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  // Afficher l'interface principale
+  document.getElementById('main-interface').classList.remove('hidden-section');
+  
+  // Masquer toutes les sections (y compris admin-section)
+  document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+    el.classList.add('hidden-section');
+    if (el.classList.contains('form-container')) {
+      el.classList.remove('active');
+    }
+  });
 
-            // Charger les données des professionnels
-            loadBusinesses();
-        });
+  // FORCER la section admin à rester cachée
+  document.getElementById('admin-section').classList.add('hidden-section');
+  
+  // Charger les données des professionnels
+  loadBusinesses();
+});
 
         // Show section function
         function showSection(section) {
