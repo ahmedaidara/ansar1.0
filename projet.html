@@ -648,31 +648,32 @@
 
         // Show section function
         function showSection(section) {
-            // Masquer l'interface principale
-            document.getElementById('main-interface').classList.add('hidden-section');
-            
-            // Masquer toutes les sections
-            document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
-                el.classList.add('hidden-section');
-                if (el.classList.contains('form-container')) {
-                    el.classList.remove('active');
-                }
-            });
-            
-            // Afficher la section demandée
-            if (section === 'promotion') {
-                document.getElementById('promotion-form').classList.remove('hidden-section');
-                document.getElementById('promotion-form').classList.add('active');
-            } else if (section === 'financement') {
-                document.getElementById('financement-form').classList.remove('hidden-section');
-                document.getElementById('financement-form').classList.add('active');
-            } else if (section === 'business') {
-                document.getElementById('business-section').classList.remove('hidden-section');
-            }
-            
-            // Faire défiler vers le haut
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Masquer toutes les sections
+    document.querySelectorAll('.form-container, #business-section, #admin-dashboard, #admin-section').forEach(el => {
+        el.classList.add('hidden-section');
+        if (el.classList.contains('form-container')) {
+            el.classList.remove('active');
         }
+    });
+
+    // Masquer l'interface principale
+    document.getElementById('main-interface').classList.add('hidden-section');
+
+    // Afficher la section demandée
+    if (section === 'promotion') {
+        document.getElementById('promotion-form').classList.remove('hidden-section');
+        document.getElementById('promotion-form').classList.add('active');
+    } else if (section === 'financement') {
+        document.getElementById('financement-form').classList.remove('hidden-section');
+        document.getElementById('financement-form').classList.add('active');
+    } else if (section === 'business') {
+        document.getElementById('business-section').classList.remove('hidden-section');
+        updateBusinessCards(); // Assure que les cartes sont mises à jour
+    }
+
+    // Faire défiler vers le haut
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
         // Show main interface function
         function showMainInterface() {
@@ -827,9 +828,23 @@
 
         // Admin section functions
         function showAdminSection() {
-            document.getElementById('main-interface').classList.add('hidden-section');
-            document.getElementById('admin-section').classList.remove('hidden-section');
+    // Masquer toutes les sections
+    document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+        el.classList.add('hidden-section');
+        if (el.classList.contains('form-container')) {
+            el.classList.remove('active');
         }
+    });
+
+    // Masquer l'interface principale
+    document.getElementById('main-interface').classList.add('hidden-section');
+
+    // Afficher la section admin
+    document.getElementById('admin-section').classList.remove('hidden-section');
+
+    // Faire défiler vers le haut
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
         function hideAdminSection() {
             document.getElementById('admin-section').classList.add('hidden-section');
