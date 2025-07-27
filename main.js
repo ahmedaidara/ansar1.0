@@ -172,26 +172,34 @@ function showPage(pageId) {
         updatePersonalPage();
         break;
         case 'projet':
-  const projetIframe = document.getElementById('projet-iframe');
-  if (projetIframe) {
-    projetIframe.src = '';
-    projetIframe.src = 'projet.html?nocache=' + Date.now();
-    projetIframe.onload = function() {
-      try {
-        const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
-        const adminSection = iframeDoc.getElementById('admin-section');
-        if (adminSection) {
-          adminSection.style.display = 'none';
-        }
-        iframeDoc.alert = function() {};
-      } catch (e) {
-        console.log("Sécurité iframe: " + e.message);
-      }
-    };
-  } else {
-    console.error("Élément #projet-iframe introuvable");
-  }
-  break;
+    const projetIframe = document.getElementById('projet-iframe');
+    if (projetIframe) {
+        // Réinitialiser l'iframe pour éviter tout état persistant
+        projetIframe.src = '';
+        projetIframe.src = 'projet.html?nocache=' + Date.now();
+        projetIframe.onload = function() {
+            try {
+                const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
+                // Masquer la section admin
+                const adminSection = iframeDoc.getElementById('admin-section');
+                if (adminSection) {
+                    adminSection.style.display = 'none';
+                }
+                // Masquer explicitement le message de succès financement
+                const successFinancement = iframeDoc.getElementById('success-financement');
+                if (successFinancement) {
+                    successFinancement.classList.add('hidden-section');
+                }
+                // Neutraliser les alertes dans l'iframe
+                projetIframe.contentWindow.alert = function() {};
+            } catch (e) {
+                console.log("Sécurité iframe: " + e.message);
+            }
+        };
+    } else {
+        console.error("Élément #projet-iframe introuvable");
+    }
+    break;
       case 'library':
         updateLibraryContent();
         break;
