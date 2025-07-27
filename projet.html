@@ -17,10 +17,7 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-        .form-
-      
-      
-   {
+        .form-container {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-out;
@@ -40,22 +37,36 @@
             <p class="text-gray-600">Plateforme de développement professionnel</p>
         </header>
 
-        <!-- Main Buttons -->
-        <div class="flex flex-col md:flex-row justify-center gap-6 mb-12">
-            <button onclick="showForm('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                <i class="fas fa-bullhorn mr-2"></i> Promotion des Métiers
-            </button>
-            <button onclick="showForm('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                <i class="fas fa-money-bill-wave mr-2"></i> Financement d'un Projet
-            </button>
-            <button onclick="showBusinessSection()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                <i class="fas fa-briefcase mr-2"></i> Business
-            </button>
+        <!-- Main Interface -->
+        <div id="main-interface" class="hidden-section">
+            <!-- Main Buttons -->
+            <div class="flex flex-col md:flex-row justify-center gap-6 mb-12">
+                <button onclick="showSection('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-bullhorn mr-2"></i> Promotion des Métiers
+                </button>
+                <button onclick="showSection('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-money-bill-wave mr-2"></i> Financement d'un Projet
+                </button>
+                <button onclick="showSection('business')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-briefcase mr-2"></i> Business
+                </button>
+            </div>
+
+            <!-- Admin Link -->
+            <div class="text-center mt-12">
+                <a href="#" onclick="showAdminSection()" class="text-gray-500 hover:text-gray-700 underline">Ceci est la page réservée à l'administration</a>
+            </div>
         </div>
 
         <!-- Promotion Form -->
-        <div id="promotion-form" class="form-container bg-white rounded-lg shadow-xl p-6 mb-8">
+        <div id="promotion-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
+          <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> 
+                </button>
             <h2 class="text-2xl font-bold text-blue-700 mb-6">Promotion des Métiers (Visibilité)</h2>
+            <div class="mb-6">
+                
+            </div>
             <p class="text-gray-600 mb-6">Objectif : Mettre en avant les compétences des membres</p>
             
             <form id="promotionForm" class="space-y-4">
@@ -141,8 +152,14 @@
         </div>
 
         <!-- Financement Form -->
-        <div id="financement-form" class="form-container bg-white rounded-lg shadow-xl p-6 mb-8">
+        <div id="financement-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
+          <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> 
+                </button>
             <h2 class="text-2xl font-bold text-green-700 mb-6">Financement d'un Projet</h2>
+            <div class="mb-6">
+                
+            </div>
             
             <form id="financementForm" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -219,7 +236,13 @@
 
         <!-- Business Section -->
         <div id="business-section" class="hidden-section">
+          <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> 
+                </button>
             <h2 class="text-3xl font-bold text-purple-700 mb-8 text-center">Nos Professionnels</h2>
+            <div class="mb-6 text-center">
+               
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
                 <!-- Sample Business Card 1 -->
@@ -341,11 +364,6 @@
             </div>
         </div>
 
-        <!-- Admin Link -->
-        <div class="text-center mt-12">
-            <a href="#" onclick="showAdminSection()" class="text-gray-500 hover:text-gray-700 underline">Ceci est la page réservée à l'administration</a>
-        </div>
-
         <!-- Admin Section -->
         <div id="admin-section" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
@@ -376,30 +394,32 @@
 
         <!-- Admin Dashboard -->
         <div id="admin-dashboard" class="hidden-section">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-indigo-800">Tableau de bord Admin</h2>
-                <button onclick="logoutAdmin()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+           <button onclick="showMainInterface()" class=" text-red font-bold py-2 px-4 transition duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> 
                 </button>
+            <h2 class="text-3xl font-bold text-indigo-800 mb-6">Tableau de bord Admin</h2>
+            <div class="mb-6">
+                
             </div>
-            
-            <div class="flex flex-col md:flex-row justify-center gap-6 mb-8">
-                <button onclick="showAdminForm('promotion')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-                    <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
-                </button>
-                <button onclick="showAdminForm('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-                    <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
-                </button>
-                <button onclick="showAdminBusinessList()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-                    <i class="fas fa-briefcase mr-2"></i> Gérer Business
-                </button>
-                <button onclick="logoutAdmin()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
-                    <i class="fas fa-sign-out-alt mr-2"></i> Quitter Admin
-                </button>
-            </div>
+        <div class="flex flex-nowrap overflow-x-auto justify-start gap-4 mb-8 px-2">
+  <button onclick="showAdminForm('promotion')" class="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+    <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
+  </button>
+  <button onclick="showAdminForm('financement')" class="flex-shrink-0 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+    <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
+  </button>
+  <button onclick="showAdminBusinessList()" class="flex-shrink-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+    <i class="fas fa-briefcase mr-2"></i> Gérer Business
+  </button>
+  <button onclick="showAdminProjectList()" class="flex-shrink-0 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-300">
+    <i class="fas fa-project-diagram mr-2"></i> Gérer Projets
+  </button>
+</div>
+
+
             
             <!-- Admin Promotion Form -->
-            <div id="admin-promotion-form" class="form-container bg-white rounded-lg shadow-xl p-6 mb-8">
+            <div id="admin-promotion-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
                 <h2 class="text-2xl font-bold text-blue-700 mb-6">Ajouter un Métier</h2>
                 
                 <form id="adminPromotionForm" class="space-y-4">
@@ -484,7 +504,7 @@
             </div>
             
             <!-- Admin Financement Form -->
-            <div id="admin-financement-form" class="form-container bg-white rounded-lg shadow-xl p-6 mb-8">
+            <div id="admin-financement-form" class="form-container hidden-section bg-white rounded-lg shadow-xl p-6 mb-8">
                 <h2 class="text-2xl font-bold text-green-700 mb-6">Ajouter un Projet</h2>
                 
                 <form id="adminFinancementForm" class="space-y-4">
@@ -560,7 +580,7 @@
             </div>
             
             <!-- Admin Business List -->
-            <div id="admin-business-list" class="form-container">
+            <div id="admin-business-list" class="form-container hidden-section">
                 <h2 class="text-2xl font-bold text-purple-700 mb-6">Gérer les Professionnels</h2>
                 
                 <div class="overflow-x-auto">
@@ -626,6 +646,28 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Admin Project List -->
+            <div id="admin-project-list" class="form-container hidden-section">
+                <h2 class="text-2xl font-bold text-teal-700 mb-6">Gérer les Projets</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                        <thead class="bg-teal-600 text-white">
+                            <tr>
+                                <th class="py-3 px-4 text-left">Nom</th>
+                                <th class="py-3 px-4 text-left">Titre du projet</th>
+                                <th class="py-3 px-4 text-left">Budget</th>
+                                <th class="py-3 px-4 text-left">Délai</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="project-table-body">
+                            <!-- Projects will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -673,32 +715,63 @@
         // Projects data
         let projects = [];
 
-        // Show form functions
-        function showForm(formType) {
-            // Hide all forms first
-            document.querySelectorAll('.form-container').forEach(form => {
-                form.classList.remove('active');
-            });
-            document.getElementById('business-section').classList.add('hidden-section');
-            document.getElementById('admin-dashboard').classList.add('hidden-section');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Afficher l'interface principale
+            document.getElementById('main-interface').classList.remove('hidden-section');
             
-            // Show selected form
-            if (formType === 'promotion') {
+            // Masquer toutes les sections
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
+            });
+        });
+
+        // Show section function
+        function showSection(section) {
+            // Masquer l'interface principale
+            document.getElementById('main-interface').classList.add('hidden-section');
+            
+            // Masquer toutes les sections
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
+            });
+            
+            // Afficher la section demandée
+            if (section === 'promotion') {
+                document.getElementById('promotion-form').classList.remove('hidden-section');
                 document.getElementById('promotion-form').classList.add('active');
-            } else if (formType === 'financement') {
+            } else if (section === 'financement') {
+                document.getElementById('financement-form').classList.remove('hidden-section');
                 document.getElementById('financement-form').classList.add('active');
+            } else if (section === 'business') {
+                document.getElementById('business-section').classList.remove('hidden-section');
             }
+            
+            // Faire défiler vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showBusinessSection() {
-            // Hide all forms
-            document.querySelectorAll('.form-container').forEach(form => {
-                form.classList.remove('active');
+        // Show main interface function
+        function showMainInterface() {
+            // Masquer toutes les sections
+            document.querySelectorAll('.form-container, #business-section, #admin-dashboard').forEach(el => {
+                el.classList.add('hidden-section');
+                if (el.classList.contains('form-container')) {
+                    el.classList.remove('active');
+                }
             });
-            document.getElementById('admin-dashboard').classList.add('hidden-section');
             
-            // Show business section
-            document.getElementById('business-section').classList.remove('hidden-section');
+            // Afficher l'interface principale
+            document.getElementById('main-interface').classList.remove('hidden-section');
+            
+            // Faire défiler vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Submit form functions
@@ -734,8 +807,6 @@
             
             // Send email (simulated)
             console.log("Form data:", formData);
-            // In a real implementation, you would use a server-side script or email service
-            // For demo purposes, we'll just show the success message
             document.getElementById('success-promotion').classList.remove('hidden-section');
             
             // Reset form
@@ -770,8 +841,6 @@
             
             // Send email (simulated)
             console.log("Form data:", formData);
-            // In a real implementation, you would use a server-side script or email service
-            // For demo purposes, we'll just show the success message
             document.getElementById('success-financement').classList.remove('hidden-section');
             
             // Reset form
@@ -842,11 +911,13 @@
 
         // Admin section functions
         function showAdminSection() {
+            document.getElementById('main-interface').classList.add('hidden-section');
             document.getElementById('admin-section').classList.remove('hidden-section');
         }
 
         function hideAdminSection() {
             document.getElementById('admin-section').classList.add('hidden-section');
+            document.getElementById('main-interface').classList.remove('hidden-section');
         }
 
         function verifyAdminCodes() {
@@ -854,19 +925,14 @@
             const code2 = document.getElementById('code2').value;
             
             if (code1 === "ZJD5@6ZDT87263#M" && code2 === "785#SC96PL@364GN") {
-                // Hide admin login and main content
                 document.getElementById('admin-section').classList.add('hidden-section');
-                
-                // Show admin dashboard
                 document.getElementById('admin-dashboard').classList.remove('hidden-section');
-                
-                // Hide other sections
-                document.querySelectorAll('.form-container').forEach(form => {
-                    form.classList.remove('active');
+                document.querySelectorAll('.form-container, #business-section').forEach(el => {
+                    el.classList.add('hidden-section');
+                    if (el.classList.contains('form-container')) {
+                        el.classList.remove('active');
+                    }
                 });
-                document.getElementById('business-section').classList.add('hidden-section');
-                
-                // Reset codes
                 document.getElementById('code1').value = "";
                 document.getElementById('code2').value = "";
             } else {
@@ -875,53 +941,55 @@
         }
 
         function logoutAdmin() {
-            // Hide admin dashboard
-            document.getElementById('admin-dashboard').classList.add('hidden-section');
-            
-            // Reset forms
-            document.querySelectorAll('.form-container').forEach(form => {
-                form.classList.remove('active');
-            });
-            
-            // Show main interface
-            document.getElementById('business-section').classList.add('hidden-section');
-            document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
-            
-            // Clear any admin forms
+            showMainInterface();
             document.getElementById('adminPromotionForm').reset();
             document.getElementById('adminFinancementForm').reset();
+            document.querySelectorAll('#admin-dashboard .form-container').forEach(form => {
+                form.classList.add('hidden-section');
+                form.classList.remove('active');
+            });
         }
 
         // Admin form functions
         function showAdminForm(formType) {
-            // Hide all admin forms first
             document.querySelectorAll('#admin-dashboard .form-container').forEach(form => {
+                form.classList.add('hidden-section');
                 form.classList.remove('active');
             });
-            document.getElementById('admin-business-list').classList.remove('active');
-            
-            // Show selected form
             if (formType === 'promotion') {
+                document.getElementById('admin-promotion-form').classList.remove('hidden-section');
                 document.getElementById('admin-promotion-form').classList.add('active');
             } else if (formType === 'financement') {
+                document.getElementById('admin-financement-form').classList.remove('hidden-section');
                 document.getElementById('admin-financement-form').classList.add('active');
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function showAdminBusinessList() {
-            // Hide all admin forms
             document.querySelectorAll('#admin-dashboard .form-container').forEach(form => {
+                form.classList.add('hidden-section');
                 form.classList.remove('active');
             });
-            
-            // Show business list
+            document.getElementById('admin-business-list').classList.remove('hidden-section');
             document.getElementById('admin-business-list').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showAdminProjectList() {
+            document.querySelectorAll('#admin-dashboard .form-container').forEach(form => {
+                form.classList.add('hidden-section');
+                form.classList.remove('active');
+            });
+            document.getElementById('admin-project-list').classList.remove('hidden-section');
+            document.getElementById('admin-project-list').classList.add('active');
+            updateProjectList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function saveBusiness() {
-            // Collect form data
             const businessData = {
-                id: businesses.length + 1, // In a real app, you'd generate a unique ID
+                id: businesses.length + 1,
                 nom: document.getElementById('a-nom').value,
                 dob: document.getElementById('a-dob').value,
                 membre: document.getElementById('a-membre').value,
@@ -935,23 +1003,16 @@
                 services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(el => el.value)
             };
             
-            // Add to businesses array (simulating database)
             businesses.push(businessData);
-            
-            // Reset form
             document.getElementById('adminPromotionForm').reset();
-            
-            // Show success message
             alert("Métier enregistré avec succès !");
-            
-            // Update business list
             updateBusinessList();
+            showAdminBusinessList();
         }
 
         function saveProject() {
-            // Collect form data
             const projectData = {
-                id: projects.length + 1, // In a real app, you'd generate a unique ID
+                id: projects.length + 1,
                 nom: document.getElementById('af-nom').value,
                 dob: document.getElementById('af-dob').value,
                 membre: document.getElementById('af-membre').value,
@@ -963,21 +1024,17 @@
                 besoins: Array.from(document.querySelectorAll('input[name="af-besoins"]:checked')).map(el => el.value)
             };
             
-            // Add to projects array (simulating database)
             projects.push(projectData);
-            
-            // Reset form
             document.getElementById('adminFinancementForm').reset();
-            
-            // Show success message
             alert("Projet enregistré avec succès !");
+            updateProjectList();
+            showAdminProjectList();
         }
 
         function editBusiness(id) {
             const business = businesses.find(b => b.id === id);
             if (!business) return;
             
-            // Fill the form with business data
             document.getElementById('a-nom').value = business.nom;
             document.getElementById('a-dob').value = business.dob || '';
             document.getElementById('a-membre').value = business.membre || 'non';
@@ -989,29 +1046,64 @@
             document.getElementById('a-email').value = business.email || '';
             document.getElementById('a-image').value = business.image || '';
             
-            // Check checkboxes
             document.querySelectorAll('input[name="a-services"]').forEach(checkbox => {
                 checkbox.checked = business.services.includes(checkbox.value);
             });
             
-            // Show the form
+            document.getElementById('admin-promotion-form').classList.remove('hidden-section');
             document.getElementById('admin-promotion-form').classList.add('active');
+            document.getElementById('admin-financement-form').classList.add('hidden-section');
             document.getElementById('admin-financement-form').classList.remove('active');
+            document.getElementById('admin-business-list').classList.add('hidden-section');
             document.getElementById('admin-business-list').classList.remove('active');
+            document.getElementById('admin-project-list').classList.add('hidden-section');
+            document.getElementById('admin-project-list').classList.remove('active');
             
-            // Scroll to form
             document.getElementById('admin-promotion-form').scrollIntoView({ behavior: 'smooth' });
         }
 
         function deleteBusiness(id) {
             if (confirm("Êtes-vous sûr de vouloir supprimer ce professionnel ?")) {
-                // Remove from businesses array (simulating database)
                 businesses = businesses.filter(b => b.id !== id);
-                
-                // Update business list
                 updateBusinessList();
-                
                 alert("Professionnel supprimé avec succès !");
+            }
+        }
+
+        function editProject(id) {
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+            
+            document.getElementById('af-nom').value = project.nom;
+            document.getElementById('af-dob').value = project.dob || '';
+            document.getElementById('af-membre').value = project.membre || 'non';
+            document.getElementById('af-titre').value = project.titre;
+            document.getElementById('af-description').value = project.description;
+            document.getElementById('af-budget').value = project.budget;
+            document.getElementById('af-delai').value = project.delai;
+            document.getElementById('af-image').value = project.image || '';
+            
+            document.querySelectorAll('input[name="af-besoins"]').forEach(checkbox => {
+                checkbox.checked = project.besoins.includes(checkbox.value);
+            });
+            
+            document.getElementById('admin-financement-form').classList.remove('hidden-section');
+            document.getElementById('admin-financement-form').classList.add('active');
+            document.getElementById('admin-promotion-form').classList.add('hidden-section');
+            document.getElementById('admin-promotion-form').classList.remove('active');
+            document.getElementById('admin-business-list').classList.add('hidden-section');
+            document.getElementById('admin-business-list').classList.remove('active');
+            document.getElementById('admin-project-list').classList.add('hidden-section');
+            document.getElementById('admin-project-list').classList.remove('active');
+            
+            document.getElementById('admin-financement-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteProject(id) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
+                projects = projects.filter(p => p.id !== id);
+                updateProjectList();
+                alert("Projet supprimé avec succès !");
             }
         }
 
@@ -1039,10 +1131,29 @@
             });
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Any initialization code can go here
-        });
+        function updateProjectList() {
+            const tableBody = document.getElementById('project-table-body');
+            tableBody.innerHTML = '';
+            
+            projects.forEach(project => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="py-3 px-4">${project.nom}</td>
+                    <td class="py-3 px-4">${project.titre}</td>
+                    <td class="py-3 px-4">${project.budget} €</td>
+                    <td class="py-3 px-4">${project.delai}</td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="editProject(${project.id})" class="text-blue-600 hover:text-blue-800 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteProject(${project.id})" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
     </script>
 </body>
-</html>v
+</html>
