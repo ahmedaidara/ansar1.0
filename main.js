@@ -27,7 +27,7 @@ let selectedCallMembers = [];
 const presidentCode = '0000';
 const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
-// ==================== INITIALISATION ====================
+// Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
   // Initialiser le thème
   if (localStorage.getItem('darkMode') === 'true') {
@@ -40,13 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Charger les données initiales
   updateMessagePopups();
   checkAutoMessages();
-  updateMotivationDisplay(); // Initialiser l'affichage des messages
-
-  // Force l'affichage même si Firebase est lent
   updateMotivationDisplay();
-  setInterval(updateMotivationDisplay, 300000); // Actualise toutes les 5 minutes
+  loadBusinessCards(); // Charger les cartes dans #home-business-cards et #business-cards
+  showPage('home'); // Forcer l'affichage de la page d'accueil
 
-  // Ajouter les écouteurs d'événements
+  // Actualiser les messages toutes les 5 minutes
+  setInterval(updateMotivationDisplay, 300000);
+
+  // Ajouter les écouteurs pour le bouton de rafraîchissement
   document.querySelector('#refresh-data')?.addEventListener('click', () => {
     updateMembersList();
     updateEventsList();
@@ -55,11 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateMotivationDisplay();
     updateCoranContent();
     updateLibraryContent();
+    loadBusinessCards(); // Rafraîchir les cartes
   });
 });
 
-// ==================== FONCTIONS DE BASE POUR FIRESTORE ====================
-
+// FONCTIONS DE BASE POUR FIRESTORE
 async function loadData(collection) {
   try {
     const snapshot = await firebase.firestore().collection(collection).get();
@@ -107,27 +108,91 @@ async function uploadFile(file, path) {
   }
 }
 
+// Charger les métiers et projets dans #business-cards et #home-business-cards
+async function loadBusinessCards() {
+  console.log('loadBusinessCards appelé'); // Pour débogage
+  const businessCards = document.getElementById('business-cards');
+  const homeBusinessCards = document.getElementById('home-business-cards');
+  if (!businessCards || !homeBusinessCards) {
+    console.error('Conteneur #business-cards ou #home-business-cards introuvable');
+    if (businessCards) businessCards.innerHTML = '<p class="text-red-600 text-center">Erreur : conteneur introuvable</p>';
+    if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-red-600 text-center">Erreur : conteneur introuvable</p>';
+    return;
+  }
 
+  businessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
+  homeBusinessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
 
-// ==================== FONCTIONS D'INTERFACE ====================
-
-// ==================== FONCTIONS D'INTERFACE ====================
-
-function showPage(pageId) {
   try {
-    // [1] NETTOYAGE - Arrêter l'écouteur précédent s'il existe
-    if (window.motivationListener) {
-      window.motivationListener(); // Cette ligne arrête l'écouteur
-      window.motivationListener = null; // On nettoie la référence
+    // Charger les métiers et projets depuis Firestore
+    const [businessSnapshot, projectSnapshot] = await Promise.all([
+      firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get(),
+      firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
+    ]);
+
+    // Combiner les données
+    const businesses = businessSnapshot.docs.map(doc => ({
+      id: doc.id,
+      type: 'business',
+      ...doc.data()
+    }));
+    const projects = projectSnapshot.docs.map(doc => ({
+      id: doc.id,
+      type: 'project',
+      ...doc.data()
+    }));
+    const combinedData = [...businesses, ...projects];
+
+    if (combinedData.length === 0) {
+      businessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun métier ou projet disponible.</p>';
+      homeBusinessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun métier ou projet disponible.</p>';
+      return;
     }
 
-    // [2] CODE EXISTANT - Tout ce que vous avez déjà
+    // Générer les cartes
+    const cardHTML = combinedData.map(item => {
+      const isBusiness = item.type === 'business';
+      return `
+        <div class="business-card">
+          <img src="${item.image}" alt="${isBusiness ? item.nom : item.titre}" class="w-full h-48 object-cover rounded-md mb-4">
+          <h3 class="text-lg font-bold">${isBusiness ? item.nom : item.titre}</h3>
+          <p class="text-gray-600">${isBusiness ? item.metier : 'Projet'}</p>
+          <p class="text-gray-600">${isBusiness ? `${item.experience} ans d'expérience` : `${item.budget} FCFA`}</p>
+          <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2">
+            ${isBusiness ? 'Métier' : 'Projet'}
+          </span>
+          <button onclick="showBusinessDetails('${item.id}', '${item.type}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
+            En savoir plus
+          </button>
+        </div>`;
+    }).join('');
+
+    // Injecter le HTML dans les deux conteneurs
+    businessCards.innerHTML = cardHTML;
+    homeBusinessCards.innerHTML = cardHTML;
+  } catch (error) {
+    console.error('Erreur lors du chargement des métiers/projets :', error);
+    businessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des données.</p>';
+    homeBusinessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des données.</p>';
+  }
+}
+// FONCTIONS D'INTERFACE
+function showPage(pageId) {
+  try {
+    // Arrêter l'écouteur précédent s'il existe
+    if (window.motivationListener) {
+      window.motivationListener();
+      window.motivationListener = null;
+    }
+
+    // Masquer toutes les pages
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => {
       page.classList.remove('active');
       page.style.display = 'none';
     });
 
+    // Masquer les éléments de navigation actifs
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => item.classList.remove('active'));
 
@@ -135,15 +200,15 @@ function showPage(pageId) {
     const pageElement = document.getElementById(pageId);
     if (!pageElement) {
       console.error(`Page avec l'ID ${pageId} non trouvée`);
-      showPage('home'); // Revenir à la page d'accueil si pageId est invalide
+      showPage('home');
       return;
     }
 
-    // Ajouter .active à la page demandée
+    // Afficher la page demandée
     pageElement.classList.add('active');
-    pageElement.style.display = 'block'; // Forcer l'affichage
+    pageElement.style.display = 'block';
 
-    // Ajouter .active à l'élément de navigation correspondant
+    // Activer l'élément de navigation correspondant
     const navElement = document.querySelector(`a[onclick="showPage('${pageId}')"]`);
     if (navElement) {
       navElement.classList.add('active');
@@ -151,7 +216,7 @@ function showPage(pageId) {
       console.warn(`Élément de navigation pour ${pageId} non trouvé`);
     }
 
-    // Mettre à jour le contenu en fonction de la page
+    // Mettre à jour le contenu selon la page
     switch (pageId) {
       case 'members':
         updateMembersList();
@@ -171,41 +236,40 @@ function showPage(pageId) {
       case 'personal':
         updatePersonalPage();
         break;
-        case 'projet':
-  const projetIframe = document.getElementById('projet-iframe');
-  if (projetIframe) {
-    // Bloquer tout chargement automatique de l'admin
-    projetIframe.onload = function() {
-      try {
-        const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
-        iframeDoc.getElementById('admin-section').style.display = 'none';
-      } catch (e) {
-        console.log("Sécurité iframe: " + e.message);
-      }
-    };
-    
-    // Charger l'iframe seulement si nécessaire
-    if (!projetIframe.src || projetIframe.src === '') {
-      projetIframe.src = 'projet.html';
-    }
-  }
-  break;
+      case 'projet':
+        const projetIframe = document.getElementById('projet-iframe');
+        if (projetIframe) {
+          projetIframe.onload = function() {
+            try {
+              const iframeDoc = projetIframe.contentDocument || projetIframe.contentWindow.document;
+              iframeDoc.getElementById('admin-section').style.display = 'none';
+            } catch (e) {
+              console.log("Sécurité iframe: " + e.message);
+            }
+          };
+          if (!projetIframe.src || projetIframe.src === '') {
+            projetIframe.src = 'projet.html';
+          }
+        }
+        loadBusinessCards(); // Charger les cartes dans #business-section
+        break;
       case 'library':
         updateLibraryContent();
         break;
-      case 'home':
-        updateMessagePopups();
-        updateHomeGallery();
-        updateEventCountdowns(); // Ajout pour initialiser le compte à rebours
-        break;
+     case 'home':
+  updateMessagePopups();
+  updateHomeGallery();
+  updateEventCountdowns();
+  loadBusinessCards(); // Charger les cartes dans #home-business-cards
+  break;
       case 'settings':
         break;
-    case 'secret':
-      if (currentUser?.role !== 'admin') {
-        showPage('home');
-        return;
-      }
-      break;
+      case 'secret':
+        if (currentUser?.role !== 'admin') {
+          showPage('home');
+          return;
+        }
+        break;
       case 'admin-members':
         if (currentUser?.role === 'president' || currentUser?.role === 'secretaire' || currentUser?.role === 'admin') {
           updateEditMembersList();
@@ -213,12 +277,12 @@ function showPage(pageId) {
           showPage('home');
         }
         break;
-    case 'treasurer':
-      if (currentUser?.role !== 'tresorier') {
-        showPage('home');
-        return;
-      }
-      break;
+      case 'treasurer':
+        if (currentUser?.role !== 'tresorier') {
+          showPage('home');
+          return;
+        }
+        break;
       case 'treasurer-monthly':
         updateTreasurerMonthlyList();
         break;
@@ -236,21 +300,20 @@ function showPage(pageId) {
           showPage('home');
         }
         break;
-    case 'secretary':
-      if (currentUser?.role !== 'secretaire') {
-        showPage('home');
-        return;
-      }
-      break;
+      case 'secretary':
+        if (currentUser?.role !== 'secretaire') {
+          showPage('home');
+          return;
+        }
+        break;
       default:
         console.warn(`Page non reconnue : ${pageId}`);
         showPage('home');
         break;
     }
 
-// [3] REACTIVATION - Si on va sur une page qui a besoin des messages
     if (pageId === 'home' || pageId === 'secretary') {
-      updateMotivationDisplay(); // Recrée un nouvel écouteur
+      updateMotivationDisplay();
     }
 
     window.scrollTo(0, 0);
@@ -260,56 +323,7 @@ function showPage(pageId) {
   }
 }
 
-// Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', () => {
-  showPage('home'); // Forcer l'affichage de la page d'accueil
-});
-
-// Mettre à jour la fonction showTab
-function showTab(tabId) {
-  const tabContent = document.querySelector(`#${tabId}`);
-  const tabButton = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
-
-  if (!tabContent || !tabButton) {
-    console.error(`Tab ${tabId} introuvable`);
-    return;
-  }
-
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-
-  tabContent.classList.add('active');
-  tabButton.classList.add('active');
-
- switch (tabId) {
-    case 'edit-member': updateEditMembersList(); break;
-    case 'gallery-admin': updateGalleryAdminList(); break;
-    case 'events-admin': updateEventsAdminList(); break;
-    case 'messages-admin': updateMessagesAdminList(); break;
-    case 'notes': updateNotesList(); break;
-    case 'internal-docs': updateInternalDocsList(); break;
-    case 'suggestions-admin': updateSuggestionsList(); break;
-    case 'stats': updateStats(); break;
-    case 'video-calls': initVideoCall(); break;
-    case 'auto-messages': updateAutoMessagesList(); break;
-    case 'treasurer-contributions':
-      updateTreasurerContributionsList();
-      break;
-    case 'contributions-admin':
-      updateContributionsAdminList();
-      break;
-    case 'president-files': updatePresidentFilesList(); break;
-    case 'secretary-files': updateSecretaryFilesList(); break;
-  }
-}
-
-function toggleTheme() {
-  document.body.classList.toggle('dark-mode');
-  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-}
-
-// ==================== FONCTIONS CHATBOT ====================
-
+// FONCTIONS CHATBOT
 function initChatbot() {
   const chatbotButton = document.querySelector('.chatbot-button');
   const chatbotForm = document.querySelector('#chatbot-form');
@@ -321,8 +335,7 @@ function initChatbot() {
     return;
   }
 
-  console.log('Initialisation du chatbot'); // Journal pour confirmer l'initialisation
-
+  console.log('Initialisation du chatbot');
   chatbotButton.addEventListener('click', toggleChatbot);
   chatbotForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -332,10 +345,10 @@ function initChatbot() {
       return;
     }
 
-    console.log('Message envoyé:', message); // Journal du message
+    console.log('Message envoyé:', message);
     appendChatMessage('Vous', message);
     const response = getChatbotResponse(message);
-    console.log('Réponse du chatbot:', response); // Journal de la réponse
+    console.log('Réponse du chatbot:', response);
 
     if (response === 'secret') {
       const secretEntry = document.querySelector('#secret-entry');
@@ -370,10 +383,7 @@ function appendChatMessage(sender, message) {
 
   const messageElement = document.createElement('div');
   messageElement.className = sender === 'Vous' ? 'chat-message user' : 'chat-message bot';
-  
-  // Suppression du préfixe - affiche uniquement le message
-  messageElement.textContent = message; 
-  
+  messageElement.textContent = message;
   messages.appendChild(messageElement);
   messages.scrollTop = messages.scrollHeight;
 }
@@ -384,7 +394,6 @@ function clearChatHistory() {
   document.querySelector('#secret-entry').style.display = 'none';
   document.querySelector('#chatbot-input').disabled = false;
 }
-
 async function checkSecretPassword() {
   try {
     const password = document.querySelector('#secret-password')?.value.trim();
@@ -1049,13 +1058,22 @@ async function setPresidentCodes(event) {
 }
 
 // Attacher l'écouteur au formulaire
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('#set-president-codes-form');
-  if (form) {
-    form.addEventListener('submit', setPresidentCodes);
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Page chargée, hash actuel :', window.location.hash);
+  // Initialiser le thème
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
   }
+  // Initialiser le chatbot
+  initChatbot();
+  // Charger les données initiales
+  updateMessagePopups();
+  checkAutoMessages();
+  updateMotivationDisplay();
+  loadBusinessCards(); // Charger les cartes dans #home-business-cards et #business-cards
+  showPage('home'); // Afficher la page d'accueil
+  showProjetSection('business'); // Charger la section business par défaut
 });
-
 
 
 // ==================== FONCTIONS ÉVÉNEMENTS ====================
@@ -3253,9 +3271,20 @@ function loadProjetBusinessData() {
 // Initialisation au chargement de la page
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page chargée, hash actuel :', window.location.hash);
-    // Afficher la section business par défaut, que le hash soit #projet ou non
-    showProjetSection('business');
+  console.log('DOMContentLoaded: Page chargée, hash actuel :', window.location.hash);
+  // Initialiser le thème
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+  // Initialiser le chatbot
+  initChatbot();
+  // Charger les données initiales
+  updateMessagePopups();
+  checkAutoMessages();
+  updateMotivationDisplay();
+  loadBusinessCards(); // Charger les cartes dans #home-business-cards et #business-cards
+  showPage('home'); // Afficher la page d'accueil
+  showProjetSection('business'); // Charger la section business par défaut
 });
 
 // Afficher un formulaire admin spécifique 
@@ -3360,17 +3389,25 @@ function saveProject() {
 
 // Charger les métiers dans #business-cards
 async function loadBusinessCards() {
+  console.log('loadBusinessCards: Début'); // Débogage
   const businessCards = document.getElementById('business-cards');
-  if (!businessCards) {
-    console.error('Conteneur #business-cards introuvable');
-    businessCards.innerHTML = '<p class="text-red-600">Erreur : conteneur introuvable</p>';
+  const homeBusinessCards = document.getElementById('home-business-cards');
+  
+  // Vérifier si les conteneurs existent
+  if (!businessCards) console.error('Conteneur #business-cards introuvable');
+  if (!homeBusinessCards) console.error('Conteneur #home-business-cards introuvable');
+  if (!businessCards && !homeBusinessCards) {
+    console.error('Aucun conteneur trouvé, arrêt de loadBusinessCards');
     return;
   }
 
-  businessCards.innerHTML = ''; // Vider le conteneur
+  // Afficher un message de chargement
+  if (businessCards) businessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
+  if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
 
   try {
-    // Charger les métiers et les projets depuis Firestore
+    // Charger les données depuis Firestore
+    console.log('loadBusinessCards: Chargement des données Firestore');
     const [businessSnapshot, projectSnapshot] = await Promise.all([
       firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get(),
       firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
@@ -3388,18 +3425,22 @@ async function loadBusinessCards() {
       ...doc.data()
     }));
     const combinedData = [...businesses, ...projects];
+    console.log('loadBusinessCards: Données chargées', combinedData);
 
+    // Vérifier si des données existent
     if (combinedData.length === 0) {
-      businessCards.innerHTML = '<p class="text-gray-600">Aucun métier ou projet disponible.</p>';
+      console.log('loadBusinessCards: Aucune donnée disponible');
+      if (businessCards) businessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun métier ou projet disponible.</p>';
+      if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun métier ou projet disponible.</p>';
       return;
     }
 
-    // Générer les cartes
-    businessCards.innerHTML = combinedData.map(item => {
+    // Générer le HTML des cartes (identique à #business-section)
+    const cardHTML = combinedData.map(item => {
       const isBusiness = item.type === 'business';
       return `
         <div class="business-card">
-          <img src="${item.image}" alt="${isBusiness ? item.nom : item.titre}" class="w-full h-48 object-cover rounded-md mb-4">
+          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${isBusiness ? item.nom : item.titre}" class="w-full h-48 object-cover rounded-md mb-4">
           <h3 class="text-lg font-bold">${isBusiness ? item.nom : item.titre}</h3>
           <p class="text-gray-600">${isBusiness ? item.metier : 'Projet'}</p>
           <p class="text-gray-600">${isBusiness ? `${item.experience} ans d'expérience` : `${item.budget} FCFA`}</p>
@@ -3407,13 +3448,20 @@ async function loadBusinessCards() {
             ${isBusiness ? 'Métier' : 'Projet'}
           </span>
           <button onclick="showBusinessDetails('${item.id}', '${item.type}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
-            Voir plus
+            En savoir plus
           </button>
         </div>`;
     }).join('');
+    console.log('loadBusinessCards: HTML généré', cardHTML);
+
+    // Injecter le HTML dans les conteneurs
+    if (businessCards) businessCards.innerHTML = cardHTML;
+    if (homeBusinessCards) homeBusinessCards.innerHTML = cardHTML;
+    console.log('loadBusinessCards: HTML injecté dans les conteneurs');
   } catch (error) {
-    console.error('Erreur lors du chargement des métiers/projets :', error);
-    businessCards.innerHTML = '<p class="text-red-600">Erreur lors du chargement des données.</p>';
+    console.error('loadBusinessCards: Erreur lors du chargement', error);
+    if (businessCards) businessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des données.</p>';
+    if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des données.</p>';
   }
 }
 
