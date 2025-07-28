@@ -1623,7 +1623,7 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 }
 
 .projet-header h1 {
-  color: #4a5568;
+  color: #c3bf42;
   font-size: 2rem;
 }
 
@@ -1655,9 +1655,9 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   margin-right: 8px;
 }
 
-.bg-blue { background-color: #4299e1; }
-.bg-green { background-color: #48bb78; }
-.bg-purple { background-color: #9f7aea; }
+.bg-blue { background-color: #F59E0B; }
+.bg-green { background-color: #EC4899; }
+.bg-purple { background-color: #8B5CF6; }
 
 .projet-form {
   background: white;
@@ -1720,3 +1720,577 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 .hidden-section {
     display: none;
 }
+
+.business-card {
+    background-color: #1b544f6f; /* Fond gris clair */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.business-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+.business-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.business-card h3 {
+    color: #fdff8b; /* Bleu foncé pour le métier */
+    margin: 10px 0;
+}
+.business-card p {
+    color: #ffdb79; /* Bleu foncé pour le nom */
+    margin: 5px 0;
+}
+.business-card button {
+    background-color: #2f766b; /* Rose vif */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+.business-card button:hover {
+    background-color: #346b18; /* Rose plus foncé au survol */
+}
+.business-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.business-modal-content {
+    background-color: #0d2f2c; /* Fond vert */
+    border-radius: 8px;
+    max-width: 80%;
+    width: 600px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 0; /* Supprime le padding pour l'image */
+    position: relative;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+}
+
+.business-modal-content img {
+    width: 100%; /* Occupe toute la largeur du modal */
+    height: auto; /* Hauteur automatique pour maintenir le rapport */
+    aspect-ratio: 5 / 4; /* Force le rapport largeur = 2 × hauteur */
+    object-fit: cover; /* Remplit sans déformation */
+    border-radius: 0; /* Pas de coins arrondis */
+    position: absolute; /* Collé en haut */
+    top: 0; /* Collé au bord supérieur */
+    left: 0; /* Collé à gauche */
+    right: 0; /* Collé à droite */
+    margin: 0; /* Zéro marge */
+    display: block; /* Évite les marges parasites */
+}
+
+/* Ajoute une marge au contenu en dessous pour ne pas être masqué par l'image */
+.business-modal-content #modal-content {
+    margin-top: 160px; /* Espace réduit pour grands écrans */
+    padding: 20px; /* Restaure le padding pour le texte */
+}
+
+/* Media query pour portables (écrans jusqu'à 640px) */
+@media (max-width: 640px) {
+    .business-modal-content #modal-content {
+        margin-top: 155px; /* Encore moins d'espace sur portable */
+        padding: 15px; /* Padding réduit pour gagner de l'espace */
+    }
+}
+.business-modal-content p {
+    margin: 10px 0;
+    color: #928d34; /* Gris très foncé pour lisibilité */
+}
+.business-modal-content button {
+    background-color: #2f766b; /* Bleu vif */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.business-modal-content button:hover {
+    background-color: #ff0000; /* Bleu plus foncé au survol */
+}
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.hidden-section {
+    display: none !important;
+}
+#modal-title {
+    color: #0f3733; /* Gris très foncé pour le titre */
+}
+
+/* Style général du conteneur du formulaire */
+/* Style général du conteneur du formulaire */
+.form-container {
+    background-color: #1a5251; /* Fond vert foncé */
+    border: 1px solid #aca72b; /* Bordure jaune moutarde */
+    border-radius: 12px; /* Coins arrondis */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(172, 167, 43, 0.2); /* Ombre externe + halo subtil */
+    padding: 24px; /* Espacement intérieur */
+    margin: 0 0 2rem 0; /* Pas de marges latérales, seulement en bas */
+    max-width: 100%; /* S'adapte au conteneur parent */
+    box-sizing: border-box; /* Inclut bordure et padding dans la largeur */
+}
+
+/* Style spécifique pour le formulaire Financement (réduire marges latérales) */
+#financement-form.form-container {
+    margin: 0 4px 2rem 4px; /* Marges latérales de ~0.3cm (4px) */
+}
+
+/* Style du titre du formulaire */
+#promotion-form h2,
+#financement-form h2 {
+    color: #ffffff; /* Blanc pour contraste sur fond sombre */
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Style du texte descriptif */
+#promotion-form p,
+#financement-form p {
+    color: #d1d5db; /* Gris clair pour lisibilité */
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Style du bouton Retour */
+#promotion-form button.text-red-600,
+#financement-form button.text-red-600 {
+    display: flex;
+    align-items: center;
+    color: #f3f4f6; /* Gris clair pour contraste */
+    font-weight: 600;
+    padding: 8px 16px;
+    background-color: #2a6a6a; /* Vert légèrement plus clair que le fond */
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+#promotion-form button.text-red-600:hover,
+#financement-form button.text-red-600:hover {
+    background-color: #aca72b; /* Jaune moutarde au survol */
+    color: #1a5251; /* Texte vert foncé */
+}
+
+/* Style des labels */
+#promotion-form .text-gray-700,
+#financement-form .text-gray-700 {
+    color: #ffffff; /* Blanc pour contraste */
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Style des champs de saisie (input, textarea, select) */
+#promotion-form input,
+#promotion-form textarea,
+#promotion-form select,
+#financement-form input,
+#financement-form textarea,
+#financement-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #aca72b; /* Bordure jaune moutarde */
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #1a5251; /* Même couleur que le fond */
+    color: #ffffff; /* Texte blanc pour contraste */
+    box-sizing: border-box; /* Empêche de dépasser la bordure */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#promotion-form input:focus,
+#promotion-form textarea:focus,
+#promotion-form select:focus,
+#financement-form input:focus,
+#financement-form textarea:focus,
+#financement-form select:focus {
+    outline: none;
+    border-color: #ffffff; /* Bordure blanche au focus */
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2); /* Halo blanc */
+}
+
+/* Style des radio buttons et checkboxes */
+#promotion-form input[type="radio"],
+#promotion-form input[type="checkbox"],
+#financement-form input[type="radio"],
+#financement-form input[type="checkbox"] {
+    accent-color: #aca72b; /* Jaune moutarde */
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+    background-color: #1a5251; /* Fond assorti */
+    border: 1px solid #aca72b; /* Bordure assortie */
+}
+
+/* Style des labels des radio/checkbox */
+#promotion-form .inline-flex span,
+#financement-form .inline-flex span {
+    color: #d1d5db; /* Gris clair pour contraste */
+    font-size: 0.95rem;
+}
+
+/* Style du bouton Envoyer */
+#promotion-form button.bg-blue-600,
+#financement-form button.bg-green-600 {
+    background-color: #aca72b; /* Jaune moutarde */
+    color: #1a5251; /* Texte vert foncé pour contraste */
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+#promotion-form button.bg-blue-600:hover,
+#financement-form button.bg-green-600:hover {
+    background-color: #d4d04e; /* Jaune plus clair au survol */
+    transform: translateY(-2px);
+}
+
+/* Media query pour portables (écrans jusqu'à 640px) */
+@media (max-width: 640px) {
+    .form-container {
+        padding: 16px;
+        margin: 0 4px 2rem 4px; /* Marges latérales de ~0.3cm */
+    }
+    #promotion-form h2,
+    #financement-form h2 {
+        font-size: 1.5rem;
+    }
+    #promotion-form input,
+    #promotion-form textarea,
+    #promotion-form select,
+    #financement-form input,
+    #financement-form textarea,
+    #financement-form select {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    #promotion-form button.bg-blue-600,
+    #financement-form button.bg-green-600 {
+        padding: 10px 20px;
+        width: 100%;
+    }
+    #promotion-form button.text-red-600,
+    #financement-form button.text-red-600 {
+        padding: 6px 12px;
+    }
+}
+
+
+/* Style du lien "Espace réservé aux membres" */
+.admin-link {
+    color: #aca72b; /* Jaune moutarde pour cohérence */
+    text-decoration: none; /* Supprime le soulignement */
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: block; /* Permet le centrage */
+    text-align: center; /* Centre le texte */
+    margin: 1rem 0; /* Espace vertical */
+    transition: color 0.3s ease;
+}
+.admin-link:hover {
+    color: #d4d04e; /* Jaune plus clair au survol */
+}
+
+/* Style du conteneur du formulaire admin */
+#admin-section {
+    background-color: #1a5251; /* Fond vert foncé, cohérent avec autres formulaires */
+    border: 1px solid #aca72b; /* Bordure jaune moutarde */
+    border-radius: 12px; /* Coins arrondis */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(172, 167, 43, 0.2); /* Ombre + halo */
+    padding: 24px; /* Espacement intérieur */
+    max-width: 400px; /* Largeur plus étroite pour un look compact */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Style du titre du formulaire admin */
+#admin-section h2 {
+    color: #ffffff; /* Blanc pour contraste */
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Style des labels */
+#admin-section .text-gray-700 {
+    color: #ffffff; /* Blanc pour contraste */
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Style des champs de saisie (input) */
+#admin-section input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #aca72b; /* Bordure jaune moutarde */
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #2a6a6a; /* Vert légèrement plus clair pour contraste */
+    color: #ffffff; /* Texte blanc */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#admin-section input:focus {
+    outline: none;
+    border-color: #ffffff; /* Bordure blanche au focus */
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2); /* Halo blanc */
+}
+
+/* Style des boutons (Annuler et Valider) */
+#admin-section button.bg-gray-500,
+#admin-section button.bg-indigo-600 {
+    background-color: #aca72b; /* Jaune moutarde */
+    color: #1a5251; /* Texte vert foncé */
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+#admin-section button.bg-gray-500:hover,
+#admin-section button.bg-indigo-600:hover {
+    background-color: #d4d04e; /* Jaune plus clair au survol */
+    transform: translateY(-2px);
+}
+
+/* Ajustement de l'espacement entre les boutons */
+#admin-section .pt-4 {
+    display: flex;
+    gap: 1rem; /* Espace entre Annuler et Valider */
+    justify-content: center; /* Centre les boutons */
+}
+
+/* Media query pour portables (écrans jusqu'à 640px) */
+@media (max-width: 640px) {
+    #admin-section {
+        padding: 16px; /* Padding réduit */
+        margin: 0 4px; /* Marges latérales de ~0.3cm */
+    }
+    #admin-section h2 {
+        font-size: 1.5rem; /* Titre plus petit */
+    }
+    #admin-section input {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    #admin-section button.bg-gray-500,
+    #admin-section button.bg-indigo-600 {
+        padding: 8px 16px;
+        width: 100%; /* Pleine largeur pour chaque bouton */
+    }
+    #admin-section .pt-4 {
+        flex-direction: column; /* Boutons en colonne sur portable */
+        gap: 0.5rem;
+    }
+}
+
+/* Style des boutons du tableau de bord admin */
+#admin-dashboard .flex button {
+    background-color: #aca72b; /* Jaune moutarde */
+    color: #1a5251; /* Texte vert foncé */
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espace entre icône et texte */
+}
+#admin-dashboard .flex button:hover {
+    background-color: #d4d04e; /* Jaune plus clair au survol */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+#admin-dashboard .flex button.bg-blue-600 {
+    background-color: #aca72b; /* Uniformise avec jaune moutarde */
+}
+#admin-dashboard .flex button.bg-green-600 {
+    background-color: #aca72b;
+}
+#admin-dashboard .flex button.bg-purple-600 {
+    background-color: #aca72b;
+}
+#admin-dashboard .flex button.bg-teal-600 {
+    background-color: #aca72b;
+}
+#admin-dashboard .flex button:hover.bg-blue-700,
+#admin-dashboard .flex button:hover.bg-green-700,
+#admin-dashboard .flex button:hover.bg-purple-700,
+#admin-dashboard .flex button:hover.bg-teal-700 {
+    background-color: #d4d04e; /* Jaune plus clair au survol */
+}
+
+/* Style du conteneur des boutons */
+#admin-dashboard .flex {
+    display: flex;
+    flex-wrap: wrap; /* Permet le retour à la ligne */
+    gap: 1rem; /* Espacement entre boutons */
+    justify-content: center; /* Centre les boutons */
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Style des listes Gérer Business et Gérer Projets */
+#admin-business-list,
+#admin-project-list {
+    background-color: #1a5251; /* Fond vert foncé */
+    border: 1px solid #aca72b; /* Bordure jaune moutarde */
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    padding: 24px;
+    margin-bottom: 2rem;
+}
+
+/* Style du titre des listes */
+#admin-business-list h2,
+#admin-project-list h2 {
+    color: #ffffff; /* Blanc pour contraste */
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Supprime le style de table horizontal */
+#admin-business-list table,
+#admin-project-list table {
+    display: block; /* Passe en bloc pour disposition verticale */
+    width: 100%;
+}
+
+/* Style des lignes (chaque métier/projet) */
+#admin-business-list tbody tr,
+#admin-project-list tbody tr {
+    display: block; /* Chaque entrée en bloc vertical */
+    background-color: #2a6a6a; /* Vert légèrement plus clair */
+    border: 1px solid #aca72b; /* Bordure jaune moutarde */
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 1rem; /* Espace entre entrées */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style des cellules (informations) */
+#admin-business-list td,
+#admin-project-list td {
+    display: block; /* Chaque info sur une nouvelle ligne */
+    color: #d1d5db; /* Gris clair pour lisibilité */
+    font-size: 0.95rem;
+    padding: 4px 0; /* Espacement vertical */
+    text-align: left;
+}
+#admin-business-list td:before,
+#admin-project-list td:before {
+    content: attr(data-label); /* Ajoute un label avant chaque info */
+    font-weight: 600;
+    color: #ffffff; /* Blanc pour contraste */
+    margin-right: 0.5rem;
+}
+
+/* Style des boutons d'action (Éditer, Supprimer) */
+#admin-business-list td:last-child,
+#admin-project-list td:last-child {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding-top: 8px;
+}
+#admin-business-list button,
+#admin-project-list button {
+    background-color: #aca72b; /* Jaune moutarde */
+    color: #1a5251; /* Texte vert foncé */
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+#admin-business-list button:hover,
+#admin-project-list button:hover {
+    background-color: #d4d04e; /* Jaune plus clair */
+    transform: translateY(-2px);
+}
+#admin-business-list button.text-blue-600,
+#admin-project-list button.text-blue-600 {
+    color: #1a5251; /* Texte vert foncé */
+}
+#admin-business-list button.text-red-600,
+#admin-project-list button.text-red-600 {
+    color: #1a5251;
+}
+
+/* Attribuer des labels pour chaque cellule */
+#admin-business-list td:nth-child(1):before { content: "Nom: "; }
+#admin-business-list td:nth-child(2):before { content: "Métier: "; }
+#admin-business-list td:nth-child(3):before { content: "Expérience: "; }
+#admin-business-list td:nth-child(4):before { content: "Localisation: "; }
+#admin-business-list td:nth-child(5):before { content: "Actions: "; }
+#admin-project-list td:nth-child(1):before { content: "Nom: "; }
+#admin-project-list td:nth-child(2):before { content: "Titre du projet: "; }
+#admin-project-list td:nth-child(3):before { content: "Budget: "; }
+#admin-project-list td:nth-child(4):before { content: "Délai: "; }
+#admin-project-list td:nth-child(5):before { content: "Actions: "; }
+
+/* Media query pour portables (écrans jusqu'à 640px) */
+@media (max-width: 640px) {
+    #admin-dashboard .flex {
+        flex-direction: column; /* Boutons en colonne */
+        gap: 0.5rem;
+    }
+    #admin-dashboard .flex button {
+        width: 100%; /* Pleine largeur */
+        padding: 10px 16px;
+        font-size: 0.95rem;
+    }
+    #admin-business-list,
+    #admin-project-list {
+        padding: 16px;
+        margin: 0 4px 2rem 4px; /* Marges latérales ~0.3cm */
+    }
+    #admin-business-list h2,
+    #admin-project-list h2 {
+        font-size: 1.5rem;
+    }
+    #admin-business-list tbody tr,
+    #admin-project-list tbody tr {
+        padding: 12px;
+    }
+    #admin-business-list td,
+    #admin-project-list td {
+        font-size: 0.9rem;
+    }
+}
+
