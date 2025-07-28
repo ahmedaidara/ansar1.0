@@ -322,6 +322,43 @@ function showPage(pageId) {
     showPage('home');
   }
 }
+// Mettre à jour la fonction showTab
+function showTab(tabId) {
+  const tabContent = document.querySelector(`#${tabId}`);
+  const tabButton = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
+
+  if (!tabContent || !tabButton) {
+    console.error(`Tab ${tabId} introuvable`);
+    return;
+  }
+
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+  tabContent.classList.add('active');
+  tabButton.classList.add('active');
+
+ switch (tabId) {
+    case 'edit-member': updateEditMembersList(); break;
+    case 'gallery-admin': updateGalleryAdminList(); break;
+    case 'events-admin': updateEventsAdminList(); break;
+    case 'messages-admin': updateMessagesAdminList(); break;
+    case 'notes': updateNotesList(); break;
+    case 'internal-docs': updateInternalDocsList(); break;
+    case 'suggestions-admin': updateSuggestionsList(); break;
+    case 'stats': updateStats(); break;
+    case 'video-calls': initVideoCall(); break;
+    case 'auto-messages': updateAutoMessagesList(); break;
+    case 'treasurer-contributions':
+      updateTreasurerContributionsList();
+      break;
+    case 'contributions-admin':
+      updateContributionsAdminList();
+      break;
+    case 'president-files': updatePresidentFilesList(); break;
+    case 'secretary-files': updateSecretaryFilesList(); break;
+  }
+}
 
 // FONCTIONS CHATBOT
 function initChatbot() {
