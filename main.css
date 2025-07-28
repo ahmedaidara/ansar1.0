@@ -1805,7 +1805,7 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 }
 
 .business-modal-content #modal-content {
-    margin-top: 5cm; /* Espace fixe de 3 cm */
+    margin-top: 6cm; /* Espace fixe de 3 cm */
     padding: 20px; /* Restaure le padding pour le texte */
 }
 
