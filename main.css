@@ -1615,6 +1615,11 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Assure que le conteneur prend toute la hauteur de l'écran */
 }
 
 .projet-header {
@@ -1772,6 +1777,7 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 }
 .business-modal-content {
     background-color: #0d2f2c; /* Fond vert */
+    border: 2px solid #aca72b; /* Bordure jaune moutarde */
     border-radius: 8px;
     max-width: 80%;
     width: 600px;
@@ -1798,16 +1804,13 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
     display: block; /* Évite les marges parasites */
 }
 
-/* Ajoute une marge au contenu en dessous pour ne pas être masqué par l'image */
 .business-modal-content #modal-content {
-    margin-top: 160px; /* Espace réduit pour grands écrans */
+    margin-top: 5cm; /* Espace fixe de 3 cm */
     padding: 20px; /* Restaure le padding pour le texte */
 }
 
-/* Media query pour portables (écrans jusqu'à 640px) */
 @media (max-width: 640px) {
     .business-modal-content #modal-content {
-        margin-top: 155px; /* Encore moins d'espace sur portable */
         padding: 15px; /* Padding réduit pour gagner de l'espace */
     }
 }
