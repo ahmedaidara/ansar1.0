@@ -2294,3 +2294,74 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
     }
 }
 
+/* Forcer les liens Site Web et Portfolio à être blancs dans le modal */
+#business-modal #modal-content .flex.items-center a {
+    color: #ffffff !important; /* Blanc forcé */
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+#business-modal #modal-content .flex.items-center a:hover {
+    color: #d1d5db !important; /* Gris clair au survol */
+}
+#business-modal #modal-content .flex.items-center {
+    margin-bottom: 0.5rem; /* Espacement entre les lignes */
+}
+
+/* Forcer l'affichage de la section business */
+#business-section:not(.hidden-section) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* S'assurer que les cartes sont visibles */
+#business-cards {
+    display: grid !important; /* Ou flex, selon ton layout */
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Style de hidden-section pour confirmer qu'il masque correctement */
+.hidden-section {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Style du bouton Retour dans business-section */
+#business-section button[onclick="showMainInterface()"] {
+    background: transparent !important; /* Fond transparent */
+    color: #ffffff !important; /* Texte blanc */
+    border: 1px solid #ffffff !important; /* Bordure blanche pour visibilité */
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 5px; /* Coins arrondis, comme les autres boutons */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#business-section button[onclick="showMainInterface()"]:hover {
+    color: #d1d5db !important; /* Texte gris clair au survol */
+    border-color: #d1d5db !important; /* Bordure gris clair au survol */
+}
+/* Style du bouton Retour dans business-section pour imiter le titre Nos Professionnels */
+#business-section button[onclick="showMainInterface()"] {
+    background: transparent !important; /* Fond transparent */
+    color: #c3bf42 !important; /* Couleur jaune moutarde, comme le titre */
+    border: 1px solid #c3bf42 !important; /* Bordure jaune moutarde */
+    font-size: 0.9rem; /* Taille proche de 2rem, adaptée pour un bouton */
+    font-weight: 700; /* Gras, comme un titre */
+    padding: 10px 20px;
+    border-radius: 5px; /* Coins arrondis, comme les autres boutons */
+    cursor: pointer;
+    text-align: center; /* Texte centré */
+    display: block; /* Permet le centrage horizontal */
+    margin: 20px auto; /* Centre le bouton horizontalement, avec marge verticale */
+    transition: all 0.3s ease;
+}
+
+#business-section button[onclick="showMainInterface()"]:hover {
+    color: #d4d04e !important; /* Jaune plus clair au survol */
+    border-color: #d4d04e !important; /* Bordure plus claire au survol */
+}
