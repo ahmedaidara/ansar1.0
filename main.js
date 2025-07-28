@@ -3316,68 +3316,104 @@ function saveProject() {
 }
 
 // Charger les métiers dans #business-cards
-function loadBusinessCards() {
-    const businessCards = document.getElementById('business-cards');
-    businessCards.innerHTML = ''; // Vider le conteneur
+async function loadBusinessCards() {
+  const businessCards = document.getElementById('business-cards');
+  if (!businessCards) {
+    console.error('Conteneur #business-cards introuvable');
+    businessCards.innerHTML = '<p class="text-red-600">Erreur : conteneur introuvable</p>';
+    return;
+  }
 
-    firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get()
-        .then(querySnapshot => {
-            if (querySnapshot.empty) {
-                businessCards.innerHTML = '<p class="text-gray-600">Aucun métier disponible.</p>';
-                return;
-            }
-            querySnapshot.forEach(doc => {
-                const data = doc.data();
-                const card = `
-                    <div class="bg-white rounded-lg shadow-lg p-4">
-                        <img src="${data.image}" alt="${data.nom}" class="w-full h-48 object-cover rounded-md mb-4">
-                        <h3 class="text-lg font-bold">${data.nom}</h3>
-                        <p class="text-gray-600">${data.metier}</p>
-                        <p class="text-gray-600">${data.experience} ans d'expérience</p>
-                        <p class="text-gray-600">${data.adresse}</p>
-                        <p class="text-gray-600">${data.services.join(', ')}</p>
-                        <button onclick="showBusinessDetails('${doc.id}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
-                            Voir plus
-                        </button>
-                    </div>`;
-                businessCards.innerHTML += card;
-            });
-        })
-        .catch(error => {
-            console.error('Erreur lors du chargement des métiers :', error);
-            businessCards.innerHTML = '<p class="text-red-600">Erreur lors du chargement des métiers.</p>';
-        });
+  businessCards.innerHTML = ''; // Vider le conteneur
+
+  try {
+    // Charger les métiers et les projets depuis Firestore
+    const [businessSnapshot, projectSnapshot] = await Promise.all([
+      firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get(),
+      firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
+    ]);
+
+    // Combiner les données
+    const businesses = businessSnapshot.docs.map(doc => ({
+      id: doc.id,
+      type: 'business',
+      ...doc.data()
+    }));
+    const projects = projectSnapshot.docs.map(doc => ({
+      id: doc.id,
+      type: 'project',
+      ...doc.data()
+    }));
+    const combinedData = [...businesses, ...projects];
+
+    if (combinedData.length === 0) {
+      businessCards.innerHTML = '<p class="text-gray-600">Aucun métier ou projet disponible.</p>';
+      return;
+    }
+
+    // Générer les cartes
+    businessCards.innerHTML = combinedData.map(item => {
+      const isBusiness = item.type === 'business';
+      return `
+        <div class="business-card">
+          <img src="${item.image}" alt="${isBusiness ? item.nom : item.titre}" class="w-full h-48 object-cover rounded-md mb-4">
+          <h3 class="text-lg font-bold">${isBusiness ? item.nom : item.titre}</h3>
+          <p class="text-gray-600">${isBusiness ? item.metier : 'Projet'}</p>
+          <p class="text-gray-600">${isBusiness ? `${item.experience} ans d'expérience` : `${item.budget} FCFA`}</p>
+          <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2">
+            ${isBusiness ? 'Métier' : 'Projet'}
+          </span>
+          <button onclick="showBusinessDetails('${item.id}', '${item.type}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
+            Voir plus
+          </button>
+        </div>`;
+    }).join('');
+  } catch (error) {
+    console.error('Erreur lors du chargement des métiers/projets :', error);
+    businessCards.innerHTML = '<p class="text-red-600">Erreur lors du chargement des données.</p>';
+  }
 }
 
 // Afficher les détails d'un métier dans le modal
-function showBusinessDetails(businessId) {
-    firebase.firestore().collection('businesses').doc(businessId).get()
-        .then(doc => {
-            if (doc.exists) {
-                const data = doc.data();
-                document.getElementById('modal-title').textContent = data.nom;
-                document.getElementById('modal-content').innerHTML = `
-                    <img src="${data.image}" alt="${data.nom}" class="w-full h-48 object-cover rounded-md mb-4">
-                    <p><strong>Métier :</strong> ${data.metier}</p>
-                    <p><strong>Expérience :</strong> ${data.experience} ans</p>
-                    <p><strong>Description :</strong> ${data.description}</p>
-                    <p><strong>Adresse :</strong> ${data.adresse}</p>
-                    <p><strong>Contact :</strong> ${data.contact}</p>
-                    <p><strong>Email :</strong> ${data.email || 'Non spécifié'}</p>
-                    <p><strong>Services :</strong> ${data.services.join(', ')}</p>
-                    <p><strong>Membre :</strong> ${data.membre === 'oui' ? 'Oui' : 'Non'}</p>
-                    <p><strong>Date de naissance :</strong> ${data.dob || 'Non spécifiée'}</p>`;
-                document.getElementById('business-modal').classList.remove('hidden-section');
-            } else {
-                alert('Métier non trouvé.');
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors du chargement des détails :', error);
-            alert('Une erreur est survenue.');
-        });
+function showBusinessDetails(id, type) {
+  const collection = type === 'business' ? 'businesses' : 'projects';
+  firebase.firestore().collection(collection).doc(id).get()
+    .then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        document.getElementById('modal-title').textContent = type === 'business' ? data.nom : data.titre;
+        document.getElementById('modal-content').innerHTML = `
+          <img src="${data.image}" alt="${type === 'business' ? data.nom : data.titre}" class="w-full h-48 object-cover rounded-md mb-4">
+          ${type === 'business' ? `
+            <p><strong>Métier :</strong> ${data.metier}</p>
+            <p><strong>Expérience :</strong> ${data.experience} ans</p>
+            <p><strong>Description :</strong> ${data.description}</p>
+            <p><strong>Adresse :</strong> ${data.adresse}</p>
+            <p><strong>Contact :</strong> ${data.contact}</p>
+            <p><strong>Email :</strong> ${data.email || 'Non spécifié'}</p>
+            <p><strong>Services :</strong> ${data.services.join(', ')}</p>
+            <p><strong>Membre :</strong> ${data.membre === 'oui' ? 'Oui' : 'Non'}</p>
+            <p><strong>Date de naissance :</strong> ${data.dob || 'Non spécifiée'}</p>
+          ` : `
+            <p><strong>Titre :</strong> ${data.titre}</p>
+            <p><strong>Description :</strong> ${data.description}</p>
+            <p><strong>Budget :</strong> ${data.budget} FCFA</p>
+            <p><strong>Délai :</strong> ${data.delai}</p>
+            <p><strong>Besoins :</strong> ${data.besoins.join(', ')}</p>
+            <p><strong>Membre :</strong> ${data.membre === 'oui' ? 'Oui' : 'Non'}</p>
+            <p><strong>Date de naissance :</strong> ${data.dob || 'Non spécifiée'}</p>
+          `}
+        `;
+        document.getElementById('business-modal').classList.remove('hidden-section');
+      } else {
+        alert(`${type === 'business' ? 'Métier' : 'Projet'} non trouvé.`);
+      }
+    })
+    .catch(error => {
+      console.error(`Erreur lors du chargement des détails ${type} :`, error);
+      alert('Une erreur est survenue.');
+    });
 }
-
 // Masquer le modal
 function hideBusinessDetails() {
     document.getElementById('business-modal').classList.add('hidden-section');
