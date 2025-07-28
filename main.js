@@ -3090,31 +3090,42 @@ async function importMembersBulk() {
   }
 }
 
+
 // Gestion de la page Projet
 let projetBusinessData = []; // Stocke les données des professionnels
 
 function showProjetSection(section) {
-  // Masquer toutes les sections
-  document.querySelectorAll('#projet-promotion, #projet-financement, #projet-business, #projet-admin')
-    .forEach(el => el.classList.add('hidden'));
-  
-  // Afficher la section demandée
-  if (section === 'promotion') {
-    document.getElementById('projet-promotion').classList.remove('hidden');
-  } else if (section === 'financement') {
-    document.getElementById('projet-financement').classList.remove('hidden');
-  } else if (section === 'business') {
-    document.getElementById('projet-business').classList.remove('hidden');
-    loadProjetBusinessData();
-  }
+    // Masquer toutes les sections
+    document.getElementById('promotion-form').classList.add('hidden-section');
+    document.getElementById('financement-form').classList.add('hidden-section');
+    document.getElementById('business-section').classList.add('hidden-section');
+    document.getElementById('admin-section').classList.add('hidden-section');
+    document.getElementById('admin-dashboard').classList.add('hidden-section');
+    document.getElementById('success-promotion').classList.add('hidden-section');
+    document.getElementById('success-financement').classList.add('hidden-section');
+    document.getElementById('business-modal').classList.add('hidden-section');
+
+
+
+    // Afficher la section demandée
+    document.getElementById(section + '-form').classList.remove('hidden-section');
+
+    // Si la section est "business", charger les métiers
+    if (section === 'business') {
+        loadBusinessCards();
+    }
 }
 
 function showProjetAdmin() {
-  document.querySelectorAll('#projet-promotion, #projet-financement, #projet-business')
-    .forEach(el => el.classList.add('hidden'));
-  document.getElementById('projet-admin').classList.remove('hidden');
-}
+    // Masquer toutes les sections
+    document.getElementById('promotion-form').classList.add('hidden-section');
+    document.getElementById('financement-form').classList.add('hidden-section');
+    document.getElementById('business-section').classList.add('hidden-section');
+    document.getElementById('admin-dashboard').classList.add('hidden-section');
 
+    // Afficher la section admin
+    document.getElementById('admin-section').classList.remove('hidden-section');
+}
 function checkProjetAdminCode() {
   const code = document.getElementById('projet-admin-code').value;
   // Code admin simple (à changer pour la production)
@@ -3124,6 +3135,20 @@ function checkProjetAdminCode() {
   } else {
     alert("Code incorrect");
   }
+}
+
+function showMainInterface() {
+    // Masquer toutes les sections
+    document.getElementById('promotion-form').classList.add('hidden-section');
+    document.getElementById('financement-form').classList.add('hidden-section');
+    document.getElementById('business-section').classList.add('hidden-section');
+    document.getElementById('admin-section').classList.add('hidden-section');
+    document.getElementById('admin-dashboard').classList.add('hidden-section');
+
+    // Afficher les boutons principaux
+    document.querySelector('.projet-buttons').style.display = 'flex';
+    document.querySelector('.projet-header').style.display = 'block';
+    document.querySelector('.admin-link').style.display = 'block';
 }
 
 function submitProjetPromotion() {
@@ -3153,6 +3178,18 @@ function submitProjetFinancement() {
   showPage('home'); // Retour à l'accueil
 }
 
+function verifyAdminCodes() {
+    const code1 = document.getElementById('code1').value;
+    const code2 = document.getElementById('code2').value;
+
+    if (code1 === 'admin123' && code2 === 'admin456') {
+        document.getElementById('admin-section').classList.add('hidden-section');
+        document.getElementById('admin-dashboard').classList.remove('hidden-section');
+    } else {
+        alert('Codes incorrects. Veuillez réessayer.');
+    }
+}
+
 function loadProjetBusinessData() {
   // Données simulées (en production, charger depuis Firebase)
   projetBusinessData = [
@@ -3177,3 +3214,417 @@ document.addEventListener('DOMContentLoaded', function() {
     showProjetSection('promotion');
   }
 });
+
+// Afficher un formulaire admin spécifique
+function showAdminForm(type) {
+    // Masquer toutes les sections admin
+    document.getElementById('admin-promotion-form').classList.add('hidden-section');
+    document.getElementById('admin-financement-form').classList.add('hidden-section');
+    document.getElementById('admin-business-list').classList.add('hidden-section');
+    document.getElementById('admin-project-list').classList.add('hidden-section');
+
+    // Afficher la section correspondante
+    document.getElementById('admin-' + type + '-form').classList.remove('hidden-section');
+}
+
+// Afficher la liste des professionnels
+function showAdminBusinessList() {
+    // Masquer toutes les sections admin
+    document.getElementById('admin-promotion-form').classList.add('hidden-section');
+    document.getElementById('admin-financement-form').classList.add('hidden-section');
+    document.getElementById('admin-business-list').classList.remove('hidden-section');
+    document.getElementById('admin-project-list').classList.add('hidden-section');
+}
+
+// Afficher la liste des projets
+function showAdminProjectList() {
+    // Masquer toutes les sections admin
+    document.getElementById('admin-promotion-form').classList.add('hidden-section');
+    document.getElementById('admin-financement-form').classList.add('hidden-section');
+    document.getElementById('admin-business-list').classList.add('hidden-section');
+    document.getElementById('admin-project-list').classList.remove('hidden-section');
+}
+
+// Enregistrer un métier dans Firestore
+function saveBusiness() {
+    const businessData = {
+        nom: document.getElementById('a-nom').value,
+        dob: document.getElementById('a-dob').value,
+        membre: document.getElementById('a-membre').value,
+        metier: document.getElementById('a-metier').value,
+        experience: parseInt(document.getElementById('a-experience').value),
+        description: document.getElementById('a-description').value,
+        adresse: document.getElementById('a-adresse').value,
+        contact: document.getElementById('a-contact').value,
+        email: document.getElementById('a-email').value,
+        image: document.getElementById('a-image').value || 'https://via.placeholder.com/150', // Image par défaut si vide
+        services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(input => input.value),
+        createdAt: new Date()
+    };
+
+    // Vérifier que les champs obligatoires ne sont pas vides
+    if (!businessData.nom || !businessData.metier || !businessData.experience || !businessData.description || !businessData.adresse || !businessData.contact) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
+    }
+
+    // Enregistrer dans Firestore
+    firebase.firestore().collection('businesses').add(businessData)
+        .then(() => {
+            alert('Métier enregistré avec succès !');
+            document.getElementById('adminPromotionForm').reset(); // Réinitialiser le formulaire
+            showAdminForm('promotion'); // Rester sur le formulaire
+        })
+        .catch(error => {
+            console.error('Erreur lors de l\'enregistrement du métier :', error);
+            alert('Une erreur est survenue lors de l\'enregistrement.');
+        });
+}
+
+// Enregistrer un projet dans Firestore
+function saveProject() {
+    const projectData = {
+        nom: document.getElementById('af-nom').value,
+        dob: document.getElementById('af-dob').value,
+        membre: document.getElementById('af-membre').value,
+        titre: document.getElementById('af-titre').value,
+        description: document.getElementById('af-description').value,
+        budget: parseInt(document.getElementById('af-budget').value),
+        delai: document.getElementById('af-delai').value,
+        image: document.getElementById('af-image').value || 'https://via.placeholder.com/150', // Image par défaut si vide
+        besoins: Array.from(document.querySelectorAll('input[name="af-besoins"]:checked')).map(input => input.value),
+        createdAt: new Date()
+    };
+
+    // Vérifier que les champs obligatoires ne sont pas vides
+    if (!projectData.nom || !projectData.titre || !projectData.description || !projectData.budget || !projectData.delai) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
+    }
+
+    // Enregistrer dans Firestore
+    firebase.firestore().collection('projects').add(projectData)
+        .then(() => {
+            alert('Projet enregistré avec succès !');
+            document.getElementById('adminFinancementForm').reset(); // Réinitialiser le formulaire
+            showAdminForm('financement'); // Rester sur le formulaire
+        })
+        .catch(error => {
+            console.error('Erreur lors de l\'enregistrement du projet :', error);
+            alert('Une erreur est survenue lors de l\'enregistrement.');
+        });
+}
+
+// Charger les métiers dans #business-cards
+function loadBusinessCards() {
+    const businessCards = document.getElementById('business-cards');
+    businessCards.innerHTML = ''; // Vider le conteneur
+
+    firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get()
+        .then(querySnapshot => {
+            if (querySnapshot.empty) {
+                businessCards.innerHTML = '<p class="text-gray-600">Aucun métier disponible.</p>';
+                return;
+            }
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const card = `
+                    <div class="bg-white rounded-lg shadow-lg p-4">
+                        <img src="${data.image}" alt="${data.nom}" class="w-full h-48 object-cover rounded-md mb-4">
+                        <h3 class="text-lg font-bold">${data.nom}</h3>
+                        <p class="text-gray-600">${data.metier}</p>
+                        <p class="text-gray-600">${data.experience} ans d'expérience</p>
+                        <p class="text-gray-600">${data.adresse}</p>
+                        <p class="text-gray-600">${data.services.join(', ')}</p>
+                        <button onclick="showBusinessDetails('${doc.id}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
+                            Voir plus
+                        </button>
+                    </div>`;
+                businessCards.innerHTML += card;
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des métiers :', error);
+            businessCards.innerHTML = '<p class="text-red-600">Erreur lors du chargement des métiers.</p>';
+        });
+}
+
+// Afficher les détails d'un métier dans le modal
+function showBusinessDetails(businessId) {
+    firebase.firestore().collection('businesses').doc(businessId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('modal-title').textContent = data.nom;
+                document.getElementById('modal-content').innerHTML = `
+                    <img src="${data.image}" alt="${data.nom}" class="w-full h-48 object-cover rounded-md mb-4">
+                    <p><strong>Métier :</strong> ${data.metier}</p>
+                    <p><strong>Expérience :</strong> ${data.experience} ans</p>
+                    <p><strong>Description :</strong> ${data.description}</p>
+                    <p><strong>Adresse :</strong> ${data.adresse}</p>
+                    <p><strong>Contact :</strong> ${data.contact}</p>
+                    <p><strong>Email :</strong> ${data.email || 'Non spécifié'}</p>
+                    <p><strong>Services :</strong> ${data.services.join(', ')}</p>
+                    <p><strong>Membre :</strong> ${data.membre === 'oui' ? 'Oui' : 'Non'}</p>
+                    <p><strong>Date de naissance :</strong> ${data.dob || 'Non spécifiée'}</p>`;
+                document.getElementById('business-modal').classList.remove('hidden-section');
+            } else {
+                alert('Métier non trouvé.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des détails :', error);
+            alert('Une erreur est survenue.');
+        });
+}
+
+// Masquer le modal
+function hideBusinessDetails() {
+    document.getElementById('business-modal').classList.add('hidden-section');
+}
+
+
+// Charger la liste des métiers dans #admin-business-list
+function loadBusinessList() {
+    const businessTableBody = document.getElementById('business-table-body');
+    businessTableBody.innerHTML = ''; // Vider le tableau
+    firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get()
+        .then(querySnapshot => {
+            if (querySnapshot.empty) {
+                businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center">Aucun métier disponible.</td></tr>';
+                return;
+            }
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const row = `
+                    <tr>
+                        <td class="py-3 px-4">${data.nom}</td>
+                        <td class="py-3 px-4">${data.metier}</td>
+                        <td class="py-3 px-4">${data.experience} ans</td>
+                        <td class="py-3 px-4">${data.adresse}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="editBusiness('${doc.id}')" class="text-blue-600 hover:text-blue-800 mr-3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteBusiness('${doc.id}')" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                businessTableBody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des métiers :', error);
+            businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-600">Erreur lors du chargement.</td></tr>';
+        });
+}
+
+// Charger la liste des projets dans #admin-project-list
+function loadProjectList() {
+    const projectTableBody = document.getElementById('project-table-body');
+    projectTableBody.innerHTML = ''; // Vider le tableau
+    firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
+        .then(querySnapshot => {
+            if (querySnapshot.empty) {
+                projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center">Aucun projet disponible.</td></tr>';
+                return;
+            }
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const row = `
+                    <tr>
+                        <td class="py-3 px-4">${data.nom}</td>
+                        <td class="py-3 px-4">${data.titre}</td>
+                        <td class="py-3 px-4">${data.budget} FCFA</td>
+                        <td class="py-3 px-4">${data.delai}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="editProject('${doc.id}')" class="text-blue-600 hover:text-blue-800 mr-3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProject('${doc.id}')" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                projectTableBody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des projets :', error);
+            projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-600">Erreur lors du chargement.</td></tr>';
+        });
+}
+
+// Mettre à jour showAdminBusinessList et showAdminProjectList
+function showAdminBusinessList() {
+    document.getElementById('admin-promotion-form').classList.add('hidden-section');
+    document.getElementById('admin-financement-form').classList.add('hidden-section');
+    document.getElementById('admin-business-list').classList.remove('hidden-section');
+    document.getElementById('admin-project-list').classList.add('hidden-section');
+    loadBusinessList(); // Charger les données
+}
+
+function showAdminProjectList() {
+    document.getElementById('admin-promotion-form').classList.add('hidden-section');
+    document.getElementById('admin-financement-form').classList.add('hidden-section');
+    document.getElementById('admin-business-list').classList.add('hidden-section');
+    document.getElementById('admin-project-list').classList.remove('hidden-section');
+    loadProjectList(); // Charger les données
+}
+
+// Éditer un métier
+function editBusiness(businessId) {
+    firebase.firestore().collection('businesses').doc(businessId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('a-nom').value = data.nom;
+                document.getElementById('a-dob').value = data.dob || '';
+                document.getElementById('a-membre').value = data.membre;
+                document.getElementById('a-metier').value = data.metier;
+                document.getElementById('a-experience').value = data.experience;
+                document.getElementById('a-description').value = data.description;
+                document.getElementById('a-adresse').value = data.adresse;
+                document.getElementById('a-contact').value = data.contact;
+                document.getElementById('a-email').value = data.email || '';
+                document.getElementById('a-image').value = data.image || '';
+                document.querySelectorAll('input[name="a-services"]').forEach(input => {
+                    input.checked = data.services.includes(input.value);
+                });
+
+                // Changer le bouton pour mettre à jour
+                const saveButton = document.querySelector('#adminPromotionForm button');
+                saveButton.textContent = 'Mettre à jour';
+                saveButton.onclick = () => updateBusiness(businessId);
+                showAdminForm('promotion');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement du métier :', error);
+            alert('Une erreur est survenue.');
+        });
+}
+
+// Mettre à jour un métier
+function updateBusiness(businessId) {
+    const businessData = {
+        nom: document.getElementById('a-nom').value,
+        dob: document.getElementById('a-dob').value,
+        membre: document.getElementById('a-membre').value,
+        metier: document.getElementById('a-metier').value,
+        experience: parseInt(document.getElementById('a-experience').value),
+        description: document.getElementById('a-description').value,
+        adresse: document.getElementById('a-adresse').value,
+        contact: document.getElementById('a-contact').value,
+        email: document.getElementById('a-email').value,
+        image: document.getElementById('a-image').value || 'https://via.placeholder.com/150',
+        services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(input => input.value),
+        updatedAt: new Date()
+    };
+
+    firebase.firestore().collection('businesses').doc(businessId).update(businessData)
+        .then(() => {
+            alert('Métier mis à jour avec succès !');
+            document.getElementById('adminPromotionForm').reset();
+            const saveButton = document.querySelector('#adminPromotionForm button');
+            saveButton.textContent = 'Enregistrer';
+            saveButton.onclick = saveBusiness;
+            showAdminBusinessList();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la mise à jour du métier :', error);
+            alert('Une erreur est survenue.');
+        });
+}
+
+// Supprimer un métier
+function deleteBusiness(businessId) {
+    if (confirm('Voulez-vous vraiment supprimer ce métier ?')) {
+        firebase.firestore().collection('businesses').doc(businessId).delete()
+            .then(() => {
+                alert('Métier supprimé avec succès !');
+                loadBusinessList();
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du métier :', error);
+                alert('Une erreur est survenue.');
+            });
+    }
+}
+
+// Éditer un projet
+function editProject(projectId) {
+    firebase.firestore().collection('projects').doc(projectId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('af-nom').value = data.nom;
+                document.getElementById('af-dob').value = data.dob || '';
+                document.getElementById('af-membre').value = data.membre;
+                document.getElementById('af-titre').value = data.titre;
+                document.getElementById('af-description').value = data.description;
+                document.getElementById('af-budget').value = data.budget;
+                document.getElementById('af-delai').value = data.delai;
+                document.getElementById('af-image').value = data.image || '';
+                document.querySelectorAll('input[name="af-besoins"]').forEach(input => {
+                    input.checked = data.besoins.includes(input.value);
+                });
+
+                // Changer le bouton pour mettre à jour
+                const saveButton = document.querySelector('#adminFinancementForm button');
+                saveButton.textContent = 'Mettre à jour';
+                saveButton.onclick = () => updateProject(projectId);
+                showAdminForm('financement');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement du projet :', error);
+            alert('Une erreur est survenue.');
+        });
+}
+
+// Mettre à jour un projet
+function updateProject(projectId) {
+    const projectData = {
+        nom: document.getElementById('af-nom').value,
+        dob: document.getElementById('af-dob').value,
+        membre: document.getElementById('af-membre').value,
+        titre: document.getElementById('af-titre').value,
+        description: document.getElementById('af-description').value,
+        budget: parseInt(document.getElementById('af-budget').value),
+        delai: document.getElementById('af-delai').value,
+        image: document.getElementById('af-image').value || 'https://via.placeholder.com/150',
+        besoins: Array.from(document.querySelectorAll('input[name="af-besoins"]:checked')).map(input => input.value),
+        updatedAt: new Date()
+    };
+
+    firebase.firestore().collection('projects').doc(projectId).update(projectData)
+        .then(() => {
+            alert('Projet mis à jour avec succès !');
+            document.getElementById('adminFinancementForm').reset();
+            const saveButton = document.querySelector('#adminFinancementForm button');
+            saveButton.textContent = 'Enregistrer';
+            saveButton.onclick = saveProject;
+            showAdminProjectList();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la mise à jour du projet :', error);
+            alert('Une erreur est survenue.');
+        });
+}
+
+// Supprimer un projet
+function deleteProject(projectId) {
+    if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
+        firebase.firestore().collection('projects').doc(projectId).delete()
+            .then(() => {
+                alert('Projet supprimé avec succès !');
+                loadProjectList();
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du projet :', error);
+                alert('Une erreur est survenue.');
+            });
+    }
+}
