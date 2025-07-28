@@ -1716,3 +1716,7 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.hidden-section {
+    display: none;
+}
