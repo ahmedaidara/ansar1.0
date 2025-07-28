@@ -33,40 +33,66 @@
 </header>
   <main>
     <!-- Page d'accueil -->
-    <section id="home" class="page active">
-      <div class="header" style="background-image: url('assets/images/photo1.png');">
-        <div class="header-content">
-          <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
-          <button class="settings" onclick="showPage('settings')"><i class="fas fa-cog"></i></button>
+<!-- Page d'accueil -->
+<!-- Page d'accueil -->
+<!-- Page d'accueil -->
+<section id="home" class="page active">
+  <div class="header" style="background-image: url('assets/images/photo1.png');">
+    <div class="header-content">
+      <img src="assets/images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+      <button class="settings" onclick="showPage('settings')"><i class="fas fa-cog"></i></button>
+    </div>
+    <div class="ad-banner">
+      <div class="ad-text banner-text">
+        <h2>ANSAR ALMOUYASSAR</h2>
+        <p>Association des ressortissant de l'institut Al Mouyassar</p>
+      </div>
+    </div>
+  </div>
+  <div class="association-title">
+    <span>ANSAR ALMOUYASSAR</span>
+  </div>
+  <div id="home-motivation"></div>
+  <div class="image-card">
+    <img src="assets/images/photo2.png" alt="Image">
+  </div>
+  <div id="event-countdowns"></div>
+  <div class="grid">
+    <div class="item" onclick="showPage('members')"><span class="item-text">Membres</span><i class="fas fa-users icon"></i></div>
+    <div class="item" onclick="showPage('events')"><span class="item-text">Événements</span><i class="fas fa-calendar-alt icon"></i></div>
+    <div class="item" onclick="showPage('coran')"><span class="item-text">Coran</span><i class="fas fa-book icon"></i></div>
+    <div class="item" onclick="showPage('library')"><span class="item-text">Bibliothèque</span><i class="fas fa-book-open icon"></i></div>
+    <div class="item" onclick="showPage('projet')"><span class="item-text">Projet Ansar</span><i class="fas fa-rocket icon"></i></div>
+  </div>
+ 
+  <h3>AFFICHE</h3>
+  <div id="home-gallery" class="gallery-grid"></div>
+  
+          <!-- Business Section -->
+     
+       
+               <!-- Business Section -->
+ 
+        <h2 class="text-3xl font-bold text-purple-700 mb-8 text-center">Nos Professionnels</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
+            <!-- Les cartes seront générées dynamiquement -->
         </div>
-        <div class="ad-banner">
-          <div class="ad-text banner-text">
-            <h2>ANSAR ALMOUYASSAR</h2>
-            <p>Association des ressortissant de l'institut Al Mouyassar</p>
-          </div>
+
+
+<!-- Ajouter ce modal juste après la section business-section -->
+<div id="business-modal" class="business-modal hidden-section">
+    <div class="business-modal-content">
+        <span class="close-modal" onclick="hideBusinessDetails()">&times;</span>
+        <h3 id="modal-title" class="text-2xl font-bold text-gray-800 mb-4"></h3>
+        <div id="modal-content" class="space-y-4">
+            <!-- Les détails seront chargés ici -->
         </div>
-      </div>
-      <div class="association-title">
-        <span>ANSAR ALMOUYASSAR</span>
-      </div>
-      <!-- Après la deuxième image -->
-<div id="home-motivation"></div>
-      <div class="image-card">
-        <img src="assets/images/photo2.png" alt="Image">
-      </div>
-            <div id="event-countdowns"></div>
-
-      <div class="grid">
-        <div class="item" onclick="showPage('members')"><span class="item-text">Membres</span><i class="fas fa-users icon"></i></div>
-        <div class="item" onclick="showPage('events')"><span class="item-text">Événements</span><i class="fas fa-calendar-alt icon"></i></div>
-        <div class="item" onclick="showPage('coran')"><span class="item-text">Coran</span><i class="fas fa-book icon"></i></div>
-        <div class="item" onclick="showPage('library')"><span class="item-text">Bibliothèque</span><i class="fas fa-book-open icon"></i></div>
-        <div class="item" onclick="showPage('projet')"><span class="item-text">Projet Ansar</span><i class="fas fa-rocket icon"></i></div>
-      </div>
-      <h3>AFFICHE</h3>
-      <div id="home-gallery" class="gallery-grid"></div>
-    </section>
-
+        <button onclick="hideBusinessDetails()">Fermer</button>
+    </div>
+</div>
+  
+</section>
+    
     <!-- Page des membres -->
     <section id="members" class="page">
       <h2>Liste des Membres</h2>
@@ -1244,6 +1270,16 @@ Prénom|Nom|Âge|Email|Téléphone|Rôle|Statut|Adresse|Activité|Résidence|Lie
       <button class="cta-button" onclick="checkSecretPassword()">Entrée</button>
     </div>
   </div>
+<script>
+  // Copier le contenu de #business-cards dans #business-cards-home au chargement
+  document.addEventListener('DOMContentLoaded', () => {
+    const businessCards = document.getElementById('business-cards');
+    const homeBusinessCards = document.getElementById('business-cards-home');
+    if (businessCards && homeBusinessCards) {
+      homeBusinessCards.innerHTML = businessCards.innerHTML;
+    }
+  });
+</script>
 </body>
   <script>
 // Fonction pour afficher les sections (à ajouter à la fin du body)
