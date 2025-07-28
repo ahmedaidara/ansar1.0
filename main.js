@@ -3095,25 +3095,48 @@ async function importMembersBulk() {
 let projetBusinessData = []; // Stocke les données des professionnels
 
 function showProjetSection(section) {
-    // Masquer toutes les sections
-    document.getElementById('promotion-form').classList.add('hidden-section');
-    document.getElementById('financement-form').classList.add('hidden-section');
-    document.getElementById('business-section').classList.add('hidden-section');
-    document.getElementById('admin-section').classList.add('hidden-section');
-    document.getElementById('admin-dashboard').classList.add('hidden-section');
-    document.getElementById('success-promotion').classList.add('hidden-section');
-    document.getElementById('success-financement').classList.add('hidden-section');
-    document.getElementById('business-modal').classList.add('hidden-section');
+  console.log(`Tentative d'affichage de la section : ${section}`);
 
+  // Liste des sections à masquer
+  const sectionsToHide = [
+    'promotion-form',
+    'financement-form',
+    'business-section',
+    'admin-section',
+    'admin-dashboard',
+    'success-promotion',
+    'success-financement',
+    'business-modal'
+  ];
 
-
-    // Afficher la section demandée
-    document.getElementById(section + '-form').classList.remove('hidden-section');
-
-    // Si la section est "business", charger les métiers
-    if (section === 'business') {
-        loadBusinessCards();
+  // Masquer toutes les sections
+  sectionsToHide.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.classList.add('hidden-section');
+    } else {
+      console.warn(`Élément #${id} introuvable dans le DOM`);
     }
+  });
+
+  // Déterminer l'ID de la section cible
+  const targetId = section === 'business' ? 'business-section' : `${section}-form`;
+  const targetSection = document.getElementById(targetId);
+
+  // Afficher la section demandée
+  if (targetSection) {
+    targetSection.classList.remove('hidden-section');
+    console.log(`Section #${targetId} affichée`);
+  } else {
+    console.error(`Section #${targetId} introuvable dans le DOM`);
+    return;
+  }
+
+  // Charger les cartes pour la section business
+  if (section === 'business') {
+    console.log('Appel de loadBusinessCards');
+    loadBusinessCards();
+  }
 }
 
 function showProjetAdmin() {
