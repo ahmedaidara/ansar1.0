@@ -29,7 +29,7 @@ body {
 
 .header {
   position: relative;
-  height: 200px; /* Hauteur fixe (ajustez selon vos besoins) */
+  height: 230px !important; /* Augmentée pour faire descendre l'image plus bas */
   background-size: cover !important;
   background-position: center;
   background-repeat: no-repeat;
