@@ -2368,3 +2368,144 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
     color: #d4d04e !important; /* Jaune plus clair au survol */
     border-color: #d4d04e !important; /* Bordure plus claire au survol */
 }
+
+/* Variables pour cohérence */
+:root {
+  --primary-color: #073332;
+  --text-color: #ffffff;
+  --light-accent: #d8d9c2;
+}
+
+/* Style de la barre de navigation */
+.top-nav-bar {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 1000; /* Élevé pour être au-dessus de tout */
+    padding: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
+}
+
+/* Conteneur du titre */
+.top-nav-bar .title-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 15px;
+}
+
+/* Titre principal */
+.top-nav-bar .title-container h1 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--text-color);
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Sous-titre */
+.top-nav-bar .title-container p {
+    font-size: 0.75rem;
+    color: var(--light-accent);
+    margin: 2px 0 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Logo */
+.top-nav-bar .logo {
+    width: 48px;
+    height: auto;
+    margin-right: 15px;
+}
+
+/* Par défaut, masquer la barre */
+.top-nav-bar {
+    display: none;
+}
+
+/* Afficher la barre uniquement sur les pages spécifiées */
+#members .top-nav-bar,
+#events .top-nav-bar,
+#library .top-nav-bar,
+#projet .top-nav-bar,
+#secret .top-nav-bar,
+#treasurer .top-nav-bar,
+#president .top-nav-bar,
+#secretary .top-nav-bar,
+#settings .top-nav-bar,
+#admin-dashboard .top-nav-bar {
+    display: flex;
+}
+
+/* Ajuster le contenu pour éviter le chevauchement */
+#members,
+#events,
+#library,
+#projet,
+#secret,
+#treasurer,
+#president,
+#secretary,
+#settings,
+#admin-dashboard {
+    padding-top: 100px !important; /* Hauteur estimée de la barre (~60px) + marge */
+}
+
+/* S'assurer que les titres ne sont pas masqués */
+#members h2,
+#events .association-title,
+#library .messages-header-container,
+#projet .projet-header,
+#secret h2,
+#treasurer h2,
+#president h2,
+#secretary h2,
+#settings .association-title,
+#admin-dashboard h2 {
+    margin-top: 0;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 600px) {
+    .top-nav-bar .title-container h1 {
+        font-size: 1.1rem;
+    }
+    .top-nav-bar .title-container p {
+        font-size: 0.65rem;
+    }
+    .top-nav-bar .logo {
+        width: 40px;
+    }
+    .top-nav-bar {
+        padding: 10px 0;
+    }
+    #members,
+    #events,
+    #library,
+    #projet,
+    #secret,
+    #treasurer,
+    #president,
+    #secretary,
+    #settings,
+    #admin-dashboard {
+        padding-top: 70px; /* Réduit pour mobile */
+    }
+}
+
+/* Masquer la barre par défaut sur #home */
+#home .top-nav-bar {
+    display: none;
+}
+
+/* Classe pour afficher la barre quand elle est activée */
+#home .top-nav-bar.active {
+    display: flex;
+}
+
+/* S'assurer que le contenu de #home est décalé pour éviter le chevauchement */
