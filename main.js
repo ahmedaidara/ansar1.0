@@ -3391,80 +3391,61 @@ function saveProject() {
 async function loadBusinessCards() {
   console.log('loadBusinessCards: Début'); // Débogage
   const businessCards = document.getElementById('business-cards');
-  const homeBusinessCards = document.getElementById('home-business-cards');
-  
-  // Vérifier si les conteneurs existent
-  if (!businessCards) console.error('Conteneur #business-cards introuvable');
-  if (!homeBusinessCards) console.error('Conteneur #home-business-cards introuvable');
-  if (!businessCards && !homeBusinessCards) {
-    console.error('Aucun conteneur trouvé, arrêt de loadBusinessCards');
+
+  // Vérifier si le conteneur existe
+  if (!businessCards) {
+    console.error('Conteneur #business-cards introuvable');
     return;
   }
 
   // Afficher un message de chargement
-  if (businessCards) businessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
-  if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
+  businessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
 
   try {
-    // Charger les données depuis Firestore
-    console.log('loadBusinessCards: Chargement des données Firestore');
-    const [businessSnapshot, projectSnapshot] = await Promise.all([
-      firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get(),
-      firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
-    ]);
+    // Charger uniquement les projets depuis Firestore
+    console.log('loadBusinessCards: Chargement des projets Firestore');
+    const projectSnapshot = await firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get();
 
-    // Combiner les données
-    const businesses = businessSnapshot.docs.map(doc => ({
-      id: doc.id,
-      type: 'business',
-      ...doc.data()
-    }));
+    // Mapper les données des projets
     const projects = projectSnapshot.docs.map(doc => ({
       id: doc.id,
       type: 'project',
       ...doc.data()
     }));
-    const combinedData = [...businesses, ...projects];
-    console.log('loadBusinessCards: Données chargées', combinedData);
+    console.log('loadBusinessCards: Projets chargés', projects);
 
-    // Vérifier si des données existent
-    if (combinedData.length === 0) {
-      console.log('loadBusinessCards: Aucune donnée disponible');
-      if (businessCards) businessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun métier ou projet disponible.</p>';
-      if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun métier ou projet disponible.</p>';
+    // Vérifier si des projets existent
+    if (projects.length === 0) {
+      console.log('loadBusinessCards: Aucun projet disponible');
+      businessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun projet disponible.</p>';
       return;
     }
 
-    // Générer le HTML des cartes (identique à #business-section)
-    const cardHTML = combinedData.map(item => {
-      const isBusiness = item.type === 'business';
-      return `
-        <div class="business-card">
-          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${isBusiness ? item.nom : item.titre}" class="w-full h-48 object-cover rounded-md mb-4">
-          <h3 class="text-lg font-bold">${isBusiness ? item.nom : item.titre}</h3>
-          <p class="text-gray-600">${isBusiness ? item.metier : 'Projet'}</p>
-          <p class="text-gray-600">${isBusiness ? `${item.experience} ans d'expérience` : `${item.budget} FCFA`}</p>
-          <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2">
-            ${isBusiness ? 'Métier' : 'Projet'}
-          </span>
-          <button onclick="showBusinessDetails('${item.id}', '${item.type}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
-            En savoir plus
-          </button>
-        </div>`;
-    }).join('');
+    // Générer le HTML des cartes pour les projets
+    const cardHTML = projects.map(project => `
+      <div class="business-card">
+        <img src="${project.image || 'https://via.placeholder.com/150'}" alt="${project.titre}" class="w-full h-48 object-cover rounded-md mb-4">
+        <h3 class="text-lg font-bold">${project.titre}</h3>
+        <p class="text-gray-600">Projet</p>
+        <p class="text-gray-600">${project.budget} FCFA</p>
+        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2">
+          Projet
+        </span>
+        <button onclick="showBusinessDetails('${project.id}', 'project')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4">
+          En savoir plus
+        </button>
+      </div>
+    `).join('');
     console.log('loadBusinessCards: HTML généré', cardHTML);
 
-    // Injecter le HTML dans les conteneurs
-    if (businessCards) businessCards.innerHTML = cardHTML;
-    if (homeBusinessCards) homeBusinessCards.innerHTML = cardHTML;
-    console.log('loadBusinessCards: HTML injecté dans les conteneurs');
+    // Injecter le HTML dans le conteneur
+    businessCards.innerHTML = cardHTML;
+    console.log('loadBusinessCards: HTML injecté dans le conteneur');
   } catch (error) {
     console.error('loadBusinessCards: Erreur lors du chargement', error);
-    if (businessCards) businessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des données.</p>';
-    if (homeBusinessCards) homeBusinessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des données.</p>';
+    businessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des projets.</p>';
   }
 }
-
 // Afficher les détails d'un métier dans le modal
 async function loadBusinessCards() {
     const businessCards = document.getElementById('business-cards');
@@ -3545,6 +3526,14 @@ function showBusinessDetails(id, type) {
                             <div class="flex items-center text-gray-600 mt-2">
                                 <i class="fas fa-envelope mr-2"></i>
                                 <span>${data.email || 'Non spécifié'}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600 mt-2">
+                                <i class="fas fa-globe mr-2"></i>
+                                <span>${data.website ? `<a href="${data.website}" target="_blank">Site Web</a>` : 'Non spécifié'}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600 mt-2">
+                                <i class="fas fa-briefcase mr-2"></i>
+                                <span>${data.portfolio ? `<a href="${data.portfolio}" target="_blank">Portfolio</a>` : 'Non spécifié'}</span>
                             </div>
                         </div>
                         <div class="md:w-2/3">
