@@ -295,6 +295,19 @@
             </div>
         </div>
 
+        <div id="success-financement" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+                <div class="text-green-500 text-5xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Merci !</h3>
+                <p class="text-gray-600 mb-6">Le groupe Ansar projet vous contactera dans un délai de 3 à 5 jours.</p>
+                <button onclick="hideSuccessMessage('financement')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+                    OK
+                </button>
+            </div>
+        </div>
+
         <!-- Admin Section -->
         <div id="admin-section" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
@@ -608,9 +621,6 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Neutraliser les alertes
-            window.alert = function() {};
-            
             // Afficher l'interface principale
             document.getElementById('main-interface').classList.remove('hidden-section');
             
@@ -622,14 +632,8 @@
                 }
             });
 
-            // Masquer explicitement le message de succès promotion
-            document.getElementById('success-promotion').classList.add('hidden-section');
-
             // Charger les données des professionnels
             loadBusinesses();
-            
-            // Log pour débogage
-            console.log('Chargement de projet.html - Initialisation terminée');
         });
 
         // Show section function
@@ -703,8 +707,8 @@
             };
             
             console.log("Form data:", formData);
+            document.getElementById('success-financement').classList.remove('hidden-section');
             document.getElementById('financementForm').reset();
-            console.log("Formulaire de financement soumis avec succès");
         }
 
         // Business details functions
@@ -764,6 +768,8 @@
         function hideSuccessMessage(type) {
             if (type === 'promotion') {
                 document.getElementById('success-promotion').classList.add('hidden-section');
+            } else if (type === 'financement') {
+                document.getElementById('success-financement').classList.add('hidden-section');
             }
         }
 
@@ -800,7 +806,7 @@
                 document.getElementById('code1').value = "";
                 document.getElementById('code2').value = "";
             } else {
-                console.log("Codes incorrects. Veuillez réessayer.");
+                alert("Codes incorrects. Veuillez réessayer.");
             }
         }
 
@@ -872,13 +878,13 @@
             try {
                 businesses.push(businessData);
                 document.getElementById('adminPromotionForm').reset();
-                console.log('Métier enregistré avec succès !');
+                alert('Métier enregistré avec succès !');
                 updateBusinessList();
                 updateBusinessCards();
                 showAdminBusinessList();
             } catch (error) {
                 console.error('Erreur lors de l\'enregistrement du métier:', error);
-                console.log('Erreur lors de l\'enregistrement du métier');
+                alert('Erreur lors de l\'enregistrement du métier');
             }
         }
 
@@ -898,7 +904,7 @@
             
             projects.push(projectData);
             document.getElementById('adminFinancementForm').reset();
-            console.log("Projet enregistré avec succès !");
+            alert("Projet enregistré avec succès !");
             updateProjectList();
             showAdminProjectList();
         }
@@ -909,7 +915,7 @@
                 updateBusinessCards();
             } catch (error) {
                 console.error('Erreur lors du chargement des professionnels:', error);
-                console.log('Erreur lors du chargement des professionnels');
+                alert('Erreur lors du chargement des professionnels');
             }
         }
 
@@ -954,13 +960,13 @@
                     businesses = businesses.map(b => b.id === id ? updatedData : b);
                     document.getElementById('adminPromotionForm').reset();
                     document.getElementById('adminPromotionForm').onsubmit = null;
-                    console.log('Métier mis à jour avec succès !');
+                    alert('Métier mis à jour avec succès !');
                     updateBusinessList();
                     updateBusinessCards();
                     showAdminBusinessList();
                 } catch (error) {
                     console.error('Erreur lors de la mise à jour:', error);
-                    console.log('Erreur lors de la mise à jour');
+                    alert('Erreur lors de la mise à jour');
                 }
             };
 
@@ -973,10 +979,10 @@
                     businesses = businesses.filter(b => b.id !== id);
                     updateBusinessList();
                     updateBusinessCards();
-                    console.log('Professionnel supprimé avec succès !');
+                    alert('Professionnel supprimé avec succès !');
                 } catch (error) {
                     console.error('Erreur lors de la suppression:', error);
-                    console.log('Erreur lors de la suppression');
+                    alert('Erreur lors de la suppression');
                 }
             }
         }
@@ -1014,7 +1020,7 @@
             if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
                 projects = projects.filter(p => p.id !== id);
                 updateProjectList();
-                console.log("Projet supprimé avec succès !");
+                alert("Projet supprimé avec succès !");
             }
         }
 
