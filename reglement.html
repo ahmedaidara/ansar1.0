@@ -3,92 +3,430 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Réglement intérieur - ANSAR ALMOUYASSAR</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <title>Règlement Intérieur - ANSAR ALMOUYASSAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #2C5F2D;
+      --secondary: #97BC62;
+      --accent: #F5C242;
+      --light: #F8F8F8;
+      --dark: #1A1A1A;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: 'Roboto', sans-serif;
-      line-height: 1.6;
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-      color: #333;
-      background-color: #f8f8f8;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.7;
+      background-color: var(--light);
+      color: var(--dark);
+      padding: 0;
+      overflow-x: hidden;
     }
-    h1 {
-      color: #1f4a49;
+    
+    .container {
+      max-width: 100%;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 30px 20px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
       margin-bottom: 30px;
-      padding-bottom: 15px;
-      border-bottom: 3px solid #9b9b22;
+      box-shadow: var(--shadow);
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 Q50,80 0,100 L0,0 Z"/></svg>');
+      background-size: 100% 100%;
+      opacity: 0.3;
+    }
+    
+    h1 {
+      font-size: 1.8rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    h2 {
-      color: #1f4a49;
-      margin-top: 35px;
-      border-left: 5px solid #9b9b22;
-      padding-left: 15px;
-      font-weight: 500;
-      background: linear-gradient(to right, rgba(155, 155, 34, 0.1), transparent);
-    }
-    p, ul {
-      margin-bottom: 18px;
+    
+    .subtitle {
       font-weight: 300;
+      opacity: 0.9;
+      font-size: 1rem;
+      position: relative;
+      z-index: 1;
     }
+    
+    .article {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 4px solid var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .article:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .article-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .article-title i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+    
+    .article-content {
+      font-size: 0.95rem;
+      color: #555;
+    }
+    
     ul {
-      padding-left: 25px;
+      padding-left: 20px;
+      margin: 10px 0;
     }
+    
     li {
       margin-bottom: 8px;
       position: relative;
+      list-style-type: none;
+      padding-left: 25px;
     }
+    
     li:before {
-      content: "•";
-      color: #9b9b22;
-      font-weight: bold;
-      display: inline-block;
-      width: 1em;
-      margin-left: -1em;
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
     }
-    .last-updated {
+    
+    .footer {
       text-align: center;
-      font-style: italic;
-      color: #666;
-      margin-bottom: 40px;
-      font-size: 0.9em;
+      padding: 30px 20px;
+      color: #777;
+      font-size: 0.9rem;
+      margin-top: 20px;
     }
-    .contact {
-      background-color: rgba(31, 74, 73, 0.05);
-      padding: 20px;
+    
+    .adoption-date {
+      background: var(--primary);
+      color: white;
+      padding: 15px;
       border-radius: 8px;
-      margin-top: 30px;
-      border-left: 4px solid #9b9b22;
+      text-align: center;
+      margin: 30px auto;
+      max-width: 300px;
+      box-shadow: var(--shadow);
     }
-    a {
-      color: #1f4a49;
-      text-decoration: none;
-      font-weight: 400;
-      transition: all 0.3s;
+    
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    a:hover {
-      color: #9b9b22;
-      text-decoration: underline;
+    
+    .article {
+      animation: fadeIn 0.6s ease forwards;
+      opacity: 0;
     }
-    @media (max-width: 600px) {
-      body {
+    
+    .article:nth-child(1) { animation-delay: 0.1s; }
+    .article:nth-child(2) { animation-delay: 0.2s; }
+    .article:nth-child(3) { animation-delay: 0.3s; }
+    .article:nth-child(4) { animation-delay: 0.4s; }
+    .article:nth-child(5) { animation-delay: 0.5s; }
+    .article:nth-child(6) { animation-delay: 0.6s; }
+    .article:nth-child(7) { animation-delay: 0.7s; }
+    .article:nth-child(8) { animation-delay: 0.8s; }
+    .article:nth-child(9) { animation-delay: 0.9s; }
+    .article:nth-child(10) { animation-delay: 1.0s; }
+    .article:nth-child(11) { animation-delay: 1.1s; }
+    .article:nth-child(12) { animation-delay: 1.2s; }
+    .article:nth-child(13) { animation-delay: 1.3s; }
+    .article:nth-child(14) { animation-delay: 1.4s; }
+    .article:nth-child(15) { animation-delay: 1.5s; }
+    .article:nth-child(16) { animation-delay: 1.6s; }
+    .article:nth-child(17) { animation-delay: 1.7s; }
+    .article:nth-child(18) { animation-delay: 1.8s; }
+    .article:nth-child(19) { animation-delay: 1.9s; }
+    .article:nth-child(20) { animation-delay: 2.0s; }
+    .article:nth-child(21) { animation-delay: 2.1s; }
+    .article:nth-child(22) { animation-delay: 2.2s; }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+      header {
+        padding: 25px 15px;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .subtitle {
+        font-size: 0.9rem;
+      }
+      
+      .article {
         padding: 15px;
       }
-      h1 {
-        font-size: 1.8em;
+      
+      .article-title {
+        font-size: 1rem;
       }
+      
+      .article-content {
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--light);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--secondary);
+      border-radius: 3px;
     }
   </style>
 </head>
 <body>
-  <h1>M. NIANG / S. MAMOUNE CETTE PAGE VOUS ATTEND</h1>
-  <p class="last-updated">NAGN SI DEFF YITEE MA PARé</p>
+  <header>
+    <div class="container">
+      <h1>Règlement Intérieur</h1>
+      <p class="subtitle">Association ANSAR ALMOUYASSAR</p>
+    </div>
+  </header>
   
+  <div class="container">
+    <div class="article">
+      <div class="article-title"><i class="fas fa-file-alt"></i> Préambule</div>
+      <div class="article-content">
+        Vu les Statuts de l'Association <strong>ANSAR ALMOUYASSAR</strong>, l'assemblée générale adopte le présent Règlement Intérieur qui s'applique aux membres de l'Association <strong>ANSAR ALMOUYASSAR</strong>.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-vote-yea"></i> Article 1 : Élection des membres du Bureau</div>
+      <div class="article-content">
+        Les membres du Bureau sont élus en Assemblée Générale.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-check-circle"></i> Article 2 : Modalités d'élection</div>
+      <div class="article-content">
+        Les membres du Bureau sont élus parmi les candidats volontaires ou sur proposition du Comité Directeur. Les élections se font à main levée et à la majorité simple des voix, sauf pour le président qui doit nécessairement obtenir les deux tiers des voix au premier tour ou la moitié des voix plus une des membres présents au tour suivant.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-user-check"></i> Article 3 : Conditions d'éligibilité</div>
+      <div class="article-content">
+        Est éligible tout membre actif de l'association à jour de ses cotisations, jouissant d'une bonne moralité et dont la candidature est acceptée par l'Assemblée Générale.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-calendar-alt"></i> Article 4 : Durée du mandat</div>
+      <div class="article-content">
+        Le mandat des membres du Bureau est fixé à un (01) an.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-redo"></i> Article 5 : Rééligibilité</div>
+      <div class="article-content">
+        Les membres sortant sont rééligibles.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-user-tie"></i> Article 6 : Conditions pour le poste de président</div>
+      <div class="article-content">
+        Est éligible au poste de président tout membre actif de l'association présent à l'Assemblée Générale, de bonne moralité, à jour de ses cotisations et ayant le sens des relations.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-users"></i> Article 7 : Composition du Bureau</div>
+      <div class="article-content">
+        Le Bureau dont le mandat est renouvelable, fonctionne sur une durée d'une année. Il est composé :
+        <ul>
+          <li>d'un Président</li>
+          <li>d'un Vice Président</li>
+          <li>d'un Secrétaire Général</li>
+          <li>d'un Secrétaire Général Adjoint</li>
+          <li>d'un Trésorier Général</li>
+          <li>d'un Trésorier Général Adjoint</li>
+          <li>de deux Commissaire aux Comptes</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-tasks"></i> Article 8 : Missions du Bureau</div>
+      <div class="article-content">
+        Le Bureau qui se réunit une fois par mois en session ordinaire, a pour missions :
+        <ul>
+          <li>de coordonner les activités de l'association</li>
+          <li>de rendre compte à l'Assemblée Générale des activités de l'association</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-landmark"></i> Article 9 : Attributions de l'Assemblée Générale</div>
+      <div class="article-content">
+        L'Assemblée Générale a pour attributions :
+        <ul>
+          <li>d'arrêter le programme d'actions de l'association</li>
+          <li>de modifier les Statuts et Règlement Intérieur</li>
+          <li>de faire des critiques et observations sur la vie de l'association</li>
+          <li>d'élire les membres du Bureau dont le mandat dure un (01) an, et est renouvelable</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-crown"></i> Article 10 : Rôle du Président</div>
+      <div class="article-content">
+        Le Président représente l'association en toute circonstance. Il dirige et coordonne les activités de l'association. Il contracte les prêts au nom de l'association avec l'accord du Bureau, il signe les bons avec l'accord du Bureau. Il est secondé par le (la) Vice Président(e).
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-user-shield"></i> Article 11 : Rôle du Vice-Président</div>
+      <div class="article-content">
+        Le (La) Vice Président(e) de l'association supplée le Président dans ses tâches en cas d'absence ou d'empêchement.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-pen-fancy"></i> Article 12 : Rôle du Secrétaire Général</div>
+      <div class="article-content">
+        Le Secrétaire Général assure le secrétariat de toutes les réunions du Bureau. Il est chargé de la rédaction des procès verbaux, des correspondances. Il est dépositaire des archives de l'association et tient les membres du Bureau informés du calendrier des réunions et rencontres.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-pen"></i> Article 13 : Rôle du Secrétaire Général Adjoint</div>
+      <div class="article-content">
+        Le Secrétaire Général Adjoint supplée le Secrétaire Général dans ses différentes tâches et assure l'intérim de celui-ci en cas d'absence ou d'empêchement.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-coins"></i> Article 14 : Rôle du Trésorier Général</div>
+      <div class="article-content">
+        Le Trésorier Général est responsable des biens de l'association. Il exécute les actes engageant les deniers de l'association sur ordre écrit et signé du Président. Il est chargé de la collecte des cotisations et il tient à jour la comptabilité de l'association.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-wallet"></i> Article 15 : Rôle du Trésorier Général Adjoint</div>
+      <div class="article-content">
+        Le Trésorier Général Adjoint supplée le Trésorier Général dans ses différentes tâches et assure l'intérim de celui-ci en cas d'absence ou d'empêchement.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-calendar-check"></i> Article 16 : Secrétariat à l'organisation</div>
+      <div class="article-content">
+        Le Secrétariat à l'organisation est chargé de toute organisation matérielle des rencontres ou réunions et des manifestations. A ce titre, il travaille en étroite collaboration avec les autres responsables de l'association.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-handshake"></i> Article 17 : Secrétariat aux relations extérieures</div>
+      <div class="article-content">
+        Le Secrétariat aux relations extérieures est chargé des correspondances et des relations extérieures de l'association. Il est chargé de l'information générale des membres de l'association.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-search-dollar"></i> Article 18 : Secrétariat aux finances</div>
+      <div class="article-content">
+        Le Secrétariat aux finances est chargé de la recherche de fonds financiers de l'association. Il travaille en étroite collaboration avec le Trésorier Général.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-money-bill-wave"></i> Article 19 : Droits d'adhésion et cotisations</div>
+      <div class="article-content">
+        Les droits d'adhésion sont fixés à cinq cents (1000) francs CFA. Ils peuvent être modifiés par l'Assemblée Générale. Ils donnent droit à une carte de membre qui sera vigneté chaque année contre payement de la cotisation annuelle.<br><br>
+        La cotisation, qui peut être modifiée par l'Assemblée Générale, des membres d'honneur est facultative.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-gavel"></i> Article 20 : Procédure de sanction</div>
+      <div class="article-content">
+        Nul ne peut être sanctionné s'il n'a pas été entendu par le Comité Directeur ou par l'Assemblée Générale sur convocation du Président. Si l'intéressé ne se présente pas, l'Assemblée Générale, sur décision du Président, décide de sa radiation.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-hands-helping"></i> Article 21 : Règles de conduite</div>
+      <div class="article-content">
+        Dans le souci de préserver un bon rapport social et éthique, le respect de la hiérarchie est souhaité. Tout membre de l'association doit agir dans les limites de ses attributions si possibles.
+      </div>
+    </div>
+    
+    <div class="article">
+      <div class="article-title"><i class="fas fa-edit"></i> Article 22 : Modification du règlement</div>
+      <div class="article-content">
+        Le Règlement Intérieur peut être changé ou modifié dans les mêmes conditions que les Statuts.
+      </div>
+    </div>
+    
+    <div class="adoption-date">
+      <i class="fas fa-calendar-day"></i> Adopté le .....24 avril....... à ......16h.......
+    </div>
+  </div>
   
+  <div class="footer">
+    <p>Association ANSAR ALMOUYASSAR © 2023</p>
+  </div>
 </body>
 </html>
