@@ -160,15 +160,13 @@
 
     <!-- Main Buttons -->
     <div class="projet-buttons">
-      <button onclick="showProjetSection('promotion')" class="projet-btn bg-blue">
-        <i class="fas fa-bullhorn"></i>
+       <button onclick="showProjetSection('promotion')" class="projet-btn bg-blue"> Promouvoir votre domaine .    
+            <i class="fas fa-bullhorn"></i>
       </button>
-      <button onclick="showProjetSection('financement')" class="projet-btn bg-green">
-        <i class="fas fa-money-bill-wave"></i>
+      <button onclick="showProjetSection('financement')" class="projet-btn bg-green"> Demande de Financement .   
+            <i class="fas fa-money-bill-wave"></i>
       </button>
-      <button onclick="showProjetSection('business')" class="projet-btn bg-purple">
-        <i class="fas fa-briefcase"></i>
-      </button>
+      
     </div>
 
     <!-- Admin Link -->
@@ -184,8 +182,8 @@
             <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 transition duration-300">
                 <i class="fas fa-arrow-left mr-2"></i> Retour
             </button>
-            <h2 class="text-2xl font-bold text-blue-700 mb-6">Promotion des Métiers (publicité)</h2>
-            <p class="text-gray-600 mb-6">Objectif : Mettre en avant les compétences des membres</p>
+            <h2 class="text-2xl font-bold text-blue-700 mb-6">Objectif : Mettre en avant les compétences des membres</h2>
+            <p class="text-gray-600 mb-6">Veillez remplir ce formulaire ci dessus</p>
             
             <form id="promotionForm" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -353,11 +351,9 @@
         <!-- Business Section -->
         <div id="business-section" class="hidden-section">
     <div class="container mx-auto px-4 py-8">
-        <button onclick="showMainInterface()" class="text-red-600 font-bold py-2 px-4 mb-4">
-            <i class="fas fa-arrow-left mr-2"></i> Retour
-        </button>
-        <h2 class="text-3xl font-bold text-purple-700 mb-8 text-center">Nos Professionnels</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
+       
+        <h2 class="text-3xl font-bold text-purple-700 mb-8 text-center"></h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-cards">
             <!-- Les cartes seront générées dynamiquement -->
         </div>
     </div>
@@ -1240,7 +1236,6 @@ Prénom|Nom|Âge|Email|Téléphone|Rôle|Statut|Adresse|Activité|Résidence|Lie
   <footer>
     <nav class="bottom-nav">
       <a href="#" class="nav-item active" onclick="showPage('home')"><span class="material-icons">home</span> </a>
-      <a href="#" class="nav-item" onclick="showPage('projet')"><span class="material-icons">rocket_launch</span> </a>
      
       
       <a href="#" class="nav-item" onclick="showPage('messages')"><span class="material-icons">notifications</span> </a>
