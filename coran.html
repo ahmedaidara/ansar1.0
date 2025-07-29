@@ -477,26 +477,31 @@ function startAudio(surahId, button) {
   const audio = new Audio(audioUrl);
   audioInstances[surahId] = audio;
 
-  // Réinitialiser l'affichage du temps
-  document.getElementById(`current-time-${surahId}`).textContent = '00:00';
-  document.getElementById(`duration-${surahId}`).textContent = '00:00';
+  // Vérifier que les éléments existent avant de les manipuler
+  const currentTimeElement = document.getElementById(`current-time-${surahId}`);
+  const progressBarElement = document.getElementById(`progress-bar-${surahId}`);
 
-  // Événement lorsque les métadonnées sont chargées (pour la durée)
+  if (!currentTimeElement || !progressBarElement) {
+    console.error('Éléments du lecteur audio introuvables');
+    return;
+  }
+
+  // Réinitialiser l'affichage
+  currentTimeElement.textContent = '00:00';
+  progressBarElement.style.width = '0%';
+
   audio.addEventListener('loadedmetadata', () => {
     if (audio.duration !== Infinity) {
-      document.getElementById(`duration-${surahId}`).textContent = 
-        formatTime(audio.duration);
+      // Pas besoin de durationElement si vous ne l'affichez pas
     }
   });
 
-  // Événement de mise à jour du temps
   audio.addEventListener('timeupdate', () => {
     updateAudioProgress(surahId);
   });
 
-  // Événement de lecture
   audio.addEventListener('play', () => {
-    button.innerHTML = '<i class="fas fa-pause"></i>';
+    if (button) button.innerHTML = '<i class="fas fa-pause"></i>';
     audio.progressInterval = setInterval(() => updateAudioProgress(surahId), 1000);
   });
 
