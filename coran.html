@@ -522,10 +522,23 @@
     }
 
 function getAudioUrl(surahId) {
+  // Formatage du numéro de sourate (003 au lieu de 3)
+  const surahNum = surahId.toString().padStart(3, '0');
+  
+  // Chemins complets pour chaque type de récitation
   const baseUrl = 'https://ahmedaidara.github.io/ansar1.0/audio/hussary';
   
-  // Seul murattal est disponible, les autres retournent murattal par défaut
-  return `${baseUrl}/murattal/${surahId.toString().padStart(3, '0')}.mp3`;
+  switch(currentAudioType) {
+    case 'murattal':
+      return `${baseUrl}/murattal/${surahNum}.mp3`;
+    case 'mujawad':
+      return `${baseUrl}/mujawad/${surahNum}.mp3`;
+    case 'hafs':
+      return `${baseUrl}/hafs/${surahNum}.mp3`;
+    default:
+      // Par défaut, utilise murattal
+      return `${baseUrl}/murattal/${surahNum}.mp3`;
+  }
 }
 
     // Fonctions existantes pour la lecture des sourates
