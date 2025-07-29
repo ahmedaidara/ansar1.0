@@ -3408,6 +3408,19 @@ function closeModal(modalId) {
   document.getElementById(modalId).classList.add('hidden-section');
   showMainInterface(); // Retour à l'interface principale
 }
+
+// Ajouter un gestionnaire d'événements pour les boutons de fermeture (croix)
+document.addEventListener('DOMContentLoaded', () => {
+  const closeButtons = document.querySelectorAll('.close-modal');
+  closeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const modal = button.closest('.modal');
+      if (modal) {
+        closeModal(modal.id);
+      }
+    });
+  });
+});
 // Fonction pour masquer les messages de succès
 function hideSuccessMessage(type) {
   document.getElementById(`success-${type}`).classList.add('hidden-section');
