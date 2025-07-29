@@ -313,7 +313,36 @@
   </div>
 
   <script>
-    // Variables existantes
+    // Liste des récitateurs (gardée pour la section lecture des sourates)
+    const reciters = [
+      { 
+        id: 'ar.alafasy', 
+        name: "مشاري راشد العفاسي",
+        baseUrl: 'https://server8.mp3quran.net/afs/{surah}.mp3'
+      },
+      { 
+        id: 'ar.abdulbasitmurattal', 
+        name: "عبد الباسط عبد الصمد",
+        baseUrl: 'https://server8.mp3quran.net/basit/{surah}.mp3'
+      },
+      { 
+        id: 'ar.husary', 
+        name: "محمود خليل الحصري",
+        baseUrl: 'https://server8.mp3quran.net/husr/{surah}.mp3'
+      },
+      { 
+        id: 'ar.minshawi', 
+        name: "محمد صديق المنشاوي",
+        baseUrl: 'https://server8.mp3quran.net/minsh/{surah}.mp3'
+      },
+      { 
+        id: 'ar.sudais', 
+        name: "عبد الرحمن السديس",
+        baseUrl: 'https://server8.mp3quran.net/sds/{surah}.mp3'
+      }
+    ];
+
+    // Variables globales
     let currentAudio = null;
     let currentSurah = null;
     let currentReciter = null;
@@ -323,6 +352,7 @@
     let repeatMode = false;
     let currentPage = null;
     let currentAudioType = null; // Pour Murattal, Mujawad, Hafs
+    const audioInstances = {};
 
     // Navigation functions
     function navigateTo(page) {
@@ -344,13 +374,14 @@
       document.getElementById('audio-page').classList.add('hidden');
       document.getElementById('audio-surah-page').classList.add('hidden');
       stopAudio();
+      stopAllAudios();
       currentPage = null;
     }
 
     function backToAudio() {
       document.getElementById('audio-page').classList.remove('hidden');
       document.getElementById('audio-surah-page').classList.add('hidden');
-      stopAudio();
+      stopAllAudios();
     }
 
     function navigateToAudioType(type) {
@@ -359,6 +390,10 @@
       document.getElementById('audio-surah-page').classList.remove('hidden');
       document.getElementById('audio-surah-title').textContent = `تلاوة ${type === 'murattal' ? 'مرتل' : type === 'mujawad' ? 'مجود' : 'حفص'}`;
       loadAudioSurahs();
+    }
+
+    function loadAudioPage() {
+      // Rien à charger ici, la page affiche juste les boutons Murattal, Mujawad, Hafs
     }
 
     async function loadAudioSurahs() {
@@ -392,8 +427,6 @@
     }
 
     // Audio functions pour la nouvelle page
-    const audioInstances = {};
-
     function toggleAudio(surahId, button) {
       if (audioInstances[surahId]) {
         if (audioInstances[surahId].paused) {
@@ -495,8 +528,7 @@
       return `${basePath}/${surahId.toString().padStart(3, '0')}.mp3`;
     }
 
-    // Le reste de votre script (loadSurahs, loadJuzs, etc.) reste inchangé
-     // Load lists
+    // Fonctions existantes pour la lecture des sourates
     async function loadSurahs() {
       const surahList = document.getElementById('surah-list');
       surahList.innerHTML = '<div class="col-span-full text-center py-8">جاري التحميل...</div>';
@@ -522,74 +554,68 @@
       }
     }
 
-  function loadJuzs() {
-  const juzList = document.getElementById('juz-list');
-  juzList.innerHTML = '<div class="col-span-full text-center py-8">جاري التحميل...</div>';
+    async function loadJuzs() {
+      const juzList = document.getElementById('juz-list');
+      juzList.innerHTML = '<div class="col-span-full text-center py-8">جاري التحميل...</div>';
 
-  // Charger les données des Juz depuis l'API
-  fetch('https://api.quran.com/api/v4/juzs')
-    .then(response => response.json())
-    .then(data => {
-      juzList.innerHTML = '';
-      
-      data.juzs.forEach(juz => {
-        const juzElement = document.createElement('div');
-        juzElement.className = 'bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition';
-        juzElement.innerHTML = `
-          <div class="text-xl font-bold">الجزء ${juz.juz_number}</div>
-          <div class="text-sm mt-2">من ${juz.verse_mapping.start} إلى ${juz.verse_mapping.end}</div>
-        `;
+      try {
+        const response = await fetch('https://api.quran.com/api/v4/juzs');
+        const data = await response.json();
         
-        juzElement.onclick = () => loadJuzContent(juz.juz_number);
-        juzList.appendChild(juzElement);
-      });
-    })
-    .catch(error => {
-      juzList.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">حدث خطأ في تحميل الأجزاء</div>';
-    });
-}
-    
-async function loadJuzContent(juzNumber) {
-  document.getElementById('juz-page').classList.add('hidden');
-  document.getElementById('surah-content').classList.remove('hidden');
-  document.getElementById('surah-title').textContent = `الجزء ${juzNumber}`;
-  
-  const surahText = document.getElementById('surah-text');
-  surahText.innerHTML = '<div class="text-center py-12">جاري تحميل الجزء...</div>';
+        juzList.innerHTML = '';
+        data.juzs.forEach(juz => {
+          const juzElement = document.createElement('div');
+          juzElement.className = 'bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition';
+          juzElement.innerHTML = `
+            <div class="text-xl font-bold">الجزء ${juz.juz_number}</div>
+            <div class="text-sm mt-2">من ${juz.verse_mapping.start} إلى ${juz.verse_mapping.end}</div>
+          `;
+          juzElement.onclick = () => loadJuzContent(juz.juz_number);
+          juzList.appendChild(juzElement);
+        });
+      } catch (error) {
+        juzList.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">حدث خطأ في تحميل الأجزاء</div>';
+      }
+    }
 
-  try {
-    // Obtenir les versets du Juz
-    const response = await fetch(`https://api.alquran.cloud/v1/juz/${juzNumber}/ar.alafasy`);
-    const data = await response.json();
-    
-    // Afficher les versets
-    let versesHtml = '';
-    data.data.ayahs.forEach(ayah => {
-      versesHtml += `
-        <div class="verse">
-          ${ayah.text}
-          <span class="verse-number">${ayah.numberInSurah}</span>
-        </div>
-      `;
-    });
-    
-    surahText.innerHTML = versesHtml;
-    updateTextSize();
-    
-    // Activer l'audio
-    currentAudio = new Audio(data.data.ayahs[0].audio);
-    setupAudioControls();
-    
-  } catch (error) {
-    surahText.innerHTML = `
-      <div class="text-center py-12 text-red-500">
-        حدث خطأ في تحميل الجزء
-        <br><small>${error.message}</small>
-      </div>
-    `;
-  }
-}
-    
+    async function loadJuzContent(juzNumber) {
+      document.getElementById('juz-page').classList.add('hidden');
+      document.getElementById('surah-content').classList.remove('hidden');
+      document.getElementById('surah-title').textContent = `الجزء ${juzNumber}`;
+      
+      const surahText = document.getElementById('surah-text');
+      surahText.innerHTML = '<div class="text-center py-12">جاري تحميل الجزء...</div>';
+
+      try {
+        const response = await fetch(`https://api.alquran.cloud/v1/juz/${juzNumber}/ar.alafasy`);
+        const data = await response.json();
+        
+        let versesHtml = '';
+        data.data.ayahs.forEach(ayah => {
+          versesHtml += `
+            <div class="verse">
+              ${ayah.text}
+              <span class="verse-number">${ayah.numberInSurah}</span>
+            </div>
+          `;
+        });
+        
+        surahText.innerHTML = versesHtml;
+        updateTextSize();
+        
+        currentAudio = new Audio(data.data.ayahs[0].audio);
+        setupAudioControls();
+        
+      } catch (error) {
+        surahText.innerHTML = `
+          <div class="text-center py-12 text-red-500">
+            حدث خطأ في تحميل الجزء
+            <br><small>${error.message}</small>
+          </div>
+        `;
+      }
+    }
+
     function loadPages() {
       const pageList = document.getElementById('page-list');
       pageList.innerHTML = '';
@@ -605,7 +631,6 @@ async function loadJuzContent(juzNumber) {
       }
     }
 
-    // Surah content functions
     async function showSurahContent(surahId, surahName) {
       document.getElementById('surah-page').classList.add('hidden');
       document.getElementById('juz-page').classList.add('hidden');
@@ -624,7 +649,6 @@ async function loadJuzContent(juzNumber) {
         
         let verses = data.verses.map(verse => verse.text_uthmani);
         
-        // Add Bismillah for all surahs except At-Tawba (9)
         if (surahId != 9) {
           verses.unshift('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ');
         }
@@ -643,7 +667,6 @@ async function loadJuzContent(juzNumber) {
         surahText.innerHTML = '<div class="text-center py-12 text-red-500">حدث خطأ في تحميل السورة</div>';
       }
       
-      // Load reciters list
       const recitersList = document.getElementById('reciters-list');
       recitersList.innerHTML = reciters.map(reciter => `
         <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer" onclick="selectReciter('${reciter.id}')">
@@ -652,12 +675,10 @@ async function loadJuzContent(juzNumber) {
       `).join('');
     }
 
-    // Audio functions
     function selectReciter(reciterId) {
       currentReciter = reciterId;
       document.getElementById('reciters-list').classList.add('hidden');
       
-      // Mettre à jour le bouton du récitateur
       const reciter = reciters.find(r => r.id === reciterId);
       if (reciter) {
         document.getElementById('reciters-btn').innerHTML = `<i class="fas fa-user mr-2"></i> ${reciter.name}`;
@@ -676,11 +697,11 @@ async function loadJuzContent(juzNumber) {
           resumeAudio();
         }
       } else {
-        startAudio();
+        startSurahAudio();
       }
     }
 
-    function startAudio() {
+    function startSurahAudio() {
       const reciter = reciters.find(r => r.id === currentReciter);
       if (!reciter) {
         alert('الرجاء اختيار قارئ أولاً');
@@ -784,7 +805,6 @@ async function loadJuzContent(juzNumber) {
       return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
-    // Text size functions
     function increaseTextSize() {
       if (fontSize < 3.5) {
         fontSize += 0.25;
@@ -798,23 +818,22 @@ async function loadJuzContent(juzNumber) {
         updateTextSize();
       }
     }
-    
+
     function updateTextSize() {
-  const surahText = document.getElementById('surah-text');
-  surahText.style.fontSize = `${fontSize}rem`;
-  
-  // Mettre à jour aussi la taille des versets individuels si nécessaire
-  const verses = document.querySelectorAll('.verse');
-  verses.forEach(verse => {
-    verse.style.fontSize = `${fontSize}rem`;
-  });
-  
-  // Mettre à jour la Bismillah si elle existe
-  const bismillah = document.querySelector('.bismillah');
-  if (bismillah) {
-    bismillah.style.fontSize = `${fontSize * 1.2}rem`; // Un peu plus grand
-  }
-}
+      const surahText = document.getElementById('surah-text');
+      surahText.style.fontSize = `${fontSize}rem`;
+      
+      const verses = document.querySelectorAll('.verse');
+      verses.forEach(verse => {
+        verse.style.fontSize = `${fontSize}rem`;
+      });
+      
+      const bismillah = document.querySelector('.bismillah');
+      if (bismillah) {
+        bismillah.style.fontSize = `${fontSize * 1.2}rem`;
+      }
+    }
+
     // Event listeners
     document.getElementById('progress-container').addEventListener('click', setProgress);
     document.getElementById('volume').addEventListener('input', (e) => {
