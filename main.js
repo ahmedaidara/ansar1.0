@@ -3268,32 +3268,144 @@ function showMainInterface() {
     document.querySelector('.admin-link').style.display = 'block';
 }
 
-function submitProjetPromotion() {
-  const form = document.getElementById('projet-promotion-form');
-  const formData = {
-    name: form.querySelector('input[type="text"]').value,
-    metier: form.querySelectorAll('input[type="text"]')[1].value,
-    description: form.querySelector('textarea').value
-  };
-  
-  console.log("Données soumises (Promotion):", formData);
-  alert("Merci ! Votre demande a été envoyée.");
-  form.reset();
-  showPage('home'); // Retour à l'accueil
+// Initialisation d'EmailJS avec votre clé publique
+(function() {
+  emailjs.init("t69wuFYR5Gno3G4py"); // Remplacez par votre Public Key d'EmailJS
+})();
+
+// Fonction pour soumettre le formulaire de promotion
+function submitPromotionForm() {
+  // Récupérer les valeurs des champs
+  const nom = document.getElementById('nom').value;
+  const dob = document.getElementById('dob').value;
+  const membre = document.querySelector('input[name="membre"]:checked')?.value;
+  const metier = document.getElementById('metier').value;
+  const experience = document.getElementById('experience').value;
+  const description = document.getElementById('description').value;
+  const adresse = document.getElementById('adresse').value;
+  const contact = document.getElementById('contact').value;
+  const email = document.getElementById('email').value;
+  const besoins = Array.from(document.querySelectorAll('input[name="besoins"]:checked')).map(input => input.value).join(', ');
+
+  // Vérifier que tous les champs requis sont remplis
+  if (!nom || !dob || !membre || !metier || !experience || !description || !adresse || !contact || !email) {
+    alert('Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  // Valider le format de l'email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert('Veuillez entrer une adresse email valide.');
+    return;
+  }
+
+  // Désactiver le bouton pendant l'envoi
+  const submitButton = document.querySelector('#promotionForm button[type="button"]');
+  submitButton.disabled = true;
+  submitButton.innerHTML = 'Envoi en cours...';
+
+  // Envoyer l'email via EmailJS
+  emailjs.send('service_s761d89', 'template_01ycegg', {
+    nom,
+    dob,
+    membre,
+    metier,
+    experience,
+    description,
+    adresse,
+    contact,
+    email,
+    besoins
+  })
+  .then(() => {
+    // Afficher le message de succès
+    document.getElementById('success-promotion').classList.remove('hidden-section');
+    document.getElementById('promotion-form').classList.add('hidden-section');
+    // Réinitialiser le formulaire
+    document.getElementById('promotionForm').reset();
+    // Réactiver le bouton
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Envoyer mon dossier';
+  })
+  .catch(error => {
+    console.error('Erreur lors de l\'envoi de l\'email:', error);
+    alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+    // Réactiver le bouton
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Envoyer mon dossier';
+  });
 }
 
-function submitProjetFinancement() {
-  const form = document.getElementById('projet-financement-form');
-  const formData = {
-    titre: form.querySelector('input[type="text"]').value,
-    budget: form.querySelector('input[type="number"]').value
-  };
-  
-  console.log("Données soumises (Financement):", formData);
-  alert("Merci ! Votre demande a été envoyée.");
-  form.reset();
-  showPage('home'); // Retour à l'accueil
+// Fonction pour soumettre le formulaire de financement
+function submitFinancementForm() {
+  // Récupérer les valeurs des champs
+  const nom = document.getElementById('f-nom').value;
+  const dob = document.getElementById('f-dob').value;
+  const membre = document.querySelector('input[name="f-membre"]:checked')?.value;
+  const titre = document.getElementById('titre-projet').value;
+  const description = document.getElementById('description-projet').value;
+  const budget = document.getElementById('budget').value;
+  const delai = document.getElementById('delai').value;
+  const besoins = Array.from(document.querySelectorAll('input[name="f-besoins"]:checked')).map(input => input.value).join(', ');
+
+  // Vérifier que tous les champs requis sont remplis
+  if (!nom || !dob || !membre || !titre || !description || !budget || !delai) {
+    alert('Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  // Valider le format de l'email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const email = document.getElementById('email')?.value || ''; // Assurez-vous que le champ email existe si nécessaire
+  if (email && !emailRegex.test(email)) {
+    alert('Veuillez entrer une adresse email valide.');
+    return;
+  }
+
+  // Désactiver le bouton pendant l'envoi
+  const submitButton = document.querySelector('#financementForm button[type="button"]');
+  submitButton.disabled = true;
+  submitButton.innerHTML = 'Envoi en cours...';
+
+  // Envoyer l'email via EmailJS
+  emailjs.send('service_s761d89', 'template_evir7gc', {
+    nom,
+    dob,
+    membre,
+    titre,
+    description,
+    budget,
+    delai,
+    besoins
+  })
+  .then(() => {
+    // Afficher le message de succès
+    document.getElementById('success-financement').classList.remove('hidden-section');
+    document.getElementById('financement-form').classList.add('hidden-section');
+    // Réinitialiser le formulaire
+    document.getElementById('financementForm').reset();
+    // Réactiver le bouton
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Envoyer mon dossier';
+  })
+  .catch(error => {
+    console.error('Erreur lors de l\'envoi de l\'email:', error);
+    alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+    // Réactiver le bouton
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Envoyer mon dossier';
+  });
 }
+
+// Fonction pour masquer les messages de succès
+function hideSuccessMessage(type) {
+  document.getElementById(`success-${type}`).classList.add('hidden-section');
+  showMainInterface(); // Retour à l'interface principale
+}
+
+
+
 
 function verifyAdminCodes() {
     const code1 = document.getElementById('code1').value;
@@ -3303,7 +3415,7 @@ function verifyAdminCodes() {
         document.getElementById('admin-section').classList.add('hidden-section');
         document.getElementById('admin-dashboard').classList.remove('hidden-section');
     } else {
-        alert('Codes incorrects. Veuillez réessayer.');
+        alert('Codes incorrects. Espace réservé aux admin.');
     }
 }
 
@@ -3863,4 +3975,3 @@ function deleteProject(projectId) {
             });
     }
 }
-
