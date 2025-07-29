@@ -115,15 +115,16 @@
         font-size: 1.75rem;
       }
     }
-    .audio-surah-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      background-color: #0f3e3d;
-      border-radius: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
+.audio-surah-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #0f3e3d;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
     .audio-surah-item button {
       padding: 0.5rem 1rem;
       background-color: var(--primary-color);
@@ -152,7 +153,16 @@
   min-width: 40px;
   text-align: center;
 }
-    
+    .audio-surah-item > div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.progress-container-audio {
+  flex-grow: 1;
+  margin: 0 0.5rem;
+}
   </style>
 </head>
 <body class="min-h-screen relative">
@@ -416,17 +426,19 @@
         data.chapters.forEach(surah => {
           const surahElement = document.createElement('div');
           surahElement.className = 'audio-surah-item';
-          surahElement.innerHTML = `
-  <div class="text-xl font-bold">${surah.name_arabic}</div>
-  <div class="flex items-center gap-2 w-full">
-    <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
-      <i class="fas fa-play"></i>
-    </button>
-    <span id="current-time-${surah.id}" class="text-xs">00:00</span>
-    <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
-      <div class="progress-bar-audio" id="progress-bar-${surah.id}"></div>
+         surahElement.innerHTML = `
+  <div class="flex items-center justify-between w-full gap-4">
+    <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
+        <i class="fas fa-play"></i>
+      </button>
+      <span id="current-time-${surah.id}" class="text-xs w-12 text-left">00:00</span>
+      <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
+        <div class="progress-bar-audio" id="progress-bar-${surah.id}"></div>
+      </div>
+      <span id="duration-${surah.id}" class="text-xs w-12 text-left">00:00</span>
     </div>
-    <span id="duration-${surah.id}" class="text-xs">00:00</span>
   </div>
 `;
           audioSurahList.appendChild(surahElement);
@@ -437,27 +449,45 @@
     }
 
     // Audio functions pour la nouvelle page
- function toggleAudio(surahId, button) {
-  // Si c'est le même audio qui est déjà en lecture
-  if (audioInstances[surahId] && !audioInstances[surahId].paused) {
-    pauseAudio(surahId, button);
+function toggleAudio(surahId, button) {
+  // Si l'audio est déjà en cours pour cette sourate
+  if (audioInstances[surahId]) {
+    if (!audioInstances[surahId].paused) {
+      pauseAudio(surahId, button);
+    } else {
+      resumeAudio(surahId, button);
+    }
     return;
   }
   
   // Si un autre audio est en cours, on l'arrête
   stopAllAudios();
   
-  // Si aucun audio ne joue ou si c'est le même mais en pause
+  // Démarrer le nouvel audio
   startAudio(surahId, button);
 }
 
-   function startAudio(surahId, button) {
+function startAudio(surahId, button) {
   const audioUrl = getAudioUrl(surahId);
   const audio = new Audio(audioUrl);
   audioInstances[surahId] = audio;
 
-  // Mise à jour de l'icône
-  button.innerHTML = '<i class="fas fa-pause"></i>';
+  // Réinitialiser l'affichage du temps
+  document.getElementById(`current-time-${surahId}`).textContent = '00:00';
+  document.getElementById(`duration-${surahId}`).textContent = '00:00';
+
+  // Événement lorsque les métadonnées sont chargées (pour la durée)
+  audio.addEventListener('loadedmetadata', () => {
+    if (audio.duration !== Infinity) {
+      document.getElementById(`duration-${surahId}`).textContent = 
+        formatTime(audio.duration);
+    }
+  });
+
+  // Événement de mise à jour du temps
+  audio.addEventListener('timeupdate', () => {
+    updateAudioProgress(surahId);
+  });
 
   // Événement de lecture
   audio.addEventListener('play', () => {
@@ -483,9 +513,13 @@
   audio.addEventListener('error', () => {
     button.innerHTML = '<i class="fas fa-play"></i>';
     clearInterval(audio.progressInterval);
+    alert('حدث خطأ في تحميل الصوت. الرجاء المحاولة لاحقًا.');
   });
 
-  audio.play();
+  audio.play().catch(e => {
+    console.error('Playback failed:', e);
+    button.innerHTML = '<i class="fas fa-play"></i>';
+  });
 }
     function pauseAudio(surahId, button) {
       if (audioInstances[surahId]) {
@@ -855,20 +889,24 @@ function updateAudioProgress(surahId) {
   if (!audioInstances[surahId]) return;
   
   const audio = audioInstances[surahId];
-  const progress = (audio.currentTime / audio.duration) * 100;
-  
-  // Mise à jour de la barre de progression
-  document.getElementById(`progress-bar-${surahId}`).style.width = `${progress}%`;
   
   // Mise à jour du temps courant
-  document.getElementById(`current-time-${surahId}`).textContent = 
-    formatTime(audio.currentTime);
+  if (!isNaN(audio.currentTime)) {
+    document.getElementById(`current-time-${surahId}`).textContent = 
+      formatTime(audio.currentTime);
+  }
   
-  // Mise à jour de la durée totale (une seule fois)
-  if (!audioInstances[surahId].durationUpdated) {
-    document.getElementById(`duration-${surahId}`).textContent = 
-      formatTime(audio.duration);
-    audioInstances[surahId].durationUpdated = true;
+  // Mise à jour de la barre de progression
+  if (!isNaN(audio.duration) && audio.duration > 0) {
+    const progress = (audio.currentTime / audio.duration) * 100;
+    document.getElementById(`progress-bar-${surahId}`).style.width = `${progress}%`;
+    
+    // Mise à jour de la durée totale (une seule fois)
+    if (!audioInstances[surahId].durationUpdated) {
+      document.getElementById(`duration-${surahId}`).textContent = 
+        formatTime(audio.duration);
+      audioInstances[surahId].durationUpdated = true;
+    }
   }
 }
 
