@@ -33,7 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
   }
-
+// Ajoutez ceci dans votre DOMContentLoaded ou init
+document.querySelector('#edit-member-search')?.addEventListener('input', updateEditMembersList);
+document.querySelector('#edit-member-filter')?.addEventListener('change', updateEditMembersList);
   // Initialiser le chatbot
   initChatbot();
 
@@ -685,43 +687,39 @@ async function updateEditMembersList() {
     const members = await loadData('members');
     const search = document.querySelector('#edit-member-search')?.value.toLowerCase() || '';
     const filter = document.querySelector('#edit-member-filter')?.value || 'all';
-    const list = document.querySelector('#edit-members-list');
-    if (!list) {
-      console.error('Élément #edit-members-list introuvable');
-      alert('Erreur : conteneur de la liste des membres introuvable');
-      return;
-    }
-
+    
     const filteredMembers = members.filter(m => {
+      // Filtre par recherche
       const matchesSearch = `${m.firstname} ${m.lastname} ${m.code}`.toLowerCase().includes(search);
+      
+      // Filtre par paiement (si nécessaire)
       if (filter === 'all') return matchesSearch;
-      const hasPaid = Object.values(m.contributions.Mensuelle).some(year => year.some(paid => paid)) ||
-                      Object.values(m.contributions.globalContributions || {}).some(c => c.paid);
+      
+      const hasPaid = Object.values(m.contributions?.Mensuelle || {})
+                         .some(year => year.some(paid => paid));
+      
       return matchesSearch && (filter === 'paid' ? hasPaid : !hasPaid);
     });
 
-    list.innerHTML = filteredMembers
-      .map(m => `
-        <div class="member-card">
-          <div>
-            <p><strong>${m.firstname} ${m.lastname}</strong></p>
-            <p><small>${m.code} • ${m.role}</small></p>
-          </div>
-          <div class="member-actions">
-            <button class="cta-button small" onclick="editMember('${m.code}')">Modifier</button>
-            <button class="cta-button small danger" onclick="deleteMember('${m.id}', '${m.firstname} ${m.lastname}')">Supprimer</button>
-          </div>
+    const list = document.querySelector('#edit-members-list');
+    list.innerHTML = filteredMembers.map(m => `
+      <div class="member-card">
+        <div>
+          <p><strong>${m.firstname} ${m.lastname}</strong></p>
+          <p><small>${m.code} • ${m.role}</small></p>
         </div>
-      `).join('') || '<p>Aucun membre trouvé</p>';
+        <div class="member-actions">
+          <button class="cta-button small" onclick="editMember('${m.code}')">Modifier</button>
+          <button class="cta-button small danger" onclick="deleteMember('${m.id}', '${m.firstname} ${m.lastname}')">Supprimer</button>
+        </div>
+      </div>
+    `).join('') || '<p>Aucun membre trouvé</p>';
 
-    document.querySelector('#edit-member-search')?.addEventListener('input', updateEditMembersList);
-    document.querySelector('#edit-member-filter')?.addEventListener('change', updateEditMembersList);
   } catch (error) {
     console.error('Erreur updateEditMembersList:', error);
-    alert('Erreur lors du chargement de la liste des membres');
+    alert('Erreur lors du chargement des membres');
   }
 }
-
 
 async function editMember(code) {
   try {
