@@ -2509,3 +2509,96 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
 }
 
 /* S'assurer que le contenu de #home est décalé pour éviter le chevauchement */
+/* Styles pour les modales de succès */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Au-dessus de tout */
+  visibility: hidden; /* Caché par défaut */
+  opacity: 0;
+  transition: visibility 0.3s, opacity 0.3s ease;
+}
+
+.modal:not(.hidden-section) {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-content {
+  background-color: var(--primary-color); /* #073332 */
+  border: 2px solid var(--accent-color); /* Bordure jaune moutarde #9b9c28 */
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 90%;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-content h2 {
+  color: var(--text-color); /* Blanc #ffffff */
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  color: var(--light-accent); /* Gris clair #d8d9c2 */
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-content button {
+  background-color: var(--accent-color); /* Jaune moutarde #9b9c28 */
+  color: var(--primary-color); /* Vert foncé #073332 */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-content button:hover {
+  background-color: #d4d04e; /* Jaune plus clair */
+  transform: translateY(-2px);
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: var(--text-color); /* Blanc #ffffff */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: var(--accent-color); /* Jaune moutarde #9b9c28 */
+}
+
+/* Responsive pour mobile */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 90%;
+    padding: 16px;
+  }
+  .modal-content h2 {
+    font-size: 1.5rem;
+  }
+  .modal-content p {
+    font-size: 0.95rem;
+  }
+  .modal-content button {
+    padding: 8px 16px;
+    width: 100%;
+  }
+}
