@@ -455,16 +455,28 @@ surahElement.innerHTML = `
     // Audio functions pour la nouvelle page
 function toggleAudio(surahId, button) {
   // Si un autre audio est en cours, on l'arrête
-  if (currentAudio && currentAudio !== audioInstances[surahId]) {
-    stopAllAudios();
+  for (const id in audioInstances) {
+    if (id != surahId && audioInstances[id]) {
+      audioInstances[id].pause();
+      audioInstances[id].currentTime = 0;
+      const otherButton = document.querySelector(`button[data-surah-id="${id}"]`);
+      if (otherButton) otherButton.innerHTML = '<i class="fas fa-play"></i>';
+    }
   }
 
   // Si l'audio existe déjà pour cette sourate
   if (audioInstances[surahId]) {
     if (!audioInstances[surahId].paused) {
-      pauseAudio(surahId, button);
+      // Mettre en pause si déjà en lecture
+      audioInstances[surahId].pause();
+      if (button) button.innerHTML = '<i class="fas fa-play"></i>';
     } else {
-      resumeAudio(surahId, button);
+      // Reprendre la lecture si en pause
+      audioInstances[surahId].play().catch(e => {
+        console.error('Erreur de lecture:', e);
+        if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+      });
+      if (button) button.innerHTML = '<i class="fas fa-pause"></i>';
     }
   } else {
     // Démarrer un nouvel audio
