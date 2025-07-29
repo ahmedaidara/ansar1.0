@@ -3318,9 +3318,10 @@ function submitPromotionForm() {
     email,
     besoins
   })
-  .then(() => {
-    // Afficher le message de succès
-    document.getElementById('success-promotion').classList.remove('hidden-section');
+.then(() => {
+    // Afficher la modale de succès
+    document.getElementById('success-promotion-modal').classList.remove('hidden-section');
+    // Cacher le formulaire
     document.getElementById('promotion-form').classList.add('hidden-section');
     // Réinitialiser le formulaire
     document.getElementById('promotionForm').reset();
@@ -3379,9 +3380,10 @@ function submitFinancementForm() {
     delai,
     besoins
   })
-  .then(() => {
-    // Afficher le message de succès
-    document.getElementById('success-financement').classList.remove('hidden-section');
+.then(() => {
+    // Afficher la modale de succès
+    document.getElementById('success-financement-modal').classList.remove('hidden-section');
+    // Cacher le formulaire
     document.getElementById('financement-form').classList.add('hidden-section');
     // Réinitialiser le formulaire
     document.getElementById('financementForm').reset();
@@ -3397,7 +3399,11 @@ function submitFinancementForm() {
     submitButton.innerHTML = 'Envoyer mon dossier';
   });
 }
-
+// Fonction pour fermer les modales
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.add('hidden-section');
+  showMainInterface(); // Retour à l'interface principale
+}
 // Fonction pour masquer les messages de succès
 function hideSuccessMessage(type) {
   document.getElementById(`success-${type}`).classList.add('hidden-section');
