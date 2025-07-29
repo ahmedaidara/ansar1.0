@@ -1617,9 +1617,9 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Changé de center à flex-start pour aligner en haut */
   align-items: center;
-  min-height: 100vh; /* Assure que le conteneur prend toute la hauteur de l'écran */
+  min-height: auto; /* Supprime min-height: 100vh pour éviter l'espace forcé */
 }
 
 .projet-header {
@@ -2603,3 +2603,32 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
   }
 }
 
+/* Cacher les éléments de la section projet quand admin-dashboard est affiché */
+#admin-dashboard:not(.hidden-section) ~ .projet-header,
+#admin-dashboard:not(.hidden-section) ~ .projet-buttons,
+#admin-dashboard:not(.hidden-section) ~ .admin-link {
+  display: none !important;
+}
+
+/* Forcer admin-dashboard à apparaître en haut */
+#admin-dashboard:not(.hidden-section) {
+    background-color: #073332; /* Fond vert foncé, assorti à --primary-color */
+  position: absolute;
+  top: 100px; /* Juste en dessous de la top-nav-bar */
+  left: 0;
+  width: 100%;
+  margin-top: 0 !important;
+  padding-top: 10px !important;
+  z-index: 1000; 
+}
+
+/* Ajuster l'espacement interne */
+#admin-dashboard h2 {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+#admin-dashboard .flex.flex-nowrap {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
