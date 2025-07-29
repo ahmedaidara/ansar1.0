@@ -521,12 +521,12 @@
       audioInstances[surahId].currentTime = (clickX / width) * duration;
     }
 
-    function getAudioUrl(surahId) {
-      const basePath = currentAudioType === 'murattal' ? '/audio/hussary/murattal' : 
-                       currentAudioType === 'mujawad' ? '/audio/hussary/mujawad' : 
-                       '/audio/hussary/hafs';
-      return `${basePath}/${surahId.toString().padStart(3, '0')}.mp3`;
-    }
+  function getAudioUrl(surahId) {
+    const basePath = currentAudioType === 'murattal' ? '/ansar1.0/audio/hussary/murattal' : 
+                     currentAudioType === 'mujawad' ? '/ansar1.0/audio/hussary/mujawad' : 
+                     '/ansar1.0/audio/hussary/hafs';
+    return `${basePath}/${surahId.toString().padStart(3, '0')}.mp3`;
+  }
 
     // Fonctions existantes pour la lecture des sourates
     async function loadSurahs() {
