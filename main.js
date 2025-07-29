@@ -915,7 +915,7 @@ async function showMemberDetail(code) {
         ${displayInfo(member.phone, 'Téléphone')}
         ${displayInfo(member.activity, 'Activité actuelle')}
         ${displayInfo(member.address, 'Adresse')}
-        ${displayInfo(member.residence, 'Résidence actuelle')}
+        ${displayInfo(member.residence, 'Num. C.I.N.')}
       `;
     } else {
       console.error('Élément #personal-info introuvable');
