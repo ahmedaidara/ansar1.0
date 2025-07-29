@@ -3318,7 +3318,9 @@ function submitPromotionForm() {
     email,
     besoins
   })
-.then(() => {
+  .then(() => {
+    // Mettre à jour le message de la modale avec le nom
+    document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
     // Afficher la modale de succès
     document.getElementById('success-promotion-modal').classList.remove('hidden-section');
     // Cacher le formulaire
@@ -3380,7 +3382,9 @@ function submitFinancementForm() {
     delai,
     besoins
   })
-.then(() => {
+  .then(() => {
+    // Mettre à jour le message de la modale avec le nom
+    document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
     // Afficher la modale de succès
     document.getElementById('success-financement-modal').classList.remove('hidden-section');
     // Cacher le formulaire
