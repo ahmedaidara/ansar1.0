@@ -131,20 +131,31 @@
       color: white;
       border-radius: 0.5rem;
     }
-   .progress-container-audio {
-  height: 6px;
+.progress-container-audio {
+  height: 8px; /* Augmenter légèrement la hauteur pour la visibilité */
   background-color: #e0e0e0;
-  border-radius: 3px;
+  border-radius: 4px;
   cursor: pointer;
-  margin: 0 10px;
+  margin: 0 0.5rem;
+  position: relative;
+  overflow: hidden;
+  display: block !important; /* Forcer l'affichage */
+  width: 100%; /* Assurer que le conteneur prend toute la largeur disponible */
+  min-width: 100px; /* Éviter que le conteneur soit trop petit */
+  z-index: 1; /* S'assurer que le conteneur est au-dessus des autres éléments */
 }
 
 .progress-bar-audio {
   height: 100%;
-  background-color: #4CAF50;
-  border-radius: 3px;
-  width: 0%;
+  background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%); /* Couleur vive pour la visibilité */
+  border-radius: 4px;
+  width: 0%; /* Largeur initiale à 0 */
   transition: width 0.1s linear;
+  display: block !important; /* Forcer l'affichage */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2; /* S'assurer que la barre est au-dessus du conteneur */
 }
 
 .time-display {
@@ -159,10 +170,6 @@
   width: 100%;
 }
 
-.progress-container-audio {
-  flex-grow: 1;
-  margin: 0 0.5rem;
-}
   </style>
 </head>
 <body class="min-h-screen relative">
@@ -426,19 +433,16 @@
         data.chapters.forEach(surah => {
           const surahElement = document.createElement('div');
           surahElement.className = 'audio-surah-item';
-         surahElement.innerHTML = `
-  <div class="flex items-center justify-between w-full gap-4">
-    <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
-    <div class="flex items-center gap-2">
-      <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
-        <i class="fas fa-play"></i>
-      </button>
-      <span id="current-time-${surah.id}" class="text-xs w-12 text-left">00:00</span>
-      <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
-        <div class="progress-bar-audio" id="progress-bar-${surah.id}"></div>
-      </div>
-      <span id="duration-${surah.id}" class="text-xs w-12 text-left">00:00</span>
+surahElement.innerHTML = `
+  <div class="flex items-center w-full gap-4" style="flex-direction: row;">
+    <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
+      <i class="fas fa-play"></i>
+    </button>
+    <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
+      <div class="progress-bar-audio" id="progress-bar-${surah.id}" style="display: block !important;"></div>
     </div>
+    <span id="current-time-${surah.id}" class="time-display">00:00</span>
+    <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
   </div>
 `;
           audioSurahList.appendChild(surahElement);
@@ -450,23 +454,24 @@
 
     // Audio functions pour la nouvelle page
 function toggleAudio(surahId, button) {
-  // Si l'audio est déjà en cours pour cette sourate
+  // Si un autre audio est en cours, on l'arrête
+  if (currentAudio && currentAudio !== audioInstances[surahId]) {
+    stopAllAudios();
+  }
+
+  // Si l'audio existe déjà pour cette sourate
   if (audioInstances[surahId]) {
     if (!audioInstances[surahId].paused) {
       pauseAudio(surahId, button);
     } else {
       resumeAudio(surahId, button);
     }
-    return;
+  } else {
+    // Démarrer un nouvel audio
+    startAudio(surahId, button);
   }
-  
-  // Si un autre audio est en cours, on l'arrête
-  stopAllAudios();
-  
-  // Démarrer le nouvel audio
-  startAudio(surahId, button);
 }
-
+    
 function startAudio(surahId, button) {
   const audioUrl = getAudioUrl(surahId);
   const audio = new Audio(audioUrl);
@@ -887,26 +892,25 @@ function getAudioUrl(surahId) {
 
 function updateAudioProgress(surahId) {
   if (!audioInstances[surahId]) return;
-  
+
   const audio = audioInstances[surahId];
+  const progressBar = document.getElementById(`progress-bar-${surahId}`);
   
+  if (!progressBar) {
+    console.error(`Progress bar for surah ${surahId} not found`);
+    return;
+  }
+
   // Mise à jour du temps courant
   if (!isNaN(audio.currentTime)) {
     document.getElementById(`current-time-${surahId}`).textContent = 
       formatTime(audio.currentTime);
   }
-  
+
   // Mise à jour de la barre de progression
   if (!isNaN(audio.duration) && audio.duration > 0) {
     const progress = (audio.currentTime / audio.duration) * 100;
-    document.getElementById(`progress-bar-${surahId}`).style.width = `${progress}%`;
-    
-    // Mise à jour de la durée totale (une seule fois)
-    if (!audioInstances[surahId].durationUpdated) {
-      document.getElementById(`duration-${surahId}`).textContent = 
-        formatTime(audio.duration);
-      audioInstances[surahId].durationUpdated = true;
-    }
+    progressBar.style.width = `${progress}%`;
   }
 }
 
