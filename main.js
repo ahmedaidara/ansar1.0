@@ -525,17 +525,13 @@ function getChatbotResponse(message) {
 }
 // ==================== FONCTIONS MEMBRES ====================
 
-document.querySelector('#add-member-form')?.addEventListener('submit', async (e) => {
+document.querySelector('#add-member-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   
-  // Récupérer le premier code disponible
-  const availableCodes = await findAvailableCodes();
-  const memberCode = availableCodes.length > 0 
-    ? availableCodes[0] 
-    : await generateMemberCode();
+  const form = e.target;
+  const isEditing = form.dataset.editingId;
   
   const memberData = {
-    code: memberCode, // Utiliser le code généré
     firstname: document.getElementById('new-member-firstname').value.trim(),
     lastname: document.getElementById('new-member-lastname').value.trim(),
     age: parseInt(document.getElementById('new-member-age')?.value) || null,
@@ -547,19 +543,35 @@ document.querySelector('#add-member-form')?.addEventListener('submit', async (e)
     phone: document.getElementById('new-member-phone')?.value.trim() || null,
     residence: document.getElementById('new-member-residence')?.value.trim() || null,
     role: document.getElementById('new-member-role')?.value || 'membre',
-    status: document.getElementById('new-member-status')?.value || 'actif',
-    contributions: initializeContributions(),
-    createdAt: new Date().toISOString()
+    status: document.getElementById('new-member-status')?.value || 'actif'
   };
 
   try {
-    await saveData('members', memberData);
-    alert(`Membre ajouté avec le code: ${memberCode}`);
-    document.getElementById('add-member-form').reset();
-    updateMembersList();
+    if (isEditing) {
+      // MODE ÉDITION
+      await saveData('members', memberData, form.dataset.editingId);
+      alert('Membre mis à jour avec succès !');
+      
+      // Réinitialiser le formulaire
+      form.reset();
+      delete form.dataset.editingId;
+      document.querySelector('#add-member h3').textContent = 'Ajouter un Membre';
+      document.querySelector('#add-member-form button[type="submit"]').textContent = 'Ajouter';
+      
+    } else {
+      // MODE AJOUT
+      const memberCode = await generateMemberCode();
+      await saveData('members', { ...memberData, code: memberCode });
+      alert(`Nouveau membre ajouté avec le code: ${memberCode}`);
+      form.reset();
+    }
+    
+    // Mettre à jour les listes
+    updateEditMembersList();
+    
   } catch (error) {
-    console.error("Erreur ajout membre:", error);
-    alert("Erreur lors de l'ajout du membre");
+    console.error("Erreur saveMember:", error);
+    alert("Erreur lors de l'enregistrement");
   }
 });
 
@@ -715,15 +727,25 @@ async function editMember(code) {
   try {
     const members = await loadData('members');
     const member = members.find(m => m.code === code);
+    
     if (!member) {
       alert('Membre introuvable');
       return;
     }
 
+    // Activer l'onglet "Ajouter un Membre" qui contient notre formulaire
+    showTab('add-member');
+    
+    // Modifier le titre et le bouton du formulaire
+    document.querySelector('#add-member h3').textContent = 'Modifier le Membre';
+    const submitBtn = document.querySelector('#add-member-form button[type="submit"]');
+    submitBtn.textContent = 'Mettre à jour';
+    
+    // Stocker l'ID du membre à éditer dans le formulaire
     const form = document.querySelector('#add-member-form');
-    if (!form) return;
-
-    form.dataset.editing = member.id; // On garde l'ID pour la sauvegarde dans Firestore
+    form.dataset.editingId = member.id;
+    
+    // Remplir les champs
     document.getElementById('new-member-firstname').value = member.firstname || '';
     document.getElementById('new-member-lastname').value = member.lastname || '';
     document.getElementById('new-member-age').value = member.age || '';
@@ -736,11 +758,10 @@ async function editMember(code) {
     document.getElementById('new-member-residence').value = member.residence || '';
     document.getElementById('new-member-role').value = member.role || 'membre';
     document.getElementById('new-member-status').value = member.status || 'actif';
-
-    showTab('add-member');
+    
   } catch (error) {
     console.error('Erreur editMember:', error);
-    alert('Erreur lors du chargement des données du membre');
+    alert('Erreur lors du chargement du membre');
   }
 }
 
@@ -3844,3 +3865,4 @@ function deleteProject(projectId) {
             });
     }
 }
+
