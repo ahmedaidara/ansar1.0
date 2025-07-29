@@ -1355,11 +1355,13 @@ document.addEventListener('scroll', function() {
 });
 </script>
 <!-- Modal pour le succès du formulaire de promotion -->
+
+<!-- Modal pour le succès du formulaire de promotion -->
 <div id="success-promotion-modal" class="modal hidden-section">
   <div class="modal-content">
     <span class="close-modal">&times;</span>
     <h2>Soumission réussie</h2>
-    <p>Votre message a été soumis, Ansar vous contactera dans un délai de 24 à 48H.</p>
+    <p id="success-promotion-message">Votre message a été soumis, Ansar vous contactera dans un délai de 3 à 5 jours.</p>
     <button onclick="closeModal('success-promotion-modal')">Fermer</button>
   </div>
 </div>
@@ -1369,10 +1371,11 @@ document.addEventListener('scroll', function() {
   <div class="modal-content">
     <span class="close-modal">&times;</span>
     <h2>Soumission réussie</h2>
-    <p>Votre message a été soumis, Ansar vous contactera dans un délai de 3 à 5 jours.</p>
+    <p id="success-financement-message">Votre message a été soumis, Ansar vous contactera dans un délai de 3 à 5 jours.</p>
     <button onclick="closeModal('success-financement-modal')">Fermer</button>
   </div>
 </div>
+
 </body>
   <script>
 // Fonction pour afficher les sections (à ajouter à la fin du body)
