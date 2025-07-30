@@ -205,7 +205,16 @@
       min-width: 100px;
       z-index: 1;
     }
-    
+    .bismillah-french {
+  font-size: 1.8rem;
+  text-align: center;
+  color: #e1c174;
+  margin: 2rem 0;
+  padding: 1rem;
+  font-weight: bold;
+  font-style: italic;
+  border-bottom: 1px solid rgba(225, 193, 116, 0.3);
+}
     .progress-bar-audio {
       height: 100%;
       background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
@@ -775,29 +784,36 @@
     }
 
     function showFrenchSurahContent(surahId, surahName) {
-      hideSection('french-page');
-      showSection('french-surah-content');
-      document.getElementById('french-surah-title').textContent = `Sourate ${surahName}`;
-      
-      const surahText = document.getElementById('french-surah-text');
-      surahText.innerHTML = '<div class="text-center py-12"><div class="loading-spinner"></div></div>';
+  hideSection('french-page');
+  showSection('french-surah-content');
+  
+  // Ajoutez la Basmalah en français si ce n'est pas la sourate 9
+  const basmalah = surahId !== 9 ? 
+    '<div class="bismillah-french">Au nom d\'Allah, le Tout Miséricordieux, le Très Miséricordieux</div>' : 
+    '';
+  
+  document.getElementById('french-surah-title').textContent = `Sourate ${surahName}`;
+  
+  const surahText = document.getElementById('french-surah-text');
+  surahText.innerHTML = '<div class="text-center py-12"><div class="loading-spinner"></div></div>';
 
-      // Filter verses for this surah
-      const surahVerses = frenchVerses.filter(v => v.surah === surahId);
-      
-      // Generate HTML
-      let versesHtml = '';
-      surahVerses.forEach(verse => {
-        versesHtml += `
-          <div class="french-verse">
-            <span class="french-verse-number">${verse.verse}</span>
-            ${verse.text}
-          </div>
-        `;
-      });
-      
-      surahText.innerHTML = versesHtml;
-    }
+  // Filtrer les versets pour cette sourate
+  const surahVerses = frenchVerses.filter(v => v.surah === surahId);
+  
+  // Générer le HTML avec la Basmalah si nécessaire
+  let versesHtml = basmalah;
+  
+  surahVerses.forEach(verse => {
+    versesHtml += `
+      <div class="french-verse">
+        <span class="french-verse-number">${verse.verse}</span>
+        ${verse.text}
+      </div>
+    `;
+  });
+  
+  surahText.innerHTML = versesHtml;
+}
 
     // Utility functions
     function formatTime(seconds) {
