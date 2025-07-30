@@ -235,6 +235,13 @@ function showPage(pageId) {
       case 'coran':
         updateCoranContent();
         break;
+        // Dans votre fonction showPage(), ajoutez ce cas :
+case 'hadith':
+  const hadithIframe = document.getElementById('hadith-iframe');
+  if (hadithIframe && (!hadithIframe.src || hadithIframe.src === '')) {
+    hadithIframe.src = 'hadith.html';
+  }
+  break;
       case 'personal':
         updatePersonalPage();
         break;
