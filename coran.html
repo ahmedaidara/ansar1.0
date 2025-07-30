@@ -313,17 +313,25 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .audio-type-btn {
-  background-color: var(--primary-color);
+.audio-type-btn {
+  background: linear-gradient(135deg, #1f4a49 0%, #073332 100%);
   color: white;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  text-align: center;
+  padding: 1.5rem;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
+  /* Ombre plus prononcée */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25), 
+              0 3px 6px rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
 
 .audio-type-btn:hover {
   background-color: #0f3e3d;
