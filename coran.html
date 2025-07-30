@@ -33,14 +33,53 @@
       bottom: 0;
       z-index: 0;
     }
-    
+    /* Nouveau style pour les boutons de la page d'accueil */
+    .main-btn {
+    background: linear-gradient(135deg, #1f4a49 0%, #073332 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+  }
+
+  .main-btn .content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .main-btn i {
+    font-size: 2rem;
+    margin-left: 1rem; /* À droite en RTL */
+  }
+
+  .main-btn .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: right;
+  }
+    .main-btn .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
     .verse {
       line-height: 2.5;
       margin-bottom: 1.5rem;
       position: relative;
       transition: all 0.3s ease;
     }
-    
+.french-surah-title {
+  background: linear-gradient(to right, #e1c174, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
     #surah-text {
       padding-right: 1.5rem;
       padding-left: 1.5rem;
@@ -249,66 +288,63 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    .audio-type-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.audio-type-btn:hover {
+  background-color: #0f3e3d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.audio-type-btn:active {
+  background-color: #073332;
+  transform: translateY(0);
+}
   </style>
 </head>
 <body class="min-h-screen relative">
   <div class="islamic-pattern"></div>
   
   <!-- Main Page -->
+   <!-- Main Page -->
   <div id="main-page" class="container mx-auto px-4 py-8 relative z-10">
     <header class="text-center mb-12">
       <h1 class="text-4xl font-bold text-yellow-600 mb-4">مصحف التلاوة</h1>
-      <div class="w-32 h-1 bg-yellow-600 mx-auto"></div>
+      <div class="w-32 h-1 bg-yellow-600 mx-auto mb-8"></div>
     </header>
 
-    <!-- Main navigation -->
-    <div class="grid grid-cols-1 gap-8 mb-12">
+    <!-- Nouvelle navigation principale simplifiée -->
+    <div class="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
       <!-- Quran Reading -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn w-full max-w-md mx-auto">
-        <div class="bg-[#1f4a49] p-8 text-white text-center">
-          <h2 class="text-2xl font-bold">القرآن الكريم</h2>
-        </div>
-        <div class="bg-emerald-50 text-center">
-          <p class="mb-8 p-6 text-2xl md:text-3xl text-gray-800 leading-relaxed">
-            كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو ٱلْأَلْبَٰبِ 
-          </p>
-          <button onclick="showSection('surah-page')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-            الدخول <i class="fas fa-arrow-left ml-2"></i>
-          </button>
-        </div>
+      <div onclick="showSection('surah-page')" class="main-btn">
+        <i class="fas fa-book-quran"></i>
+        <div class="title">القرآن الكريم</div>
       </div>
       
       <!-- Quran Listening -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn w-full max-w-md mx-auto">
-        <div class="bg-[#1f4a49] p-8 text-white text-center">
-          <h2 class="text-2xl font-bold">استماع القرآن الكريم</h2>
-        </div>
-        <div class="bg-emerald-50 text-center">
-          <p class="mb-8 p-6 text-2xl md:text-3xl text-gray-800 leading-relaxed">
-            سَمِعَ ٱللَّهُ لِمَنْ حَمِدَهُ
-          </p>
-          <button onclick="showSection('audio-page')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-            الدخول <i class="fas fa-arrow-left ml-2"></i>
-          </button>
-        </div>
+      <div onclick="showSection('audio-page')" class="main-btn">
+        <i class="fas fa-headphones"></i>
+        <div class="title">استماع القرآن</div>
       </div>
       
       <!-- Quran in French -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn w-full max-w-md mx-auto">
-        <div class="bg-[#1f4a49] p-8 text-white text-center">
-          <h2 class="text-2xl font-bold">القرآن بالفرنسية</h2>
-        </div>
-        <div class="bg-emerald-50 text-center">
-          <p class="mb-8 p-6 text-2xl md:text-3xl text-gray-800 leading-relaxed">
-            Le Coran en français
-          </p>
-          <button onclick="showSection('french-page')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-            Ouvrir <i class="fas fa-arrow-left ml-2"></i>
-          </button>
-        </div>
+      <div onclick="showSection('french-page')" class="main-btn">
+        <i class="fas fa-language"></i>
+        <div class="title">القرآن بالفرنسية</div>
       </div>
     </div>
   </div>
+
 
   <!-- Surah List Page -->
   <div id="surah-page" class="page-section">
@@ -361,17 +397,17 @@
       <div></div>
     </div>
     
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <button onclick="navigateToAudioType('murattal')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
-        <div class="text-xl font-bold">مرتل</div>
-      </button>
-      <button onclick="navigateToAudioType('mujawad')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
-        <div class="text-xl font-bold">مجود</div>
-      </button>
-      <button onclick="navigateToAudioType('hafs')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
-        <div class="text-xl font-bold">حفص</div>
-      </button>
-    </div>
+   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <button onclick="navigateToAudioType('murattal')" class="audio-type-btn">
+    <div class="text-xl font-bold">مرتل - Murattal</div>
+  </button>
+  <button onclick="navigateToAudioType('mujawad')" class="audio-type-btn">
+    <div class="text-xl font-bold">مجود - Mujawwad</div>
+  </button>
+  <button onclick="navigateToAudioType('hafs')" class="audio-type-btn">
+    <div class="text-xl font-bold">حفص - Hafs</div>
+  </button>
+</div>
   </div>
 
   <!-- Audio Surah List Page -->
@@ -410,7 +446,7 @@
       <button onclick="hideSection('french-surah-content')" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
         <i class="fas fa-arrow-right mr-2"></i> Retour
       </button>
-      <h2 id="french-surah-title" class="text-3xl font-bold text-emerald-600 text-center"></h2>
+      <h2 id="french-surah-title" class="french-surah-title"></h2>
     </div>
     
     <div id="french-surah-text" class="text-xl leading-loose mb-12 text-justify p-4 bg-white bg-opacity-10 rounded-lg">
