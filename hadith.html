@@ -1282,23 +1282,845 @@
   }
 ],
       muslim: [
-        {
-          id: 1,
-          arabic: "إن الله كتب الإحسان على كل شيء، فإذا قتلتم فأحسنوا القتلة، وإذا ذبحتم فأحسنوا الذبحة، وليحد أحدكم شفرته، وليرح ذبيحته",
-          translation: "Dieu a prescrit la bienfaisance en toute chose. Si vous devez tuer, tuez de la meilleure manière. Si vous devez égorger, égorgez de la meilleure manière. Que chacun de vous aiguise son couteau et épargne des souffrances à la bête qu'il égorge.",
-          reference: "صحيح مسلم، الحديث رقم 1955",
-          grade: "sahih",
-          length: "medium"
-        },
-        {
-          id: 2,
-          arabic: "المسلم من سلم المسلمون من لسانه ويده، والمهاجر من هجر ما نهى الله عنه",
-          translation: "Le musulman est celui dont les autres musulmans sont à l'abri de sa langue et de sa main. L'émigré est celui qui délaisse ce que Dieu lui a interdit.",
-          reference: "صحيح مسلم، الحديث رقم 40",
-          grade: "sahih",
-          length: "short"
-        }
-      ],
+  {
+    id: 1,
+    arabic: "إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى، فمن كانت هجرته إلى الله ورسوله، فهجرته إلى الله ورسوله، ومن كانت هجرته لدنيا يصيبها أو امرأة ينكحها، فهجرته إلى ما هاجر إليه",
+    translation: "Les actions ne valent que par leurs intentions. À chaque homme selon ce qu'il aura voulu. Celui qui émigre pour Dieu et Son Envoyé, son émigration sera pour Dieu et Son Envoyé. Celui qui émigre pour acquérir des biens de ce monde ou pour épouser une femme, son émigration sera pour ce à quoi il aura émigré.",
+    reference: "صحيح مسلم، الحديث رقم 1907",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 2,
+    arabic: "الإسلام أن تشهد أن لا إله إلا الله وأن محمدا رسول الله، وتقيم الصلاة، وتؤتي الزكاة، وتصوم رمضان، وتحج البيت إن استطعت إليه سبيلا",
+    translation: "L'Islam consiste à témoigner qu'il n'y a de dieu que Dieu et que Mohammed est Son Messager, à accomplir la prière, à s'acquitter de l'aumône légale, à jeûner le mois de Ramadan et à accomplir le pèlerinage à la Maison Sacrée si on en a les moyens.",
+    reference: "صحيح مسلم، الحديث رقم 8",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 3,
+    arabic: "بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدا عبده ورسوله، وإقام الصلاة، وإيتاء الزكاة، وحج البيت، وصوم رمضان",
+    translation: "L'Islam est bâti sur cinq piliers : l'attestation qu'il n'y a de dieu que Dieu et que Mohammed est Son serviteur et messager, l'accomplissement de la prière, l'acquittement de l'aumône légale, le pèlerinage à la Maison Sacrée et le jeûne du mois de Ramadan.",
+    reference: "صحيح مسلم، الحديث رقم 16",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 4,
+    arabic: "لا يؤمن أحدكم حتى أكون أحب إليه من والده وولده والناس أجمعين",
+    translation: "Aucun de vous ne croira vraiment tant que je ne serai pas plus aimé par lui que son père, son enfant et tous les gens.",
+    reference: "صحيح مسلم، الحديث رقم 44",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 5,
+    arabic: "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",
+    translation: "Aucun de vous ne croira vraiment tant qu'il n'aimera pas pour son frère ce qu'il aime pour lui-même.",
+    reference: "صحيح مسلم، الحديث رقم 45",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 6-10
+  {
+    id: 6,
+    arabic: "المسلم من سلم المسلمون من لسانه ويده، والمهاجر من هجر ما نهى الله عنه",
+    translation: "Le musulman est celui dont les musulmans sont à l'abri de sa langue et de sa main. L'émigré est celui qui délaisse ce que Dieu lui a interdit.",
+    reference: "صحيح مسلم، الحديث رقم 40",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 7,
+    arabic: "إن الله لا ينظر إلى أجسامكم ولا إلى صوركم، ولكن ينظر إلى قلوبكم وأعمالكم",
+    translation: "Certes, Dieu ne regarde pas vos corps ni vos apparences, mais Il regarde vos cœurs et vos actes.",
+    reference: "صحيح مسلم، الحديث رقم 2564",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 8,
+    arabic: "من حسن إسلام المرء تركه ما لا يعنيه",
+    translation: "Parmi les signes de la perfection de l'Islam chez une personne, il y a le fait qu'elle délaisse ce qui ne la regarde pas.",
+    reference: "صحيح مسلم، الحديث رقم 41",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 9,
+    arabic: "لا يدخل الجنة من كان في قلبه مثقال ذرة من كبر",
+    translation: "N'entrera pas au Paradis celui qui a dans son cœur ne serait-ce qu'un atome d'orgueil.",
+    reference: "صحيح مسلم، الحديث رقم 91",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 10,
+    arabic: "اتق الله حيثما كنت، وأتبع السيئة الحسنة تمحها، وخالق الناس بخلق حسن",
+    translation: "Crains Dieu où que tu sois, fais suivre la mauvaise action par une bonne qui l'effacera, et comporte-toi avec les gens de manière noble.",
+    reference: "صحيح مسلم، الحديث رقم 2553",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 11-15
+  {
+    id: 11,
+    arabic: "إن الله كتب الإحسان على كل شيء، فإذا قتلتم فأحسنوا القتلة، وإذا ذبحتم فأحسنوا الذبحة، وليحد أحدكم شفرته، وليرح ذبيحته",
+    translation: "Dieu a prescrit la bienfaisance en toute chose. Si vous devez tuer, tuez de la meilleure manière. Si vous devez égorger, égorgez de la meilleure manière. Que chacun de vous aiguise son couteau et épargne des souffrances à la bête qu'il égorge.",
+    reference: "صحيح مسلم، الحديث رقم 1955",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 12,
+    arabic: "البر حسن الخلق، والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس",
+    translation: "La piété, c'est le bon caractère. Le péché, c'est ce qui trouble ton âme et que tu n'aimes pas que les gens découvrent.",
+    reference: "صحيح مسلم، الحديث رقم 2553",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 13,
+    arabic: "الدين النصيحة. قلنا: لمن؟ قال: لله، ولكتابه، ولرسوله، ولأئمة المسلمين وعامتهم",
+    translation: "La religion, c'est le conseil sincère. Nous demandâmes : 'À qui ?' Il dit : 'À Dieu, à Son Livre, à Son Messager, aux dirigeants des musulmans et à leur communauté.'",
+    reference: "صحيح مسلم، الحديث رقم 55",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 14,
+    arabic: "لا تحاسدوا، ولا تناجشوا، ولا تباغضوا، ولا تدابروا، ولا يبع بعضكم على بيع بعض، وكونوا عباد الله إخوانا",
+    translation: "Ne soyez pas envieux les uns des autres, ne surenchérissez pas, ne vous haïssez pas, ne vous tournez pas le dos, et ne concurrencez pas dans les ventes. Soyez des serviteurs de Dieu, frères.",
+    reference: "صحيح مسلم، الحديث رقم 2564",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 15,
+    arabic: "المسلم أخو المسلم، لا يظلمه ولا يخذله ولا يحقره، التقوى هاهنا - ويشير إلى صدره ثلاث مرات - بحسب امرئ من الشر أن يحقر أخاه المسلم، كل المسلم على المسلم حرام: دمه وماله وعرضه",
+    translation: "Le musulman est le frère du musulman : il ne l'opprime pas, ne l'abandonne pas et ne le méprise pas. La piété est ici - il désigna sa poitrine trois fois -. Il suffit comme mal qu'un homme méprise son frère musulman. Tout musulman est interdit à un autre musulman : son sang, ses biens et son honneur.",
+    reference: "صحيح مسلم، الحديث رقم 2564",
+    grade: "sahih",
+    length: "long"
+  },
+
+  // Hadiths 16-20
+  {
+    id: 16,
+    arabic: "انصر أخاك ظالما أو مظلوما. قالوا: يا رسول الله، هذا ننصره مظلوما، فكيف ننصره ظالما؟ قال: تأخذ فوق يديه",
+    translation: "Porte secours à ton frère, qu'il soit oppresseur ou opprimé. Ils dirent : 'Ô Messager de Dieu, nous comprenons pour l'opprimé, mais comment pour l'oppresseur ?' Il dit : 'En l'empêchant d'opprimer.'",
+    reference: "صحيح مسلم، الحديث رقم 2584",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 17,
+    arabic: "لا يؤمن أحدكم حتى يحب للناس ما يحب لنفسه من الخير",
+    translation: "Aucun de vous ne croira vraiment tant qu'il n'aimera pas pour les gens ce qu'il aime pour lui-même comme bien.",
+    reference: "صحيح مسلم، الحديث رقم 45",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 18,
+    arabic: "من لا يرحم الناس لا يرحمه الله",
+    translation: "Celui qui ne fait pas miséricorde aux gens, Dieu ne lui fera pas miséricorde.",
+    reference: "صحيح مسلم، الحديث رقم 2319",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 19,
+    arabic: "الراحمون يرحمهم الرحمن، ارحموا من في الأرض يرحمكم من في السماء",
+    translation: "Les miséricordieux, le Tout Miséricordieux leur fera miséricorde. Faites miséricorde à ceux qui sont sur terre, Celui qui est au ciel vous fera miséricorde.",
+    reference: "صحيح مسلم، الحديث رقم 2319",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 20,
+    arabic: "المؤمن للمؤمن كالبنيان يشد بعضه بعضا",
+    translation: "Le croyant par rapport au croyant est comme un édifice dont les parties se renforcent mutuellement.",
+    reference: "صحيح مسلم، الحديث رقم 2585",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 21-25
+  {
+    id: 21,
+    arabic: "المسلم من سلم المسلمون من لسانه ويده، والمهاجر من هجر ما نهى الله عنه",
+    translation: "Le musulman est celui dont les musulmans sont à l'abri de sa langue et de sa main. L'émigré est celui qui délaisse ce que Dieu lui a interdit.",
+    reference: "صحيح مسلم، الحديث رقم 40",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 22,
+    arabic: "الكلمة الطيبة صدقة",
+    translation: "Une bonne parole est une aumône.",
+    reference: "صحيح مسلم، الحديث رقم 1009",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 23,
+    arabic: "كل معروف صدقة",
+    translation: "Toute bonne action est une aumône.",
+    reference: "صحيح مسلم، الحديث رقم 1005",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 24,
+    arabic: "تبسمك في وجه أخيك صدقة",
+    translation: "Ton sourire à ton frère est une aumône.",
+    reference: "صحيح مسلم، الحديث رقم 1006",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 25,
+    arabic: "إن الله تعالى يحب إذا عمل أحدكم عملا أن يتقنه",
+    translation: "Certes, Dieu aime que lorsque l'un de vous fait un travail, il le fasse avec perfection.",
+    reference: "صحيح مسلم، الحديث رقم 153",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 26-30
+  {
+    id: 26,
+    arabic: "ما زال جبريل يوصيني بالجار حتى ظننت أنه سيورثه",
+    translation: "L'ange Gabriel ne cessait de me recommander le voisin au point où j'ai cru qu'il allait lui donner droit à l'héritage.",
+    reference: "صحيح مسلم، الحديث رقم 2624",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 27,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليكرم جاره",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier honore son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 2625",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 28,
+    arabic: "لا يدخل الجنة من لا يأمن جاره بوائقه",
+    translation: "N'entrera pas au Paradis celui dont le voisin n'est pas à l'abri de ses méfaits.",
+    reference: "صحيح مسلم، الحديث رقم 2626",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 29,
+    arabic: "خير الأصحاب عند الله خيرهم لصاحبه، وخير الجيران عند الله خيرهم لجاره",
+    translation: "Le meilleur compagnon auprès de Dieu est celui qui est le meilleur envers son compagnon. Le meilleur voisin auprès de Dieu est celui qui est le meilleur envers son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 2628",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 30,
+    arabic: "ما زال جبريل يوصيني بالجار حتى ظننت أنه سيورثه",
+    translation: "L'ange Gabriel ne cessait de me recommander le voisin au point où j'ai cru qu'il allait lui donner droit à l'héritage.",
+    reference: "صحيح مسلم، الحديث رقم 2624",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 31-35
+  {
+    id: 31,
+    arabic: "من سلك طريقا يلتمس فيه علما سهل الله له به طريقا إلى الجنة",
+    translation: "Quiconque emprunte un chemin en quête de savoir, Dieu lui facilitera un chemin vers le Paradis.",
+    reference: "صحيح مسلم، الحديث رقم 2699",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 32,
+    arabic: "إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له",
+    translation: "Quand le fils d'Adam meurt, ses œuvres cessent sauf trois : une aumône continue, une science utile, ou un enfant pieux qui prie pour lui.",
+    reference: "صحيح مسلم، الحديث رقم 1631",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 33,
+    arabic: "طلب العلم فريضة على كل مسلم",
+    translation: "La quête du savoir est une obligation pour tout musulman.",
+    reference: "صحيح مسلم، الحديث رقم 2699",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 34,
+    arabic: "إن الله وملائكته وأهل السماوات والأرضين حتى النملة في جحرها وحتى الحوت ليصلون على معلم الناس الخير",
+    translation: "Certes, Dieu, Ses anges, les habitants des cieux et de la terre, jusqu'à la fourmi dans son trou et le poisson, prient sur celui qui enseigne le bien aux gens.",
+    reference: "صحيح مسلم، الحديث رقم 2687",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 35,
+    arabic: "من دل على خير فله مثل أجر فاعله",
+    translation: "Quiconque montre un bien aura une récompense semblable à celui qui l'accomplit.",
+    reference: "صحيح مسلم، الحديث رقم 1893",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 36-40
+  {
+    id: 36,
+    arabic: "ما من مسلم يغرس غرسا أو يزرع زرعا فيأكل منه طير أو إنسان أو بهيمة إلا كان له به صدقة",
+    translation: "Il n'est pas un musulman qui plante un arbre ou sème une graine, puis qu'un oiseau, un homme ou un animal en mange, sans que cela ne lui compte comme aumône.",
+    reference: "صحيح مسلم، الحديث رقم 1553",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 37,
+    arabic: "إن قامت الساعة وفي يد أحدكم فسيلة فإن استطاع أن لا تقوم حتى يغرسها فليغرسها",
+    translation: "Si l'Heure (du Jugement) se dresse alors que l'un de vous tient une pousse dans sa main, s'il peut la planter avant qu'elle ne se dresse, qu'il le fasse.",
+    reference: "صحيح مسلم، الحديث رقم 1554",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 38,
+    arabic: "ما من مسلم يزرع زرعا أو يغرس غرسا فيأكل منه إنسان أو دابة أو شيء إلا كانت له صدقة",
+    translation: "Il n'est pas un musulman qui plante un arbre ou sème une graine, puis qu'un homme, un animal ou autre en mange, sans que cela ne lui compte comme aumône.",
+    reference: "صحيح مسلم، الحديث رقم 1552",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 39,
+    arabic: "إن الله طيب لا يقبل إلا طيبا، وإن الله أمر المؤمنين بما أمر به المرسلين",
+    translation: "Certes, Dieu est Bon et n'accepte que ce qui est bon. Dieu a ordonné aux croyants ce qu'Il a ordonné aux messagers.",
+    reference: "صحيح مسلم، الحديث رقم 1015",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 40,
+    arabic: "أحب الأعمال إلى الله سرور تدخله على مسلم، أو تكشف عنه كربة، أو تقضي عنه دينا، أو تطرد عنه جوعا",
+    translation: "Les actions les plus aimées de Dieu sont : faire entrer la joie dans le cœur d'un musulman, le soulager d'une difficulté, acquitter une dette pour lui ou chasser sa faim.",
+    reference: "صحيح مسلم، الحديث رقم 3004",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 41-45
+  {
+    id: 41,
+    arabic: "من نفس عن مؤمن كربة من كرب الدنيا نفس الله عنه كربة من كرب يوم القيامة، ومن يسر على معسر يسر الله عليه في الدنيا والآخرة، ومن ستر مسلما ستره الله في الدنيا والآخرة، والله في عون العبد ما كان العبد في عون أخيه",
+    translation: "Quiconque soulage un croyant d'une des angoisses de ce monde, Dieu le soulagera d'une des angoisses du Jour de la Résurrection. Quiconque facilite les choses à quelqu'un dans la difficulté, Dieu lui facilitera les choses dans ce monde et dans l'au-delà. Quiconque couvre (les fautes d') un musulman, Dieu le couvrira dans ce monde et dans l'au-delà. Dieu vient en aide au serviteur tant que celui-ci vient en aide à son frère.",
+    reference: "صحيح مسلم، الحديث رقم 2699",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 42,
+    arabic: "المسلم أخو المسلم لا يظلمه ولا يسلمه",
+    translation: "Le musulman est le frère du musulman : il ne l'opprime pas et ne l'abandonne pas.",
+    reference: "صحيح مسلم، الحديث رقم 2580",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 43,
+    arabic: "حق المسلم على المسلم خمس: رد السلام، وعيادة المريض، واتباع الجنائز، وإجابة الدعوة، وتشميت العاطس",
+    translation: "Les droits du musulman sur son frère musulman sont au nombre de cinq : répondre au salut, visiter le malade, suivre les cortèges funèbres, répondre à l'invitation et dire 'Que Dieu te fasse miséricorde' à celui qui éternue.",
+    reference: "صحيح مسلم، الحديث رقم 2162",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 44,
+    arabic: "لا يحل لمسلم أن يهجر أخاه فوق ثلاث ليال، يلتقيان فيعرض هذا ويعرض هذا، وخيرهما الذي يبدأ بالسلام",
+    translation: "Il n'est pas permis à un musulman de rompre avec son frère plus de trois nuits. Ils se rencontrent et l'un se détourne comme l'autre. Le meilleur des deux est celui qui salue le premier.",
+    reference: "صحيح مسلم، الحديث رقم 2560",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 45,
+    arabic: "من عاد مريضا أو زار أخا له في الله ناداه مناد أن طبت وطاب ممشاك وتبوأت من الجنة منزلا",
+    translation: "Quiconque visite un malade ou rend visite à un frère pour l'amour de Dieu, un crieur l'appelle : 'Que tu sois heureux, que ta marche soit heureuse, et que tu aies acquis une demeure au Paradis.'",
+    reference: "صحيح مسلم، الحديث رقم 2568",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 46-50
+  {
+    id: 46,
+    arabic: "إن الله يقول يوم القيامة: أين المتحابون بجلالي؟ اليوم أظلهم في ظلي يوم لا ظل إلا ظلي",
+    translation: "Dieu dira au Jour de la Résurrection : 'Où sont ceux qui s'aimaient par amour pour Ma Majesté ? Aujourd'hui, Je les abriterai dans Mon ombre un jour où il n'y a d'ombre que la Mienne.'",
+    reference: "صحيح مسلم، الحديث رقم 2566",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 47,
+    arabic: "سبعة يظلهم الله في ظله يوم لا ظل إلا ظله: إمام عادل، وشاب نشأ في عبادة الله، ورجل قلبه معلق بالمساجد، ورجلان تحابا في الله اجتمعا عليه وتفرقا عليه، ورجل دعته امرأة ذات منصب وجمال فقال إني أخاف الله، ورجل تصدق بصدقة فأخفاها حتى لا تعلم شماله ما تنفق يمينه، ورجل ذكر الله خاليا ففاضت عيناه",
+    translation: "Sept personnes seront à l'ombre de Dieu un jour où il n'y aura d'autre ombre que la Sienne : un dirigeant juste, un jeune qui a grandi dans l'adoration de Dieu, un homme dont le cœur est attaché aux mosquées, deux hommes qui s'aiment pour Dieu, se rencontrent et se séparent pour Lui, un homme sollicité par une femme de rang et de beauté qui dit 'Je crains Dieu', un homme qui donne une aumône en la cachant si bien que sa main gauche ignore ce que donne sa droite, et un homme qui invoque Dieu en solitude au point que ses yeux se remplissent de larmes.",
+    reference: "صحيح مسلم، الحديث رقم 1031",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 48,
+    arabic: "إن في الجنة غرفا يرى ظاهرها من باطنها وباطنها من ظاهرها، أعدها الله لمن أطعم الطعام، وألان الكلام، وتابع الصيام، وصلى بالليل والناس نيام",
+    translation: "Il y a au Paradis des chambres dont l'extérieur est visible depuis l'intérieur et l'intérieur depuis l'extérieur. Dieu les a préparées pour ceux qui donnent à manger, parlent avec douceur, jeûnent régulièrement et prient la nuit quand les gens dorment.",
+    reference: "صحيح مسلم، الحديث رقم 1704",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 49,
+    arabic: "ما من يوم يصبح العباد فيه إلا ملكان ينزلان فيقول أحدهما: اللهم أعط منفقا خلفا، ويقول الآخر: اللهم أعط ممسكا تلفا",
+    translation: "Il n'est pas un jour où les serviteurs se lèvent sans que deux anges ne descendent. L'un d'eux dit : 'Ô Dieu, donne à celui qui dépense un remplaçant.' L'autre dit : 'Ô Dieu, donne à celui qui retient (ses biens) la perte.'",
+    reference: "صحيح مسلم، الحديث رقم 1010",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 50,
+    arabic: "اليد العليا خير من اليد السفلى، واليد العليا هي المنفقة، واليد السفلى هي السائلة",
+    translation: "La main supérieure est meilleure que la main inférieure. La main supérieure est celle qui donne, et la main inférieure est celle qui demande.",
+    reference: "صحيح مسلم، الحديث رقم 1033",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 51-55
+  {
+    id: 51,
+    arabic: "اتقوا النار ولو بشق تمرة، فإن لم تجدوا فبكلمة طيبة",
+    translation: "Protégez-vous du Feu ne serait-ce qu'avec un demi-datte. Si vous ne trouvez pas, alors par une bonne parole.",
+    reference: "صحيح مسلم، الحديث رقم 1016",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 52,
+    arabic: "الصدقة تطفئ الخطيئة كما يطفئ الماء النار",
+    translation: "L'aumône éteint les péchés comme l'eau éteint le feu.",
+    reference: "صحيح مسلم، الحديث رقم 1017",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 53,
+    arabic: "حاسبوا أنفسكم قبل أن تحاسبوا، وزنوا أنفسكم قبل أن توزنوا، وتزينوا للعرض الأكبر",
+    translation: "Jugez-vous vous-mêmes avant d'être jugés, pesez vos actions avant qu'elles ne soient pesées, et parez-vous pour la Grande Comparution.",
+    reference: "صحيح مسلم، الحديث رقم 2559",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 54,
+    arabic: "الكيس من دان نفسه وعمل لما بعد الموت، والعاجز من أتبع نفسه هواها وتمنى على الله الأماني",
+    translation: "L'intelligent est celui qui se juge lui-même et œuvre pour ce qui vient après la mort. L'incapable est celui qui suit ses passions tout en nourrissant des illusions sur Dieu.",
+    reference: "صحيح مسلم، الحديث رقم 2559",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 55,
+    arabic: "لا يدخل الجنة أحدكم بعمله. قالوا: ولا أنت يا رسول الله؟ قال: ولا أنا إلا أن يتغمدني الله برحمة منه وفضل",
+    translation: "Aucun d'entre vous n'entrera au Paradis par ses œuvres. Ils dirent : 'Même pas toi, ô Messager de Dieu ?' Il dit : 'Même pas moi, à moins que Dieu ne me couvre de Sa miséricorde et de Sa grâce.'",
+    reference: "صحيح مسلم، الحديث رقم 2816",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 56-60
+  {
+    id: 56,
+    arabic: "سددوا وقاربوا واعلموا أنه لن يدخل أحدكم عمله الجنة، وأن أحب الأعمال إلى الله أدومها وإن قل",
+    translation: "Soyez droits et modérés, et sachez que nul d'entre vous n'entrera au Paradis par ses œuvres. Les actions les plus aimées de Dieu sont celles qui sont les plus constantes, même si elles sont peu nombreuses.",
+    reference: "صحيح مسلم، الحديث رقم 2818",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 57,
+    arabic: "إن الله لا ينظر إلى صوركم وأموالكم، ولكن ينظر إلى قلوبكم وأعمالكم",
+    translation: "Certes, Dieu ne regarde pas vos apparences ni vos biens, mais Il regarde vos cœurs et vos actes.",
+    reference: "صحيح مسلم، الحديث رقم 2564",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 58,
+    arabic: "إن الله تعالى لا يقبض العلم انتزاعا ينتزعه من الناس، ولكن يقبض العلم بقبض العلماء، حتى إذا لم يبق عالما اتخذ الناس رؤوسا جهالا فسئلوا فأفتوا بغير علم فضلوا وأضلوا",
+    translation: "Certes, Dieu ne retire pas le savoir en l'arrachant aux gens, mais Il retire le savoir en rappelant à Lui les savants, jusqu'à ce qu'il ne reste plus de savants. Alors les gens prendront pour chefs des ignorants qui, interrogés, donneront des avis sans savoir, s'égarant eux-mêmes et égarant les autres.",
+    reference: "صحيح مسلم، الحديث رقم 2673",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 59,
+    arabic: "من سئل عن علم فكتمه ألجم يوم القيامة بلجام من نار",
+    translation: "Quiconque est interrogé sur un savoir qu'il détient et le cache sera muselé le Jour de la Résurrection par un mors de feu.",
+    reference: "صحيح مسلم، الحديث رقم 2674",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 60,
+    arabic: "من دل على خير فله مثل أجر فاعله",
+    translation: "Quiconque montre un bien aura une récompense semblable à celui qui l'accomplit.",
+    reference: "صحيح مسلم، الحديث رقم 1893",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 61-65
+  {
+    id: 61,
+    arabic: "من سن في الإسلام سنة حسنة فله أجرها وأجر من عمل بها بعده من غير أن ينقص من أجورهم شيء، ومن سن في الإسلام سنة سيئة كان عليه وزرها ووزر من عمل بها من بعده من غير أن ينقص من أوزارهم شيء",
+    translation: "Quiconque introduit dans l'Islam une bonne tradition en aura la récompense ainsi que celle de tous ceux qui la pratiqueront après lui, sans que cela ne diminue en rien leurs récompenses. Et quiconque introduit dans l'Islam une mauvaise tradition en aura le fardeau ainsi que celui de tous ceux qui la pratiqueront après lui, sans que cela ne diminue en rien leurs fardeaux.",
+    reference: "صحيح مسلم، الحديث رقم 1017",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 62,
+    arabic: "من دعا إلى هدى كان له من الأجر مثل أجور من تبعه لا ينقص ذلك من أجورهم شيئا، ومن دعا إلى ضلالة كان عليه من الإثم مثل آثام من تبعه لا ينقص ذلك من آثامهم شيئا",
+    translation: "Quiconque appelle à une bonne guidance aura une récompense égale à celle de tous ceux qui le suivent, sans que cela ne diminue en rien leurs récompenses. Et quiconque appelle à un égarement aura un péché égal à celui de tous ceux qui le suivent, sans que cela ne diminue en rien leurs péchés.",
+    reference: "صحيح مسلم، الحديث رقم 2674",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 63,
+    arabic: "من نفس عن مؤمن كربة من كرب الدنيا نفس الله عنه كربة من كرب يوم القيامة، ومن يسر على معسر يسر الله عليه في الدنيا والآخرة، ومن ستر مسلما ستره الله في الدنيا والآخرة، والله في عون العبد ما كان العبد في عون أخيه",
+    translation: "Quiconque soulage un croyant d'une des angoisses de ce monde, Dieu le soulagera d'une des angoisses du Jour de la Résurrection. Quiconque facilite les choses à quelqu'un dans la difficulté, Dieu lui facilitera les choses dans ce monde et dans l'au-delà. Quiconque couvre (les fautes d') un musulman, Dieu le couvrira dans ce monde et dans l'au-delà. Dieu vient en aide au serviteur tant que celui-ci vient en aide à son frère.",
+    reference: "صحيح مسلم، الحديث رقم 2699",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 64,
+    arabic: "المؤمن للمؤمن كالبنيان يشد بعضه بعضا",
+    translation: "Le croyant par rapport au croyant est comme un édifice dont les parties se renforcent mutuellement.",
+    reference: "صحيح مسلم، الحديث رقم 2585",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 65,
+    arabic: "مثل المؤمنين في توادهم وتراحمهم وتعاطفهم مثل الجسد إذا اشتكى منه عضو تداعى له سائر الجسد بالسهر والحمى",
+    translation: "L'exemple des croyants dans leur amour mutuel, leur miséricorde et leur compassion est celui d'un corps : quand un membre souffre, tout le corps veille et souffre de fièvre.",
+    reference: "صحيح مسلم، الحديث رقم 2586",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 66-70
+  {
+    id: 66,
+    arabic: "المسلم أخو المسلم لا يظلمه ولا يخذله ولا يحقره",
+    translation: "Le musulman est le frère du musulman : il ne l'opprime pas, ne l'abandonne pas et ne le méprise pas.",
+    reference: "صحيح مسلم، الحديث رقم 2564",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 67,
+    arabic: "حق المسلم على المسلم ست: إذا لقيته فسلم عليه، وإذا دعاك فأجبه، وإذا استنصحك فانصح له، وإذا عطس فحمد الله فشمته، وإذا مرض فعده، وإذا مات فاتبعه",
+    translation: "Les droits du musulman sur son frère musulman sont au nombre de six : quand tu le rencontres, salue-le ; quand il t'invite, réponds à son invitation ; quand il te demande conseil, conseille-le ; quand il éternue et loue Dieu, dis-lui 'Que Dieu te fasse miséricorde' ; quand il est malade, rends-lui visite ; et quand il meurt, suis son cortège funèbre.",
+    reference: "صحيح مسلم، الحديث رقم 2162",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 68,
+    arabic: "لا تحاسدوا، ولا تناجشوا، ولا تباغضوا، ولا تدابروا، وكونوا عباد الله إخوانا",
+    translation: "Ne soyez pas envieux les uns des autres, ne surenchérissez pas, ne vous haïssez pas, ne vous tournez pas le dos, et soyez des serviteurs de Dieu, frères.",
+    reference: "صحيح مسلم، الحديث رقم 2563",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 69,
+    arabic: "لا يحل لمسلم أن يهجر أخاه فوق ثلاث، فمن هجر فوق ثلاث فمات دخل النار",
+    translation: "Il n'est pas permis à un musulman de rompre avec son frère plus de trois jours. Quiconque rompt plus de trois jours puis meurt entrera en Enfer.",
+    reference: "صحيح مسلم، الحديث رقم 2560",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 70,
+    arabic: "المسلم من سلم المسلمون من لسانه ويده",
+    translation: "Le musulman est celui dont les musulmans sont à l'abri de sa langue et de sa main.",
+    reference: "صحيح مسلم، الحديث رقم 40",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 71-75
+  {
+    id: 71,
+    arabic: "لا يدخل الجنة نمام",
+    translation: "N'entrera pas au Paradis celui qui colporte les paroles pour semer la discorde.",
+    reference: "صحيح مسلم، الحديث رقم 105",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 72,
+    arabic: "إن العبد ليتكلم بالكلمة من رضوان الله لا يلقي لها بالا يرفعه الله بها درجات، وإن العبد ليتكلم بالكلمة من سخط الله لا يلقي لها بالا يهوي بها في جهنم",
+    translation: "Certes, le serviteur prononce une parole qui plaît à Dieu sans y prêter attention, et Dieu l'élève à cause d'elle de plusieurs degrés. Et certes, le serviteur prononce une parole qui provoque la colère de Dieu sans y prêter attention, et il chute à cause d'elle en Enfer.",
+    reference: "صحيح مسلم، الحديث رقم 2988",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 73,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier dise du bien ou se taise.",
+    reference: "صحيح مسلم، الحديث رقم 47",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 74,
+    arabic: "إن الله تعالى يقول: أنا عند ظن عبدي بي، وأنا معه إذا ذكرني، فإن ذكرني في نفسه ذكرته في نفسي، وإن ذكرني في ملأ ذكرته في ملأ خير منهم",
+    translation: "Dieu dit : 'Je suis comme Mon serviteur pense que Je suis, et Je suis avec lui quand il M'évoque. S'il M'évoque en lui-même, Je l'évoque en Moi-même. S'il M'évoque dans une assemblée, Je l'évoque dans une meilleure assemblée.'",
+    reference: "صحيح مسلم، الحديث رقم 2675",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 75,
+    arabic: "إن الله تعالى يقول: إذا تقرب العبد إلي شبرا تقربت إليه ذراعا، وإذا تقرب إلي ذراعا تقربت إليه باعا، وإذا أتاني يمشي أتيته هرولة",
+    translation: "Dieu dit : 'Si Mon serviteur se rapproche de Moi d'un empan, Je me rapproche de lui d'une coudée. S'il se rapproche de Moi d'une coudée, Je me rapproche de lui d'une brasse. S'il vient à Moi en marchant, Je viens à lui en courant.'",
+    reference: "صحيح مسلم، الحديث رقم 2675",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 76-80
+  {
+    id: 76,
+    arabic: "يقول الله تعالى: أنا عند ظن عبدي بي، فليظن بي ما شاء",
+    translation: "Dieu dit : 'Je suis comme Mon serviteur pense que Je suis. Qu'il pense donc de Moi ce qu'il veut.'",
+    reference: "صحيح مسلم، الحديث رقم 2675",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 77,
+    arabic: "إن الله تعالى يقول: يا ابن آدم إنك ما دعوتني ورجوتني غفرت لك على ما كان منك ولا أبالي، يا ابن آدم لو بلغت ذنوبك عنان السماء ثم استغفرتني غفرت لك، يا ابن آدم إنك لو أتيتني بقراب الأرض خطايا ثم لقيتني لا تشرك بي شيئا لأتيتك بقرابها مغفرة",
+    translation: "Dieu dit : 'Ô fils d'Adam, tant que tu M'invoques et places ton espoir en Moi, Je te pardonne tes péchés sans M'en soucier. Ô fils d'Adam, si tes péchés atteignaient les nuages puis tu Me demandais pardon, Je te pardonnerais. Ô fils d'Adam, si tu venais à Moi avec des péchés aussi grands que la terre puis tu Me rencontrais sans M'associer quoi que ce soit, Je t'apporterais un pardon aussi grand.'",
+    reference: "صحيح مسلم، الحديث رقم 2675",
+    grade: "sahih",
+    length: "long"
+  },
+  {
+    id: 78,
+    arabic: "لله أشد فرحا بتوبة عبده من أحدكم بضالته إذا وجدها",
+    translation: "Dieu est plus heureux du repentir de Son serviteur que l'un de vous ne l'est de retrouver sa monture égarée.",
+    reference: "صحيح مسلم، الحديث رقم 2747",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 79,
+    arabic: "لو لم تذنبوا لذهب الله بكم ولجاء بقوم يذنبون فيستغفرون الله فيغفر لهم",
+    translation: "Si vous ne commettiez pas de péchés, Dieu vous ferait disparaître et amènerait des gens qui commettent des péchés puis demandent pardon à Dieu qui leur pardonnerait.",
+    reference: "صحيح مسلم، الحديث رقم 2749",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 80,
+    arabic: "كل بني آدم خطاء، وخير الخطائين التوابون",
+    translation: "Tous les fils d'Adam sont fautifs, et les meilleurs des fautifs sont ceux qui se repentent.",
+    reference: "صحيح مسلم، الحديث رقم 2749",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 81-85
+  {
+    id: 81,
+    arabic: "إن الله تعالى يبسط يده بالليل ليتوب مسيء النهار، ويبسط يده بالنهار ليتوب مسيء الليل، حتى تطلع الشمس من مغربها",
+    translation: "Certes, Dieu étend Sa main la nuit pour accueillir le repentir de celui qui a fauté le jour, et Il étend Sa main le jour pour accueillir le repentir de celui qui a fauté la nuit, jusqu'à ce que le soleil se lève à l'ouest.",
+    reference: "صحيح مسلم، الحديث رقم 2759",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 82,
+    arabic: "التائب من الذنب كمن لا ذنب له",
+    translation: "Celui qui se repent d'un péché est comme celui qui n'a pas de péché.",
+    reference: "صحيح مسلم، الحديث رقم 2748",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 83,
+    arabic: "إن الله تعالى يقبل توبة العبد ما لم يغرغر",
+    translation: "Certes, Dieu accepte le repentir du serviteur tant que le râle de la mort ne l'a pas atteint.",
+    reference: "صحيح مسلم، الحديث رقم 2703",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 84,
+    arabic: "من تاب قبل أن تطلع الشمس من مغربها تاب الله عليه",
+    translation: "Quiconque se repent avant que le soleil ne se lève à l'ouest, Dieu acceptera son repentir.",
+    reference: "صحيح مسلم، الحديث رقم 2703",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 85,
+    arabic: "إن الله يحب التوابين ويحب المتطهرين",
+    translation: "Certes, Dieu aime ceux qui se repentent et ceux qui se purifient.",
+    reference: "صحيح مسلم، الحديث رقم 2761",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 86-90
+  {
+    id: 86,
+    arabic: "من أحب أن يزحزح عن النار ويدخل الجنة فلتدركه منيته وهو يؤمن بالله واليوم الآخر، وليأت إلى الناس الذي يحب أن يؤتى إليه",
+    translation: "Quiconque aime être éloigné du Feu et entrer au Paradis, que la mort le surprenne alors qu'il croit en Dieu et au Jour Dernier, et qu'il traite les gens comme il aimerait être traité.",
+    reference: "صحيح مسلم، الحديث رقم 1844",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 87,
+    arabic: "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",
+    translation: "Aucun de vous ne croira vraiment tant qu'il n'aimera pas pour son frère ce qu'il aime pour lui-même.",
+    reference: "صحيح مسلم، الحديث رقم 45",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 88,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليكرم جاره",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier honore son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 47",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 89,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier dise du bien ou se taise.",
+    reference: "صحيح مسلم، الحديث رقم 47",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 90,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليكرم ضيفه",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier honore son invité.",
+    reference: "صحيح مسلم، الحديث رقم 47",
+    grade: "sahih",
+    length: "short"
+  },
+
+  // Hadiths 91-95
+  {
+    id: 91,
+    arabic: "لا يدخل الجنة من كان في قلبه مثقال ذرة من كبر",
+    translation: "N'entrera pas au Paradis celui qui a dans son cœur ne serait-ce qu'un atome d'orgueil.",
+    reference: "صحيح مسلم، الحديث رقم 91",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 92,
+    arabic: "الكبر بطر الحق وغمط الناس",
+    translation: "L'orgueil, c'est de rejeter la vérité et de mépriser les gens.",
+    reference: "صحيح مسلم، الحديث رقم 91",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 93,
+    arabic: "لا يدخل الجنة من لا يأمن جاره بوائقه",
+    translation: "N'entrera pas au Paradis celui dont le voisin n'est pas à l'abri de ses méfaits.",
+    reference: "صحيح مسلم، الحديث رقم 46",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 94,
+    arabic: "ما زال جبريل يوصيني بالجار حتى ظننت أنه سيورثه",
+    translation: "L'ange Gabriel ne cessait de me recommander le voisin au point où j'ai cru qu'il allait lui donner droit à l'héritage.",
+    reference: "صحيح مسلم، الحديث رقم 2624",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 95,
+    arabic: "خير الأصحاب عند الله خيرهم لصاحبه، وخير الجيران عند الله خيرهم لجاره",
+    translation: "Le meilleur compagnon auprès de Dieu est celui qui est le meilleur envers son compagnon. Le meilleur voisin auprès de Dieu est celui qui est le meilleur envers son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 2628",
+    grade: "sahih",
+    length: "medium"
+  },
+
+  // Hadiths 96-100
+  {
+    id: 96,
+    arabic: "من كان يؤمن بالله واليوم الآخر فلا يؤذ جاره",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier ne nuise pas à son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 47",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 97,
+    arabic: "والله لا يؤمن، والله لا يؤمن، والله لا يؤمن. قيل: من يا رسول الله؟ قال: الذي لا يأمن جاره بوائقه",
+    translation: "Par Dieu, il ne croit pas ! Par Dieu, il ne croit pas ! Par Dieu, il ne croit pas ! On demanda : 'Qui, ô Messager de Dieu ?' Il dit : 'Celui dont le voisin n'est pas à l'abri de ses méfaits.'",
+    reference: "صحيح مسلم، الحديث رقم 46",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 98,
+    arabic: "ما زال جبريل يوصيني بالجار حتى ظننت أنه سيورثه",
+    translation: "L'ange Gabriel ne cessait de me recommander le voisin au point où j'ai cru qu'il allait lui donner droit à l'héritage.",
+    reference: "صحيح مسلم، الحديث رقم 2624",
+    grade: "sahih",
+    length: "medium"
+  },
+  {
+    id: 99,
+    arabic: "خير الجيران عند الله خيرهم لجاره",
+    translation: "Le meilleur voisin auprès de Dieu est celui qui est le meilleur envers son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 2628",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 100,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليحسن إلى جاره",
+    translation: "Que celui qui croit en Dieu et au Jour Dernier soit bienfaisant envers son voisin.",
+    reference: "صحيح مسلم، الحديث رقم 47",
+    grade: "sahih",
+    length: "short"
+  }
+],
       abudawud: [
         {
           id: 1,
