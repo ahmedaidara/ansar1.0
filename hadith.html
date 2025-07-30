@@ -485,36 +485,10 @@ html {
         </div>
         
         <!-- Sunan an-Nasa'i -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn">
-          <div class="bg-[var(--primary-color)] p-8 text-white text-center">
-            <h2 class="text-2xl font-bold">سنن النسائي</h2>
-          </div>
-          <div class="bg-emerald-50 text-center">
-            <p class="mb-8 p-6 text-xl text-gray-800 leading-relaxed">
-              من دواوين الإسلام المعتبرة، تميز بدقة انتقاء الأحاديث وترتيبها
-            </p>
-            <button onclick="loadHadithBook('nasai')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition mb-6">
-              عرض الأحاديث <i class="fas fa-arrow-left ml-2"></i>
-            </button>
-          </div>
-        </div>
+        
         
         <!-- Random Hadith -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn">
-          <div class="bg-[var(--primary-color)] p-8 text-white text-center">
-            <h2 class="text-2xl font-bold">أحاديث مختارة</h2>
-          </div>
-          <div class="bg-emerald-50 text-center">
-            <p class="mb-8 p-6 text-xl text-gray-800 leading-relaxed">
-              مجموعة مختارة من الأحاديث النبوية الشريفة من مختلف الكتب
-            </p>
-            <button onclick="loadRandomHadiths()" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition mb-6">
-              عرض الأحاديث <i class="fas fa-arrow-left ml-2"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        
     
     <!-- Hadith Content Page -->
     <div id="hadith-page" class="hidden">
@@ -2277,24 +2251,128 @@ html {
 ],
       abudawud: [
         {
-          id: 1,
-          arabic: "اتقوا الظلم فإن الظلم ظلمات يوم القيامة، واتقوا الشح فإن الشح أهلك من كان قبلكم، حملهم على أن سفكوا دماءهم واستحلوا محارمهم",
-          translation: "Craignez l'injustice, car l'injustice sera des ténèbres au Jour de la Résurrection. Craignez l'avarice, car l'avarice a causé la perte de ceux qui vous ont précédés. Elle les a amenés à verser leur sang et à transgresser leurs interdits.",
-          reference: "سنن أبي داود، الحديث رقم 1691",
-          grade: "hasan",
-          length: "medium"
-        }
+    id: 1,
+    arabic: "اتقوا الظلم فإن الظلم ظلمات يوم القيامة، واتقوا الشح فإن الشح أهلك من كان قبلكم، حملهم على أن سفكوا دماءهم واستحلوا محارمهم",
+    translation: "Craignez l'injustice, car l'injustice sera des ténèbres au Jour de la Résurrection. Craignez l'avarice, car l'avarice a causé la perte de ceux qui vous ont précédés. Elle les a amenés à verser leur sang et à transgresser leurs interdits.",
+    reference: "سنن أبي داود، الحديث رقم 1691",
+    grade: "حسن",
+    length: "medium"
+  },
+  {
+    id: 2,
+    arabic: "الراحمون يرحمهم الرحمن، ارحموا من في الأرض يرحمكم من في السماء",
+    translation: "Les miséricordieux recevront la miséricorde du Tout Miséricordieux. Soyez miséricordieux envers ceux qui sont sur terre, et Celui qui est au ciel vous fera miséricorde.",
+    reference: "سنن أبي داود، الحديث رقم 4941",
+    grade: "صحيح",
+    length: "short"
+  },
+  {
+    id: 3,
+    arabic: "تبسمك في وجه أخيك صدقة",
+    translation: "Ton sourire à ton frère est une aumône.",
+    reference: "سنن أبي داود، الحديث رقم 5048",
+    grade: "صحيح",
+    length: "short"
+  },
+  {
+    id: 4,
+    arabic: "ما زاد الله عبدا بعفو إلا عزا",
+    translation: "Allah n'augmente un serviteur en pardon que par un honneur accru.",
+    reference: "سنن أبي داود، الحديث رقم 4947",
+    grade: "حسن",
+    length: "short"
+  },
+  {
+    id: 5,
+    arabic: "المسلم من سلم المسلمون من لسانه ويده",
+    translation: "Le musulman est celui dont les autres musulmans sont à l'abri de sa langue et de sa main.",
+    reference: "سنن أبي داود، الحديث رقم 4860",
+    grade: "صحيح",
+    length: "short"
+  },
+  {
+    id: 6,
+    arabic: "من لا يشكر الناس لا يشكر الله",
+    translation: "Celui qui ne remercie pas les gens ne remercie pas Allah.",
+    reference: "سنن أبي داود، الحديث رقم 4811",
+    grade: "صحيح",
+    length: "short"
+  },
+  {
+    id: 7,
+    arabic: "أحب الأعمال إلى الله أدومها وإن قل",
+    translation: "Les actions les plus aimées d'Allah sont celles qui sont les plus régulières, même si elles sont peu nombreuses.",
+    reference: "سنن أبي داود، الحديث رقم 1368",
+    grade: "صحيح",
+    length: "medium"
+  },
+  {
+    id: 8,
+    arabic: "إن الله يحب إذا عمل أحدكم عملا أن يتقنه",
+    translation: "Allah aime que lorsque l'un de vous fait un travail, il le fasse avec excellence.",
+    reference: "سنن أبي داود، الحديث رقم 4845",
+    grade: "حسن",
+    length: "short"
+  },
+  {
+    id: 9,
+    arabic: "الكلمة الطيبة صدقة",
+    translation: "Une bonne parole est une aumône.",
+    reference: "سنن أبي داود، الحديث رقم 5249",
+    grade: "صحيح",
+    length: "short"
+  },
+  {
+    id: 10,
+    arabic: "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت",
+    translation: "Que celui qui croit en Allah et au Jour Dernier dise du bien ou se taise.",
+    reference: "سنن أبي داود، الحديث رقم 5154",
+    grade: "صحيح",
+    length: "medium"
+  }
       ],
       tirmidhi: [
-        {
-          id: 1,
-          arabic: "من سلك طريقا يلتمس فيه علما سهل الله له به طريقا إلى الجنة",
-          translation: "Quiconque emprunte un chemin en quête de savoir, Dieu lui facilitera un chemin vers le Paradis.",
-          reference: "جامع الترمذي، الحديث رقم 2646",
-          grade: "sahih",
-          length: "short"
-        }
-      ],
+  {
+    id: 1,
+    arabic: "من سلك طريقا يلتمس فيه علما سهل الله له به طريقا إلى الجنة",
+    translation: "Quiconque emprunte un chemin en quête de savoir, Dieu lui facilitera un chemin vers le Paradis.",
+    reference: "جامع الترمذي، الحديث رقم 2646",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 2,
+    arabic: "اتق الله حيثما كنت، وأتبع السيئة الحسنة تمحها، وخالق الناس بخلق حسن",
+    translation: "Crains Allah où que tu sois, fais suivre une mauvaise action par une bonne qui l'effacera, et comporte-toi avec les gens de manière noble.",
+    reference: "جامع الترمذي، الحديث رقم 1987",
+    grade: "hasan sahih",
+    length: "medium"
+  },
+  {
+    id: 3,
+    arabic: "الحياء شعبة من الإيمان",
+    translation: "La pudeur est une branche de la foi.",
+    reference: "جامع الترمذي، الحديث رقم 2612",
+    grade: "sahih",
+    length: "short"
+  },
+  {
+    id: 4,
+    arabic: "ما نحل والد ولده أفضل من أدب حسن",
+    translation: "Il n'y a pas de cadeau qu'un parent offre à son enfant de meilleur qu'une bonne éducation.",
+    reference: "جامع الترمذي، الحديث رقم 1952",
+    grade: "hasan",
+    length: "short"
+  },
+  {
+    id: 5,
+    arabic: "من كان له ثلاث بنات فصبر عليهن وأطعمهن وسقاهن وكساهن من جدته كن له حجابا من النار يوم القيامة",
+    translation: "Celui qui a trois filles, patiente à leur sujet, les nourrit, les abreuve et les habille selon ses moyens, elles seront pour lui une protection contre le Feu le Jour du Jugement.",
+    reference: "جامع الترمذي، الحديث رقم 1916",
+    grade: "sahih",
+    length: "medium"
+  }
+],
       nasai: [
         {
           id: 1,
