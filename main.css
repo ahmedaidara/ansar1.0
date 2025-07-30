@@ -2438,6 +2438,7 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
 #president .top-nav-bar,
 #secretary .top-nav-bar,
 #settings .top-nav-bar,
+#coran .top-nav-bar,
 #hadith .top-nav-bar,
 #admin-dashboard .top-nav-bar {
     display: flex;
@@ -2454,6 +2455,7 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
 #secretary,
 #settings,
 #hadith,
+#coran,
 #admin-dashboard {
     padding-top: 100px !important; /* Hauteur estimée de la barre (~60px) + marge */
 }
@@ -2468,6 +2470,7 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
 #president h2,
 #secretary h2,
 #hadith h2,
+#coran h2,
 #settings .association-title,
 #admin-dashboard h2 {
     margin-top: 0;
@@ -2497,6 +2500,7 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
     #secretary,
     #settings,
     #hadith,
+    #coran,
     #admin-dashboard {
         padding-top: 70px; /* Réduit pour mobile */
     }
