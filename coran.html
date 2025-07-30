@@ -169,7 +169,25 @@
   align-items: center;
   width: 100%;
 }
+/* Assure que les pages sont correctement empilées */
+#main-nav,
+#surah-page, 
+#juz-page,
+#page-page,
+#audio-page,
+#audio-surah-page,
+#surah-content {
+  position: relative;
+  z-index: 10;
+  background-color: var(--secondary-color);
+}
 
+/* Cache complètement les éléments cachés */
+.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
   </style>
 </head>
 <body class="min-h-screen relative">
@@ -297,9 +315,9 @@
     <!-- Surah Content Page -->
     <div id="surah-content" class="hidden">
       <div class="flex justify-between items-center mb-8 sticky top-0 bg-[var(--secondary-color)] py-4 z-10">
-        <button onclick="backToList()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-          <i class="fas fa-arrow-right mr-2"></i> العودة
-        </button>
+       <button onclick="backToList()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+  <i class="fas fa-arrow-right mr-2"></i> العودة
+</button>
         
         <div class="flex items-center gap-4">
           <div id="text-size-controls" class="flex items-center gap-2">
@@ -716,6 +734,7 @@ function getAudioUrl(surahId) {
     }
 
     async function showSurahContent(surahId, surahName) {
+      
       document.getElementById('surah-page').classList.add('hidden');
       document.getElementById('juz-page').classList.add('hidden');
       document.getElementById('page-page').classList.add('hidden');
@@ -895,7 +914,19 @@ function getAudioUrl(surahId) {
         updateTextSize();
       }
     }
-
+function backToList() {
+  document.getElementById('surah-content').classList.add('hidden');
+  
+  if (currentPage === 'surah') {
+    document.getElementById('surah-page').classList.remove('hidden');
+  } else if (currentPage === 'juz') {
+    document.getElementById('juz-page').classList.remove('hidden');
+  } else if (currentPage === 'page') {
+    document.getElementById('page-page').classList.remove('hidden');
+  }
+  
+  stopAudio();
+}
     function seekAudio(event, surahId) {
   if (!audioInstances[surahId]) return;
   
