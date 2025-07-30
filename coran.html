@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Les styles existants restent inchangés */
     :root {
       --primary-color: #073332;
       --secondary-color: #083937;
@@ -17,37 +15,43 @@
       --bg-color: #073332;
       --text-color: #ffffff;
     }
+    
     body {
       font-family: 'Amiri', serif;
       background-color: var(--secondary-color);
       color: var(--text-color);
+      overflow-x: hidden;
     }
-    /* ... (le reste des styles reste inchangé) */
-       .islamic-pattern {
+    
+    .islamic-pattern {
       background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
       opacity: 0.05;
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
       z-index: 0;
     }
+    
     .verse {
       line-height: 2.5;
       margin-bottom: 1.5rem;
       position: relative;
       transition: all 0.3s ease;
     }
+    
     #surah-text {
-  padding-right: 1.5rem; /* Espace à droite (en RTL, right = début de ligne) */
-  padding-left: 1.5rem; /* Espace à gauche (en RTL, left = fin de ligne) */
-}
+      padding-right: 1.5rem;
+      padding-left: 1.5rem;
+    }
+    
     .verse-number {
       color: #009513;
       font-size: 0.8em;
       vertical-align: super;
     }
+    
     .bismillah {
       font-size: 2rem;
       font-weight: bold;
@@ -55,38 +59,43 @@
       margin: 2rem 0;
       color: #e1c174;
     }
+    
     .nav-btn {
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+    
     .nav-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
+    
     .player-controls {
       background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+    
     .progress-container {
       height: 6px;
       background-color: #e0e0e0;
       border-radius: 3px;
       cursor: pointer;
     }
-    #surah-list > div {
-  background-color: #0f3e3d; /* équivalent à bg-emerald-50 */
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25),
-              0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    #surah-list > div, #french-surah-list > div {
+      background-color: #0f3e3d;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25),
+                  0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       transform: translateY(0);
-}
-
-#surah-list > div:hover {
-  background-color: #d1fae5; /* équivalent à bg-emerald-100 */
-}
+    }
+    
+    #surah-list > div:hover, #french-surah-list > div:hover {
+      background-color: #1f4a49;
+    }
     
     .progress-bar {
       height: 100%;
@@ -95,6 +104,7 @@
       width: 0%;
       transition: width 0.1s linear;
     }
+    
     .text-size-btn {
       width: 40px;
       height: 40px;
@@ -106,6 +116,7 @@
       color: white;
       cursor: pointer;
     }
+    
     @media (max-width: 768px) {
       .verse {
         font-size: 1.5rem;
@@ -115,91 +126,144 @@
         font-size: 1.75rem;
       }
     }
-.audio-surah-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  background-color: #0f3e3d;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
-  width: 100%;
-}
+    
+    .audio-surah-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: #0f3e3d;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+    
     .audio-surah-item button {
       padding: 0.5rem 1rem;
       background-color: var(--primary-color);
       color: white;
       border-radius: 0.5rem;
     }
-.progress-container-audio {
-  height: 8px; /* Augmenter légèrement la hauteur pour la visibilité */
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 0 0.5rem;
-  position: relative;
-  overflow: hidden;
-  display: block !important; /* Forcer l'affichage */
-  width: 100%; /* Assurer que le conteneur prend toute la largeur disponible */
-  min-width: 100px; /* Éviter que le conteneur soit trop petit */
-  z-index: 1; /* S'assurer que le conteneur est au-dessus des autres éléments */
-}
-
-.progress-bar-audio {
-  height: 100%;
-  background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%); /* Couleur vive pour la visibilité */
-  border-radius: 4px;
-  width: 0%; /* Largeur initiale à 0 */
-  transition: width 0.1s linear;
-  display: block !important; /* Forcer l'affichage */
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2; /* S'assurer que la barre est au-dessus du conteneur */
-}
-
-.time-display {
-  font-size: 0.8rem;
-  color: #666;
-  min-width: 40px;
-  text-align: center;
-}
+    
+    .progress-container-audio {
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 0.5rem;
+      position: relative;
+      overflow: hidden;
+      display: block !important;
+      width: 100%;
+      min-width: 100px;
+      z-index: 1;
+    }
+    
+    .progress-bar-audio {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.1s linear;
+      display: block !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+    
+    .time-display {
+      font-size: 0.8rem;
+      color: #666;
+      min-width: 40px;
+      text-align: center;
+    }
+    
     .audio-surah-item > div {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-/* Assure que les pages sont correctement empilées */
-#main-nav,
-#surah-page, 
-#juz-page,
-#page-page,
-#audio-page,
-#audio-surah-page,
-#surah-content {
-  position: relative;
-  z-index: 10;
-  background-color: var(--secondary-color);
-}
-
-/* Cache complètement les éléments cachés */
-.hidden {
-  display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    
+    /* Page sections */
+    .page-section {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      background-color: var(--secondary-color);
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      padding: 1rem;
+    }
+    
+    .page-section.active {
+      transform: translateX(0);
+    }
+    
+    /* Main page doesn't need to be fixed */
+    #main-page {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* French specific styles */
+    .french-verse {
+      margin-bottom: 1.5rem;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .french-verse-number {
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.5rem;
+      font-size: 0.8rem;
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #fff;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body class="min-h-screen relative">
   <div class="islamic-pattern"></div>
-  <div class="container mx-auto px-4 py-8 relative z-10">
+  
+  <!-- Main Page -->
+  <div id="main-page" class="container mx-auto px-4 py-8 relative z-10">
     <header class="text-center mb-12">
       <h1 class="text-4xl font-bold text-yellow-600 mb-4">مصحف التلاوة</h1>
-      <div class="w-32 h-1 bg-[var(--gold-color)] mx-auto"></div>
+      <div class="w-32 h-1 bg-yellow-600 mx-auto"></div>
     </header>
 
     <!-- Main navigation -->
-    <div id="main-nav" class="grid grid-cols-1 gap-8 mb-12">
+    <div class="grid grid-cols-1 gap-8 mb-12">
+      <!-- Quran Reading -->
       <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn w-full max-w-md mx-auto">
         <div class="bg-[#1f4a49] p-8 text-white text-center">
           <h2 class="text-2xl font-bold">القرآن الكريم</h2>
@@ -208,12 +272,13 @@
           <p class="mb-8 p-6 text-2xl md:text-3xl text-gray-800 leading-relaxed">
             كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو ٱلْأَلْبَٰبِ 
           </p>
-          <button onclick="navigateTo('surah')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+          <button onclick="showSection('surah-page')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
             الدخول <i class="fas fa-arrow-left ml-2"></i>
           </button>
         </div>
       </div>
-      <!-- Nouvelle palette pour écouter le Coran -->
+      
+      <!-- Quran Listening -->
       <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn w-full max-w-md mx-auto">
         <div class="bg-[#1f4a49] p-8 text-white text-center">
           <h2 class="text-2xl font-bold">استماع القرآن الكريم</h2>
@@ -222,169 +287,138 @@
           <p class="mb-8 p-6 text-2xl md:text-3xl text-gray-800 leading-relaxed">
             سَمِعَ ٱللَّهُ لِمَنْ حَمِدَهُ
           </p>
-          <button onclick="navigateTo('audio')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+          <button onclick="showSection('audio-page')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
             الدخول <i class="fas fa-arrow-left ml-2"></i>
           </button>
         </div>
       </div>
-    </div>
-
-    <!-- Nouvelle page pour les options de récitation -->
-    <div id="audio-page" class="hidden">
-      <div class="flex justify-between items-center mb-8">
-        <button onclick="backToMain()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-          <i class="fas fa-arrow-right mr-2"></i> العودة
-        </button>
-        <h2 class="text-3xl font-bold text-[#9b9c28]">تلاوات محمود خليل الحصري</h2>
-        <div></div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <button onclick="navigateToAudioType('murattal')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
-          <div class="text-xl font-bold">مرتل</div>
-        </button>
-        <button onclick="navigateToAudioType('mujawad')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
-          <div class="text-xl font-bold">مجود</div>
-        </button>
-        <button onclick="navigateToAudioType('hafs')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
-          <div class="text-xl font-bold">حفص</div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Nouvelle page pour la liste des sourates avec audio -->
-    <div id="audio-surah-page" class="hidden">
-      <div class="flex justify-between items-center mb-8">
-        <button onclick="backToAudio()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-          <i class="fas fa-arrow-right mr-2"></i> العودة
-        </button>
-        <h2 id="audio-surah-title" class="text-3xl font-bold text-[#9b9c28]"></h2>
-        <div></div>
-      </div>
-      <div id="audio-surah-list" class="grid grid-cols-1 gap-4">
-        <!-- Liste des sourates avec audio -->
-      </div>
-    </div>
-
-    <!-- Le reste de votre code (surah-page, juz-page, etc.) reste inchangé -->
-    <!-- ... -->
-        <!-- Surah List Page -->
-    <div id="surah-page" class="hidden">
-      <div class="flex justify-between items-center mb-8">
-        <button onclick="backToMain()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-          <i class="fas fa-arrow-right mr-2"></i> العودة
-        </button>
-        <h2 class="text-3xl font-bold text-[#9b9c28]">سور القرآن الكريم</h2>
-        <div></div> <!-- Empty div for alignment -->
-      </div>
-
-      <div id="surah-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <!-- Surahs will be loaded here -->
-      </div>
-    </div>
-
-    <!-- Juz List Page -->
-    <div id="juz-page" class="hidden">
-      <div class="flex justify-between items-center mb-8">
-        <button onclick="backToMain()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-          <i class="fas fa-arrow-right mr-2"></i> العودة
-        </button>
-        <h2 class="text-3xl font-bold text-[var(--primary-color)]">أجزاء القرآن الكريم</h2>
-        <div></div>
-      </div>
-
-      <div id="juz-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <!-- Juz will be loaded here -->
-      </div>
-    </div>
-
-    <!-- Page List Page -->
-    <div id="page-page" class="hidden">
-      <div class="flex justify-between items-center mb-8">
-        <button onclick="backToMain()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-          <i class="fas fa-arrow-right mr-2"></i> العودة
-        </button>
-        <h2 class="text-3xl font-bold text-[var(--primary-color)]">صفحات القرآن الكريم</h2>
-        <div></div>
-      </div>
-
-      <div id="page-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <!-- Pages will be loaded here -->
-      </div>
-    </div>
-
-    <!-- Surah Content Page -->
-    <div id="surah-content" class="hidden">
-      <div class="flex justify-between items-center mb-8 sticky top-0 bg-[var(--secondary-color)] py-4 z-10">
-       <button onclick="backToList()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
-  <i class="fas fa-arrow-right mr-2"></i> العودة
-</button>
-        
-        <div class="flex items-center gap-4">
-          <div id="text-size-controls" class="flex items-center gap-2">
-            <button onclick="decreaseTextSize()" class="text-size-btn">
-              <i class="fas fa-font"></i> -
-            </button>
-            <button onclick="increaseTextSize()" class="text-size-btn">
-              <i class="fas fa-font"></i> +
-            </button>
-          </div>
-          
-          <h2 id="surah-title" class="text-3xl font-bold text-emerald-600 text-center"></h2>
+      
+      <!-- Quran in French -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl nav-btn w-full max-w-md mx-auto">
+        <div class="bg-[#1f4a49] p-8 text-white text-center">
+          <h2 class="text-2xl font-bold">القرآن بالفرنسية</h2>
         </div>
-        
-          </div>
+        <div class="bg-emerald-50 text-center">
+          <p class="mb-8 p-6 text-2xl md:text-3xl text-gray-800 leading-relaxed">
+            Le Coran en français
+          </p>
+          <button onclick="showSection('french-page')" class="px-10 py-4 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+            Ouvrir <i class="fas fa-arrow-left ml-2"></i>
+          </button>
         </div>
-      </div>
-
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            
-          </div>
-          <div class="flex items-center gap-2">
-   
- 
-          </div>
-        </div>
-      </div>
-
-      <div id="surah-text" class="text-2xl leading-loose mb-12 text-justify">
-        <!-- Surah content will be loaded here -->
       </div>
     </div>
   </div>
+
+  <!-- Surah List Page -->
+  <div id="surah-page" class="page-section">
+    <div class="flex justify-between items-center mb-8">
+      <button onclick="hideSection('surah-page')" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-arrow-right mr-2"></i> العودة
+      </button>
+      <h2 class="text-3xl font-bold text-[#9b9c28]">سور القرآن الكريم</h2>
+      <div></div>
+    </div>
+
+    <div id="surah-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <!-- Surahs will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Surah Content Page -->
+  <div id="surah-content" class="page-section">
+    <div class="flex justify-between items-center mb-8 sticky top-0 bg-[var(--secondary-color)] py-4 z-10">
+      <button onclick="backToList()" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-arrow-right mr-2"></i> العودة
+      </button>
+      
+      <div class="flex items-center gap-4">
+        <div id="text-size-controls" class="flex items-center gap-2">
+          <button onclick="decreaseTextSize()" class="text-size-btn">
+            <i class="fas fa-font"></i> -
+          </button>
+          <button onclick="increaseTextSize()" class="text-size-btn">
+            <i class="fas fa-font"></i> +
+          </button>
+        </div>
+        
+        <h2 id="surah-title" class="text-3xl font-bold text-emerald-600 text-center"></h2>
+      </div>
+    </div>
+
+    <div id="surah-text" class="text-2xl leading-loose mb-12 text-justify">
+      <!-- Surah content will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Audio Page -->
+  <div id="audio-page" class="page-section">
+    <div class="flex justify-between items-center mb-8">
+      <button onclick="hideSection('audio-page')" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-arrow-right mr-2"></i> العودة
+      </button>
+      <h2 class="text-3xl font-bold text-[#9b9c28]">تلاوات محمود خليل الحصري</h2>
+      <div></div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <button onclick="navigateToAudioType('murattal')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
+        <div class="text-xl font-bold">مرتل</div>
+      </button>
+      <button onclick="navigateToAudioType('mujawad')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
+        <div class="text-xl font-bold">مجود</div>
+      </button>
+      <button onclick="navigateToAudioType('hafs')" class="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition">
+        <div class="text-xl font-bold">حفص</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Audio Surah List Page -->
+  <div id="audio-surah-page" class="page-section">
+    <div class="flex justify-between items-center mb-8">
+      <button onclick="hideSection('audio-surah-page')" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-arrow-right mr-2"></i> العودة
+      </button>
+      <h2 id="audio-surah-title" class="text-3xl font-bold text-[#9b9c28]"></h2>
+      <div></div>
+    </div>
+    
+    <div id="audio-surah-list" class="grid grid-cols-1 gap-4">
+      <!-- Audio surah list will be loaded here -->
+    </div>
+  </div>
+
+  <!-- French Quran Page -->
+  <div id="french-page" class="page-section">
+    <div class="flex justify-between items-center mb-8">
+      <button onclick="hideSection('french-page')" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-arrow-right mr-2"></i> Retour
+      </button>
+      <h2 class="text-3xl font-bold text-[#9b9c28]">Le Coran en français</h2>
+      <div></div>
+    </div>
+    
+    <div id="french-surah-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <!-- French surah list will be loaded here -->
+    </div>
+  </div>
+
+  <!-- French Surah Content Page -->
+  <div id="french-surah-content" class="page-section">
+    <div class="flex justify-between items-center mb-8 sticky top-0 bg-[var(--secondary-color)] py-4 z-10">
+      <button onclick="hideSection('french-surah-content')" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-arrow-right mr-2"></i> Retour
+      </button>
+      <h2 id="french-surah-title" class="text-3xl font-bold text-emerald-600 text-center"></h2>
+    </div>
+    
+    <div id="french-surah-text" class="text-xl leading-loose mb-12 text-justify p-4 bg-white bg-opacity-10 rounded-lg">
+      <!-- French surah content will be loaded here -->
+    </div>
   </div>
 
   <script>
-    // Liste des récitateurs (gardée pour la section lecture des sourates)
-    const reciters = [
-      { 
-        id: 'ar.alafasy', 
-        name: "مشاري راشد العفاسي",
-        baseUrl: 'https://server8.mp3quran.net/afs/{surah}.mp3'
-      },
-      { 
-        id: 'ar.abdulbasitmurattal', 
-        name: "عبد الباسط عبد الصمد",
-        baseUrl: 'https://server8.mp3quran.net/basit/{surah}.mp3'
-      },
-      { 
-        id: 'ar.husary', 
-        name: "محمود خليل الحصري",
-        baseUrl: 'https://server8.mp3quran.net/husr/{surah}.mp3'
-      },
-      { 
-        id: 'ar.minshawi', 
-        name: "محمد صديق المنشاوي",
-        baseUrl: 'https://server8.mp3quran.net/minsh/{surah}.mp3'
-      },
-      { 
-        id: 'ar.sudais', 
-        name: "عبد الرحمن السديس",
-        baseUrl: 'https://server8.mp3quran.net/sds/{surah}.mp3'
-      }
-    ];
-
     // Variables globales
     let currentAudio = null;
     let currentSurah = null;
@@ -393,55 +427,43 @@
     let progressInterval = null;
     let fontSize = 2;
     let repeatMode = false;
-    let currentPage = null;
-    let currentAudioType = null; // Pour Murattal, Mujawad, Hafs
+    let currentAudioType = null;
     const audioInstances = {};
+    let frenchVerses = [];
 
     // Navigation functions
-    function navigateTo(page) {
-      document.getElementById('main-nav').classList.add('hidden');
-      document.getElementById(`${page}-page`).classList.remove('hidden');
-      currentPage = page;
-      if (page === 'surah') loadSurahs();
-      else if (page === 'juz') loadJuzs();
-      else if (page === 'page') loadPages();
-      else if (page === 'audio') loadAudioPage();
+    function showSection(sectionId) {
+      document.getElementById(sectionId).classList.add('active');
+      
+      // Load content if needed
+      if (sectionId === 'surah-page') loadSurahs();
+      else if (sectionId === 'audio-page') loadAudioPage();
+      else if (sectionId === 'french-page') loadFrenchSurahs();
     }
-
-    function backToMain() {
-      document.getElementById('main-nav').classList.remove('hidden');
-      document.getElementById('surah-page').classList.add('hidden');
-      document.getElementById('juz-page').classList.add('hidden');
-      document.getElementById('page-page').classList.add('hidden');
-      document.getElementById('surah-content').classList.add('hidden');
-      document.getElementById('audio-page').classList.add('hidden');
-      document.getElementById('audio-surah-page').classList.add('hidden');
+    
+    function hideSection(sectionId) {
+      document.getElementById(sectionId).classList.remove('active');
+      stopAllAudios();
+    }
+    
+    function backToList() {
+      hideSection('surah-content');
+      showSection('surah-page');
       stopAudio();
-      stopAllAudios();
-      currentPage = null;
     }
 
-    function backToAudio() {
-      document.getElementById('audio-page').classList.remove('hidden');
-      document.getElementById('audio-surah-page').classList.add('hidden');
-      stopAllAudios();
-    }
-
+    // Audio functions
     function navigateToAudioType(type) {
       currentAudioType = type;
-      document.getElementById('audio-page').classList.add('hidden');
-      document.getElementById('audio-surah-page').classList.remove('hidden');
+      hideSection('audio-page');
+      showSection('audio-surah-page');
       document.getElementById('audio-surah-title').textContent = `تلاوة ${type === 'murattal' ? 'مرتل' : type === 'mujawad' ? 'مجود' : 'حفص'}`;
       loadAudioSurahs();
     }
 
-    function loadAudioPage() {
-      // Rien à charger ici, la page affiche juste les boutons Murattal, Mujawad, Hafs
-    }
-
     async function loadAudioSurahs() {
       const audioSurahList = document.getElementById('audio-surah-list');
-      audioSurahList.innerHTML = '<div class="col-span-full text-center py-8">جاري التحميل...</div>';
+      audioSurahList.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-spinner"></div></div>';
 
       try {
         const response = await fetch('https://api.quran.com/api/v4/chapters?language=ar');
@@ -451,18 +473,18 @@
         data.chapters.forEach(surah => {
           const surahElement = document.createElement('div');
           surahElement.className = 'audio-surah-item';
-surahElement.innerHTML = `
-  <div class="flex items-center w-full gap-4" style="flex-direction: row;">
-    <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
-      <i class="fas fa-play"></i>
-    </button>
-    <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
-      <div class="progress-bar-audio" id="progress-bar-${surah.id}" style="display: block !important;"></div>
-    </div>
-    <span id="current-time-${surah.id}" class="time-display">00:00</span>
-    <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
-  </div>
-`;
+          surahElement.innerHTML = `
+            <div class="flex items-center w-full gap-4" style="flex-direction: row;">
+              <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
+                <i class="fas fa-play"></i>
+              </button>
+              <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
+                <div class="progress-bar-audio" id="progress-bar-${surah.id}"></div>
+              </div>
+              <span id="current-time-${surah.id}" class="time-display">00:00</span>
+              <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
+            </div>
+          `;
           audioSurahList.appendChild(surahElement);
         });
       } catch (error) {
@@ -470,110 +492,115 @@ surahElement.innerHTML = `
       }
     }
 
-    // Audio functions pour la nouvelle page
-function toggleAudio(surahId, button) {
-  // Si un autre audio est en cours, on l'arrête
-  for (const id in audioInstances) {
-    if (id != surahId && audioInstances[id]) {
-      audioInstances[id].pause();
-      audioInstances[id].currentTime = 0;
-      const otherButton = document.querySelector(`button[data-surah-id="${id}"]`);
-      if (otherButton) otherButton.innerHTML = '<i class="fas fa-play"></i>';
-    }
-  }
+    function toggleAudio(surahId, button) {
+      // Stop other audios
+      for (const id in audioInstances) {
+        if (id != surahId && audioInstances[id]) {
+          audioInstances[id].pause();
+          audioInstances[id].currentTime = 0;
+          const otherButton = document.querySelector(`button[data-surah-id="${id}"]`);
+          if (otherButton) otherButton.innerHTML = '<i class="fas fa-play"></i>';
+        }
+      }
 
-  // Si l'audio existe déjà pour cette sourate
-  if (audioInstances[surahId]) {
-    if (!audioInstances[surahId].paused) {
-      // Mettre en pause si déjà en lecture
-      audioInstances[surahId].pause();
-      if (button) button.innerHTML = '<i class="fas fa-play"></i>';
-    } else {
-      // Reprendre la lecture si en pause
-      audioInstances[surahId].play().catch(e => {
-        console.error('Erreur de lecture:', e);
-        if (button) button.innerHTML = '<i class="fas fa-play"></i>';
-      });
-      if (button) button.innerHTML = '<i class="fas fa-pause"></i>';
-    }
-  } else {
-    // Démarrer un nouvel audio
-    startAudio(surahId, button);
-  }
-}
-    
-function startAudio(surahId, button) {
-  const audioUrl = getAudioUrl(surahId);
-  const audio = new Audio(audioUrl);
-  audioInstances[surahId] = audio;
-
-  // Vérifier que les éléments existent avant de les manipuler
-  const currentTimeElement = document.getElementById(`current-time-${surahId}`);
-  const progressBarElement = document.getElementById(`progress-bar-${surahId}`);
-
-  if (!currentTimeElement || !progressBarElement) {
-    console.error('Éléments du lecteur audio introuvables');
-    return;
-  }
-
-  // Réinitialiser l'affichage
-  currentTimeElement.textContent = '00:00';
-  progressBarElement.style.width = '0%';
-
-  audio.addEventListener('loadedmetadata', () => {
-    if (audio.duration !== Infinity) {
-      // Pas besoin de durationElement si vous ne l'affichez pas
-    }
-  });
-
-  audio.addEventListener('timeupdate', () => {
-    updateAudioProgress(surahId);
-  });
-
-  audio.addEventListener('play', () => {
-    if (button) button.innerHTML = '<i class="fas fa-pause"></i>';
-    audio.progressInterval = setInterval(() => updateAudioProgress(surahId), 1000);
-  });
-
-  // Événement de pause
-  audio.addEventListener('pause', () => {
-    button.innerHTML = '<i class="fas fa-play"></i>';
-    clearInterval(audio.progressInterval);
-  });
-
-  // Événement de fin
-  audio.addEventListener('ended', () => {
-    button.innerHTML = '<i class="fas fa-play"></i>';
-    clearInterval(audio.progressInterval);
-    document.getElementById(`progress-bar-${surahId}`).style.width = '0%';
-    document.getElementById(`current-time-${surahId}`).textContent = '00:00';
-  });
-
-  // Événement d'erreur
-  audio.addEventListener('error', () => {
-    button.innerHTML = '<i class="fas fa-play"></i>';
-    clearInterval(audio.progressInterval);
-    alert('حدث خطأ في تحميل الصوت. الرجاء المحاولة لاحقًا.');
-  });
-
-  audio.play().catch(e => {
-    console.error('Playback failed:', e);
-    button.innerHTML = '<i class="fas fa-play"></i>';
-  });
-}
-    function pauseAudio(surahId, button) {
       if (audioInstances[surahId]) {
-        audioInstances[surahId].pause();
-        button.innerHTML = '<i class="fas fa-play"></i>';
-        clearInterval(audioInstances[surahId].progressInterval);
+        if (!audioInstances[surahId].paused) {
+          audioInstances[surahId].pause();
+          if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+        } else {
+          audioInstances[surahId].play().catch(e => {
+            console.error('Erreur de lecture:', e);
+            if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+          });
+          if (button) button.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+      } else {
+        startAudio(surahId, button);
       }
     }
+    
+    function startAudio(surahId, button) {
+      const audioUrl = getAudioUrl(surahId);
+      const audio = new Audio(audioUrl);
+      audioInstances[surahId] = audio;
 
-    function resumeAudio(surahId, button) {
-      if (audioInstances[surahId]) {
-        audioInstances[surahId].play();
-        button.innerHTML = '<i class="fas fa-pause"></i>';
-        startAudioProgressUpdate(surahId);
+      const currentTimeElement = document.getElementById(`current-time-${surahId}`);
+      const progressBarElement = document.getElementById(`progress-bar-${surahId}`);
+
+      if (!currentTimeElement || !progressBarElement) {
+        console.error('Éléments du lecteur audio introuvables');
+        return;
+      }
+
+      currentTimeElement.textContent = '00:00';
+      progressBarElement.style.width = '0%';
+
+      audio.addEventListener('loadedmetadata', () => {
+        if (audio.duration !== Infinity) {
+          // Metadata loaded
+        }
+      });
+
+      audio.addEventListener('timeupdate', () => {
+        updateAudioProgress(surahId);
+      });
+
+      audio.addEventListener('play', () => {
+        if (button) button.innerHTML = '<i class="fas fa-pause"></i>';
+        audio.progressInterval = setInterval(() => updateAudioProgress(surahId), 1000);
+      });
+
+      audio.addEventListener('pause', () => {
+        if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+        clearInterval(audio.progressInterval);
+      });
+
+      audio.addEventListener('ended', () => {
+        if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+        clearInterval(audio.progressInterval);
+        document.getElementById(`progress-bar-${surahId}`).style.width = '0%';
+        document.getElementById(`current-time-${surahId}`).textContent = '00:00';
+      });
+
+      audio.addEventListener('error', () => {
+        if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+        clearInterval(audio.progressInterval);
+        alert('حدث خطأ في تحميل الصوت. الرجاء المحاولة لاحقًا.');
+      });
+
+      audio.play().catch(e => {
+        console.error('Playback failed:', e);
+        if (button) button.innerHTML = '<i class="fas fa-play"></i>';
+      });
+    }
+
+    function seekAudio(event, surahId) {
+      if (!audioInstances[surahId]) return;
+      
+      const progressContainer = event.currentTarget;
+      const width = progressContainer.clientWidth;
+      const clickX = event.offsetX;
+      const duration = audioInstances[surahId].duration;
+      
+      audioInstances[surahId].currentTime = (clickX / width) * duration;
+    }
+
+    function updateAudioProgress(surahId) {
+      if (!audioInstances[surahId]) return;
+
+      const audio = audioInstances[surahId];
+      const progressBar = document.getElementById(`progress-bar-${surahId}`);
+      
+      if (!progressBar) return;
+
+      if (!isNaN(audio.currentTime)) {
+        document.getElementById(`current-time-${surahId}`).textContent = 
+          formatTime(audio.currentTime);
+      }
+
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = `${progress}%`;
       }
     }
 
@@ -590,50 +617,22 @@ function startAudio(surahId, button) {
       buttons.forEach(btn => btn.innerHTML = '<i class="fas fa-play"></i>');
     }
 
-    function startAudioProgressUpdate(surahId) {
-      if (audioInstances[surahId]) {
-        clearInterval(audioInstances[surahId].progressInterval);
-        audioInstances[surahId].progressInterval = setInterval(() => {
-          if (audioInstances[surahId] && !isNaN(audioInstances[surahId].duration)) {
-            const progress = (audioInstances[surahId].currentTime / audioInstances[surahId].duration) * 100;
-            document.getElementById(`progress-bar-${surahId}`).style.width = `${progress}%`;
-          }
-        }, 1000);
+    function getAudioUrl(surahId) {
+      const surahNum = surahId.toString().padStart(3, '0');
+      const baseUrl = 'https://ahmedaidara.github.io/ansar1.0/audio/hussary';
+      
+      switch(currentAudioType) {
+        case 'murattal': return `${baseUrl}/murattal/${surahNum}.mp3`;
+        case 'mujawad': return `${baseUrl}/mujawad/${surahNum}.mp3`;
+        case 'hafs': return `${baseUrl}/hafs/${surahNum}.mp3`;
+        default: return `${baseUrl}/murattal/${surahNum}.mp3`;
       }
     }
 
-    function setAudioProgress(event, surahId) {
-      if (!audioInstances[surahId]) return;
-      const width = event.target.clientWidth;
-      const clickX = event.offsetX;
-      const duration = audioInstances[surahId].duration;
-      audioInstances[surahId].currentTime = (clickX / width) * duration;
-    }
-
-function getAudioUrl(surahId) {
-  // Formatage du numéro de sourate (003 au lieu de 3)
-  const surahNum = surahId.toString().padStart(3, '0');
-  
-  // Chemins complets pour chaque type de récitation
-  const baseUrl = 'https://ahmedaidara.github.io/ansar1.0/audio/hussary';
-  
-  switch(currentAudioType) {
-    case 'murattal':
-      return `${baseUrl}/murattal/${surahNum}.mp3`;
-    case 'mujawad':
-      return `${baseUrl}/mujawad/${surahNum}.mp3`;
-    case 'hafs':
-      return `${baseUrl}/hafs/${surahNum}.mp3`;
-    default:
-      // Par défaut, utilise murattal
-      return `${baseUrl}/murattal/${surahNum}.mp3`;
-  }
-}
-
-    // Fonctions existantes pour la lecture des sourates
+    // Quran reading functions
     async function loadSurahs() {
       const surahList = document.getElementById('surah-list');
-      surahList.innerHTML = '<div class="col-span-full text-center py-8">جاري التحميل...</div>';
+      surahList.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-spinner"></div></div>';
       
       try {
         const response = await fetch('https://api.quran.com/api/v4/chapters?language=ar');
@@ -656,93 +655,13 @@ function getAudioUrl(surahId) {
       }
     }
 
-    async function loadJuzs() {
-      const juzList = document.getElementById('juz-list');
-      juzList.innerHTML = '<div class="col-span-full text-center py-8">جاري التحميل...</div>';
-
-      try {
-        const response = await fetch('https://api.quran.com/api/v4/juzs');
-        const data = await response.json();
-        
-        juzList.innerHTML = '';
-        data.juzs.forEach(juz => {
-          const juzElement = document.createElement('div');
-          juzElement.className = 'bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition';
-          juzElement.innerHTML = `
-            <div class="text-xl font-bold">الجزء ${juz.juz_number}</div>
-            <div class="text-sm mt-2">من ${juz.verse_mapping.start} إلى ${juz.verse_mapping.end}</div>
-          `;
-          juzElement.onclick = () => loadJuzContent(juz.juz_number);
-          juzList.appendChild(juzElement);
-        });
-      } catch (error) {
-        juzList.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">حدث خطأ في تحميل الأجزاء</div>';
-      }
-    }
-
-    async function loadJuzContent(juzNumber) {
-      document.getElementById('juz-page').classList.add('hidden');
-      document.getElementById('surah-content').classList.remove('hidden');
-      document.getElementById('surah-title').textContent = `الجزء ${juzNumber}`;
-      
-      const surahText = document.getElementById('surah-text');
-      surahText.innerHTML = '<div class="text-center py-12">جاري تحميل الجزء...</div>';
-
-      try {
-        const response = await fetch(`https://api.alquran.cloud/v1/juz/${juzNumber}/ar.alafasy`);
-        const data = await response.json();
-        
-        let versesHtml = '';
-        data.data.ayahs.forEach(ayah => {
-          versesHtml += `
-            <div class="verse">
-              ${ayah.text}
-              <span class="verse-number">${ayah.numberInSurah}</span>
-            </div>
-          `;
-        });
-        
-        surahText.innerHTML = versesHtml;
-        updateTextSize();
-        
-        currentAudio = new Audio(data.data.ayahs[0].audio);
-        setupAudioControls();
-        
-      } catch (error) {
-        surahText.innerHTML = `
-          <div class="text-center py-12 text-red-500">
-            حدث خطأ في تحميل الجزء
-            <br><small>${error.message}</small>
-          </div>
-        `;
-      }
-    }
-
-    function loadPages() {
-      const pageList = document.getElementById('page-list');
-      pageList.innerHTML = '';
-      
-      for (let i = 1; i <= 604; i++) {
-        const pageElement = document.createElement('div');
-        pageElement.className = 'bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition';
-        pageElement.innerHTML = `
-          <div class="text-xl font-bold">الصفحة ${i}</div>
-        `;
-        pageElement.onclick = () => alert('سيتم تحميل الصفحة ' + i + ' في التحديث القادم إن شاء الله');
-        pageList.appendChild(pageElement);
-      }
-    }
-
     async function showSurahContent(surahId, surahName) {
-      
-      document.getElementById('surah-page').classList.add('hidden');
-      document.getElementById('juz-page').classList.add('hidden');
-      document.getElementById('page-page').classList.add('hidden');
-      document.getElementById('surah-content').classList.remove('hidden');
+      hideSection('surah-page');
+      showSection('surah-content');
       document.getElementById('surah-title').textContent = `سورة ${surahName}`;
       
       const surahText = document.getElementById('surah-text');
-      surahText.innerHTML = '<div class="text-center py-12">جاري تحميل السورة...</div>';
+      surahText.innerHTML = '<div class="text-center py-12"><div class="loading-spinner"></div></div>';
       
       currentSurah = surahId;
       
@@ -769,204 +688,86 @@ function getAudioUrl(surahId) {
       } catch (error) {
         surahText.innerHTML = '<div class="text-center py-12 text-red-500">حدث خطأ في تحميل السورة</div>';
       }
-      
-      const recitersList = document.getElementById('reciters-list');
-      recitersList.innerHTML = reciters.map(reciter => `
-        <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer" onclick="selectReciter('${reciter.id}')">
-          ${reciter.name}
-        </div>
-      `).join('');
     }
 
-    function selectReciter(reciterId) {
-      currentReciter = reciterId;
-      document.getElementById('reciters-list').classList.add('hidden');
-      
-      const reciter = reciters.find(r => r.id === reciterId);
-      if (reciter) {
-        document.getElementById('reciters-btn').innerHTML = `<i class="fas fa-user mr-2"></i> ${reciter.name}`;
-      }
-      
-      playAudio();
-    }
+    // French Quran functions
+    async function loadFrenchSurahs() {
+      const surahList = document.getElementById('french-surah-list');
+      surahList.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-spinner"></div></div>';
 
-    function playAudio() {
-      if (!currentSurah) return;
-      
-      if (currentAudio) {
-        if (isPlaying) {
-          pauseAudio();
-        } else {
-          resumeAudio();
-        }
-      } else {
-        startSurahAudio();
-      }
-    }
+      try {
+        // Load surah names
+        const surahsResponse = await fetch('https://api.quran.com/api/v4/chapters?language=fr');
+        const surahsData = await surahsResponse.json();
 
-    function startSurahAudio() {
-      const reciter = reciters.find(r => r.id === currentReciter);
-      if (!reciter) {
-        alert('الرجاء اختيار قارئ أولاً');
-        document.getElementById('reciters-list').classList.remove('hidden');
-        return;
-      }
-      
-      const audioUrl = reciter.baseUrl.replace('{surah}', currentSurah.toString().padStart(3, '0'));
-      currentAudio = new Audio(audioUrl);
-      
-      currentAudio.addEventListener('canplay', () => {
-        document.getElementById('duration').textContent = formatTime(currentAudio.duration);
-      });
-      
-      currentAudio.addEventListener('play', () => {
-        isPlaying = true;
-        document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause mr-2"></i> إيقاف';
-        startProgressUpdate();
-      });
-      
-      currentAudio.addEventListener('pause', () => {
-        isPlaying = false;
-        document.getElementById('play-btn').innerHTML = '<i class="fas fa-play mr-2"></i> تشغيل';
-        clearInterval(progressInterval);
-      });
-      
-      currentAudio.addEventListener('ended', () => {
-        if (repeatMode) {
-          currentAudio.currentTime = 0;
-          currentAudio.play();
-        } else {
-          stopAudio();
-        }
-      });
-      
-      currentAudio.addEventListener('error', (e) => {
-        console.error('Audio error:', e);
-        alert('حدث خطأ في تحميل الصوت. الرجاء التأكد من اتصال بالإنترنت أو المحاولة لاحقًا.');
-        stopAudio();
-      });
-      
-      currentAudio.volume = document.getElementById('volume').value;
-      currentAudio.play().catch(e => {
-        console.error('Playback failed:', e);
-        alert('تعذر بدء التشغيل. الرجاء المحاولة لاحقًا.');
-      });
-    }
-
-    function pauseAudio() {
-      if (currentAudio) {
-        currentAudio.pause();
-      }
-    }
-
-    function resumeAudio() {
-      if (currentAudio) {
-        currentAudio.play().catch(e => {
-          console.error('Resume failed:', e);
-          alert('تعذر استئناف التشغيل. الرجاء المحاولة لاحقًا.');
+        // Load french text
+        const frenchResponse = await fetch('fra-rashidmaash.txt');
+        const frenchText = await frenchResponse.text();
+        
+        frenchVerses = frenchText.split('\n').map(line => {
+          const [surah, verse, text] = line.split('|');
+          return { surah: parseInt(surah), verse: parseInt(verse), text };
         });
+
+        surahList.innerHTML = '';
+        surahsData.chapters.forEach(surah => {
+          const surahElement = document.createElement('div');
+          surahElement.className = 'bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:bg-[var(--primary-color)] hover:text-white transition';
+          surahElement.innerHTML = `
+            <div class="text-xl font-bold">${surah.name_complex}</div>
+            <div class="text-sm text-gray-600 mt-1">${surah.translated_name.name}</div>
+            <div class="text-xs mt-2">${surah.verses_count} versets</div>
+          `;
+          
+          surahElement.addEventListener('click', () => {
+            showFrenchSurahContent(surah.id, surah.name_complex);
+          });
+          
+          surahList.appendChild(surahElement);
+        });
+      } catch (error) {
+        surahList.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Erreur de chargement</div>';
       }
     }
 
-    function stopAudio() {
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-      }
-      isPlaying = false;
-      document.getElementById('play-btn').innerHTML = '<i class="fas fa-play mr-2"></i> تشغيل';
-      clearInterval(progressInterval);
-      document.getElementById('progress-bar').style.width = '0%';
-      document.getElementById('current-time').textContent = '00:00';
+    function showFrenchSurahContent(surahId, surahName) {
+      hideSection('french-page');
+      showSection('french-surah-content');
+      document.getElementById('french-surah-title').textContent = `Sourate ${surahName}`;
+      
+      const surahText = document.getElementById('french-surah-text');
+      surahText.innerHTML = '<div class="text-center py-12"><div class="loading-spinner"></div></div>';
+
+      // Filter verses for this surah
+      const surahVerses = frenchVerses.filter(v => v.surah === surahId);
+      
+      // Generate HTML
+      let versesHtml = '';
+      surahVerses.forEach(verse => {
+        versesHtml += `
+          <div class="french-verse">
+            <span class="french-verse-number">${verse.verse}</span>
+            ${verse.text}
+          </div>
+        `;
+      });
+      
+      surahText.innerHTML = versesHtml;
     }
 
-    function startProgressUpdate() {
-      clearInterval(progressInterval);
-      progressInterval = setInterval(updateProgress, 1000);
-    }
-
-    function updateProgress() {
-      if (currentAudio && !isNaN(currentAudio.duration)) {
-        const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
-        document.getElementById('current-time').textContent = formatTime(currentAudio.currentTime);
-      }
-    }
-
-    function setProgress(e) {
-      if (!currentAudio) return;
-      const width = this.clientWidth;
-      const clickX = e.offsetX;
-      const duration = currentAudio.duration;
-      currentAudio.currentTime = (clickX / width) * duration;
-    }
-
+    // Utility functions
     function formatTime(seconds) {
-      const minutes = Math.floor(seconds / 60);
+      const mins = Math.floor(seconds / 60);
       const secs = Math.floor(seconds % 60);
-      return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-
+    
     function increaseTextSize() {
       if (fontSize < 3.5) {
         fontSize += 0.25;
         updateTextSize();
       }
     }
-function backToList() {
-  document.getElementById('surah-content').classList.add('hidden');
-  
-  if (currentPage === 'surah') {
-    document.getElementById('surah-page').classList.remove('hidden');
-  } else if (currentPage === 'juz') {
-    document.getElementById('juz-page').classList.remove('hidden');
-  } else if (currentPage === 'page') {
-    document.getElementById('page-page').classList.remove('hidden');
-  }
-  
-  stopAudio();
-}
-    function seekAudio(event, surahId) {
-  if (!audioInstances[surahId]) return;
-  
-  const progressContainer = event.currentTarget;
-  const width = progressContainer.clientWidth;
-  const clickX = event.offsetX;
-  const duration = audioInstances[surahId].duration;
-  
-  audioInstances[surahId].currentTime = (clickX / width) * duration;
-}
-
-function updateAudioProgress(surahId) {
-  if (!audioInstances[surahId]) return;
-
-  const audio = audioInstances[surahId];
-  const progressBar = document.getElementById(`progress-bar-${surahId}`);
-  
-  if (!progressBar) {
-    console.error(`Progress bar for surah ${surahId} not found`);
-    return;
-  }
-
-  // Mise à jour du temps courant
-  if (!isNaN(audio.currentTime)) {
-    document.getElementById(`current-time-${surahId}`).textContent = 
-      formatTime(audio.currentTime);
-  }
-
-  // Mise à jour de la barre de progression
-  if (!isNaN(audio.duration) && audio.duration > 0) {
-    const progress = (audio.currentTime / audio.duration) * 100;
-    progressBar.style.width = `${progress}%`;
-  }
-}
-
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
     
     function decreaseTextSize() {
       if (fontSize > 1.25) {
@@ -974,10 +775,10 @@ function formatTime(seconds) {
         updateTextSize();
       }
     }
-
+    
     function updateTextSize() {
       const surahText = document.getElementById('surah-text');
-      surahText.style.fontSize = `${fontSize}rem`;
+      if (surahText) surahText.style.fontSize = `${fontSize}rem`;
       
       const verses = document.querySelectorAll('.verse');
       verses.forEach(verse => {
@@ -990,29 +791,21 @@ function formatTime(seconds) {
       }
     }
 
-    // Event listeners
-    document.getElementById('progress-container').addEventListener('click', setProgress);
-    document.getElementById('volume').addEventListener('input', (e) => {
+    function stopAudio() {
       if (currentAudio) {
-        currentAudio.volume = e.target.value;
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
       }
-    });
-    document.getElementById('reciters-btn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      document.getElementById('reciters-list').classList.toggle('hidden');
-    });
-    document.getElementById('repeat-btn').addEventListener('click', () => {
-      repeatMode = !repeatMode;
-      document.getElementById('repeat-btn').classList.toggle('text-[var(--primary-color)]');
-    });
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#reciters-dropdown')) {
-        document.getElementById('reciters-list').classList.add('hidden');
-      }
-    });
+      isPlaying = false;
+      clearInterval(progressInterval);
+    }
 
     // Initialize
-    document.getElementById('progress-bar').style.width = '0%';
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set initial text size
+      updateTextSize();
+    });
   </script>
 </body>
 </html>
