@@ -537,35 +537,39 @@
     }
 
     async function loadAudioSurahs() {
-      const audioSurahList = document.getElementById('audio-surah-list');
-      audioSurahList.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-spinner"></div></div>';
+  const audioSurahList = document.getElementById('audio-surah-list');
+  audioSurahList.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-spinner"></div></div>';
 
-      try {
-        const response = await fetch('https://api.quran.com/api/v4/chapters?language=ar');
-        const data = await response.json();
+  try {
+    const response = await fetch('https://api.quran.com/api/v4/chapters?language=ar');
+    const data = await response.json();
 
-        audioSurahList.innerHTML = '';
-        data.chapters.forEach(surah => {
-          const surahElement = document.createElement('div');
-          surahElement.className = 'audio-surah-item';
-          surahElement.innerHTML = `
-            <div class="flex items-center w-full gap-4" style="flex-direction: row;">
-              <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
-                <i class="fas fa-play"></i>
-              </button>
-              <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
-                <div class="progress-bar-audio" id="progress-bar-${surah.id}"></div>
-              </div>
-              <span id="current-time-${surah.id}" class="time-display">00:00</span>
-              <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
-            </div>
-          `;
-          audioSurahList.appendChild(surahElement);
-        });
-      } catch (error) {
-        audioSurahList.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">حدث خطأ في تحميل السور</div>';
-      }
-    }
+    audioSurahList.innerHTML = '';
+    
+    // Filtrer pour ne garder que les sourates 36 à 114
+    const filteredSurahs = data.chapters.filter(surah => surah.id >= 36 && surah.id <= 114);
+    
+    filteredSurahs.forEach(surah => {
+      const surahElement = document.createElement('div');
+      surahElement.className = 'audio-surah-item';
+      surahElement.innerHTML = `
+        <div class="flex items-center w-full gap-4" style="flex-direction: row;">
+          <button onclick="toggleAudio(${surah.id}, this)" class="play-btn px-3 py-1 bg-green-600 text-white rounded" data-surah-id="${surah.id}">
+            <i class="fas fa-play"></i>
+          </button>
+          <div class="progress-container-audio flex-1" onclick="seekAudio(event, ${surah.id})">
+            <div class="progress-bar-audio" id="progress-bar-${surah.id}"></div>
+          </div>
+          <span id="current-time-${surah.id}" class="time-display">00:00</span>
+          <div class="text-xl font-bold flex-1 text-right">${surah.name_arabic}</div>
+        </div>
+      `;
+      audioSurahList.appendChild(surahElement);
+    });
+  } catch (error) {
+    audioSurahList.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">حدث خطأ في تحميل السور</div>';
+  }
+}
 
     function toggleAudio(surahId, button) {
       // Stop other audios
