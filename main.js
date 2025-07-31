@@ -3174,7 +3174,20 @@ async function importMembersBulk() {
 
 // Gestion de la page Projet
 let projetBusinessData = []; // Stocke les données des professionnels
-
+// Fonction pour envoyer l'email de confirmation
+function sendConfirmationEmail(nom, email) {
+  // Réinitialisation pour le deuxième compte
+  emailjs.init("b7VZLL9unc4ONEPby").then(() => {
+    emailjs.send("service_v9clrbi", "template_p5w3d7a", {
+      nom: nom,
+      email: email
+    }).then(() => {
+      console.log("Email de confirmation envoyé à " + email);
+    }).catch(err => {
+      console.error("Erreur confirmation:", err);
+    });
+  });
+}
 function showProjetSection(section) {
     console.log(`Tentative d'affichage de la section : ${section}`);
 
@@ -3275,11 +3288,8 @@ function showMainInterface() {
     document.querySelector('.admin-link').style.display = 'block';
 }
 
-// Initialisation d'EmailJS avec votre clé publique
-(function() {
-  emailjs.init("t69wuFYR5Gno3G4py"); // Remplacez par votre Public Key d'EmailJS
-})();
-
+// Initialisation UNIQUE du compte principal (celui qui reçoit les soumissions)
+emailjs.init("t69wuFYR5Gno3G4py"); 
 // Fonction pour soumettre le formulaire de promotion
 function submitPromotionForm() {
   // Récupérer les valeurs des champs
@@ -3325,19 +3335,18 @@ function submitPromotionForm() {
     email,
     besoins
   })
-  .then(() => {
-    // Mettre à jour le message de la modale avec le nom
-    document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
-    // Afficher la modale de succès
-    document.getElementById('success-promotion-modal').classList.remove('hidden-section');
-    // Cacher le formulaire
-    document.getElementById('promotion-form').classList.add('hidden-section');
-    // Réinitialiser le formulaire
-    document.getElementById('promotionForm').reset();
-    // Réactiver le bouton
-    submitButton.disabled = false;
-    submitButton.innerHTML = 'Envoyer mon dossier';
-  })
+.then(() => {
+  // Envoi de l'email de confirmation
+  sendConfirmationEmail(nom, email); 
+
+  // Message de succès (existant)
+  document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
+  document.getElementById('success-promotion-modal').classList.remove('hidden-section');
+  document.getElementById('promotion-form').classList.add('hidden-section');
+  document.getElementById('promotionForm').reset();
+  submitButton.disabled = false;
+  submitButton.innerHTML = 'Envoyer mon dossier';
+})
   .catch(error => {
     console.error('Erreur lors de l\'envoi de l\'email:', error);
     alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
@@ -3389,19 +3398,15 @@ function submitFinancementForm() {
     delai,
     besoins
   })
-  .then(() => {
-    // Mettre à jour le message de la modale avec le nom
-    document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
-    // Afficher la modale de succès
-    document.getElementById('success-financement-modal').classList.remove('hidden-section');
-    // Cacher le formulaire
-    document.getElementById('financement-form').classList.add('hidden-section');
-    // Réinitialiser le formulaire
-    document.getElementById('financementForm').reset();
-    // Réactiver le bouton
-    submitButton.disabled = false;
-    submitButton.innerHTML = 'Envoyer mon dossier';
-  })
+ .then(() => {
+  // Message de succès uniquement (plus d'email de confirmation)
+  document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
+  document.getElementById('success-financement-modal').classList.remove('hidden-section');
+  document.getElementById('financement-form').classList.add('hidden-section');
+  document.getElementById('financementForm').reset();
+  submitButton.disabled = false;
+  submitButton.innerHTML = 'Envoyer mon dossier';
+})
   .catch(error => {
     console.error('Erreur lors de l\'envoi de l\'email:', error);
     alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
@@ -3435,6 +3440,19 @@ function hideSuccessMessage(type) {
 }
 
 
+async function sendConfirmationEmail(nom, email) {
+  try {
+    // On utilise le compte SECONDARY pour la confirmation
+    await emailjs.init("b7VZLL9unc4ONEPby"); // Clé publique du 2ème compte
+    await emailjs.send("service_v9clrbi", "template_p5w3d7a", {
+      nom: nom,
+      email: email
+    });
+    console.log("✅ Email de confirmation envoyé à :", email);
+  } catch (error) {
+    console.error("❌ Erreur lors de l'envoi de la confirmation :", error);
+  }
+}
 
 
 function verifyAdminCodes() {
@@ -4005,5 +4023,4 @@ function deleteProject(projectId) {
             });
     }
 }
-
 
