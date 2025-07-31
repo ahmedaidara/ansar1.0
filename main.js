@@ -3357,6 +3357,7 @@ function submitPromotionForm() {
 }
 
 // Fonction pour soumettre le formulaire de financement
+// Fonction pour soumettre le formulaire de financement
 function submitFinancementForm() {
   // Récupérer les valeurs des champs
   const nom = document.getElementById('f-nom').value;
@@ -3398,15 +3399,19 @@ function submitFinancementForm() {
     delai,
     besoins
   })
- .then(() => {
-  // Message de succès uniquement (plus d'email de confirmation)
-  document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
-  document.getElementById('success-financement-modal').classList.remove('hidden-section');
-  document.getElementById('financement-form').classList.add('hidden-section');
-  document.getElementById('financementForm').reset();
-  submitButton.disabled = false;
-  submitButton.innerHTML = 'Envoyer mon dossier';
-})
+  .then(() => {
+    // Mettre à jour le message de la modale avec le nom
+    document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
+    // Afficher la modale de succès
+    document.getElementById('success-financement-modal').classList.remove('hidden-section');
+    // Cacher le formulaire
+    document.getElementById('financement-form').classList.add('hidden-section');
+    // Réinitialiser le formulaire
+    document.getElementById('financementForm').reset();
+    // Réactiver le bouton
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Envoyer mon dossier';
+  })
   .catch(error => {
     console.error('Erreur lors de l\'envoi de l\'email:', error);
     alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
