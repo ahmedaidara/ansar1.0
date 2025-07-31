@@ -497,21 +497,21 @@ function getChatbotResponse(message) {
     'JESUISTRESORIER444',
     'SECRETAIRE000',
     'PRESIDENT000',
-    '33333333',
-    '44444444',
-    '55555555',
+    '3333333333',
+    '4444444444',
+    '5555555555',
     'JESUISTRESORIER444',
-    '66666666',
-    '77777777',
-    '88888888',
+    '6666666666',
+    '7777777777',
+    '8888888888',
     'PRESIDENT000',
-    '99999999',
-    '11112222',
-    '33334444',
-    'SECRETAIRE000',
-    '55556666',
-    '77778888',
-    '99990000'
+    '9999999999',
+    '11152222',
+    '3339544',
+    'SECRETAIRE520',
+    '5852666',
+    '776888',
+    '95390000'
   ];
 
   console.log('Vérification du message:', message); // Journal pour débogage
@@ -2947,7 +2947,7 @@ async function loadAccessCodes() {
       // Si le document n'existe pas, initialisez-le avec des valeurs par défaut
       await initializeDefaultCodes();
       return {
-        secretAccessCode: 'ADMIN123',
+        secretAccessCode: 'ADMIN145623',
         treasurerAccessCode: 'TRESORIER66',
         secretaryAccessCode: 'SECRETAIRE33',
         presidentAccessCode: 'PRESIDENT000'
@@ -3464,7 +3464,7 @@ function verifyAdminCodes() {
     const code1 = document.getElementById('code1').value;
     const code2 = document.getElementById('code2').value;
 
-    if (code1 === 'admin123' && code2 === 'admin456') {
+    if (code1 === 'G9!fX7#q' && code2 === 'L3$wR8&z') {
         document.getElementById('admin-section').classList.add('hidden-section');
         document.getElementById('admin-dashboard').classList.remove('hidden-section');
     } else {
