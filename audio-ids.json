@@ -1,0 +1,27 @@
+{
+  "hafs": {
+    "drive": {
+      "001": "1-E4Wf9M7k8Vm07ItjHQ2u4KSOeM2_7lK",
+      "002": "ID_POUR_002",
+      ...
+      "030": "ID_POUR_030"
+    },
+    "github": "https://github.com/votre-utilisateur/votre-repo/raw/main/audio/hafs/"
+  },
+  "murattal": {
+    "drive": {
+      "001": "ID_POUR_001_MURATTAL",
+      ...
+      "030": "ID_POUR_030_MURATTAL"
+    },
+    "github": "https://github.com/votre-utilisateur/votre-repo/raw/main/audio/murattal/"
+  },
+  "mujawad": {
+    "drive": {
+      "001": "ID_POUR_001_MUJAWAD",
+      ...
+      "030": "ID_POUR_030_MUJAWAD"
+    },
+    "github": "https://github.com/votre-utilisateur/votre-repo/raw/main/audio/mujawad/"
+  }
+}
