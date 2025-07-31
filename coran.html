@@ -280,23 +280,27 @@
     
     /* French specific styles */
     .french-verse {
-      margin-bottom: 1.5rem;
-      padding: 0.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .french-verse-number {
-      background-color: var(--primary-color);
-      color: white;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 0.5rem;
-      font-size: 0.8rem;
-    }
+  direction: ltr; /* Direction gauche à droite */
+  text-align: left; /* Alignement à gauche */
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.french-verse-number {
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem; /* Changé de margin-left à margin-right */
+  margin-left: 0 !important; /* S'assurer qu'aucune marge gauche ne s'applique */
+  font-size: 0.8rem;
+  float: left; /* Faire flotter à gauche */
+}
     
     /* Loading spinner */
     .loading-spinner {
