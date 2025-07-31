@@ -523,13 +523,43 @@ function getChatbotResponse(message) {
   }
 
   // Réponses génériques pour autres messages
-  switch (message.toLowerCase()) {
-    case 'bonjour':
-      return 'Bonjour ! Comment puis-je vous aider aujourd\'hui ?';
-    case 'salut':
-      return 'Salut ! Posez-moi une question ou entrez un code d\'accès.';
+  switch(trimmedMsg.toLowerCase()) {
+    // Salutations
+    case "salam": 
+      return "Wa ealeykoum Salam, comment puis-je vous aider";
+    case "bonjour":
+      return "Bonjour! Comment puis-je vous aider?";
+    case "salut":
+      return "Salut! Que puis-je faire pour vous?";
+    
+    // Fonctionnalités
+    case "app":
+      return "L'application permet aux membres de gérer leurs données personnelles, les cotisations et les événements de l'association.";
+    case "aide":
+      return "Je peux vous renseigner sur l'association ANSAR ALMOUYASSAR et son application. Posez-moi vos questions!";
+    
+    // Informations
+    case "politique":
+      return "Consultez notre politique de confidentialité dans la page paramètre";
+    case "almouyassar":
+      return "L'Institut Coranique Al Mouyassar est un établissement d'enseignement religieux qui forme des Huffaz (mémorisateurs du Coran). Il organise chaque année une cérémonie de remise des diplômes.";
+    case "réseaux":
+      return "Suivez-nous sur TikTok (@ansaralmouyassar), Instagram (@ansaralmouyassar), Snapchat (ansar102023) et YouTube (@almouyassartv).";
+    case "diplome":
+      return "La 12ème Cérémonie de Remise des Diplômes aux Huffaz aura lieu le 24 Août 2025 au Grand Théâtre National Doudou Ndiaye Rose de Dakar. Mise en place à 13h45.";
+    case "conference":
+    case "lieu":
+      return "La cérémonie se tiendra au Grand Théâtre National Doudou Ndiaye Rose de Dakar.";
+    case "ansar":
+      return "L'association ANSAR ALMOUYASSAR regroupe les anciens élèves et ressortissants de l'institut coranique Al Mouyassar, un établissement d'enseignement islamique réputé pour son excellence dans la transmission du Coran et des sciences islamiques. Notre mission est de maintenir les liens entre les anciens élèves, de promouvoir les valeurs islamiques et de contribuer au développement de notre communauté à travers diverses activités éducatives, sociales et caritatives.";
+    case "mission":
+      return "Notre mission est de maintenir les liens entre les anciens élèves, de promouvoir les valeurs islamiques...";
+    case "activités":
+      return "Soutenir l'institut en participant à son développement.";
+    
+    // Réponse par défaut
     default:
-      return 'Désolé, je ne comprends pas votre demande. Essayez un code d\'accès ou une question comme "bonjour".';
+      return "Désolé, je n'ai pas compris votre demande, posez-moi une question sur ANSAR ALMOUYASSAR.";
   }
 }
 // ==================== FONCTIONS MEMBRES ====================
@@ -4028,4 +4058,3 @@ function deleteProject(projectId) {
             });
     }
 }
-
