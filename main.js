@@ -1,4 +1,3 @@
-console.log('chatbotResponses.js chargé, getChatbotResponse existe :', typeof getChatbotResponse);
 // Configuration Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
@@ -4031,64 +4030,4 @@ function deleteProject(projectId) {
 }
 
 // Dans main.js
-document.addEventListener('DOMContentLoaded', () => {
-  const chatbotForm = document.getElementById('chatbot-form');
-  const chatbotInput = document.getElementById('chatbot-input');
-  const chatbotMessages = document.getElementById('chatbot-messages');
 
-  if (chatbotForm) {
-    chatbotForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const message = chatbotInput.value.trim();
-      if (message) {
-        // Afficher le message de l'utilisateur
-        const userMessage = document.createElement('div');
-        userMessage.className = 'user-message';
-        userMessage.textContent = message;
-        chatbotMessages.appendChild(userMessage);
-
-        // Obtenir la réponse du chatbot
-        const response = getChatbotResponse(message);
-
-        // Afficher la réponse du chatbot
-        const botMessage = document.createElement('div');
-        botMessage.className = 'bot-message';
-        botMessage.textContent = response;
-        chatbotMessages.appendChild(botMessage);
-
-        // Faire défiler vers le bas
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-
-        // Réinitialiser l'entrée
-        chatbotInput.value = '';
-      }
-    });
-  }
-
-  // Fonction pour basculer l'affichage du chatbot
-  const chatbotButton = document.querySelector('.chatbot-button');
-  const chatbotContainer = document.getElementById('chatbot');
-
-  if (chatbotButton && chatbotContainer) {
-    chatbotButton.addEventListener('click', () => {
-      chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
-    });
-  }
-
-  // Fonction pour fermer le chatbot
-  window.toggleChatbot = function() {
-    chatbotContainer.style.display = 'none';
-  };
-
-  // Fonction pour effacer l'historique
-  window.clearChatHistory = function() {
-    chatbotMessages.innerHTML = '';
-  };
-
-  // Gérer l'entrée secrète (si nécessaire)
-  window.checkSecretPassword = function() {
-    const password = document.getElementById('secret-password').value;
-    // Ajoutez ici la logique pour vérifier le mot de passe secret, si nécessaire
-    alert('Vérification du mot de passe : ' + password);
-  };
-});
