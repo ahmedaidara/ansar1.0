@@ -1,4 +1,7 @@
+// Nom du cache pour la version de l'application
 const CACHE_NAME = 'ansar-almouyassar-v1';
+
+// Liste des fichiers à mettre en cache
 const urlsToCache = [
   '/',
   '/index.html',
@@ -15,6 +18,7 @@ const urlsToCache = [
   '/manifest.json'
 ];
 
+// Installation du Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -23,23 +27,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return networkResponse;
-      });
-    })
-  );
-});
-
+// Activation du Service Worker (supprime les anciens caches)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -54,6 +42,16 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Interception des requêtes
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});
+
+// Gestion des notifications push
 self.addEventListener('push', (event) => {
   const data = event.data.json();
   const title = data.title || 'ANSAR ALMOUYASSAR';
