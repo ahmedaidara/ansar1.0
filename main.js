@@ -4070,3 +4070,22 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
+// Forcer le mode plein écran au chargement
+window.addEventListener('load', () => {
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.error('Erreur lors de la tentative de plein écran :', err);
+    });
+  }
+});
+
+// Gérer la sortie du mode plein écran
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    // Réessayer de passer en plein écran si l'utilisateur sort
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.error('Erreur lors de la tentative de plein écran :', err);
+    });
+  }
+});
