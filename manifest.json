@@ -1,37 +1,38 @@
 {
   "name": "ANSAR ALMOUYASSAR",
   "short_name": "ANSAR",
-  "start_url": "https://ahmedaidara.github.io/ansar1.0/?source=pwa",
-  "display": "Fullscreen",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
   "theme_color": "#2C3E50",
   "background_color": "#FFFFFF",
+  "scope": "/",
   "icons": [
     {
-      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-144x144.png",
+      "src": "/assets/images/logo-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-192x192.png",
+      "src": "/assets/images/logo-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-192x192-maskable.png",
+      "src": "/assets/images/logo-192x192-maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-512x512.png",
+      "src": "/assets/images/logo-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://ahmedaidara.github.io/ansar1.0/assets/images/logo-512x512-maskable.png",
+      "src": "/assets/images/logo-512x512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
