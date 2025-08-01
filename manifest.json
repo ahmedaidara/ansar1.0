@@ -2,10 +2,10 @@
   "name": "ANSAR ALMOUYASSAR",
   "short_name": "ANSAR",
   "start_url": "/?source=pwa",
-  "display": "standalone",
+  "display": "fullscreen",
   "theme_color": "#2C3E50",
   "background_color": "#FFFFFF",
-  "scope": "/",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/assets/images/logo-144x144.png",
