@@ -1,3 +1,15 @@
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker enregistré avec succès:', registration);
+      })
+      .catch((error) => {
+        console.error('Échec de l’enregistrement du Service Worker:', error);
+      });
+  });
+}
+
 // Configuration Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
