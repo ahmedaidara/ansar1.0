@@ -2,7 +2,7 @@
   "name": "ANSAR ALMOUYASSAR",
   "short_name": "ANSAR",
   "start_url": "https://ahmedaidara.github.io/ansar1.0/?source=pwa",
-  "display": "standalone",
+  "display": "Fullscreen",
   "theme_color": "#2C3E50",
   "background_color": "#FFFFFF",
   "icons": [
