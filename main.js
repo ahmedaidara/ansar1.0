@@ -598,12 +598,13 @@ document.querySelector('#add-member-form').addEventListener('submit', async (e) 
       document.querySelector('#add-member-form button[type="submit"]').textContent = 'Ajouter';
       
     } else {
-      // MODE AJOUT
-      const memberCode = await generateMemberCode();
-      await saveData('members', { ...memberData, code: memberCode });
-      alert(`Nouveau membre ajouté avec le code: ${memberCode}`);
-      form.reset();
-    }
+  // MODE AJOUT
+  const memberCode = await generateMemberCode();
+  const contributions = initializeContributions(); // Initialiser les cotisations
+  await saveData('members', { ...memberData, code: memberCode, contributions });
+  alert(`Nouveau membre ajouté avec le code: ${memberCode}`);
+  form.reset();
+}
     
     // Mettre à jour les listes
     updateEditMembersList();
@@ -661,11 +662,12 @@ async function findAvailableCodes() {
 
 // Remplacer la fonction initializeContributions
 function initializeContributions() {
+  const currentYear = new Date().getFullYear();
   return {
     Mensuelle: {
-      '2023': Array(12).fill(false),
-      '2024': Array(12).fill(false),
-      '2025': Array(12).fill(false)
+      [currentYear - 2]: Array(12).fill(false),
+      [currentYear - 1]: Array(12).fill(false),
+      [currentYear]: Array(12).fill(false)
     },
     globalContributions: {}
   };
@@ -957,14 +959,16 @@ async function showMemberDetail(code) {
     }
 
     // Afficher les cotisations mensuelles
-    const cotisationsContent = document.querySelector('#cotisations-content');
-    if (cotisationsContent) {
-      cotisationsContent.innerHTML = Object.entries(member.contributions?.Mensuelle || {}).map(([year, paidMonths]) => `
-        <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
-      `).join('') || '<p>Aucune cotisation mensuelle</p>';
-    } else {
-      console.error('Élément #cotisations-content introuvable');
-    }
+    // Afficher les cotisations mensuelles
+const cotisationsContent = document.querySelector('#cotisations-content');
+if (cotisationsContent) {
+  const mensualContributions = member.contributions?.Mensuelle || initializeContributions().Mensuelle;
+  cotisationsContent.innerHTML = Object.entries(mensualContributions).map(([year, paidMonths]) => `
+    <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
+  `).join('') || '<p>Aucune cotisation mensuelle</p>';
+} else {
+  console.error('Élément #cotisations-content introuvable');
+}
 
     // Afficher les cotisations globales
     const contributions = await loadData('contributions');
@@ -2026,18 +2030,33 @@ async function manageMemberMonthlyContributions(code) {
       return;
     }
 
-    console.log('Membre trouvé:', member.firstname, member.lastname);
+    console.log('Membre trouvé:', {
+      firstname: member.firstname,
+      lastname: member.lastname,
+      contributions: member.contributions
+    });
+
     const content = document.querySelector('#treasurer-monthly-content');
-    if (!content) {
-      console.error('Élément #treasurer-monthly-content introuvable');
-      alert('Erreur : conteneur des cotisations mensuelles introuvable');
+    const title = document.querySelector('#treasurer-member-title');
+    if (!content || !title) {
+      console.error('Éléments DOM manquants:', {
+        content: !!content,
+        title: !!title
+      });
+      alert('Erreur : conteneur des cotisations mensuelles ou titre introuvable');
       return;
     }
 
-    document.querySelector('#treasurer-member-title').textContent = `Cotisations de ${member.firstname} ${member.lastname}`;
+    // Initialiser contributions.Mensuelle si absent
+    const mensualContributions = member.contributions?.Mensuelle || initializeContributions().Mensuelle;
+
+    // Mettre à jour le titre
+    title.textContent = `Cotisations de ${member.firstname} ${member.lastname}`;
+
+    // Générer le contenu HTML
     content.innerHTML = `
       <form id="member-monthly-contributions-form">
-        ${Object.entries(member.contributions.Mensuelle).map(([year, paidMonths]) => `
+        ${Object.entries(mensualContributions).map(([year, paidMonths]) => `
           <div class="contribution-year">
             <h4>${year}</h4>
             ${paidMonths.map((paid, i) => `
@@ -2048,17 +2067,30 @@ async function manageMemberMonthlyContributions(code) {
             `).join('')}
           </div>
         `).join('')}
+        <button type="submit" class="cta-button">Enregistrer</button>
       </form>
     `;
 
     console.log('Contenu des cotisations mensuelles généré pour', member.firstname, member.lastname);
+
+    // Ajouter l'écouteur pour le formulaire
+    const form = document.querySelector('#member-monthly-contributions-form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await saveMonthlyContributions();
+      });
+    } else {
+      console.error('Formulaire #member-monthly-contributions-form introuvable');
+      alert('Erreur : formulaire des cotisations introuvable');
+    }
+
     showPage('treasurer-member-monthly');
   } catch (error) {
     console.error('Erreur manageMemberMonthlyContributions:', error);
     alert('Erreur lors du chargement des cotisations');
   }
 }
-
 
 async function saveMonthlyContributions() {
   console.log('saveMonthlyContributions appelé');
@@ -2077,7 +2109,7 @@ async function saveMonthlyContributions() {
       return;
     }
 
-    const memberId = checkboxes[0].dataset.memberId; // Récupérer l'ID du membre depuis la première case
+    const memberId = checkboxes[0].dataset.memberId;
     const members = await loadData('members');
     const member = members.find(m => m.id === memberId);
     if (!member) {
@@ -2086,8 +2118,13 @@ async function saveMonthlyContributions() {
       return;
     }
 
-    // Collecter l'état des cases à cocher
-    const updatedContributions = { ...member.contributions };
+    // Initialiser contributions si absent
+    const updatedContributions = {
+      ...member.contributions,
+      Mensuelle: member.contributions?.Mensuelle || initializeContributions().Mensuelle
+    };
+
+    // Mettre à jour l'état des cases à cocher
     checkboxes.forEach(checkbox => {
       const year = checkbox.dataset.year;
       const month = parseInt(checkbox.dataset.month);
@@ -2100,16 +2137,18 @@ async function saveMonthlyContributions() {
 
     // Mettre à jour l'espace personnel si l'utilisateur est le membre concerné
     if (currentUser?.code === member.code) {
+      currentUser = { ...member, contributions: updatedContributions };
       showMemberDetail(member.code);
     }
 
     alert('Cotisations mensuelles enregistrées avec succès');
-    showPage('treasurer-monthly'); // Retour à la liste des membres
+    showPage('treasurer-monthly');
   } catch (error) {
     console.error('Erreur saveMonthlyContributions:', error);
     alert('Erreur lors de l’enregistrement des cotisations');
   }
 }
+
 
 // ==================== FONCTIONS FICHIERS PRÉSIDENT/SECÉTAIRE ====================
 
