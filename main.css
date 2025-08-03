@@ -143,13 +143,13 @@ body {
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
   padding: 10px;
-  margin: 10px;
-  z-index: 1;
 }
+
 
 .item {
   display: flex;
@@ -166,7 +166,58 @@ body {
 
 
 }
+.item:nth-child(-n+3) {
+  width: 30px; /* Largeur fixe pour le cercle */
+  height: 30px; /* Hauteur égale à la largeur pour former un cercle */
+  border-radius: 50%; /* Rend l'élément rond */
+  display: inline-flex; /* Alignement horizontal */
+  margin: 0 10px; /* Espacement entre les cercles */
+}
+/* Ajustement pour l'icône et le texte dans les cercles */
+.item:nth-child(-n+3) .icon {
+  font-size: 1em;
+  margin-bottom: 0;
+}
 
+/* Nouveau style pour les cercles + texte en dessous */
+.item:nth-child(-n+3) {
+  width: 70px; 
+  height: 70px;
+  border-radius: 50%;
+  display: flex; /* Changé de inline-flex à flex */
+  flex-direction: column; /* Empile verticalement */
+  align-items: center; /* Centre horizontalement */
+  margin: 0 10px 25px; /* Ajout de marge en bas pour le texte */
+  position: relative; /* Nécessaire pour le positionnement absolu du texte */
+} 
+
+/* Style pour le texte sous les cercles */
+.item.circle-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px 30px; /* Espacement horizontal + marge bas pour texte */
+  position: relative;
+  padding: 0; /* Retire le padding pour un cercle parfait */
+}
+.item.circle-item .item-text {
+  position: absolute;
+  top: 100%;
+  margin-top: 8px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.8em;
+  white-space: nowrap;
+}
+/* Ajustement de l'icône */
+.item.circle-item .icon {
+  font-size: 1.5em;
+  margin-bottom: 0;
+}
 .item-text {
   font-size: 16px;
 }
