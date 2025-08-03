@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TASBIH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Times New Roman", Times, serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f5f1e9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #2a2118;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #e8e0d5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .header-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            color: #3d2e1e;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .counter-container {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .current-count {
+            font-size: 72px;
+            font-weight: normal;
+            color: #5d4037;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        
+        .target-count {
+            font-size: 20px;
+            color: #8d6e63;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .edit-icon {
+            margin-left: 8px;
+            font-size: 16px;
+            color: #8d6e63;
+            cursor: pointer;
+        }
+        
+        .tasbih-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+            height: 60px;
+            transform: rotate(-5deg);
+        }
+        
+        .tasbih-line {
+            position: absolute;
+            height: 1px;
+            background-color: #bcaaa4;
+            width: 80%;
+            z-index: 1;
+        }
+        
+        .bead {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.1s;
+        }
+        
+        .bead.left {
+            margin-right: 12px;
+        }
+        
+        .bead.right {
+            margin-left: 12px;
+        }
+        
+        .bead-space {
+            width: 60px;
+            height: 1px;
+            background-color: #bcaaa4;
+        }
+        
+        .main-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .instructions {
+            color: #8d6e63;
+            font-size: 16px;
+            margin-top: 30px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .footer {
+            background-color: #e8e0d5;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .footer-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #5d4037;
+            text-align: center;
+        }
+        
+        .bead-styles {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .bead-style {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background-size: cover;
+            transition: all 0.2s;
+        }
+        
+        .bead-style.selected {
+            border-color: #5d4037;
+            transform: scale(1.05);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .reset-btn {
+            background-color: #5d4037;
+            color: #efebe9;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* Modal pour modifier le nombre */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #3d2e1e;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        
+        .modal-btn.confirm {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .modal-btn.cancel {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TASBIH</div>
+    </div>
+    
+    <div class="main-area" id="tap-area">
+        <div class="counter-container">
+            <div class="current-count" id="current-count">0</div>
+            <div class="target-count">
+                / <span id="target-count">100</span>
+                <span class="edit-icon" id="edit-target-btn">✏️</span>
+            </div>
+        </div>
+        
+        <div class="tasbih-container">
+            <div class="tasbih-line"></div>
+            
+            <!-- 4 perles à gauche -->
+            <div class="bead left" id="bead-1" style="background-color: #d4af37;"></div>
+            <div class="bead left" id="bead-2" style="background-color: #d4af37;"></div>
+            <div class="bead left" id="bead-3" style="background-color: #d4af37;"></div>
+            <div class="bead left" id="bead-4" style="background-color: #d4af37;"></div>
+            
+            <!-- Espace central -->
+            <div class="bead-space"></div>
+            
+            <!-- 3 perles à droite -->
+            <div class="bead right" id="bead-5" style="background-color: #d4af37;"></div>
+            <div class="bead right" id="bead-6" style="background-color: #d4af37;"></div>
+            <div class="bead right" id="bead-7" style="background-color: #d4af37;"></div>
+        </div>
+        
+        <div class="instructions">
+            Touchez l'écran pour compter<br>
+            Glissez de droite à gauche pour diminuer
+        </div>
+        
+        <button class="reset-btn" id="reset">Réinitialiser</button>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-title">Styles de Perles</div>
+        <div class="bead-styles">
+            <div class="bead-style selected" style="background-color: #d4af37;"></div>
+            <div class="bead-style" style="background-color: #006400;"></div>
+            <div class="bead-style" style="background-color: #555555;"></div>
+            <div class="bead-style" style="background-color: #333333;"></div>
+            <div class="bead-style" style="background-color: #00008B;"></div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <!-- Modal pour modifier le nombre -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-title">Entrez votre nombre total</div>
+            <input type="number" class="modal-input" id="target-input" min="1" max="1000000" value="100">
+            <div>
+                <button class="modal-btn confirm" id="modal-confirm">Confirmer</button>
+                <button class="modal-btn cancel" id="modal-cancel">Annuler</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables
+        let currentCount = 0;
+        let targetCount = 100;
+        let currentBeadIndex = 0;
+        let touchStartX = 0;
+        let beadColor = '#d4af37'; // Or par défaut
+        
+        // Éléments DOM
+        const currentCountElement = document.getElementById('current-count');
+        const targetCountElement = document.getElementById('target-count');
+        const editTargetBtn = document.getElementById('edit-target-btn');
+        const resetBtn = document.getElementById('reset');
+        const tapArea = document.getElementById('tap-area');
+        const notification = document.getElementById('notification');
+        const beadStyles = document.querySelectorAll('.bead-style');
+        const beads = document.querySelectorAll('.bead');
+        const modal = document.getElementById('modal');
+        const targetInput = document.getElementById('target-input');
+        const modalConfirm = document.getElementById('modal-confirm');
+        const modalCancel = document.getElementById('modal-cancel');
+        
+        // Initialisation
+        function init() {
+            updateCounter();
+            
+            // Événements
+            tapArea.addEventListener('click', incrementCount);
+            tapArea.addEventListener('touchstart', handleTouchStart, false);
+            tapArea.addEventListener('touchmove', handleTouchMove, false);
+            
+            resetBtn.addEventListener('click', resetCounter);
+            
+            editTargetBtn.addEventListener('click', function() {
+                targetInput.value = targetCount;
+                modal.style.display = 'flex';
+            });
+            
+            modalConfirm.addEventListener('click', function() {
+                const newTarget = parseInt(targetInput.value);
+                if (newTarget && newTarget >= 1 && newTarget <= 1000000) {
+                    targetCount = newTarget;
+                    targetCountElement.textContent = targetCount;
+                    resetCounter();
+                }
+                modal.style.display = 'none';
+            });
+            
+            modalCancel.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Sélection de la couleur des perles
+            beadStyles.forEach((style, index) => {
+                style.addEventListener('click', function() {
+                    beadStyles.forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Couleurs correspondantes
+                    const colors = ['#d4af37', '#006400', '#555555', '#333333', '#00008B'];
+                    beadColor = colors[index];
+                    
+                    // Mettre à jour la couleur des perles
+                    updateBeadsColor();
+                });
+            });
+        }
+        
+        // Incrémenter le compteur
+        function incrementCount() {
+            if (currentCount < targetCount) {
+                currentCount++;
+                updateCounter();
+                animateNextBead();
+                
+                if (currentCount === targetCount) {
+                    showNotification();
+                    vibrate();
+                }
+            }
+        }
+        
+        // Décrémenter le compteur
+        function decrementCount() {
+            if (currentCount > 0) {
+                currentCount--;
+                updateCounter();
+                animatePreviousBead();
+            }
+        }
+        
+        // Mettre à jour l'affichage du compteur
+        function updateCounter() {
+            currentCountElement.textContent = currentCount;
+        }
+        
+        // Animer la prochaine perle
+        function animateNextBead() {
+            // Réinitialiser l'animation précédente
+            beads.forEach(bead => {
+                bead.style.transform = 'scale(1)';
+            });
+            
+            // Animer la perle actuelle
+            if (currentBeadIndex < beads.length) {
+                beads[currentBeadIndex].style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    beads[currentBeadIndex].style.transform = 'scale(1)';
+                }, 100);
+            }
+            
+            // Passer à la perle suivante
+            currentBeadIndex = (currentBeadIndex + 1) % beads.length;
+        }
+        
+        // Animer la perle précédente
+        function animatePreviousBead() {
+            // Réinitialiser l'animation précédente
+            beads.forEach(bead => {
+                bead.style.transform = 'scale(1)';
+            });
+            
+            // Reculer l'index
+            currentBeadIndex = (currentBeadIndex - 1 + beads.length) % beads.length;
+            
+            // Animer la perle
+            beads[currentBeadIndex].style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                beads[currentBeadIndex].style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        // Réinitialiser le compteur
+        function resetCounter() {
+            currentCount = 0;
+            currentBeadIndex = 0;
+            updateCounter();
+            
+            // Réinitialiser les perles
+            beads.forEach(bead => {
+                bead.style.transform = 'scale(1)';
+            });
+        }
+        
+        // Afficher la notification
+        function showNotification() {
+            notification.textContent = targetCount;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Faire vibrer le téléphone
+        function vibrate() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+        }
+        
+        // Mettre à jour la couleur des perles
+        function updateBeadsColor() {
+            beads.forEach(bead => {
+                bead.style.backgroundColor = beadColor;
+            });
+        }
+        
+        // Gestion des mouvements tactiles
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+        }
+        
+        function handleTouchMove(e) {
+            if (!touchStartX) return;
+            
+            const touchEndX = e.touches[0].clientX;
+            const diffX = touchStartX - touchEndX;
+            
+            // Si le mouvement est significatif de droite à gauche
+            if (diffX > 50) {
+                decrementCount();
+                touchStartX = 0;
+                e.preventDefault();
+            }
+        }
+        
+        // Démarrer l'application
+        init();
+    </script>
+</body>
+</html>
