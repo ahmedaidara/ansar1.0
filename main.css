@@ -200,7 +200,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 10px 30px; /* Espacement horizontal + marge bas pour texte */
+  margin: 0 1% 25px; /* 1% d'espace entre les boutons */
   position: relative;
   padding: 0; /* Retire le padding pour un cercle parfait */
 }
