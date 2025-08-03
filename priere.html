@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0d6e6e; /* Turquoise islamique */
-            --secondary: #4CAF50; /* Vert islamique */
-            --accent: #FFD700; /* Or */
-            --light: #f5f5f5;
-            --dark: #333;
-            --text: #333;
-            --bg: #f9f9f9;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --active-color: #2E7D32;
-            --active-bg: rgba(46, 125, 50, 0.1);
-        }
+    --primary: #1f4a49;       /* Vert foncé islamique (votre fond) */
+    --secondary: #2D9596;     /* Turquoise moyen */
+    --accent: #F9B572;        /* Or clair (remplace l'or vif) */
+    --light: #f5f5f5;         /* Blanc cassé */
+    --dark: #333;             /* Noir doux */
+    --text: #ECF4D6;          /* Texte clair (vert très pâle) */
+    --bg: #1f4a49;            /* Fond principal */
+    --card-bg: rgba(255, 255, 255, 0.15); /* Cartes semi-transparentes */
+    --active-color: #9AD0C2;  /* Turquoise clair pour les éléments actifs */
+    --active-bg: rgba(154, 208, 194, 0.2);
+}
 
         * {
             margin: 0;
@@ -27,7 +27,7 @@
         }
 
         body {
-            background-color: var(--bg);
+            background-color: #1f4a49;
             color: var(--text);
             line-height: 1.6;
             background-image: url('https://images.unsplash.com/photo-1542816417-0983675acc57?ixlib=rb-1.2.1&auto=format&fit=crop&w=1480&q=80');
@@ -44,7 +44,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);  /* Réduisez l'opacité (0.4 à 0.2 par exemple) */
             z-index: -1;
         }
 
@@ -127,13 +127,17 @@
         }
 
         .next-prayer {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.25),   /* Ombre externe douce */
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset; /* Bordure interne subtile */
+    backdrop-filter: blur(8px); /* Effet de flou pour le verre (optionnel) */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordure légère */
+}
 
         .next-prayer h2 {
             color: var(--primary);
@@ -196,16 +200,18 @@
             margin-bottom: 15px;
         }
 
-        .prayer-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
+       .prayer-card {
+    background-color: rgba(255, 255, 255, 0.15); /* Fond semi-transparent clair */
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    color: white; /* Texte en blanc */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordure subtile */
+}
 
         .prayer-card.active {
             background-color: var(--active-bg);
@@ -220,7 +226,7 @@
         .prayer-icon {
             width: 40px;
             height: 40px;
-            background-color: rgba(13, 110, 110, 0.1);
+    background-color: rgba(255, 255, 255, 0.2) !important; /* Icône plus visible */
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -232,7 +238,7 @@
 
         .prayer-name {
             font-weight: 600;
-            color: var(--dark);
+    color: white !important; /* Force le texte en blanc */
             margin-bottom: 3px;
         }
 
@@ -286,8 +292,8 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-mosque"></i> Muslim Time</h1>
-            <p>Votre guide pour les heures de prière</p>
+            <h1><i class="fas fa-mosque"></i> Heures de prières</h1>
+            <p>إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</p>
         </header>
 
         <div class="location-bar">
@@ -325,7 +331,7 @@
         </div>
 
         <footer>
-            <p>© 2023 Muslim Time - Heures selon Umm Al-Qura</p>
+            <p>ANSAR</p>
         </footer>
     </div>
 
@@ -333,12 +339,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Configuration
             const prayerNames = {
-                Fajr: { name: 'Fajr', icon: 'fa-sun', color: '#0d6e6e' },
-                Dhuhr: { name: 'Dhuhr', icon: 'fa-sun', color: '#4CAF50' },
-                Asr: { name: 'Asr', icon: 'fa-sun', color: '#2E7D32' },
-                Maghrib: { name: 'Maghrib', icon: 'fa-moon', color: '#FF9800' },
-                Isha: { name: 'Isha', icon: 'fa-moon', color: '#673AB7' }
-            };
+    Fajr: { name: 'Fajr', icon: 'fa-sun', color: '#9AD0C2' }, // Turquoise clair
+    Dhuhr: { name: 'Dhuhr', icon: 'fa-sun', color: '#F9B572' }, // Or clair
+    Asr: { name: 'Asr', icon: 'fa-sun', color: '#2D9596' }, // Turquoise moyen
+    Maghrib: { name: 'Maghrib', icon: 'fa-moon', color: '#ECF4D6' }, // Blanc cassé
+    Isha: { name: 'Isha', icon: 'fa-moon', color: '#FFFFFF' } // Blanc pur
+};
 
             // Éléments du DOM
             const currentTimeElement = document.getElementById('current-time');
