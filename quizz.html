@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    /* Votre CSS reste inchangé */
     :root {
       --primary: #166534;
       --primary-dark: #065f46;
@@ -30,7 +31,7 @@
       padding: 0;
     }
     
-    .font-arabic {
+ .font-arabic {
       font-family: 'Scheherazade New', 'Amiri', 'Times New Roman', serif;
       font-size: 1.8rem;
       line-height: 3.2rem;
@@ -388,7 +389,7 @@
 </head>
 <body class="antialiased">
   <!-- Total Score Button -->
-  <div class="total-score-btn" onclick="showTotalScore()">
+  <div class="total-score-btn">
     <i class="fas fa-crown"></i>
   </div>
 
@@ -403,7 +404,7 @@
           <div class="progress-fill" id="totalProgress" style="width: 0%"></div>
         </div>
       </div>
-      <button onclick="closeTotalScore()" class="btn-primary w-full mt-4">Fermer</button>
+      <button class="btn-primary w-full mt-4 close-total-score">Fermer</button>
     </div>
   </div>
 
@@ -414,24 +415,24 @@
       <p class="home-subtitle">Testez votre niveau du coran</p>
     </div>
 
-    <div class="level-card" data-level="juzz_amma">
-  <i class="fas fa-book-open level-icon"></i>
-  <h2 class="level-title">Juzz AMMA</h2>
-</div>
-<!-- Répétez pour les autres cartes avec les valeurs appropriées -->
-      <div class="level-card" onclick="selectLevel('juzz_kad')">
+    <div class="grid-5">
+      <div class="level-card" data-level="juzz_amma">
+        <i class="fas fa-book-open level-icon"></i>
+        <h2 class="level-title">Juzz AMMA</h2>
+      </div>
+      <div class="level-card" data-level="juzz_kad">
         <i class="fas fa-pray level-icon"></i>
         <h2 class="level-title">Juzz KAD SAMI'ALLAHOU</h2>
       </div>
-      <div class="level-card" onclick="selectLevel('juzz_yassin')">
+      <div class="level-card" data-level="juzz_yassin">
         <i class="fas fa-moon level-icon"></i>
         <h2 class="level-title">Juzz YASSIN</h2>
       </div>
-      <div class="level-card" onclick="selectLevel('juzz_kahfi')">
+      <div class="level-card" data-level="juzz_kahfi">
         <i class="fas fa-mountain level-icon"></i>
         <h2 class="level-title">Juzz KAHFI</h2>
       </div>
-      <div class="level-card" onclick="selectLevel('hafiz')">
+      <div class="level-card" data-level="hafiz">
         <i class="fas fa-crown level-icon"></i>
         <h2 class="level-title">JE SUIS HAFIZ</h2>
       </div>
@@ -442,24 +443,13 @@
   <div id="quizSelection" class="hidden container">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
       <h2 class="text-3xl font-bold text-gold mb-4 sm:mb-0" id="levelTitle">Juzz AMMA</h2>
-      <button onclick="goHome()" class="btn-primary flex items-center">
+      <button class="btn-primary flex items-center back-to-home">
         <i class="fas fa-arrow-left mr-2"></i> Retour
       </button>
     </div>
 
-    <div class="grid-20">
-      <!-- 20 Quiz Cards -->
-      <script>
-        for (let i = 1; i <= 20; i++) {
-          document.write(`
-            <div class="quiz-card" onclick="startQuiz(${i})">
-              <div class="quiz-number">Q${i}</div>
-              <div class="quiz-label">QUIZ ${i}</div>
-              <div class="score-badge" id="score-badge-${i}">0/10</div>
-            </div>
-          `);
-        }
-      </script>
+    <div class="grid-20" id="quizGrid">
+      <!-- Les cartes de quiz seront générées dynamiquement -->
     </div>
   </div>
 
@@ -503,10 +493,10 @@
       <p class="text-gray-300 mb-6" id="resultMessage">Très bon travail ! Continuez ainsi.</p>
       
       <div class="flex flex-col sm:flex-row justify-center">
-        <button onclick="reviewMistakes()" class="btn-action btn-review flex items-center justify-center">
+        <button class="btn-action btn-review flex items-center justify-center review-mistakes">
           <i class="fas fa-book mr-2"></i> Revoir les erreurs
         </button>
-        <button onclick="closeResult()" class="btn-action btn-continue flex items-center justify-center">
+        <button class="btn-action btn-continue flex items-center justify-center continue-quiz">
           <i class="fas fa-play mr-2"></i> Continuer
         </button>
       </div>
@@ -526,8 +516,8 @@
       totalGlobalScore: 0
     };
 
-    // Real Quranic Data - Comprehensive and authentic
-    const realQuizData = {
+    // Sample Quiz Data (vous devrez remplir avec vos vraies données)
+   const realQuizData = {
       juzz_amma: [
         // Quiz 1
         [
@@ -2142,7 +2132,7 @@
               'وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا',
               'وَتَوَكَّلْ عَلَى اللَّهِ',
               'إِنَّ اللَّهَ سَمِيعٌ عَلِيمٌ'
-            ],
+            ], 
             answer: 0
           },
           {
@@ -2247,454 +2237,207 @@
               'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ'
             ],
             answer: 0
-          },
-          {
-            type: 'question: 'Quelle est la signification du mot "الكرسي" dans le contexte du verset de la Sourate Al-Baqarah 2:255 ?',
-ayah: '',
-options: [
-'Le trône de la connaissance d'Allah',
-'Un siège physique',
-'Un meuble dans le ciel',
-'Un symbole de pouvoir temporel'
-],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "وَلَا يَئُودُهُ حِفْظُهُمَا" ?',
-ayah: 'وَلَا يَئُودُهُ حِفْظُهُمَا',
-options: [
-'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
-'لَا إِكْرَاهَ فِي الدِّينِ',
-'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
-'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ'
-],
-answer: 0
-},
-{
-type: 'which_juz',
-question: 'À quel juz' appartient le verset de la Sourate Al-Baqarah 2:255 (Ayat al-Kursi) ?',
-ayah: '',
-options: ['Juz' 3', 'Juz' 4', 'Juz' 5', 'Juz' 6'],
-answer: 0
-}
-],
-// Quiz 18
-[
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "وَهُوَ الْعَلِيُّ الْعَظِيمُ" ?',
-ayah: 'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
-options: [
-'لَا إِكْرَاهَ فِي الدِّينِ',
-'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
-'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
-'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ'
-],
-answer: 0
-},
-{
-type: 'which_surah',
-question: 'Dans quelle sourate se trouve le verset : "لَا إِكْرَاهَ فِي الدِّينِ" ?',
-ayah: '',
-options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Complétez le verset : "قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ..."',
-ayah: 'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
-options: [
-'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
-'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
-'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
-'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا'
-],
-answer: 0
-},
-{
-type: 'word_frequency',
-question: 'Combien de fois le mot "الطاغوت" est-il mentionné dans la sourate Al-Baqarah ?',
-ayah: '',
-options: ['2 fois', '4 fois', '6 fois', '8 fois'],
-answer: 1
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ" ?',
-ayah: 'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
-options: [
-'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
-'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
-'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
-'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ'
-],
-answer: 0
-},
-{
-type: 'which_surah',
-question: 'Dans quelle sourate se trouve le verset : "فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ" ?',
-ayah: '',
-options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Complétez le verset : "لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ..."',
-ayah: 'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
-options: [
-'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
-'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
-'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
-'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ'
-],
-answer: 0
-},
-{
-type: 'meaning',
-question: 'Quelle est la signification du mot "العروة الوثقى" ?',
-ayah: '',
-options: [
-'L'anse la plus solide, la foi ferme',
-'La richesse éternelle',
-'La victoire militaire',
-'La connaissance absolue'
-],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا" ?',
-ayah: 'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
-options: [
-'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
-'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
-'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
-'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ'
-],
-answer: 0
-},
-{
-type: 'which_juz',
-question: 'À quel juz' appartient la fin de la sourate Al-Baqarah ?',
-ayah: '',
-options: ['Juz' 2', 'Juz' 3', 'Juz' 4', 'Juz' 5'],
-answer: 1
-}
-],
-// Quiz 19
-[
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ" ?',
-ayah: 'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
-options: [
-'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
-'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
-'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
-'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ'
-],
-answer: 0
-},
-{
-type: 'which_surah',
-question: 'Dans quelle sourate se trouve le verset : "وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ" ?',
-ayah: '',
-options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Complétez le verset : "يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ..."',
-ayah: 'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
-options: [
-'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
-'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
-'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
-'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ'
-],
-answer: 0
-},
-{
-type: 'word_frequency',
-question: 'Combien de fois le mot "النور" est-il mentionné dans la sourate Al-Baqarah ?',
-ayah: '',
-options: ['5 fois', '10 fois', '15 fois', '20 fois'],
-answer: 2
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ" ?',
-ayah: 'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
-options: [
-'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
-'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
-'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
-'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ'
-],
-answer: 0
-},
-{
-type: 'which_surah',
-question: 'Dans quelle sourate se trouve le verset : "فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا" ?',
-ayah: '',
-options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Complétez le verset : "وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ..."',
-ayah: 'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
-options: [
-'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
-'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
-'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
-'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ'
-],
-answer: 0
-},
-{
-type: 'meaning',
-question: 'Quelle est la signification du mot "الخسران" ?',
-ayah: '',
-options: [
-'Perte évidente, échec',
-'Victoire éclatante',
-'Richesse abondante',
-'Connaissance profonde'
-],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا" ?',
-ayah: 'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
-options: [
-'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
-'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
-'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
-'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ'
-],
-answer: 0
-},
-{
-type: 'which_juz',
-question: 'À quel juz' appartient la fin de la sourate Al-Baqarah ?',
-ayah: '',
-options: ['Juz' 2', 'Juz' 3', 'Juz' 4', 'Juz' 5'],
-answer: 1
-}
-],
-// Quiz 20
-[
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ" ?',
-ayah: 'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
-options: [
-'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
-'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
-'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
-'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ'
-],
-answer: 0
-},
-{
-type: 'which_surah',
-question: 'Dans quelle sourate se trouve le verset : "وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ" ?',
-ayah: '',
-options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Complétez le verset : "وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ..."',
-ayah: 'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
-options: [
-'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
-'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
-'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ',
-'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا'
-],
-answer: 0
-},
-{
-type: 'word_frequency',
-question: 'Combien de fois le mot "الجنة" est-il mentionné dans la sourate Al-Baqarah ?',
-ayah: '',
-options: ['10 fois', '15 fois', '20 fois', '25 fois'],
-answer: 2
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ" ?',
-ayah: 'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
-options: [
-'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
-'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ',
-'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
-'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا'
-],
-answer: 0
-},
-{
-type: 'which_surah',
-question: 'Dans quelle sourate se trouve le verset : "وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ" ?',
-ayah: '',
-options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Complétez le verset : "أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ..."',
-ayah: 'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ',
-options: [
-'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
-'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا',
-'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ',
-'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَا
-تِلُونَكُمْ'
-],
-answer: 0
-},
-{
-type: 'meaning',
-question: 'Quelle est la signification du mot "الجنة" ?',
-ayah: '',
-options: [
-'Le Paradis',
-'L'Enfer',
-'La Terre',
-'Le Ciel'
-],
-answer: 0
-},
-{
-type: 'complete_verse',
-question: 'Quel est la suite du verset : "وَمَا كَانَ لِمُؤْم Puj'n أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا" ?',
-ayah: 'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
-options: [
-'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا',
-'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ',
-'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ',
-'وَلَا تَعْتَدُوا إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ'
-],
-answer: 0
-},
-{
-type: 'which_juz',
-question: 'À quel juz' appartient la fin de la sourate Al-Baqarah ?',
-ayah: '',
-options: ['Juz' 2', 'Juz' 3', 'Juz' 4', 'Juz' 5'],
-answer: 1
-}
-]
-]
+          }
+    ]
+  ]
 };
-// Navigation Functions
-function showPage(pageId) {
-document.getElementById('homePage').classList.add('hidden');
-document.getElementById('quizSelection').classList.add('hidden');
-document.getElementById('quizPage').classList.add('hidden');
-document.getElementById(pageId).classList.remove('hidden');
-}
-function selectLevel(level) {
-  console.log('Level selected:', level); // Ajoutez cette ligne
-  state.currentLevel = level;
-  document.getElementById('levelTitle').textContent = level.toUpperCase().replace('_', ' ');
-  showPage('quizSelection');
-}
-function goHome() {
-showPage('homePage');
-}
-function startQuiz(quizNumber) {
-state.currentQuiz = quizNumber;
-state.currentQuestion = 0;
-state.score = 0;
-state.answers = [];
-state.questions = realQuizData[state.currentLevel][quizNumber - 1];
-document.getElementById('quizHeader').textContent = Quiz ${quizNumber};
-showPage('quizPage');
-loadQuestion();
-}
-// Quiz Logic
-function loadQuestion() {
-const question = state.questions[state.currentQuestion];
-document.getElementById('questionText').textContent = question.question;
-document.getElementById('ayahText').textContent = question.ayah;
-document.getElementById('progressText').textContent = ${state.currentQuestion + 1}/10;
-document.getElementById('progressBar').style.width = ${(state.currentQuestion + 1) * 10}%;
-const optionsContainer = document.getElementById('optionsContainer');
-optionsContainer.innerHTML = '';
-question.options.forEach((option, index) => {
-const btn = document.createElement('button');
-btn.className = 'option-btn';
-btn.textContent = option;
-btn.onclick = () => selectOption(index);
-optionsContainer.appendChild(btn);
-});
-document.getElementById('nextBtn').classList.add('hidden');
-}
-function selectOption(index) {
-const question = state.questions[state.currentQuestion];
-const buttons = document.querySelectorAll('.option-btn');
-buttons.forEach((btn, i) => {
-btn.disabled = true;
-if (i === question.answer) {
-btn.classList.add('correct');
-} else if (i === index && i !== question.answer) {
-btn.classList.add('incorrect');
-}
-});
-state.answers.push({ question: state.currentQuestion, selected: index, correct: question.answer });
-if (index === question.answer) {
-state.score++;
-}
-document.getElementById('nextBtn').classList.remove('hidden');
-}
-document.getElementById('nextBtn').onclick = () => {
-state.currentQuestion++;
-if (state.currentQuestion < state.questions.length) {
-loadQuestion();
-} else {
-showResult();
-}
-};
-function showResult() {
-document.getElementById('finalScore').textContent = ${state.score}/10;
-document.getElementById('resultMessage').textContent = state.score >= 8 ? 'Excellent travail !' : state.score >= 5 ? 'Bon travail, continuez à apprendre !' : 'Continuez à réviser pour améliorer votre score !';
-document.getElementById('resultModal').classList.add('show');
-state.quizScores[state.currentQuiz - 1] = state.score;
-document.getElementById(score-badge-${state.currentQuiz}).textContent = ${state.score}/10;
-updateTotalScore();
-}
-function closeResult() {
-document.getElementById('resultModal').classList.remove('show');
-showPage('quizSelection');
-}
-function reviewMistakes() {
-// Placeholder for review functionality
-alert('Review mistakes functionality to be implemented!');
-closeResult();
-}
-function updateTotalScore() {
-state.totalGlobalScore = state.quizScores.reduce((sum, score) => sum + score, 0);
-document.getElementById('totalScoreText').textContent = state.totalGlobalScore;
-document.getElementById('totalProgress').style.width = ${(state.totalGlobalScore / 200) * 100}%;
-}
-function showTotalScore() {
-document.getElementById('totalScoreModal').classList.add('show');
-}
-function closeTotalScore() {
-document.getElementById('totalScoreModal').classList.remove('show');
-}
-    // Ajoutez ceci à la fin de votre script
-document.querySelectorAll('.level-card').forEach(card => {
-  card.addEventListener('click', function() {
-    const level = this.getAttribute('data-level');
-    selectLevel(level);
+    // DOM Elements
+    const elements = {
+      homePage: document.getElementById('homePage'),
+      quizSelection: document.getElementById('quizSelection'),
+      quizPage: document.getElementById('quizPage'),
+      quizGrid: document.getElementById('quizGrid'),
+      levelTitle: document.getElementById('levelTitle'),
+      quizHeader: document.getElementById('quizHeader'),
+      questionText: document.getElementById('questionText'),
+      ayahText: document.getElementById('ayahText'),
+      optionsContainer: document.getElementById('optionsContainer'),
+      progressText: document.getElementById('progressText'),
+      progressBar: document.getElementById('progressBar'),
+      nextBtn: document.getElementById('nextBtn'),
+      finalScore: document.getElementById('finalScore'),
+      resultMessage: document.getElementById('resultMessage'),
+      totalScoreText: document.getElementById('totalScoreText'),
+      totalProgress: document.getElementById('totalProgress')
+    };
+
+    // Initialize the app
+   // Initialize the app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Generate quiz cards
+  generateQuizCards();
+  
+  // Event listeners for level cards
+  document.querySelectorAll('.level-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const level = card.getAttribute('data-level');
+      selectLevel(level);
+    });
   });
+
+  // Use event delegation for dynamic elements
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('back-to-home')) {
+      goHome();
+    }
+    if (e.target.classList.contains('total-score-btn') || e.target.closest('.total-score-btn')) {
+      showTotalScore();
+    }
+    if (e.target.classList.contains('close-total-score')) {
+      closeTotalScore();
+    }
+    if (e.target.classList.contains('continue-quiz')) {
+      closeResult();
+    }
+    if (e.target.classList.contains('review-mistakes')) {
+      reviewMistakes();
+    }
+  });
+
+  elements.nextBtn.addEventListener('click', nextQuestion);
 });
-</script>
-  </body>
+
+    // Generate quiz cards dynamically
+    function generateQuizCards() {
+      elements.quizGrid.innerHTML = '';
+      for (let i = 1; i <= 20; i++) {
+        const quizCard = document.createElement('div');
+        quizCard.className = 'quiz-card';
+        quizCard.innerHTML = `
+          <div class="quiz-number">Q${i}</div>
+          <div class="quiz-label">QUIZ ${i}</div>
+          <div class="score-badge" id="score-badge-${i}">0/10</div>
+        `;
+        quizCard.addEventListener('click', () => startQuiz(i));
+        elements.quizGrid.appendChild(quizCard);
+      }
+    }
+
+    // Navigation functions
+    function showPage(pageId) {
+      elements.homePage.classList.add('hidden');
+      elements.quizSelection.classList.add('hidden');
+      elements.quizPage.classList.add('hidden');
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    function selectLevel(level) {
+      state.currentLevel = level;
+      elements.levelTitle.textContent = level.toUpperCase().replace(/_/g, ' ');
+      showPage('quizSelection');
+    }
+
+    function goHome() {
+      showPage('homePage');
+    }
+
+    // Quiz functions
+    function startQuiz(quizNumber) {
+      state.currentQuiz = quizNumber;
+      state.currentQuestion = 0;
+      state.score = 0;
+      state.answers = [];
+      state.questions = realQuizData[state.currentLevel][quizNumber - 1];
+      elements.quizHeader.textContent = `Quiz ${quizNumber}`;
+      showPage('quizPage');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const question = state.questions[state.currentQuestion];
+      elements.questionText.textContent = question.question;
+      elements.ayahText.textContent = question.ayah;
+      elements.progressText.textContent = `${state.currentQuestion + 1}/10`;
+      elements.progressBar.style.width = `${(state.currentQuestion + 1) * 10}%`;
+      
+      elements.optionsContainer.innerHTML = '';
+      
+      question.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = option;
+        btn.addEventListener('click', () => selectOption(index));
+        elements.optionsContainer.appendChild(btn);
+      });
+      
+      elements.nextBtn.classList.add('hidden');
+    }
+
+    function selectOption(index) {
+      const question = state.questions[state.currentQuestion];
+      const buttons = document.querySelectorAll('.option-btn');
+      
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === question.answer) {
+          btn.classList.add('correct');
+        } else if (i === index && i !== question.answer) {
+          btn.classList.add('incorrect');
+        }
+      });
+      
+      state.answers.push({ 
+        question: state.currentQuestion, 
+        selected: index, 
+        correct: question.answer 
+      });
+      
+      if (index === question.answer) {
+        state.score++;
+      }
+      
+      elements.nextBtn.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      state.currentQuestion++;
+      if (state.currentQuestion < state.questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      elements.finalScore.textContent = `${state.score}/10`;
+      elements.resultMessage.textContent = 
+        state.score >= 8 ? 'Excellent travail !' : 
+        state.score >= 5 ? 'Bon travail, continuez à apprendre !' : 
+        'Continuez à réviser pour améliorer votre score !';
+      
+      document.getElementById('resultModal').classList.add('show');
+      state.quizScores[state.currentQuiz - 1] = state.score;
+      document.getElementById(`score-badge-${state.currentQuiz}`).textContent = `${state.score}/10`;
+      updateTotalScore();
+    }
+
+    function closeResult() {
+      document.getElementById('resultModal').classList.remove('show');
+      showPage('quizSelection');
+    }
+
+    function reviewMistakes() {
+      // À implémenter selon vos besoins
+      alert('Fonctionnalité de révision des erreurs à implémenter');
+      closeResult();
+    }
+
+    function updateTotalScore() {
+      state.totalGlobalScore = state.quizScores.reduce((sum, score) => sum + score, 0);
+      elements.totalScoreText.textContent = state.totalGlobalScore;
+      elements.totalProgress.style.width = `${(state.totalGlobalScore / 200) * 100}%`;
+    }
+
+    function showTotalScore() {
+      document.getElementById('totalScoreModal').classList.add('show');
+    }
+
+    function closeTotalScore() {
+      document.getElementById('totalScoreModal').classList.remove('show');
+    }
+
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
 </html>
