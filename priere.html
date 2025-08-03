@@ -7,17 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-    --primary: #1f4a49;       /* Vert foncé islamique (votre fond) */
-    --secondary: #2D9596;     /* Turquoise moyen */
-    --accent: #F9B572;        /* Or clair (remplace l'or vif) */
-    --light: #f5f5f5;         /* Blanc cassé */
-    --dark: #333;             /* Noir doux */
-    --text: #ECF4D6;          /* Texte clair (vert très pâle) */
-    --bg: #1f4a49;            /* Fond principal */
-    --card-bg: rgba(255, 255, 255, 0.15); /* Cartes semi-transparentes */
-    --active-color: #9AD0C2;  /* Turquoise clair pour les éléments actifs */
-    --active-bg: rgba(154, 208, 194, 0.2);
-}
+            --primary: #073332;       /* Nouveau vert foncé */
+            --secondary: #0A4D44;      /* Vert émeraude foncé */
+            --accent: #05C7A0;         /* Turquoise vif */
+            --light-accent: #7FD8C6;    /* Turquoise clair */
+            --text: #E0F2F0;           /* Texte clair */
+            --light-text: #FFFFFF;     /* Blanc pur */
+            --dark-text: #02201F;      /* Texte foncé */
+            --card-bg: rgba(10, 77, 68, 0.4); /* Fond des cartes */
+            --active-color: #05C7A0;    /* Couleur pour éléments actifs */
+            --active-bg: rgba(5, 199, 160, 0.2);
+            --prayer-icon-bg: rgba(255, 255, 255, 0.15);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
 
         * {
             margin: 0;
@@ -27,7 +29,7 @@
         }
 
         body {
-            background-color: #1f4a49;
+            background-color: var(--primary);
             color: var(--text);
             line-height: 1.6;
             background-image: url('https://images.unsplash.com/photo-1542816417-0983675acc57?ixlib=rb-1.2.1&auto=format&fit=crop&w=1480&q=80');
@@ -44,7 +46,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);  /* Réduisez l'opacité (0.4 à 0.2 par exemple) */
+            background-color: rgba(7, 51, 50, 0.85);  /* Couche semi-transparente plus foncée */
             z-index: -1;
         }
 
@@ -57,7 +59,6 @@
         header {
             text-align: center;
             padding: 15px 0;
-            color: white;
             margin-bottom: 20px;
         }
 
@@ -65,17 +66,19 @@
             font-size: 1.8rem;
             margin-bottom: 5px;
             font-weight: 600;
+            color: var(--light-text);
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         header p {
             font-size: 0.9rem;
             opacity: 0.9;
+            color: var(--light-accent);
         }
 
         .location-bar {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
+            background-color: var(--card-bg);
+            color: var(--light-text);
             border-radius: 10px;
             padding: 10px 15px;
             margin-bottom: 15px;
@@ -83,6 +86,8 @@
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .location-info {
@@ -102,14 +107,15 @@
         }
 
         .time-date-bar {
-            background-color: var(--primary);
-            color: white;
+            background-color: var(--secondary);
+            color: var(--light-text);
             border-radius: 10px;
             padding: 12px;
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: var(--shadow);
         }
 
         .time-display {
@@ -124,23 +130,22 @@
 
         .hijri-date {
             font-weight: 600;
+            color: var(--light-accent);
         }
 
         .next-prayer {
-    background-color: var(--card-bg);
-    border-radius: 15px;
-    padding: 15px;
-    margin-bottom: 15px;
-    text-align: center;
-    box-shadow: 
-        0 4px 20px rgba(0, 0, 0, 0.25),   /* Ombre externe douce */
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset; /* Bordure interne subtile */
-    backdrop-filter: blur(8px); /* Effet de flou pour le verre (optionnel) */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordure légère */
-}
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
         .next-prayer h2 {
-            color: var(--primary);
+            color: var(--light-text);
             margin-bottom: 10px;
             font-size: 1.1rem;
             display: flex;
@@ -150,6 +155,7 @@
 
         .next-prayer h2 i {
             margin-left: 8px;
+            color: var(--accent);
         }
 
         .next-prayer-content {
@@ -158,7 +164,7 @@
 
         .next-prayer-name {
             font-size: 1.3rem;
-            color: var(--active-color);
+            color: var(--accent);
             font-weight: 700;
             margin-bottom: 5px;
         }
@@ -166,13 +172,13 @@
         .next-prayer-time {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--dark);
+            color: var(--light-text);
             margin-bottom: 10px;
         }
 
         .countdown {
             font-size: 1.1rem;
-            color: var(--primary);
+            color: var(--light-accent);
             font-weight: 600;
             margin-bottom: 10px;
         }
@@ -180,7 +186,7 @@
         .progress-container {
             width: 100%;
             height: 6px;
-            background-color: #e0e0e0;
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
             margin-top: 10px;
             overflow: hidden;
@@ -188,7 +194,7 @@
 
         .progress-bar {
             height: 100%;
-            background-color: var(--active-color);
+            background: linear-gradient(90deg, var(--accent), var(--light-accent));
             width: 0%;
             transition: width 0.5s linear;
         }
@@ -200,22 +206,24 @@
             margin-bottom: 15px;
         }
 
-       .prayer-card {
-    background-color: rgba(255, 255, 255, 0.15); /* Fond semi-transparent clair */
-    border-radius: 12px;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    color: white; /* Texte en blanc */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordure subtile */
-}
+        .prayer-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            color: var(--light-text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
 
         .prayer-card.active {
             background-color: var(--active-bg);
             border-right: 4px solid var(--active-color);
+            transform: translateY(-2px);
         }
 
         .prayer-info {
@@ -226,25 +234,25 @@
         .prayer-icon {
             width: 40px;
             height: 40px;
-    background-color: rgba(255, 255, 255, 0.2) !important; /* Icône plus visible */
+            background-color: var(--prayer-icon-bg);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             margin-left: 12px;
-            color: var(--primary);
+            color: var(--light-text);
             font-size: 1.1rem;
         }
 
         .prayer-name {
             font-weight: 600;
-    color: white !important; /* Force le texte en blanc */
+            color: var(--light-text);
             margin-bottom: 3px;
         }
 
         .prayer-remaining {
             font-size: 0.8rem;
-            color: var(--primary);
+            color: var(--light-accent);
         }
 
         .prayer-time {
@@ -254,21 +262,85 @@
         .prayer-time-value {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--dark);
+            color: var(--light-text);
         }
 
         .prayer-time-remaining {
             font-size: 0.8rem;
-            color: #666;
+            color: var(--light-accent);
             text-align: left;
         }
 
         footer {
             text-align: center;
             padding: 15px;
-            color: white;
+            color: var(--light-accent);
             font-size: 0.8rem;
             opacity: 0.8;
+        }
+
+        /* Modal pour la demande de localisation */
+        .location-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content h2 {
+            color: var(--light-text);
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: var(--light-accent);
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-allow {
+            background-color: var(--accent);
+            color: var(--dark-text);
+        }
+
+        .btn-deny {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         /* Media Queries pour les écrans plus larges */
@@ -290,6 +362,22 @@
     </style>
 </head>
 <body>
+    <!-- Modal de demande de localisation -->
+    <div class="location-modal" id="location-modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-map-marker-alt"></i> Autorisation de localisation</h2>
+            <p>Pour afficher les heures de prière précises pour votre position, nous avons besoin de votre autorisation pour accéder à votre localisation.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-allow" id="allow-location">
+                    <i class="fas fa-check"></i> Autoriser
+                </button>
+                <button class="modal-btn btn-deny" id="deny-location">
+                    <i class="fas fa-times"></i> Refuser
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1><i class="fas fa-mosque"></i> Heures de prières</h1>
@@ -311,6 +399,7 @@
             <div class="time-display" id="current-time">--:--:--</div>
             <div class="date-display">
                 <div id="gregorian-date">--/--/----</div>
+                <div class="hijri-date" id="hijri-date">--/--/---- AH</div>
             </div>
         </div>
 
@@ -339,12 +428,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Configuration
             const prayerNames = {
-    Fajr: { name: 'Fajr', icon: 'fa-sun', color: '#9AD0C2' }, // Turquoise clair
-    Dhuhr: { name: 'Dhuhr', icon: 'fa-sun', color: '#F9B572' }, // Or clair
-    Asr: { name: 'Asr', icon: 'fa-sun', color: '#2D9596' }, // Turquoise moyen
-    Maghrib: { name: 'Maghrib', icon: 'fa-moon', color: '#ECF4D6' }, // Blanc cassé
-    Isha: { name: 'Isha', icon: 'fa-moon', color: '#FFFFFF' } // Blanc pur
-};
+                Fajr: { name: 'Fajr', icon: 'fa-sun', color: '#7FD8C6' },
+                Dhuhr: { name: 'Dhuhr', icon: 'fa-sun', color: '#05C7A0' },
+                Asr: { name: 'Asr', icon: 'fa-sun', color: '#0A9D7F' },
+                Maghrib: { name: 'Maghrib', icon: 'fa-moon', color: '#E0F2F0' },
+                Isha: { name: 'Isha', icon: 'fa-moon', color: '#FFFFFF' }
+            };
 
             // Éléments du DOM
             const currentTimeElement = document.getElementById('current-time');
@@ -358,6 +447,9 @@
             const countryElement = document.getElementById('country');
             const temperatureElement = document.getElementById('temperature');
             const prayerTimesContainer = document.getElementById('prayer-times-container');
+            const locationModal = document.getElementById('location-modal');
+            const allowLocationBtn = document.getElementById('allow-location');
+            const denyLocationBtn = document.getElementById('deny-location');
 
             // Variables d'état
             let prayerTimes = {};
@@ -365,14 +457,37 @@
             let nextPrayer = null;
             let countdownInterval = null;
             let currentTimeInterval = null;
+            let userRespondedToLocation = false;
+
+            // Afficher la modal de localisation au chargement
+            showLocationModal();
 
             // Initialisation
-            init();
+            updateCurrentTimeAndDate();
+            currentTimeInterval = setInterval(updateCurrentTimeAndDate, 1000);
+            
+            // Écouteurs d'événements pour la modal
+            allowLocationBtn.addEventListener('click', function() {
+                hideLocationModal();
+                getUserLocation();
+            });
 
-            async function init() {
-                updateCurrentTimeAndDate();
-                currentTimeInterval = setInterval(updateCurrentTimeAndDate, 1000);
-                
+            denyLocationBtn.addEventListener('click', function() {
+                hideLocationModal();
+                // Utiliser des coordonnées par défaut (La Mecque)
+                useDefaultLocation();
+            });
+
+            function showLocationModal() {
+                locationModal.style.display = 'flex';
+            }
+
+            function hideLocationModal() {
+                locationModal.style.display = 'none';
+                userRespondedToLocation = true;
+            }
+
+            async function getUserLocation() {
                 try {
                     const position = await getCurrentPosition();
                     await Promise.all([
@@ -382,23 +497,35 @@
                         getHijriDate()
                     ]);
                 } catch (error) {
-                    console.error("Erreur d'initialisation:", error);
-                    // Utiliser des coordonnées par défaut (La Mecque)
-                    const meccaLat = 21.3891;
-                    const meccaLng = 39.8579;
-                    await Promise.all([
-                        getLocationInfo(meccaLat, meccaLng),
-                        getWeather(meccaLat, meccaLng),
-                        getPrayerTimes(meccaLat, meccaLng),
-                        getHijriDate()
-                    ]);
+                    console.error("Erreur de localisation:", error);
+                    useDefaultLocation();
                 }
+            }
+
+            function useDefaultLocation() {
+                // Coordonnées par défaut (La Mecque)
+                const meccaLat = 21.3891;
+                const meccaLng = 39.8579;
+                
+                // Mettre à jour l'interface pour indiquer la localisation par défaut
+                cityElement.textContent = "La Mecque";
+                countryElement.textContent = "Arabie Saoudite";
+                
+                Promise.all([
+                    getWeather(meccaLat, meccaLng),
+                    getPrayerTimes(meccaLat, meccaLng),
+                    getHijriDate()
+                ]);
             }
 
             function getCurrentPosition() {
                 return new Promise((resolve, reject) => {
                     if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(resolve, reject);
+                        navigator.geolocation.getCurrentPosition(
+                            resolve, 
+                            reject,
+                            { enableHighAccuracy: true, timeout: 10000 }
+                        );
                     } else {
                         reject(new Error("La géolocalisation n'est pas supportée"));
                     }
@@ -609,7 +736,9 @@
                 
                 if (remainingSeconds <= 0) {
                     // Recharger les heures de prière
-                    getPrayerTimes(currentLocation.latitude, currentLocation.longitude);
+                    if (currentLocation.latitude && currentLocation.longitude) {
+                        getPrayerTimes(currentLocation.latitude, currentLocation.longitude);
+                    }
                     return;
                 }
                 
