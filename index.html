@@ -71,27 +71,27 @@
     <i class="fas fa-calendar-alt icon"></i>
     <span class="item-text">Événements</span>
   </div>
-  <div class="item circle-item" onclick="window.location.href='quibla.html'">
+  <div class="item circle-item" onclick="showPage('qibla')">
     <i class="fas fa-compass icon"></i>
     <span class="item-text">Quibla</span>
   </div>
-  <div class="item circle-item" onclick="window.location.href='quizz.html'">
+  <div class="item circle-item" onclick="showPage('quiz')">
     <i class="fas fa-question-circle icon"></i>
     <span class="item-text">Quiz</span>
   </div>
-  <div class="item circle-item" onclick="window.location.href='tasbih.html'">
-    <i class="fas fa-praying-hands icon"></i>
+  <div class="item circle-item" onclick="showPage('tasbih')">
+    <i class="fas fa-circle-notch icon"></i>
     <span class="item-text">Tasbih</span>
   </div>
 
   <!-- 6 Boutons RECTANGULAIRES en bas -->
-  <div class="item" onclick="window.location.href='priere.html'">
+ <div class="item" onclick="showPage('priere')">
     <span class="item-text">Prière</span>
-    <i class="fas fa-praying-hands icon"></i>
+    <i class="fas fa-person-praying icon"></i> 
   </div>
   <div class="item" onclick="showPage('coran')">
     <span class="item-text">Coran</span>
-    <i class="fas fa-book icon"></i>
+    <i class="fas fa-quran icon"></i>
   </div>
   <div class="item" onclick="showPage('hadith')">
     <span class="item-text">Hadith</span>
@@ -137,6 +137,67 @@
     </div>
 </div>
   
+</section>
+    
+    
+    <!-- Page Qibla -->
+<section id="qibla" class="page">
+  <div class="top-nav-bar">
+    <div class="title-container">
+      <h1>ANSAR ALMOUYASSAR</h1>
+      <p>Association des ressortissants de l'institut coranique Al Mouyassar</p>
+    </div>
+    <img src="images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+  </div>
+  <iframe src="qibla.html" 
+          style="width:100%; height:100vh; border:none;"
+          title="Direction Qibla">
+  </iframe>
+</section>
+
+<!-- Page Tasbih -->
+<section id="tasbih" class="page">
+  <div class="top-nav-bar">
+    <div class="title-container">
+      <h1>ANSAR ALMOUYASSAR</h1>
+      <p>Association des ressortissants de l'institut coranique Al Mouyassar</p>
+    </div>
+    <img src="images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+  </div>
+  <iframe src="tasbih.html" 
+          style="width:100%; height:100vh; border:none;"
+          title="Compteur de Tasbih">
+  </iframe>
+</section>
+
+<!-- Page Prière -->
+<section id="priere" class="page">
+  <div class="top-nav-bar">
+    <div class="title-container">
+      <h1>ANSAR ALMOUYASSAR</h1>
+      <p>Association des ressortissants de l'institut coranique Al Mouyassar</p>
+    </div>
+    <img src="images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+  </div>
+  <iframe src="priere.html" 
+          style="width:100%; height:100vh; border:none;"
+          title="Horaires de Prière">
+  </iframe>
+</section>
+
+<!-- Page Quiz -->
+<section id="quiz" class="page">
+  <div class="top-nav-bar">
+    <div class="title-container">
+      <h1>ANSAR ALMOUYASSAR</h1>
+      <p>Association des ressortissants de l'institut coranique Al Mouyassar</p>
+    </div>
+    <img src="images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+  </div>
+  <iframe src="quiz.html" 
+          style="width:100%; height:100vh; border:none;"
+          title="Quiz Islamique">
+  </iframe>
 </section>
     
     <!-- Page des membres -->
