@@ -10,10 +10,10 @@
   <style>
     /* Votre CSS reste inchangé */
     :root {
-      --primary: #166534;
-      --primary-dark: #065f46;
-      --secondary: #0891b2;
-      --accent: #d97706;
+       --primary: #0a4a48; /* Une teinte légèrement plus claire que le fond */
+  --primary-dark: #073332; /* Votre couleur exacte */
+  --secondary: #0891b2;
+  --accent: #d97706;
       --light: #f8fafc;
       --dark: #0f172a;
       --gray: #64748b;
@@ -24,7 +24,7 @@
     
     body {
       font-family: 'Playfair Display', serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      background: linear-gradient(135deg, #073332 0%, #073332 50%, #073332 100%);
       color: var(--light);
       min-height: 100vh;
       margin: 0;
@@ -40,11 +40,11 @@
       text-align: right;
     }
     
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+   .container {
+  max-width: 1600px; /* Augmentation de 1400px à 1600px */
+  margin: 0 auto;
+  padding: 2rem 1rem; /* Réduction du padding latéral */
+}
     
     .text-gold {
       color: #d97706;
@@ -55,7 +55,7 @@
     }
     
     .bg-glass {
-      background: rgba(15, 23, 42, 0.8);
+  background: rgba(7, 51, 50, 0.7); /* Adapté à la nouvelle couleur */
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1.5rem;
@@ -63,7 +63,7 @@
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, #0a4a48 0%, #073332 100%);
       color: white;
       font-weight: 600;
       padding: 0.75rem 1.5rem;
@@ -80,7 +80,7 @@
     }
     
     .level-card {
-      background: rgba(30, 41, 59, 0.7);
+  background: rgba(7, 51, 50, 0.7); /* 70% opacity de la nouvelle couleur */
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1.25rem;
       padding: 2rem;
@@ -129,7 +129,7 @@
     }
     
     .quiz-card {
-      background: rgba(30, 41, 59, 0.7);
+  background: rgba(7, 51, 50, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1rem;
       padding: 1.5rem;
@@ -177,7 +177,7 @@
     }
     
     .question-container {
-      background: rgba(30, 41, 59, 0.8);
+  background: #1f4a49; /* Nouvelle couleur */
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1.25rem;
       padding: 2rem;
@@ -186,14 +186,20 @@
     }
     
     .ayah-display {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(217, 119, 6, 0.3);
-      border-radius: 1rem;
-      padding: 2rem;
-      margin: 1.5rem 0;
-      box-shadow: inset 0 0 15px rgba(217, 119, 6, 0.2);
-    }
-    
+  background: #1f4a49; /* Nouvelle couleur */
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 1.5rem 0;
+  box-shadow: inset 0 0 15px rgba(217, 119, 6, 0.2);
+}
+    #questionText {
+  font-size: 1.4rem; /* Augmentation de ~40% (anciennement ~1rem) */
+  line-height: 1.6; /* Meilleure lisibilité */
+  font-weight: 600; /* Légèrement plus gras */
+  color: #f0f0f0; /* Couleur claire pour meilleur contraste */
+  margin-bottom: 1.5rem;
+}
     .options-container {
       display: flex;
       flex-direction: column;
@@ -202,19 +208,19 @@
     }
     
     .option-btn {
-      background: rgba(30, 41, 59, 0.8);
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      padding: 1.25rem 1.5rem;
-      color: white;
-      text-align: right;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Scheherazade New', 'Amiri', serif;
-      font-size: 1.4rem;
-      line-height: 2rem;
-      direction: rtl;
-    }
+  background: #1f4a49; /* Nouvelle couleur */
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  color: white;
+  text-align: right;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Scheherazade New', 'Amiri', serif;
+  font-size: 1.2rem;
+  line-height: 2rem;
+  direction: rtl;
+}
     
     .option-btn:hover {
       border-color: var(--accent);
@@ -234,33 +240,31 @@
     }
     
     .progress-container {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      padding: 1rem;
-      margin: 2rem 0;
-    }
-    
+  background: transparent; /* Supprime le fond */
+  border: none; /* Supprime la bordure */
+  padding: 1rem 0; /* Garde un peu d'espace vertical */
+  margin: 2rem 0;
+}
     .progress-bar {
-      height: 12px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      overflow: hidden;
-      margin: 0.5rem 0;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-      border-radius: 6px;
-      transition: width 0.3s ease;
-    }
+  height: 8px; /* Rend la barre un peu plus fine */
+  background: rgba(255, 255, 255, 0.1); /* Fond très discret */
+  border-radius: 4px;
+  overflow: hidden;
+}
+ 
+.progress-fill {
+  height: 100%;
+  background: #10b981; /* Vert clair vif */
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); /* Légère lueur pour plus de visibilité */
+}
     
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(7, 51, 50, 0.95); /* Vert foncé semi-transparent (#073332) */
+  backdrop-filter: blur(8px); /* Effet flou */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -276,7 +280,7 @@
     }
     
     .modal-content {
-      background: rgba(30, 41, 59, 0.95);
+      background: #0a4a48;
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1.5rem;
       padding: 2.5rem;
@@ -398,7 +402,7 @@
     <div class="modal-content bg-glass">
       <h3 class="text-2xl font-bold text-gold mb-4">🏆 Votre Score Global</h3>
       <div class="score-display" id="totalScoreText">0</div>
-      <p class="text-gray-300 mb-6">Questions correctes sur 1000</p>
+<p class="text-gray-300 mb-6">Questions correctes sur 100</p>
       <div class="progress-container">
         <div class="progress-bar">
           <div class="progress-fill" id="totalProgress" style="width: 0%"></div>
@@ -480,9 +484,7 @@
       <p class="text-gray-300 mb-6" id="resultMessage">Très bon travail ! Continuez ainsi.</p>
       
       <div class="flex flex-col sm:flex-row justify-center">
-        <button class="btn-action btn-review flex items-center justify-center review-mistakes">
-          <i class="fas fa-book mr-2"></i> Revoir les erreurs
-        </button>
+        
         <button class="btn-action btn-continue flex items-center justify-center continue-quiz">
           <i class="fas fa-play mr-2"></i> Continuer
         </button>
@@ -1310,13 +1312,13 @@ document.addEventListener('DOMContentLoaded', () => {
       elements.quizSelection.classList.add('hidden');
       elements.quizPage.classList.add('hidden');
       document.getElementById(pageId).classList.remove('hidden');
-    }
+    } 
 
-    function selectLevel(level) {
-      state.currentLevel = level;
-      elements.levelTitle.textContent = level.toUpperCase().replace(/_/g, ' ');
-      showPage('quizSelection');
-    }
+   function selectLevel(level) {
+  state.currentLevel = level;
+  // Suppression de la ligne qui affiche le titre
+  showPage('quizSelection');
+}
 
     function goHome() {
       showPage('homePage');
@@ -1414,10 +1416,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateTotalScore() {
-      state.totalGlobalScore = state.quizScores.reduce((sum, score) => sum + score, 0);
-      elements.totalScoreText.textContent = state.totalGlobalScore;
-      elements.totalProgress.style.width = `${(state.totalGlobalScore / 200) * 100}%`;
-    }
+  state.totalGlobalScore = state.quizScores.reduce((sum, score) => sum + score, 0);
+  elements.totalScoreText.textContent = state.totalGlobalScore;
+  // Changement ici : diviser par 100 au lieu de 200 (car 20 quiz × 10 questions = 200 points max)
+  elements.totalProgress.style.width = `${(state.totalGlobalScore / 100) * 100}%`;
+}
 
     function showTotalScore() {
       document.getElementById('totalScoreModal').classList.add('show');
