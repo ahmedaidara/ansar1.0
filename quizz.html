@@ -1,0 +1,2700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Coranique - Testez votre niveau du coran</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #166534;
+      --primary-dark: #065f46;
+      --secondary: #0891b2;
+      --accent: #d97706;
+      --light: #f8fafc;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
+    }
+    
+    body {
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      color: var(--light);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .font-arabic {
+      font-family: 'Scheherazade New', 'Amiri', 'Times New Roman', serif;
+      font-size: 1.8rem;
+      line-height: 3.2rem;
+      font-weight: 700;
+      direction: rtl;
+      text-align: right;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .text-gold {
+      color: #d97706;
+    }
+    
+    .text-emerald {
+      color: #059669;
+    }
+    
+    .bg-glass {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(22, 101, 52, 0.4);
+    }
+    
+    .level-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .level-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent, rgba(22, 101, 52, 0.1));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .level-card:hover::before {
+      opacity: 1;
+    }
+    
+    .level-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border-color: rgba(22, 101, 52, 0.5);
+    }
+    
+    .level-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+    
+    .level-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      line-height: 1.4;
+    }
+    
+    .quiz-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .quiz-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(22, 101, 52, 0.5);
+    }
+    
+    .quiz-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .quiz-label {
+      text-align: center;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .score-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(135deg, var(--success) 0%, #047857 100%);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4);
+    }
+    
+    .question-container {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .ayah-display {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      box-shadow: inset 0 0 15px rgba(217, 119, 6, 0.2);
+    }
+    
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .option-btn {
+      background: rgba(30, 41, 59, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.25rem 1.5rem;
+      color: white;
+      text-align: right;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Scheherazade New', 'Amiri', serif;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      direction: rtl;
+    }
+    
+    .option-btn:hover {
+      border-color: var(--accent);
+      background: rgba(217, 119, 6, 0.1);
+    }
+    
+    .option-btn.correct {
+      border-color: var(--success);
+      background: rgba(5, 150, 105, 0.2);
+      color: #10b981;
+    }
+    
+    .option-btn.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.2);
+      color: #ef4444;
+    }
+    
+    .progress-container {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .progress-bar {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+    
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .modal-content {
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(217, 119, 6, 0.3);
+    }
+    
+    .result-icon {
+      font-size: 4rem;
+      margin: 1rem auto;
+    }
+    
+    .score-display {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--success);
+      margin: 1rem 0;
+    }
+    
+    .btn-action {
+      padding: 0.75rem 2rem;
+      margin: 0.5rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-review {
+      background: linear-gradient(135deg, var(--secondary) 0%, #0e7490 100%);
+      color: white;
+    }
+    
+    .btn-continue {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+    }
+    
+    .total-score-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(22, 101, 52, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 1000;
+    }
+    
+    .total-score-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .home-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #d97706, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .home-subtitle {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 1rem 0 3rem;
+    }
+    
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .grid-20 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+    
+    @media (max-width: 768px) {
+      .home-title {
+        font-size: 2.5rem;
+      }
+      
+      .font-arabic {
+        font-size: 1.4rem;
+        line-height: 2.5rem;
+      }
+      
+      .quiz-number {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased">
+  <!-- Total Score Button -->
+  <div class="total-score-btn" onclick="showTotalScore()">
+    <i class="fas fa-crown"></i>
+  </div>
+
+  <!-- Total Score Modal -->
+  <div id="totalScoreModal" class="modal">
+    <div class="modal-content bg-glass">
+      <h3 class="text-2xl font-bold text-gold mb-4">🏆 Votre Score Global</h3>
+      <div class="score-display" id="totalScoreText">0</div>
+      <p class="text-gray-300 mb-6">Questions correctes sur 1000</p>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="totalProgress" style="width: 0%"></div>
+        </div>
+      </div>
+      <button onclick="closeTotalScore()" class="btn-primary w-full mt-4">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Home Page -->
+  <div id="homePage" class="container">
+    <div class="text-center mb-12">
+      <h1 class="home-title">Quiz Coranique</h1>
+      <p class="home-subtitle">Testez votre niveau du coran</p>
+    </div>
+
+    <div class="level-card" data-level="juzz_amma">
+  <i class="fas fa-book-open level-icon"></i>
+  <h2 class="level-title">Juzz AMMA</h2>
+</div>
+<!-- Répétez pour les autres cartes avec les valeurs appropriées -->
+      <div class="level-card" onclick="selectLevel('juzz_kad')">
+        <i class="fas fa-pray level-icon"></i>
+        <h2 class="level-title">Juzz KAD SAMI'ALLAHOU</h2>
+      </div>
+      <div class="level-card" onclick="selectLevel('juzz_yassin')">
+        <i class="fas fa-moon level-icon"></i>
+        <h2 class="level-title">Juzz YASSIN</h2>
+      </div>
+      <div class="level-card" onclick="selectLevel('juzz_kahfi')">
+        <i class="fas fa-mountain level-icon"></i>
+        <h2 class="level-title">Juzz KAHFI</h2>
+      </div>
+      <div class="level-card" onclick="selectLevel('hafiz')">
+        <i class="fas fa-crown level-icon"></i>
+        <h2 class="level-title">JE SUIS HAFIZ</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Selection Page -->
+  <div id="quizSelection" class="hidden container">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+      <h2 class="text-3xl font-bold text-gold mb-4 sm:mb-0" id="levelTitle">Juzz AMMA</h2>
+      <button onclick="goHome()" class="btn-primary flex items-center">
+        <i class="fas fa-arrow-left mr-2"></i> Retour
+      </button>
+    </div>
+
+    <div class="grid-20">
+      <!-- 20 Quiz Cards -->
+      <script>
+        for (let i = 1; i <= 20; i++) {
+          document.write(`
+            <div class="quiz-card" onclick="startQuiz(${i})">
+              <div class="quiz-number">Q${i}</div>
+              <div class="quiz-label">QUIZ ${i}</div>
+              <div class="score-badge" id="score-badge-${i}">0/10</div>
+            </div>
+          `);
+        }
+      </script>
+    </div>
+  </div>
+
+  <!-- Quiz Page -->
+  <div id="quizPage" class="hidden container">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+      <h2 class="text-2xl font-bold text-gold" id="quizHeader">Quiz 1</h2>
+      <div class="text-sm text-gray-300" id="progressText">1/10</div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressBar" style="width: 10%"></div>
+      </div>
+    </div>
+
+    <div class="question-container bg-glass">
+      <p class="text-lg text-gray-200 mb-4" id="questionText">Chargement de la question...</p>
+      
+      <div class="ayah-display">
+        <div class="font-arabic" id="ayahText"></div>
+      </div>
+
+      <div class="options-container" id="optionsContainer">
+        <!-- Options will be inserted here -->
+      </div>
+    </div>
+
+    <button id="nextBtn" class="btn-primary w-full hidden mt-6 py-4 text-lg">
+      <i class="fas fa-arrow-right mr-2"></i> Question suivante
+    </button>
+  </div>
+
+  <!-- Result Modal -->
+  <div id="resultModal" class="modal">
+    <div class="modal-content bg-glass">
+      <i class="fas fa-trophy result-icon text-gold"></i>
+      <h3 class="text-2xl font-bold text-gold mb-2">Félicitations !</h3>
+      <p class="text-gray-300 mb-4">Vous avez terminé ce quiz</p>
+      <div class="score-display" id="finalScore">8/10</div>
+      <p class="text-gray-300 mb-6" id="resultMessage">Très bon travail ! Continuez ainsi.</p>
+      
+      <div class="flex flex-col sm:flex-row justify-center">
+        <button onclick="reviewMistakes()" class="btn-action btn-review flex items-center justify-center">
+          <i class="fas fa-book mr-2"></i> Revoir les erreurs
+        </button>
+        <button onclick="closeResult()" class="btn-action btn-continue flex items-center justify-center">
+          <i class="fas fa-play mr-2"></i> Continuer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global State
+    const state = {
+      currentLevel: '',
+      currentQuiz: 0,
+      currentQuestion: 0,
+      score: 0,
+      answers: [],
+      questions: [],
+      quizScores: Array(20).fill(0),
+      totalGlobalScore: 0
+    };
+
+    // Real Quranic Data - Comprehensive and authentic
+    const realQuizData = {
+      juzz_amma: [
+        // Quiz 1
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset suivant ?',
+            ayah: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+            options: [
+              'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+              'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
+              'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "لِمَنْ أَحَبَّ الْعَاجِلَةِ" ?',
+            ayah: '',
+            options: ['Al-Muddaththir', 'An-Naba', 'Abasa', 'At-Takwir'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَاللَّيْلِ إِذَا يَسْرِ..."',
+            ayah: 'وَاللَّيْلِ إِذَا يَسْرِ',
+            options: [
+              'وَالنَّهَارِ إِذَا تَجَلَّى',
+              'وَمَا خَلَقَ الذَّكَرَ وَالْأُنْثَى',
+              'سَلَامٌ هِيَ حَتَّىٰ مَطْلَعِ الْفَجْرِ',
+              'وَالصُّبْحِ إِذَا تَنَفَّسَ'
+            ],
+            answer: 3
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الناس" est-il mentionné dans la sourate An-Nas ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "قُلْ هُوَ اللَّهُ أَحَدٌ" ?',
+            ayah: 'قُلْ هُوَ اللَّهُ أَحَدٌ',
+            options: [
+              'اللَّهُ الصَّمَدُ',
+              'لَمْ يَلِدْ وَلَمْ يُولَدْ',
+              'وَلَا أَحَدٌ كَمِثْلِهِ',
+              'لَا يَنْزِلُ الْغَيْثَ إِلَّا هُوَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "لَيْسَ كَمِثْلِهِ شَيْءٌ" ?',
+            ayah: '',
+            options: ['Ash-Shura', 'Al-Ikhlas', 'Al-Furqan', 'Al-Hadid'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "قُلْ أَعُوذُ بِرَبِّ النَّاسِ..."',
+            ayah: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ',
+            options: [
+              'مَلِكِ النَّاسِ',
+              'إِلَٰهِ النَّاسِ',
+              'رَبِّ الْعَالَمِينَ',
+              'الرَّحْمَٰنِ الرَّحِيمِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du verset : "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا" ?',
+            ayah: '',
+            options: [
+              'Allah ne charge personne au-delà de ses capacités',
+              'Allah punit tout le monde selon son mérite',
+              'Allah aide seulement ceux qui le demandent',
+              'Allah connaît tout ce qui est dans les cœurs'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ" ?',
+            ayah: 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ',
+            options: [
+              'فَصَلِّ لِرَبِّكَ وَانْحَرْ',
+              'سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ',
+              'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'فَإِذَا فَرَغْتَ فَانْصَبْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Fatiha ?',
+            ayah: '',
+            options: ['Juz\' 1', 'Juz\' 2', 'Juz\' 30', 'Juz\' 15'],
+            answer: 2
+          }
+        ],
+        // Quiz 2
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَالْعَصْرِ" ?',
+            ayah: 'وَالْعَصْرِ',
+            options: [
+              'إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+              'وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ',
+              'وَاللَّيْلِ إِذَا يَسْرِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'At-Taghabun', 'Al-Anfal', 'Al-Ahzab'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "فَإِذَا فَرَغْتَ فَانْصَبْ..."',
+            ayah: 'فَإِذَا فَرَغْتَ فَانْصَبْ',
+            options: [
+              'وَإِلَىٰ رَبِّكَ فَارْغَبْ',
+              'وَاصْنَعِ الْفُلْكَ بِأَعْيُنِنَا',
+              'وَلَا تَمُدَّنَّ عَيْنَيْكَ',
+              'وَاصْبِرْ لِحُكْمِ رَبِّكَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الرحمن" est-il mentionné dans la sourate Ar-Rahman ?',
+            ayah: '',
+            options: ['31 fois', '55 fois', '78 fois', '99 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى" ?',
+            ayah: 'سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى',
+            options: [
+              'الَّذِي خَلَقَ فَسَوَّى',
+              'الَّذِي يُؤْتِي الزَّكَاةَ وَهُوَ يَتِيمٌ',
+              'الَّذِي يَذْكُرُ اسْمَ رَبِّهِ فَيُصَلِّي',
+              'الَّذِي هُوَ يُقَاتِلُ فِي سَبِيلِ اللَّهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَالسَّمَاءِ وَمَا بَنَاهَا" ?',
+            ayah: '',
+            options: ['Ash-Shams', 'Al-Layl', 'Ad-Duha', 'Al-Fajr'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَالشَّمْسِ وَضُحَاهَا..."',
+            ayah: 'وَالشَّمْسِ وَضُحَاهَا',
+            options: [
+              'وَالْقَمَرِ إِذَا تَلَاهَا',
+              'وَالنَّهَارِ إِذَا جَلَّاهَا',
+              'وَاللَّيْلِ إِذَا يَغْشَاهَا',
+              'وَالسَّمَاءِ وَمَا بَنَاهَا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du verset : "وَمَا تِلْكَ بِيَمِينِكَ يَا مُوسَىٰ" ?',
+            ayah: '',
+            options: [
+              'Et qu\'est-ce qui est à ta droite, ô Moïse ?',
+              'Et pourquoi tiens-tu cela, ô Moïse ?',
+              'Et que fais-tu avec cela, ô Moïse ?',
+              'Et d\'où viens-tu, ô Moïse ?'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَالضُّحَىٰ" ?',
+            ayah: 'وَالضُّحَىٰ',
+            options: [
+              'وَاللَّيْلِ إِذَا سَجَىٰ',
+              'وَالنَّهَارِ إِذَا تَجَلَّىٰ',
+              'وَالسَّمَاءِ وَمَا بَنَاهَا',
+              'وَالشَّمْسِ وَضُحَاهَا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Inshirah ?',
+            ayah: '',
+            options: ['Juz\' 30', 'Juz\' 29', 'Juz\' 28', 'Juz\' 27'],
+            answer: 0
+          }
+        ],
+        // Quiz 3
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ" ?',
+            ayah: 'أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ',
+            options: [
+              'وَوَضَعْنَا عَنكَ وِزْرَكَ',
+              'وَرَفَعْنَا لَكَ ذِكْرَكَ',
+              'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',
+              'وَكُنْتَ بِمَا يَعْمَلُونَ خَبِيرًا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ" ?',
+            ayah: '',
+            options: ['Ad-Duha', 'Al-Inshirah', 'Al-Fil', 'Al-Quraysh'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا..."',
+            ayah: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',
+            options: [
+              'إِنَّ مَعَ الْعُسْرِ يُسْرًا',
+              'وَإِنَّ مَعَ الْعُسْرِ يُسْرَيْنِ',
+              'فَإِنَّ مَعَ الْعُسْرِ يُسْرَيْنِ',
+              'وَإِنَّ مَعَ الْعُسْرِ يُسْرًا'
+            ],
+            answer: 2
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الكافرون" est-il mentionné dans la sourate Al-Kafirun ?',
+            ayah: '',
+            options: ['6 fois', '8 fois', '10 fois', '12 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "قُلْ يَا أَيُّهَا الْكَافِرُونَ" ?',
+            ayah: 'قُلْ يَا أَيُّهَا الْكَافِرُونَ',
+            options: [
+              'لَا أَعْبُدُ مَا تَعْبُدُونَ',
+              'وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ',
+              'وَلَا أَنَا عَابِدٌ مَّا عَبَدْتُمْ',
+              'وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "لَكُمْ دِينُكُمْ وَلِيَ دِينِ" ?',
+            ayah: '',
+            options: ['Al-Kafirun', 'Al-Ikhlas', 'An-Nas', 'Al-Falaq'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "قُلْ هُوَ اللَّهُ أَحَدٌ..."',
+            ayah: 'قُلْ هُوَ اللَّهُ أَحَدٌ',
+            options: [
+              'اللَّهُ الصَّمَدُ',
+              'لَمْ يَلِدْ وَلَمْ يُولَدْ',
+              'وَلَا أَحَدٌ كَمِثْلِهِ',
+              'لَا إِلَٰهَ إِلَّا هُوَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du verset : "لَمْ يَلِدْ وَلَمْ يُولَدْ" ?',
+            ayah: '',
+            options: [
+              'Il n\'a pas engendré et n\'a pas été engendré',
+              'Il n\'a pas vu et n\'a pas été vu',
+              'Il n\'a pas parlé et n\'a pas été parlé',
+              'Il n\'a pas marché et n\'a pas été marché'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ" ?',
+            ayah: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ',
+            options: [
+              'مِن شَرِّ مَا خَلَقَ',
+              'مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ',
+              'مِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ',
+              'مِن شَرِّ الْحَاسِدِ إِذَا حَسَدَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Falaq ?',
+            ayah: '',
+            options: ['Juz\' 30', 'Juz\' 29', 'Juz\' 28', 'Juz\' 27'],
+            answer: 0
+          }
+        ],
+        // Quiz 4
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "قُلْ أَعُوذُ بِرَبِّ النَّاسِ" ?',
+            ayah: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ',
+            options: [
+              'مَلِكِ النَّاسِ',
+              'إِلَٰهِ النَّاسِ',
+              'رَبِّ الْعَالَمِينَ',
+              'الرَّحْمَٰنِ الرَّحِيمِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ" ?',
+            ayah: '',
+            options: ['An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Kafirun'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ..."',
+            ayah: 'الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ',
+            options: [
+              'مِنَ الْجِنَّةِ وَالنَّاسِ',
+              'مِنَ الشَّيَاطِينِ وَالْإِنْسِ',
+              'مِنَ الْكَافِرِينَ وَالْمُنَافِقِينَ',
+              'مِنَ الظَّالِمِينَ وَالْفَاجِرِينَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الناس" est-il mentionné dans la sourate An-Nas ?',
+            ayah: '',
+            options: ['3 fois', '4 fois', '5 fois', '6 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" ?',
+            ayah: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+            options: [
+              'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+              'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
+              'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ" ?',
+            ayah: '',
+            options: ['Al-Fatiha', 'Al-Baqarah', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ..."',
+            ayah: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+            options: [
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ',
+              'غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ',
+              'وَلَا الضَّالِّينَ',
+              'ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du verset : "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ" ?',
+            ayah: '',
+            options: [
+              'Le chemin de ceux que Tu as comblés de faveurs',
+              'Le chemin de ceux que Tu as punis',
+              'Le chemin de ceux qui se sont égarés',
+              'Le chemin de ceux qui ont douté'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ" ?',
+            ayah: 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ',
+            options: [
+              'فَصَلِّ لِرَبِّكَ وَانْحَرْ',
+              'سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ',
+              'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'فَإِذَا فَرَغْتَ فَانْصَبْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Kawthar ?',
+            ayah: '',
+            options: ['Juz\' 30', 'Juz\' 29', 'Juz\' 28', 'Juz\' 27'],
+            answer: 0
+          }
+        ],
+        // Quiz 5
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَالْفِيلِ" ?',
+            ayah: 'وَالْفِيلِ',
+            options: [
+              'مَا أَدْرَاكَ مَا الْفِيلُ',
+              'وَمَا أَدْرَاكَ مَا الْقَرْيَةُ',
+              'وَمَا أَدْرَاكَ مَا الْجَيْشُ',
+              'وَمَا أَدْرَاكَ مَا الْحَجَّ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ" ?',
+            ayah: '',
+            options: ['Al-Fil', 'Quraysh', 'Al-Maun', 'Al-Kawthar'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ..."',
+            ayah: 'وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ',
+            options: [
+              'تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ',
+              'فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ',
+              'فَجَعَلَهُمْ كَتُبْلَانٍ مَّنْقُوعٍ',
+              'فَجَعَلَهُمْ كَالْعَنَمِ الْمَأْكُولِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الحجارة" est-il mentionné dans la sourate Al-Fil ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "لِإِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ" ?',
+            ayah: 'لِإِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ',
+            options: [
+              'فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ',
+              'الَّذِي أَطْعَمَهُم مِّن جُوعٍ',
+              'وَآمَنَهُم مِّنْ خَوْفٍ',
+              'ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ" ?',
+            ayah: '',
+            options: ['Quraysh', 'Al-Fil', 'Al-Kawthar', 'Al-Maun'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "الَّذِي أَطْعَمَهُم مِّن جُوعٍ..."',
+            ayah: 'الَّذِي أَطْعَمَهُم مِّن جُوعٍ',
+            options: [
+              'وَآمَنَهُم مِّنْ خَوْفٍ',
+              'وَكَفَّهُم مِّنْ عَذَابٍ',
+              'وَهَدَاهُم مِّنْ ضَلَالٍ',
+              'وَرَزَقَهُم مِّن فَقْرٍ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du verset : "وَآمَنَهُم مِّنْ خَوْفٍ" ?',
+            ayah: '',
+            options: [
+              'Et Il les a protégés de la peur',
+              'Et Il les a nourris de la faim',
+              'Et Il les a guidés de l\'égarement',
+              'Et Il les a enrichis de la pauvreté'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ" ?',
+            ayah: 'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ',
+            options: [
+              'فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ',
+              'وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ',
+              'فَوَيْلٌ لِّلْمُصَلِّينَ',
+              'الَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Maun ?',
+            ayah: '',
+            options: ['Juz\' 30', 'Juz\' 29', 'Juz\' 28', 'Juz\' 27'],
+            answer: 0
+          }
+        ],
+        // Quiz 6
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ" ?',
+            ayah: 'فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ',
+            options: [
+              'وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ',
+              'فَوَيْلٌ لِّلْمُصَلِّينَ',
+              'الَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ',
+              'الَّذِينَ هُمْ يُرَاءُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ" ?',
+            ayah: '',
+            options: ['Al-Maun', 'Al-Fil', 'Quraysh', 'Al-Kawthar'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "فَوَيْلٌ لِّلْمُصَلِّينَ..."',
+            ayah: 'فَوَيْلٌ لِّلْمُصَلِّينَ',
+            options: [
+              'الَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ',
+              'الَّذِينَ هُمْ يُرَاءُونَ',
+              'وَيَمْنَعُونَ الْمَاعُونَ',
+              'فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الصلاة" est-il mentionné dans la sourate Al-Maun ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ" ?',
+            ayah: 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ',
+            options: [
+              'فَصَلِّ لِرَبِّكَ وَانْحَرْ',
+              'سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ',
+              'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'فَإِذَا فَرَغْتَ فَانْصَبْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "فَصَلِّ لِرَبِّكَ وَانْحَرْ" ?',
+            ayah: '',
+            options: ['Al-Kawthar', 'Al-Fatiha', 'Al-Baqarah', 'Aal-e-Imran'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ..."',
+            ayah: 'إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ',
+            options: [
+              'سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ',
+              'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'فَإِذَا فَرَغْتَ فَانْصَبْ',
+              'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "الكوثر" ?',
+            ayah: '',
+            options: [
+              'L\'abondance',
+              'La pauvreté',
+              'La misère',
+              'La tristesse'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَالْعَصْرِ" ?',
+            ayah: 'وَالْعَصْرِ',
+            options: [
+              'إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+              'وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ',
+              'وَاللَّيْلِ إِذَا يَسْرِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Asr ?',
+            ayah: '',
+            options: ['Juz\' 30', 'Juz\' 29', 'Juz\' 28', 'Juz\' 27'],
+            answer: 0
+          }
+        ],
+        // Quiz 7
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ" ?',
+            ayah: 'إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+            options: [
+              'وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ',
+              'فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ',
+              'وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ',
+              'فَوَيْلٌ لِّلْمُصَلِّينَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ" ?',
+            ayah: '',
+            options: ['Al-Asr', 'Al-Maun', 'Al-Kawthar', 'Al-Fil'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ..."',
+            ayah: 'وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ',
+            options: [
+              'الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ',
+              'يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ',
+              'كَلَّا لَيُنْبَذَنَّ فِي الْحُطَمَةِ',
+              'وَمَا أَدْرَاكَ مَا الْحُطَمَةُ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الويل" est-il mentionné dans la sourate Al-Humazah ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ" ?',
+            ayah: 'الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ',
+            options: [
+              'يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ',
+              'كَلَّا لَيُنْبَذَنَّ فِي الْحُطَمَةِ',
+              'وَمَا أَدْرَاكَ مَا الْحُطَمَةُ',
+              'نَارُ اللَّهِ الْمُوقَدَةُ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ" ?',
+            ayah: '',
+            options: ['Al-Humazah', 'Al-Maun', 'Al-Kawthar', 'Al-Fil'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "كَلَّا لَيُنْبَذَنَّ فِي الْحُطَمَةِ..."',
+            ayah: 'كَلَّا لَيُنْبَذَنَّ فِي الْحُطَمَةِ',
+            options: [
+              'وَمَا أَدْرَاكَ مَا الْحُطَمَةُ',
+              'نَارُ اللَّهِ الْمُوقَدَةُ',
+              'الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ',
+              'إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "الحمزة" ?',
+            ayah: '',
+            options: [
+              'Celui qui médit',
+              'Celui qui donne',
+              'Celui qui prie',
+              'Celui qui jeûne'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَمَا أَدْرَاكَ مَا الْحُطَمَةُ" ?',
+            ayah: 'وَمَا أَدْرَاكَ مَا الْحُطَمَةُ',
+            options: [
+              'نَارُ اللَّهِ الْمُوقَدَةُ',
+              'الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ',
+              'إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ',
+              'فِي عَمَدٍ مُّمَدَّدَةٍ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Humazah ?',
+            ayah: '',
+            options: ['Juz\' 30', 'Juz\' 29', 'Juz\' 28', 'Juz\' 27'],
+            answer: 0
+          }
+        ],
+        // Quiz 8
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "نَارُ اللَّهِ الْمُوقَدَةُ" ?',
+            ayah: 'نَارُ اللَّهِ الْمُوقَدَةُ',
+            options: [
+              'الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ',
+              'إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ',
+              'فِي عَمَدٍ مُّمَدَّدَةٍ',
+              'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ" ?',
+            ayah: '',
+            options: ['Al-Humazah', 'Al-Maun', 'Al-Kawthar', 'Al-Fil'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ..."',
+            ayah: 'إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ',
+            options: [
+              'فِي عَمَدٍ مُّمَدَّدَةٍ',
+              'وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ',
+              'إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+              'وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "النار" est-il mentionné dans la sourate Al-Humazah ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" ?',
+            ayah: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+            options: [
+              'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+              'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
+              'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ" ?',
+            ayah: '',
+            options: ['Al-Fatiha', 'Al-Baqarah', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "الرَّحْمَٰنِ الرَّحِيمِ..."',
+            ayah: 'الرَّحْمَٰنِ الرَّحِيمِ',
+            options: [
+              'مَالِكِ يَوْمِ الدِّينِ',
+              'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
+              'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "مالك يوم الدين" ?',
+            ayah: '',
+            options: [
+              'Maître du jour du jugement',
+              'Seigneur des mondes',
+              'Miséricordieux, Très Miséricordieux',
+              'Celui qui guide sur le droit chemin'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ" ?',
+            ayah: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
+            options: [
+              'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ',
+              'غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ',
+              'وَلَا الضَّالِّينَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Fatiha ?',
+            ayah: '',
+            options: ['Juz\' 1', 'Juz\' 2', 'Juz\' 30', 'Juz\' 15'],
+            answer: 2
+          }
+        ],
+        // Quiz 9
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ" ?',
+            ayah: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+            options: [
+              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ',
+              'غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ',
+              'وَلَا الضَّالِّينَ',
+              'ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ" ?',
+            ayah: '',
+            options: ['Al-Fatiha', 'Al-Baqarah', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ..."',
+            ayah: 'غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ',
+            options: [
+              'وَلَا الضَّالِّينَ',
+              'ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ',
+              'هُدًى لِّلْمُتَّقِينَ',
+              'الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الهدى" est-il mentionné dans la sourate Al-Fatiha ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" ?',
+            ayah: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+            options: [
+              'ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ',
+              'هُدًى لِّلْمُتَّقِينَ',
+              'الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ',
+              'وَيُقِيمُونَ الصَّلَاةَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Al-Fatiha', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "هُدًى لِّلْمُتَّقِينَ..."',
+            ayah: 'هُدًى لِّلْمُتَّقِينَ',
+            options: [
+              'الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ',
+              'وَيُقِيمُونَ الصَّلَاةَ',
+              'وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ',
+              'وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "المتقين" ?',
+            ayah: '',
+            options: [
+              'Ceux qui craignent Allah',
+              'Ceux qui jeûnent',
+              'Ceux qui prient',
+              'Ceux qui donnent l\'aumône'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ" ?',
+            ayah: 'الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ',
+            options: [
+              'وَيُقِيمُونَ الصَّلَاةَ',
+              'وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ',
+              'وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ',
+              'وَمَا أُنزِلَ مِن قَبْلِكَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['Juz\' 1', 'Juz\' 2', 'Juz\' 3', 'Juz\' 4'],
+            answer: 0
+          }
+        ],
+        // Quiz 10
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَيُقِيمُونَ الصَّلَاةَ" ?',
+            ayah: 'وَيُقِيمُونَ الصَّلَاةَ',
+            options: [
+              'وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ',
+              'وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ',
+              'وَمَا أُنزِلَ مِن قَبْلِكَ',
+              'وَبِالْآخِرَةِ هُمْ يُوقِنُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Al-Fatiha', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ..."',
+            ayah: 'وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ',
+            options: [
+              'وَمَا أُنزِلَ مِن قَبْلِكَ',
+              'وَبِالْآخِرَةِ هُمْ يُوقِنُونَ',
+              'أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ',
+              'وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الصلاة" est-il mentionné dans les premiers versets de la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَمَا أُنزِلَ مِن قَبْلِكَ" ?',
+            ayah: 'وَمَا أُنزِلَ مِن قَبْلِكَ',
+            options: [
+              'وَبِالْآخِرَةِ هُمْ يُوقِنُونَ',
+              'أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ',
+              'وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ',
+              'وَالَّذِينَ كَفَرُوا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَبِالْآخِرَةِ هُمْ يُوقِنُونَ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Al-Fatiha', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ..."',
+            ayah: 'أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ',
+            options: [
+              'وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ',
+              'وَالَّذِينَ كَفَرُوا',
+              'أُولَٰئِكَ هُمُ الْخَاسِرُونَ',
+              'وَهُمْ لِذَٰلِكَ هُمْ يُحَاسَبُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "المفلحون" ?',
+            ayah: '',
+            options: [
+              'Ceux qui réussissent',
+              'Ceux qui échouent',
+              'Ceux qui doutent',
+              'Ceux qui craignent'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَالَّذِينَ كَفَرُوا" ?',
+            ayah: 'وَالَّذِينَ كَفَرُوا',
+            options: [
+              'أُولَٰئِكَ هُمُ الْخَاسِرُونَ',
+              'أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ',
+              'وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ',
+              'وَهُمْ لِذَٰلِكَ هُمْ يُحَاسَبُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la fin de la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['Juz\' 1', 'Juz\' 2', 'Juz\' 3', 'Juz\' 4'],
+            answer: 2
+          }
+        ],
+        // Quiz 11
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "أُولَٰئِكَ هُمُ الْخَاسِرُونَ" ?',
+            ayah: 'أُولَٰئِكَ هُمُ الْخَاسِرُونَ',
+            options: [
+              'أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ',
+              'وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ',
+              'وَالَّذِينَ كَفَرُوا',
+              'ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Al-Fatiha', 'Aal-e-Imran', 'An-Nisa'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ..."',
+            ayah: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ',
+            options: [
+              'الْحَيُّ الْقَيُّومُ',
+              'لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ',
+              'لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ',
+              'مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الله" est-il mentionné dans le verset de la Sourate Al-Baqarah 2:255 (Ayat al-Kursi) ?',
+            ayah: '',
+            options: ['5 fois', '7 fois', '9 fois', '11 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "الْحَيُّ الْقَيُّومُ" ?',
+            ayah: 'الْحَيُّ الْقَيُّومُ',
+            options: [
+              'لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ',
+              'لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ',
+              'مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ',
+              'يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ..."',
+            ayah: 'لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ',
+            options: [
+              'مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ',
+              'يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ',
+              'وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ',
+              'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "القيوم" ?',
+            ayah: '',
+            options: [
+              'Celui qui subsiste par Lui-même',
+              'Celui qui voit tout',
+              'Celui qui entend tout',
+              'Celui qui sait tout'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ" ?',
+            ayah: 'مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ',
+            options: [
+              'يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ',
+              'وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ',
+              'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ',
+              'وَلَا يَئُودُهُ حِفْظُهُمَا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient le verset de la Sourate Al-Baqarah 2:255 (Ayat al-Kursi) ?',
+            ayah: '',
+            options: ['Juz\' 3', 'Juz\' 4', 'Juz\' 5', 'Juz\' 6'],
+            answer: 0
+          }
+        ],
+        // Quiz 12
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ" ?',
+            ayah: 'يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ',
+            options: [
+              'وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ',
+              'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ',
+              'وَلَا يَئُودُهُ حِفْظُهُمَا',
+              'وَهُوَ الْعَلِيُّ الْعَظِيمُ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ..."',
+            ayah: 'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ',
+            options: [
+              'وَلَا يَئُودُهُ حِفْظُهُمَا',
+              'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+              'لَا إِكْرَاهَ فِي الدِّينِ',
+              'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "العلم" est-il mentionné dans le verset de la Sourate Al-Baqarah 2:255 ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَلَا يَئُودُهُ حِفْظُهُمَا" ?',
+            ayah: 'وَلَا يَئُودُهُ حِفْظُهُمَا',
+            options: [
+              'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+              'لَا إِكْرَاهَ فِي الدِّينِ',
+              'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
+              'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَهُوَ الْعَلِيُّ الْعَظِيمُ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "لَا إِكْرَاهَ فِي الدِّينِ..."',
+            ayah: 'لَا إِكْرَاهَ فِي الدِّينِ',
+            options: [
+              'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
+              'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
+              'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
+              'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "الكرسي" dans le contexte du verset de la Sourate Al-Baqarah 2:255 ?',
+            ayah: '',
+            options: [
+              'Le trône de la connaissance d\'Allah',
+              'Un siège physique',
+              'Un meuble dans le ciel',
+              'Un symbole de pouvoir temporel'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ" ?',
+            ayah: 'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
+            options: [
+              'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
+              'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
+              'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
+              'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient le verset de la Sourate Al-Baqarah 2:256 ?',
+            ayah: '',
+            options: ['Juz\' 3', 'Juz\' 4', 'Juz\' 5', 'Juz\' 6'],
+            answer: 0
+          }
+        ],
+        // Quiz 13
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ" ?',
+            ayah: 'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
+            options: [
+              'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
+              'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
+              'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
+              'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ..."',
+            ayah: 'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
+            options: [
+              'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
+              'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
+              'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
+              'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "النور" est-il mentionné dans les versets de la Sourate Al-Baqarah 2:256-257 ?',
+            ayah: '',
+            options: ['2 fois', '4 fois', '6 fois', '8 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا" ?',
+            ayah: 'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
+            options: [
+              'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
+              'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
+              'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
+              'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ..."',
+            ayah: 'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
+            options: [
+              'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
+              'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+              'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+              'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "الطاغوت" ?',
+            ayah: '',
+            options: [
+              'Tout ce qui est adoré en dehors d\'Allah',
+              'Un démon spécifique',
+              'Un roi méchant',
+              'Un faux prophète'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ" ?',
+            ayah: 'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
+            options: [
+              'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+              'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+              'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+              'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la fin de la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['Juz\' 2', 'Juz\' 3', 'Juz\' 4', 'Juz\' 5'],
+            answer: 1
+          }
+        ],
+        // Quiz 14
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ" ?',
+            ayah: 'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+            options: [
+              'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+              'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+              'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+              'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ..."',
+            ayah: 'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+            options: [
+              'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+              'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+              'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
+              'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "الخسران" est-il mentionné dans la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['1 fois', '2 fois', '3 fois', '4 fois'],
+            answer: 1
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا" ?',
+            ayah: 'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+            options: [
+              'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+              'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
+              'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
+              'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ..."',
+            ayah: 'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
+            options: [
+              'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
+              'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
+              'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+              'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "ولي" dans le contexte coranique ?',
+            ayah: '',
+            options: [
+              'Protecteur, allié, soutien',
+              'Ennemi, opposant',
+              'Juge, arbitre',
+              'Messager, prophète'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ" ?',
+            ayah: 'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
+            options: [
+              'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
+              'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+              'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+              'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la fin de la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['Juz\' 2', 'Juz\' 3', 'Juz\' 4', 'Juz\' 5'],
+            answer: 1
+          }
+        ],
+        // Quiz 15
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا" ?',
+            ayah: 'لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا',
+            options: [
+              'لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ',
+              'رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا',
+              'رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا',
+              'رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا..."',
+            ayah: 'رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا',
+            options: [
+              'قَالَ قَدْ أَجَبْتُ دَعْوَتَكُمَا فَاسْتَقِيمَا',
+              'قَالَ قَدْ أُوتِيتَ سُؤْلَكَ وَمَا أَنَا بِظَلَّامٍ لِّلْعَبِيدِ',
+              'قَالَ قَدْ أُوتِيتَ سُؤْلَكَ يَا مُوسَىٰ',
+              'قَالَ قَدْ أُوتِيتَ سُؤْلَكَ فَارْجِعْ إِلَىٰ قَوْمِكَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "ربنا" est-il mentionné dans la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['10 fois', '15 fois', '20 fois', '25 fois'],
+            answer: 2
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا" ?',
+            ayah: 'رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا',
+            options: [
+              'رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ',
+              'وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا',
+              'أَنتَ وَلِيُّنَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ',
+              'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا..."',
+            ayah: 'وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا',
+            options: [
+              'أَنتَ وَلِيُّنَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ',
+              'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
+              'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا',
+              'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "الإصر" dans le verset de la Sourate Al-Baqarah 2:286 ?',
+            ayah: '',
+            options: [
+              'Un fardeau lourd, une charge difficile',
+              'Une maladie contagieuse',
+              'Un péché impardonnable',
+              'Une punition éternelle'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "أَنتَ وَلِيُّنَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ" ?',
+            ayah: 'أَنتَ وَلِيُّنَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ',
+            options: [
+              'فَلَمَّا أَفَلَ',
+              'فَمَنِ اعْتَدَىٰ بَعْدَ ذَٰلِكَ فَلَهُ عَذَابٌ أَلِيمٌ',
+              'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
+              'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la fin de la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['Juz\' 2', 'Juz\' 3', 'Juz\' 4', 'Juz\' 5'],
+            answer: 1
+          }
+        ],
+        // Quiz 16
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا" ?',
+            ayah: 'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
+            options: [
+              'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا',
+              'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ',
+              'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ',
+              'وَلَا تَعْتَدُوا إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ..."',
+            ayah: 'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ',
+            options: [
+              'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ',
+              'وَلَا تَعْتَدُوا إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ',
+              'وَقَاتِلُوهُمْ حَتَّىٰ لَا تَكُونَ فِتْنَةٌ وَيَكُونَ الدِّينُ لِلَّهِ',
+              'فَإِنِ اعْتَزَرُوا فَأَعْرِضُوا عَنْهُمْ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "النار" est-il mentionné dans la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['10 fois', '15 fois', '20 fois', '25 fois'],
+            answer: 2
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ" ?',
+            ayah: 'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ',
+            options: [
+              'وَلَا تَعْتَدُوا إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ',
+              'وَقَاتِلُوهُمْ حَتَّىٰ لَا تَكُونَ فِتْنَةٌ وَيَكُونَ الدِّينُ لِلَّهِ',
+              'فَإِنِ اعْتَزَرُوا فَأَعْرِضُوا عَنْهُمْ',
+              'وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَلَا تَعْتَدُوا إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَقَاتِلُوهُمْ حَتَّىٰ لَا تَكُونَ فِتْنَةٌ وَيَكُونَ الدِّينُ لِلَّهِ..."',
+            ayah: 'وَقَاتِلُوهُمْ حَتَّىٰ لَا تَكُونَ فِتْنَةٌ وَيَكُونَ الدِّينُ لِلَّهِ',
+            options: [
+              'فَإِنِ اعْتَزَرُوا فَأَعْرِضُوا عَنْهُمْ',
+              'وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا',
+              'وَتَوَكَّلْ عَلَى اللَّهِ',
+              'إِنَّ اللَّهَ سَمِيعٌ عَلِيمٌ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'meaning',
+            question: 'Quelle est la signification du mot "الفتنة" dans le contexte du verset de la Sourate Al-Baqarah 2:193 ?',
+            ayah: '',
+            options: [
+              'L\'idolâtrie, le fait de dévier de la religion d\'Allah',
+              'Une guerre entre musulmans',
+              'Une maladie grave',
+              'Une famine terrible'
+            ],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "فَإِنِ اعْتَزَرُوا فَأَعْرِضُوا عَنْهُمْ" ?',
+            ayah: 'فَإِنِ اعْتَزَرُوا فَأَعْرِضُوا عَنْهُمْ',
+            options: [
+              'وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا',
+              'وَتَوَكَّلْ عَلَى اللَّهِ',
+              'إِنَّ اللَّهَ سَمِيعٌ عَلِيمٌ',
+              'وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_juz',
+            question: 'À quel juz\' appartient la fin de la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['Juz\' 2', 'Juz\' 3', 'Juz\' 4', 'Juz\' 5'],
+            answer: 1
+          }
+        ],
+        // Quiz 17
+        [
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا" ?',
+            ayah: 'وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا',
+            options: [
+              'وَتَوَكَّلْ عَلَى اللَّهِ',
+              'إِنَّ اللَّهَ سَمِيعٌ عَلِيمٌ',
+              'وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا',
+              'وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَتَوَكَّلْ عَلَى اللَّهِ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "إِنَّ اللَّهَ سَمِيعٌ عَلِيمٌ..."',
+            ayah: 'إِنَّ اللَّهَ سَمِيعٌ عَلِيمٌ',
+            options: [
+              'وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا',
+              'وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ',
+              'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ',
+              'وَلَا يَئُودُهُ حِفْظُهُمَا'
+            ],
+            answer: 0
+          },
+          {
+            type: 'word_frequency',
+            question: 'Combien de fois le mot "العلم" est-il mentionné dans la sourate Al-Baqarah ?',
+            ayah: '',
+            options: ['10 fois', '15 fois', '20 fois', '25 fois'],
+            answer: 2
+          },
+          {
+            type: 'complete_verse',
+            question: 'Quel est la suite du verset : "وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا" ?',
+            ayah: 'وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا',
+            options: [
+              'وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ',
+              'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ',
+              'وَلَا يَئُودُهُ حِفْظُهُمَا',
+              'وَهُوَ الْعَلِيُّ الْعَظِيمُ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'which_surah',
+            question: 'Dans quelle sourate se trouve le verset : "وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ" ?',
+            ayah: '',
+            options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma\'idah'],
+            answer: 0
+          },
+          {
+            type: 'complete_verse',
+            question: 'Complétez le verset : "وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ..."',
+            ayah: 'وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ',
+            options: [
+              'وَلَا يَئُودُهُ حِفْظُهُمَا',
+              'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+              'لَا إِكْرَاهَ فِي الدِّينِ',
+              'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ'
+            ],
+            answer: 0
+          },
+          {
+            type: 'question: 'Quelle est la signification du mot "الكرسي" dans le contexte du verset de la Sourate Al-Baqarah 2:255 ?',
+ayah: '',
+options: [
+'Le trône de la connaissance d'Allah',
+'Un siège physique',
+'Un meuble dans le ciel',
+'Un symbole de pouvoir temporel'
+],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "وَلَا يَئُودُهُ حِفْظُهُمَا" ?',
+ayah: 'وَلَا يَئُودُهُ حِفْظُهُمَا',
+options: [
+'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+'لَا إِكْرَاهَ فِي الدِّينِ',
+'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
+'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ'
+],
+answer: 0
+},
+{
+type: 'which_juz',
+question: 'À quel juz' appartient le verset de la Sourate Al-Baqarah 2:255 (Ayat al-Kursi) ?',
+ayah: '',
+options: ['Juz' 3', 'Juz' 4', 'Juz' 5', 'Juz' 6'],
+answer: 0
+}
+],
+// Quiz 18
+[
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "وَهُوَ الْعَلِيُّ الْعَظِيمُ" ?',
+ayah: 'وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+options: [
+'لَا إِكْرَاهَ فِي الدِّينِ',
+'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
+'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
+'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ'
+],
+answer: 0
+},
+{
+type: 'which_surah',
+question: 'Dans quelle sourate se trouve le verset : "لَا إِكْرَاهَ فِي الدِّينِ" ?',
+ayah: '',
+options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Complétez le verset : "قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ..."',
+ayah: 'قَدْ تَبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ',
+options: [
+'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
+'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
+'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
+'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا'
+],
+answer: 0
+},
+{
+type: 'word_frequency',
+question: 'Combien de fois le mot "الطاغوت" est-il mentionné dans la sourate Al-Baqarah ?',
+ayah: '',
+options: ['2 fois', '4 fois', '6 fois', '8 fois'],
+answer: 1
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ" ?',
+ayah: 'فَمَنْ يَكْفُرْ بِالطَّاغُوتِ وَيُؤْمِن بِاللَّهِ',
+options: [
+'فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ',
+'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
+'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
+'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ'
+],
+answer: 0
+},
+{
+type: 'which_surah',
+question: 'Dans quelle sourate se trouve le verset : "فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ" ?',
+ayah: '',
+options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Complétez le verset : "لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ..."',
+ayah: 'لَا انفِصَامَ لَهَا وَهُوَ الْعَزِيزُ الْحَكِيمُ',
+options: [
+'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
+'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
+'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
+'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ'
+],
+answer: 0
+},
+{
+type: 'meaning',
+question: 'Quelle est la signification du mot "العروة الوثقى" ?',
+ayah: '',
+options: [
+'L'anse la plus solide, la foi ferme',
+'La richesse éternelle',
+'La victoire militaire',
+'La connaissance absolue'
+],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا" ?',
+ayah: 'اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا',
+options: [
+'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
+'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
+'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
+'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ'
+],
+answer: 0
+},
+{
+type: 'which_juz',
+question: 'À quel juz' appartient la fin de la sourate Al-Baqarah ?',
+ayah: '',
+options: ['Juz' 2', 'Juz' 3', 'Juz' 4', 'Juz' 5'],
+answer: 1
+}
+],
+// Quiz 19
+[
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ" ?',
+ayah: 'يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ',
+options: [
+'وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ',
+'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
+'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ'
+],
+answer: 0
+},
+{
+type: 'which_surah',
+question: 'Dans quelle sourate se trouve le verset : "وَالَّذِينَ كَفَرُوا أَوْلِيَاؤُهُمُ الطَّاغُوتُ" ?',
+ayah: '',
+options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Complétez le verset : "يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ..."',
+ayah: 'يُخْرِجُونَهُم مِّنَ النُّورِ إِلَى الظُّلُمَاتِ',
+options: [
+'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ'
+],
+answer: 0
+},
+{
+type: 'word_frequency',
+question: 'Combien de fois le mot "النور" est-il mentionné dans la sourate Al-Baqarah ?',
+ayah: '',
+options: ['5 fois', '10 fois', '15 fois', '20 fois'],
+answer: 2
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ" ?',
+ayah: 'أُولَٰئِكَ أَصْحَابُ النَّارِ هُمْ فِيهَا خَالِدُونَ',
+options: [
+'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ'
+],
+answer: 0
+},
+{
+type: 'which_surah',
+question: 'Dans quelle sourate se trouve le verset : "فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا" ?',
+ayah: '',
+options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Complétez le verset : "وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ..."',
+ayah: 'وَمَن يَتَّخِذِ الشَّيْطَانَ وَلِيًّا مِّن دُونِ اللَّهِ',
+options: [
+'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
+'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ'
+],
+answer: 0
+},
+{
+type: 'meaning',
+question: 'Quelle est la signification du mot "الخسران" ?',
+ayah: '',
+options: [
+'Perte évidente, échec',
+'Victoire éclatante',
+'Richesse abondante',
+'Connaissance profonde'
+],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا" ?',
+ayah: 'فَقَدْ خَسِرَ خُسْرَانًا مُّبِينًا',
+options: [
+'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
+'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
+'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ'
+],
+answer: 0
+},
+{
+type: 'which_juz',
+question: 'À quel juz' appartient la fin de la sourate Al-Baqarah ?',
+ayah: '',
+options: ['Juz' 2', 'Juz' 3', 'Juz' 4', 'Juz' 5'],
+answer: 1
+}
+],
+// Quiz 20
+[
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ" ?',
+ayah: 'وَيَرَى الَّذِينَ كَفَرُوا أَنَّهُمْ لَا يُنْصَرُونَ',
+options: [
+'وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ',
+'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
+'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
+'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ'
+],
+answer: 0
+},
+{
+type: 'which_surah',
+question: 'Dans quelle sourate se trouve le verset : "وَمَا لَهُم مِّن دُونِ اللَّهِ مِن وَلِيٍّ وَلَا نَصِيرٍ" ?',
+ayah: '',
+options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Complétez le verset : "وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ..."',
+ayah: 'وَمَن يَعْمَلْ سُوءًا يُجْزَ بِمِثْلِهِ',
+options: [
+'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
+'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ',
+'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا'
+],
+answer: 0
+},
+{
+type: 'word_frequency',
+question: 'Combien de fois le mot "الجنة" est-il mentionné dans la sourate Al-Baqarah ?',
+ayah: '',
+options: ['10 fois', '15 fois', '20 fois', '25 fois'],
+answer: 2
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ" ?',
+ayah: 'وَلَا يُجْدِي عَنْهُ مَالُهُ وَمَا كَسَبَ',
+options: [
+'وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ',
+'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ',
+'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
+'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا'
+],
+answer: 0
+},
+{
+type: 'which_surah',
+question: 'Dans quelle sourate se trouve le verset : "وَالَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ" ?',
+ayah: '',
+options: ['Al-Baqarah', 'Aal-e-Imran', 'An-Nisa', 'Al-Ma'idah'],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Complétez le verset : "أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ..."',
+ayah: 'أُولَٰئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ',
+options: [
+'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
+'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا',
+'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ',
+'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَا
+تِلُونَكُمْ'
+],
+answer: 0
+},
+{
+type: 'meaning',
+question: 'Quelle est la signification du mot "الجنة" ?',
+ayah: '',
+options: [
+'Le Paradis',
+'L'Enfer',
+'La Terre',
+'Le Ciel'
+],
+answer: 0
+},
+{
+type: 'complete_verse',
+question: 'Quel est la suite du verset : "وَمَا كَانَ لِمُؤْم Puj'n أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا" ?',
+ayah: 'وَمَا كَانَ لِمُؤْمِنٍ أَن يَقْتُلَ مُؤْمِنًا إِلَّا خَطَئًا',
+options: [
+'وَمَن يَقْتُلْ مُؤْمِنًا مُّتَعَمِّدًا فَجَزَاؤُهُ جَهَنَّمُ خَالِدًا فِيهَا',
+'وَاتَّقُوا النَّارَ الَّتِي أُعِدَّتْ لِلْكَافِرِينَ',
+'وَجَاهِدُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ',
+'وَلَا تَعْتَدُوا إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ'
+],
+answer: 0
+},
+{
+type: 'which_juz',
+question: 'À quel juz' appartient la fin de la sourate Al-Baqarah ?',
+ayah: '',
+options: ['Juz' 2', 'Juz' 3', 'Juz' 4', 'Juz' 5'],
+answer: 1
+}
+]
+]
+};
+// Navigation Functions
+function showPage(pageId) {
+document.getElementById('homePage').classList.add('hidden');
+document.getElementById('quizSelection').classList.add('hidden');
+document.getElementById('quizPage').classList.add('hidden');
+document.getElementById(pageId).classList.remove('hidden');
+}
+function selectLevel(level) {
+  console.log('Level selected:', level); // Ajoutez cette ligne
+  state.currentLevel = level;
+  document.getElementById('levelTitle').textContent = level.toUpperCase().replace('_', ' ');
+  showPage('quizSelection');
+}
+function goHome() {
+showPage('homePage');
+}
+function startQuiz(quizNumber) {
+state.currentQuiz = quizNumber;
+state.currentQuestion = 0;
+state.score = 0;
+state.answers = [];
+state.questions = realQuizData[state.currentLevel][quizNumber - 1];
+document.getElementById('quizHeader').textContent = Quiz ${quizNumber};
+showPage('quizPage');
+loadQuestion();
+}
+// Quiz Logic
+function loadQuestion() {
+const question = state.questions[state.currentQuestion];
+document.getElementById('questionText').textContent = question.question;
+document.getElementById('ayahText').textContent = question.ayah;
+document.getElementById('progressText').textContent = ${state.currentQuestion + 1}/10;
+document.getElementById('progressBar').style.width = ${(state.currentQuestion + 1) * 10}%;
+const optionsContainer = document.getElementById('optionsContainer');
+optionsContainer.innerHTML = '';
+question.options.forEach((option, index) => {
+const btn = document.createElement('button');
+btn.className = 'option-btn';
+btn.textContent = option;
+btn.onclick = () => selectOption(index);
+optionsContainer.appendChild(btn);
+});
+document.getElementById('nextBtn').classList.add('hidden');
+}
+function selectOption(index) {
+const question = state.questions[state.currentQuestion];
+const buttons = document.querySelectorAll('.option-btn');
+buttons.forEach((btn, i) => {
+btn.disabled = true;
+if (i === question.answer) {
+btn.classList.add('correct');
+} else if (i === index && i !== question.answer) {
+btn.classList.add('incorrect');
+}
+});
+state.answers.push({ question: state.currentQuestion, selected: index, correct: question.answer });
+if (index === question.answer) {
+state.score++;
+}
+document.getElementById('nextBtn').classList.remove('hidden');
+}
+document.getElementById('nextBtn').onclick = () => {
+state.currentQuestion++;
+if (state.currentQuestion < state.questions.length) {
+loadQuestion();
+} else {
+showResult();
+}
+};
+function showResult() {
+document.getElementById('finalScore').textContent = ${state.score}/10;
+document.getElementById('resultMessage').textContent = state.score >= 8 ? 'Excellent travail !' : state.score >= 5 ? 'Bon travail, continuez à apprendre !' : 'Continuez à réviser pour améliorer votre score !';
+document.getElementById('resultModal').classList.add('show');
+state.quizScores[state.currentQuiz - 1] = state.score;
+document.getElementById(score-badge-${state.currentQuiz}).textContent = ${state.score}/10;
+updateTotalScore();
+}
+function closeResult() {
+document.getElementById('resultModal').classList.remove('show');
+showPage('quizSelection');
+}
+function reviewMistakes() {
+// Placeholder for review functionality
+alert('Review mistakes functionality to be implemented!');
+closeResult();
+}
+function updateTotalScore() {
+state.totalGlobalScore = state.quizScores.reduce((sum, score) => sum + score, 0);
+document.getElementById('totalScoreText').textContent = state.totalGlobalScore;
+document.getElementById('totalProgress').style.width = ${(state.totalGlobalScore / 200) * 100}%;
+}
+function showTotalScore() {
+document.getElementById('totalScoreModal').classList.add('show');
+}
+function closeTotalScore() {
+document.getElementById('totalScoreModal').classList.remove('show');
+}
+    // Ajoutez ceci à la fin de votre script
+document.querySelectorAll('.level-card').forEach(card => {
+  card.addEventListener('click', function() {
+    const level = this.getAttribute('data-level');
+    selectLevel(level);
+  });
+});
+</script>
+  </body>
+</html>
