@@ -242,6 +242,34 @@ case 'hadith':
     hadithIframe.src = 'hadith.html';
   }
   break;
+        // Dans le switch/case de showPage(), ajoutez ces nouveaux cas :
+case 'qibla':
+  const qiblaIframe = document.querySelector('#qibla iframe');
+  if (qiblaIframe && (!qiblaIframe.src || qiblaIframe.src === '')) {
+    qiblaIframe.src = 'qibla.html';
+  }
+  break;
+ 
+case 'tasbih':
+  const tasbihIframe = document.querySelector('#tasbih iframe');
+  if (tasbihIframe && (!tasbihIframe.src || tasbihIframe.src === '')) {
+    tasbihIframe.src = 'tasbih.html';
+  }
+  break;
+
+case 'priere':
+  const priereIframe = document.querySelector('#priere iframe');
+  if (priereIframe && (!priereIframe.src || priereIframe.src === '')) {
+    priereIframe.src = 'priere.html';
+  }
+  break;
+
+case 'quiz':
+  const quizIframe = document.querySelector('#quiz iframe');
+  if (quizIframe && (!quizIframe.src || quizIframe.src === '')) {
+    quizIframe.src = 'quiz.html';
+  }
+  break;
       case 'personal':
         updatePersonalPage();
         break;
