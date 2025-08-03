@@ -132,12 +132,12 @@
   background: rgba(7, 51, 50, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1rem;
-      padding: 1.5rem;
+      padding: 0.8rem;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      height: 180px;
+      height: 110px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -291,7 +291,7 @@
       border: 1px solid rgba(217, 119, 6, 0.3);
     }
     
-    .result-icon {
+    .result-icon { 
       font-size: 4rem;
       margin: 1rem auto;
     }
@@ -323,24 +323,31 @@
       color: white;
     }
     
-    .total-score-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(22, 101, 52, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      z-index: 1000;
-    }
-    
+   .total-score-btn {
+  position: static;
+  width: auto;
+  height: auto;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  margin-top: 2rem;
+}
+ .total-score-container {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.total-score-btn i {
+  font-size: 1.2rem;
+}
+
+.total-score-btn span {
+  font-size: 1rem;
+  font-weight: 600;
+}
     .total-score-btn:hover {
       transform: scale(1.1);
     }
@@ -393,9 +400,7 @@
 </head>
 <body class="antialiased">
   <!-- Total Score Button -->
-  <div class="total-score-btn">
-    <i class="fas fa-crown"></i>
-  </div>
+  
 
   <!-- Total Score Modal -->
   <div id="totalScoreModal" class="modal">
@@ -423,11 +428,18 @@
       <div class="level-card" data-level="juzz_amma">
         <i class="fas fa-book-open level-icon"></i>
         <h2 class="level-title">Commencer</h2>
-      </div>
-  
-     
-     
+      </div> 
+  <!-- Ajoutez ceci juste après votre grid -->
+  <div class="total-score-container">
+    <div class="total-score-btn">
+      <i class="fas fa-crown"></i>
+      <span>Score Global</span>
     </div>
+  </div>
+</div>
+     
+     
+     
   </div>
 
   <!-- Quiz Selection Page -->
@@ -1293,7 +1305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Generate quiz cards dynamically
     function generateQuizCards() {
       elements.quizGrid.innerHTML = '';
-      for (let i = 1; i <= 100; i++) {
+      for (let i = 1; i <= 10; i++) {
         const quizCard = document.createElement('div');
         quizCard.className = 'quiz-card';
         quizCard.innerHTML = `
