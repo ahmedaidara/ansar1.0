@@ -147,12 +147,15 @@
             text-align: center;
         }
         
-        .bead-styles {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+       .bead-styles {
+    display: flex;
+    justify-content: space-between; /* Au lieu de "center" */
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 0 20px; /* Ajoute un peu de marge intérieure si nécessaire */
+    max-width: 100%; /* S'assure que ça ne dépasse pas */
+    margin: 0 auto; /* Centrer le contenu */
+}
         
         .bead-style {
             width: 40px;
@@ -301,7 +304,16 @@
         <button class="reset-btn" id="reset">Réinitialiser</button>
     </div>
     
-  
+    <div class="footer">
+        <div class="footer-title">Couleurs de Perles</div>
+        <div class="bead-styles">
+            <div class="bead-style selected" style="background-color: #9b9b22;"></div>
+            <div class="bead-style" style="background-color: #30412a;"></div>
+            <div class="bead-style" style="background-color: #555555;"></div>
+            <div class="bead-style" style="background-color: #333333;"></div>
+            <div class="bead-style" style="background-color: #805d47;"></div>
+        </div>
+    </div>
     
     <div class="notification" id="notification"></div>
     
