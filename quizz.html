@@ -232,7 +232,14 @@
       background: rgba(5, 150, 105, 0.2);
       color: #10b981;
     }
-    
+    /* Animation pour le changement de question */
+.question-container {
+  transition: opacity 0.1s ease;
+}
+
+.question-container.fade-out {
+  opacity: 0;
+}
     .option-btn.incorrect {
       border-color: var(--danger);
       background: rgba(220, 38, 38, 0.2);
@@ -481,9 +488,7 @@
       </div>
     </div>
 
-    <button id="nextBtn" class="btn-primary w-full hidden mt-6 py-4 text-lg">
-      <i class="fas fa-arrow-right mr-2"></i> Question suivante
-    </button>
+ 
   </div>
 
   <!-- Result Modal -->
@@ -539,7 +544,7 @@ const realQuizData = {
     "question": "Dans quelle sourate se trouve le verset : \"فَأَمَّا ٱلْإِنسَٰنَ إِذَا مَا ٱبْتَلَىٰهُ رَبُّهُۥ\" ?",
     "ayah": "",
     "options": ["Al-Balad", "Al-Fajr", "Ad-Duha", "Al-Insan"],
-    "answer": 3
+    "answer": 1
   },
   {
     "type": "complete_verse",
@@ -1299,7 +1304,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  elements.nextBtn.addEventListener('click', nextQuestion);
 });
 
     // Generate quiz cards dynamically
@@ -1369,40 +1373,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function selectOption(index) {
-      const question = state.questions[state.currentQuestion];
-      const buttons = document.querySelectorAll('.option-btn');
-      
-      buttons.forEach((btn, i) => {
-        btn.disabled = true;
-        if (i === question.answer) {
-          btn.classList.add('correct');
-        } else if (i === index && i !== question.answer) {
-          btn.classList.add('incorrect');
-        }
-      });
-      
-      state.answers.push({ 
-        question: state.currentQuestion, 
-        selected: index, 
-        correct: question.answer 
-      });
-      
-      if (index === question.answer) {
-        state.score++;
-      }
-      
-      elements.nextBtn.classList.remove('hidden');
-    }
-
+  const question = state.questions[state.currentQuestion];
+  const buttons = document.querySelectorAll('.option-btn');
+  
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === question.answer) {
+      btn.classList.add('correct');
+    } else if (i === index && i !== question.answer) { 
+      btn.classList.add('incorrect');
+    } 
+  });
+  
+  state.answers.push({ 
+    question: state.currentQuestion, 
+    selected: index, 
+    correct: question.answer 
+  });
+  
+  if (index === question.answer) {
+    state.score++;
+  }
+  
+  // Supprimez cette ligne qui affiche le bouton suivant
+  // elements.nextBtn.classList.remove('hidden');
+  
+  // Ajoutez un délai avant de passer à la question suivante
+  setTimeout(() => {
+    nextQuestion();
+  }, 1500); // 3000 ms = 3 secondes
+}
     function nextQuestion() {
-      state.currentQuestion++;
-      if (state.currentQuestion < state.questions.length) {
-        loadQuestion();
-      } else {
-        showResult();
-      }
+  // Ajoutez un effet de fondu
+  document.querySelector('.question-container').classList.add('fade-out');
+  
+  setTimeout(() => {
+    state.currentQuestion++;
+    if (state.currentQuestion < state.questions.length) {
+      document.querySelector('.question-container').classList.remove('fade-out');
+      loadQuestion();
+    } else {
+      showResult();
     }
-
+  }, 500); // Délai correspondant à la durée de l'animation
+}
     function showResult() {
       elements.finalScore.textContent = `${state.score}/10`;
       elements.resultMessage.textContent = 
@@ -1447,3 +1461,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </script>
 </body>
 </html>
+
+
+
