@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direction de la Qibla</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .compass {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            background: #f5f5f5;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            margin: 0 auto;
+            transition: transform 0.1s ease;
+            border: 4px solid #f5f5f5;
+        }
+        
+        .compass.qibla-aligned {
+            border-color: #38a169;
+            box-shadow: 0 0 20px rgba(56, 161, 105, 0.5);
+        }
+        
+        .compass-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .compass-arrow {
+            width: 40px;
+            height: 40px;
+            background-color: #e53e3e;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        
+        .compass-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        
+        .compass-marker {
+            position: absolute;
+            width: 2px;
+            height: 15px;
+            background: #333;
+            left: 50%;
+            transform-origin: bottom center;
+        }
+        
+        .compass-cardinal {
+            position: absolute;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .qibla-indicator {
+            position: absolute;
+            width: 4px;
+            height: 100px;
+            background-color: #38a169;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: bottom center;
+            z-index: 5;
+        }
+        
+        .qibla-label {
+            position: absolute;
+            color: #38a169;
+            font-weight: bold;
+            transform: translate(-50%, -120%);
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        
+        .accuracy-indicator {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e53e3e;
+            border-radius: 50%;
+            left: 50%;
+            bottom: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+        }
+        
+        @media (max-width: 640px) {
+            .compass {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .qibla-indicator {
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden p-6">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Direction de la Qibla</h1>
+            <p class="text-gray-600">Orientez-vous vers la Kaaba à La Mecque</p>
+        </div>
+        
+        <div class="compass mb-6" id="compass">
+            <div class="compass-inner">
+                <div class="compass-arrow"></div>
+                <div class="compass-markers" id="compass-markers"></div>
+                <div class="qibla-indicator" id="qibla-indicator">
+                    <span class="qibla-label">Qibla</span>
+                </div>
+                <div class="accuracy-indicator" id="accuracy-indicator"></div>
+            </div>
+        </div>
+        
+        <div class="bg-blue-50 rounded-lg p-4 mb-6">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-location-arrow text-blue-500 mr-2"></i>
+                <span class="font-semibold">Votre position:</span>
+                <span id="location" class="ml-2 text-gray-700">Détection en cours...</span>
+            </div>
+            <div class="flex items-center mb-2">
+                <i class="fas fa-compass text-green-600 mr-2"></i>
+                <span class="font-semibold">Direction Qibla:</span>
+                <span id="qibla-direction" class="ml-2 text-gray-700">Calcul...</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-bullseye text-red-500 mr-2"></i>
+                <span class="font-semibold">Précision:</span>
+                <span id="accuracy" class="ml-2 text-gray-700">-</span>
+            </div>
+        </div>
+        
+        <div class="flex justify-center">
+            <button id="reload-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                <i class="fas fa-sync-alt mr-2"></i> Actualiser
+            </button>
+        </div>
+    </div>
+    
+    <div class="mt-6 text-center text-gray-500 text-sm">
+        <p>Tournez votre téléphone pour aligner le marqueur Qibla avec le haut de l'écran.</p>
+        <p>Le cercle deviendra vert lorsque vous serez correctement orienté.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const compassElement = document.getElementById('compass');
+            const qiblaIndicator = document.getElementById('qibla-indicator');
+            const locationDisplay = document.getElementById('location');
+            const qiblaDirectionDisplay = document.getElementById('qibla-direction');
+            const reloadBtn = document.getElementById('reload-btn');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const accuracyIndicator = document.getElementById('accuracy-indicator');
+            const compassMarkers = document.getElementById('compass-markers');
+            
+            // Create compass markers
+            for (let i = 0; i < 360; i += 15) {
+                const marker = document.createElement('div');
+                marker.className = 'compass-marker';
+                marker.style.transform = `rotate(${i}deg)`;
+                
+                if (i % 90 === 0) {
+                    const cardinal = document.createElement('div');
+                    cardinal.className = 'compass-cardinal';
+                    let direction;
+                    
+                    if (i === 0) direction = 'N';
+                    else if (i === 90) direction = 'E';
+                    else if (i === 180) direction = 'S';
+                    else if (i === 270) direction = 'O';
+                    
+                    cardinal.textContent = direction;
+                    cardinal.style.transform = `rotate(${-i}deg)`;
+                    
+                    // Position the cardinal points
+                    const angleRad = (i * Math.PI) / 180;
+                    const radius = 120;
+                    const x = radius * Math.sin(angleRad);
+                    const y = -radius * Math.cos(angleRad);
+                    
+                    cardinal.style.left = `calc(50% + ${x}px)`;
+                    cardinal.style.top = `calc(50% + ${y}px)`;
+                    
+                    marker.style.height = '25px';
+                    marker.style.backgroundColor = '#e53e3e';
+                    
+                    compassMarkers.appendChild(cardinal);
+                }
+                
+                compassMarkers.appendChild(marker);
+            }
+            
+            let currentPosition = null;
+            let currentHeading = null;
+            let qiblaDirection = null;
+            let watchId = null;
+            
+            // Correct calculation of Qibla direction
+            function calculateQiblaDirection(lat, lng) {
+                // Kaaba coordinates (verified)
+                const kaabaLat = 21.422487;
+                const kaabaLng = 39.826206;
+                
+                const φ1 = lat * Math.PI / 180;
+                const φ2 = kaabaLat * Math.PI / 180;
+                const Δλ = (kaabaLng - lng) * Math.PI / 180;
+                
+                const y = Math.sin(Δλ) * Math.cos(φ2);
+                const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+                let θ = Math.atan2(y, x);
+                
+                // Convert from radians to degrees and normalize to 0-360
+                const bearing = ((θ * 180 / Math.PI) + 360) % 360;
+                
+                return bearing;
+            }
+            
+            // Update compass display
+            function updateCompass() {
+                if (currentPosition && currentHeading !== null && qiblaDirection !== null) {
+                    // Adjust for device orientation (corrected calculation)
+                    const adjustedDirection = (360 - currentHeading + qiblaDirection) % 360;
+                    
+                    // Position the Qibla indicator
+                    qiblaIndicator.style.transform = `rotate(${adjustedDirection}deg)`;
+                    
+                    // Rotate the compass to show current heading
+                    compassElement.style.transform = `rotate(${currentHeading}deg)`;
+                    
+                    // Update text displays
+                    locationDisplay.textContent = 
+                        `${currentPosition.coords.latitude.toFixed(4)}, ${currentPosition.coords.longitude.toFixed(4)}`;
+                    
+                    qiblaDirectionDisplay.textContent = `${Math.round(qiblaDirection)}° ${getCardinalDirection(qiblaDirection)}`;
+                    
+                    // Check if we're aligned with Qibla (within 5 degrees)
+                    const alignmentThreshold = 5;
+                    const alignmentDiff = Math.min(
+                        Math.abs(adjustedDirection - 0),
+                        Math.abs(adjustedDirection - 360)
+                    );
+                    
+                    if (alignmentDiff <= alignmentThreshold) {
+                        compassElement.classList.add('qibla-aligned');
+                        accuracyIndicator.style.backgroundColor = '#38a169';
+                    } else {
+                        compassElement.classList.remove('qibla-aligned');
+                        accuracyIndicator.style.backgroundColor = '#e53e3e';
+                    }
+                    
+                    // Update accuracy display
+                    if (currentPosition.coords.accuracy) {
+                        accuracyDisplay.textContent = `${Math.round(currentPosition.coords.accuracy)} mètres`;
+                        
+                        // Visual accuracy indicator (size changes based on accuracy)
+                        const accuracySize = Math.min(30, Math.max(10, currentPosition.coords.accuracy / 10));
+                        accuracyIndicator.style.width = `${accuracySize}px`;
+                        accuracyIndicator.style.height = `${accuracySize}px`;
+                    }
+                }
+            }
+            
+            // Get cardinal direction from degrees
+            function getCardinalDirection(angle) {
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'];
+                return directions[Math.round(angle / 45) % 8];
+            }
+            
+            // Handle device orientation (corrected for mobile devices)
+            function handleOrientation(event) {
+                if (event.alpha !== null) {
+                    // Correct for different device orientations
+                    let alpha = event.alpha; // compass direction (0-360)
+                    
+                    // Some devices might need adjustment
+                    if (window.orientation === 90) {
+                        alpha = (alpha + 90) % 360;
+                    } else if (window.orientation === -90 || window.orientation === 270) {
+                        alpha = (alpha - 90) % 360;
+                    } else if (window.orientation === 180) {
+                        alpha = (alpha + 180) % 360;
+                    }
+                    
+                    currentHeading = alpha;
+                    updateCompass();
+                }
+            }
+            
+            // Get current position with high accuracy
+            function getLocation() {
+                if (navigator.geolocation) {
+                    // Stop any existing watcher
+                    if (watchId) {
+                        navigator.geolocation.clearWatch(watchId);
+                    }
+                    
+                    // Start new watcher for continuous updates
+                    watchId = navigator.geolocation.watchPosition(
+                        function(position) {
+                            currentPosition = position;
+                            qiblaDirection = calculateQiblaDirection(
+                                position.coords.latitude, 
+                                position.coords.longitude
+                            );
+                            updateCompass();
+                        },
+                        function(error) {
+                            console.error("Erreur de géolocalisation:", error);
+                            locationDisplay.textContent = "Erreur de géolocalisation";
+                        },
+                        { 
+                            enableHighAccuracy: true,
+                            maximumAge: 10000,
+                            timeout: 5000
+                        }
+                    );
+                } else {
+                    locationDisplay.textContent = "Géolocalisation non supportée";
+                }
+            }
+            
+            // Initialize
+            getLocation();
+            
+            // Add event listeners
+            if (window.DeviceOrientationEvent) {
+                // Request permission on iOS 13+
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    reloadBtn.addEventListener('click', function() {
+                        DeviceOrientationEvent.requestPermission()
+                            .then(permissionState => {
+                                if (permissionState === 'granted') {
+                                    window.addEventListener('deviceorientation', handleOrientation);
+                                    getLocation();
+                                }
+                            })
+                            .catch(console.error);
+                    });
+                } else {
+                    // Standard browsers
+                    window.addEventListener('deviceorientation', handleOrientation);
+                }
+            } else {
+                console.log("L'orientation de l'appareil n'est pas supportée");
+            }
+            
+            reloadBtn.addEventListener('click', function() {
+                getLocation();
+                if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
