@@ -244,11 +244,12 @@ case 'hadith':
   break;
         // Dans le switch/case de showPage(), ajoutez ces nouveaux cas :
 case 'quibla':
-  const qiblaIframe = document.querySelector('#qibla iframe');
+  const qiblaIframe = document.querySelector('#quibla iframe');
   if (qiblaIframe && (!qiblaIframe.src || qiblaIframe.src === '')) {
     qiblaIframe.src = 'quibla.html';
   }
   break;
+
  
 case 'tasbih':
   const tasbihIframe = document.querySelector('#tasbih iframe');
@@ -265,7 +266,7 @@ case 'priere':
   break;
 
 case 'quizz':
-  const quizIframe = document.querySelector('#quiz iframe');
+  const quizIframe = document.querySelector('#quizz iframe');
   if (quizIframe && (!quizIframe.src || quizIframe.src === '')) {
     quizIframe.src = 'quizz.html';
   }
