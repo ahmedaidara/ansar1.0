@@ -399,7 +399,6 @@
             <div class="time-display" id="current-time">--:--:--</div>
             <div class="date-display">
                 <div id="gregorian-date">--/--/----</div>
-                <div class="hijri-date" id="hijri-date">--/--/---- AH</div>
             </div>
         </div>
 
@@ -438,7 +437,6 @@
             // Éléments du DOM
             const currentTimeElement = document.getElementById('current-time');
             const gregorianDateElement = document.getElementById('gregorian-date');
-            const hijriDateElement = document.getElementById('hijri-date');
             const nextPrayerNameElement = document.getElementById('next-prayer-name');
             const nextPrayerTimeElement = document.getElementById('next-prayer-time');
             const countdownElement = document.getElementById('countdown');
@@ -607,10 +605,10 @@
                     console.error("Erreur des heures de prière:", error);
                     // Valeurs par défaut en cas d'erreur
                     prayerTimes = {
-                        Fajr: '05:30',
-                        Dhuhr: '12:30',
-                        Asr: '15:45',
-                        Maghrib: '18:30',
+                        Fajr: '06:00',
+                        Dhuhr: '14:15',
+                        Asr: '17:00',
+                        Maghrib: '19:00',
                         Isha: '20:00'
                     };
                     renderPrayerTimes();
