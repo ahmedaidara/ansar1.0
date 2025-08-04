@@ -1,41 +1,26 @@
 {
   "name": "ANSAR ALMOUYASSAR",
   "short_name": "ANSAR",
-  "start_url": "/?source=pwa",
-  "display": "fullscreen",
-  "theme_color": "#2C3E50",
-  "background_color": "#FFFFFF",
-  "orientation": "portrait",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "display_override": ["standalone", "browser"],
+  "id": "/index.html",
+  "background_color": "#073332",
+  "theme_color": "#9b9c28",
+  "description": "Application pour l'association ANSAR ALMOUYASSAR, regroupant les anciens élèves de l'institut coranique Al Mouyassar.",
   "icons": [
     {
-      "src": "/assets/images/logo-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/assets/images/logo-192x192.png",
+      "src": "assets/images/logo-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
-      "src": "/assets/images/logo-192x192-maskable.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/assets/images/logo-512x512.png",
+      "src": "assets/images/logo-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/assets/images/logo-512x512-maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
-  ]
+  ],
+  "scope": "/",
+  "orientation": "portrait",
+  "lang": "fr-FR"
 }
