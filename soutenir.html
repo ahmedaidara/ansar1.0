@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nous Soutenir - Ansar AlMouyassar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0a5c36; /* Vert islamique profond */
+            --secondary-color: #228B22; /* Vert forêt */
+            --accent-color: #2E8B57; /* Vert mer */
+            --light-color: #f5fef9; /* Vert très clair */
+            --dark-color: #013220; /* Vert foncé */
+            --text-color: #333;
+            --gold-color: #c9a227; /* Or islamique */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+        
+        /* Header Styles */
+        .top-nav-bar {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .title-container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .title-container p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .logo {
+            height: 70px;
+            width: 70px;
+            object-fit: contain;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            padding: 3px;
+            background-color: white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        /* Verse Section */
+        .verse-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--gold-color);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .verse-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="50" font-family="Arial" font-size="20" fill="rgba(0,0,0,0.03)">ﷲ</text></svg>');
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .verse-arabic {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            line-height: 3.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .verse-translation {
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .verse-reference {
+            color: var(--accent-color);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Donation Section */
+        .donation-intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .donation-intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .donation-intro h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gold-color);
+        }
+        
+        .donation-intro p {
+            color: var(--text-color);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .payment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-top: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+            border-top-color: var(--accent-color);
+        }
+        
+        .payment-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .payment-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .payment-details {
+            margin-top: 1.5rem;
+        }
+        
+        .payment-details p {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .payment-details strong {
+            min-width: 120px;
+            display: inline-block;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .payment-icon {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+        
+        .wave { color: #23ce6b; }
+        .orange { color: #ff6600; }
+        .bank { color: var(--primary-color); }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 2rem;
+            margin-top: 5rem;
+        }
+        
+        footer p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .contact-info {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.3s;
+        }
+        
+        .contact-info a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-nav-bar {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem 1rem;
+            }
+            
+            .title-container {
+                margin-bottom: 1rem;
+            }
+            
+            .logo {
+                margin-top: 1rem;
+                height: 60px;
+                width: 60px;
+            }
+            
+            .verse-arabic {
+                font-size: 1.6rem;
+                line-height: 2.5rem;
+            }
+            
+            .verse-section, .payment-card {
+                padding: 1.5rem;
+            }
+            
+            .donation-intro h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .verse-arabic {
+                font-size: 1.4rem;
+                line-height: 2.2rem;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav-bar">
+        <div class="title-container">
+            <h1>ANSAR ALMOUYASSAR</h1>
+            <p>Association des ressortissants de l'institut coranique Al Mouyassar</p>
+        </div>
+        <img src="images/logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
+    </div>
+    
+    <div class="main-content">
+        <section class="verse-section">
+            <div class="verse-arabic">
+                ﴿مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ أَنۢبَتَتْ سَبْعَ سَنَابِلَ فِى كُلِّ سُنۢبُلَةٍۢ مِّا۟ئَةُ حَبَّةٍۢ ۗ وَٱللَّهُ يُضَـٰعِفُ لِمَن يَشَآءُ ۗ وَٱللَّهُ وَٰسِعٌ عَلِيمٌ﴾
+            </div>
+            <div class="verse-translation">
+                "Ceux qui dépensent leurs biens dans le sentier d'Allah ressemblent à un grain d'où naissent sept épis, à cent grains l'épi. Car Allah multiplie la récompense à qui Il veut et la grâce d'Allah est immense, et Il est Omniscient."
+            </div>
+            <div class="verse-reference">
+                Sourate Al-Baqarah (2:261)
+            </div>
+        </section>
+        
+        <section class="donation-intro">
+            <h2>Soutenir Notre Association</h2>
+            <p>
+                Votre soutien financier nous permet de poursuivre nos activités au service de la communauté musulmane. 
+                Chaque don, quel que soit son montant, contribue directement à nos projets éducatifs, sociaux et humanitaires.
+                Votre générosité est un acte de charité continue (Sadaqa Jariya) qui vous profitera dans ce monde et dans l'au-delà.
+            </p>
+        </section>
+        
+        <div class="payment-methods">
+            <div class="payment-card">
+                <div class="payment-icon">
+                    <i class="fas fa-mobile-alt wave"></i>
+                </div>
+                <h3>Wave Mobile Money</h3>
+                <div class="payment-details">
+                    <p><strong>Numéro:</strong> +221 77 184 77 37</p>
+                </div>
+            </div>
+            
+            <div class="payment-card">
+                <div class="payment-icon">
+                    <i class="fas fa-money-bill-wave orange"></i>
+                </div>
+                <h3>Orange Money</h3>
+                <div class="payment-details">
+                    <p><strong>Numéro:</strong> +221 77 184 77 37</p>
+                </div>
+            </div>
+            
+           
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+      
+        <p>
+            Pour toutes suggessions, envoyer nous un Mail vers
+        </p>
+        <div class="contact-info">
+            <a href="mailto:contact@ansaralmouyassar.sn"><i class="fas fa-envelope"></i> ansarmouyassar@gmail.com</a>
+            <a href="tel:+221338765432"><i class="fas fa-phone"></i> +221 78 598 11 21</a>
+        </div>
+    </footer>
+</body>
+</html>
