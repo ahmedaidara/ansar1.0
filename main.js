@@ -2510,7 +2510,7 @@ document.querySelector('#send-motivation-btn')?.addEventListener('click', async 
   const motivationText = document.querySelector('#motivation-text').value.trim();
   
   if (!motivationText) {
-    alert("Veuillez entrer un message motivationnel");
+    alert("Veuillez entrer un message");
     return;
   }
 
@@ -2531,7 +2531,7 @@ document.querySelector('#send-motivation-btn')?.addEventListener('click', async 
 
 // Gestion de la suppression des messages motivationnels
 document.querySelector('#delete-motivation-btn')?.addEventListener('click', async function() {
-  if (!confirm("Voulez-vous vraiment supprimer le dernier message motivationnel ?")) {
+  if (!confirm("Voulez-vous vraiment supprimer le dernier message ?")) {
     return;
   }
 
@@ -2585,7 +2585,7 @@ async function updateMotivationDisplay() {
             if (homeDisplay) {
               homeDisplay.innerHTML = `
                 <div class="motivation-card">
-                  <p>${latest.text || "Aucun message motivationnel"}</p>
+                  <p>${latest.text || "Aucun message"}</p>
                   ${latest.createdAt ? `<small>Posté le ${formattedDate}</small>` : ''}
                 </div>
               `;
@@ -2596,7 +2596,7 @@ async function updateMotivationDisplay() {
             if (homeDisplay) {
               homeDisplay.innerHTML = `
                 <div class="motivation-card">
-                  <p>Aucun message motivationnel</p>
+                  <p>Aucun message</p>
                 </div>
               `;
             }
