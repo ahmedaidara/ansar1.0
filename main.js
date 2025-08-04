@@ -2855,7 +2855,7 @@ function payViaWave() {
 }
 
 function payViaOrangeMoney() {
-  alert('Paiement via Orange Money non implémenté. Redirigez vers l\'application Orange Money.');
+  window.open('https://sugu.orange-sonatel.com/mp/dcOqoOdqQorv2sQ6HNJV7C', '_blank');
 }
 
 // ==================== FONCTIONS CORAN ====================
@@ -4166,3 +4166,4 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('Service Worker registration failed:', err));
   });
 }
+
