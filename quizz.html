@@ -1289,24 +1289,26 @@ const realQuizData = {
     question: 'Complétez : "وَمِنَ ٱلْإِبِلِ ٱثْنَيْنِ وَمِنَ ٱلْبَقَرِ ٱثْنَيْنِ" jusqu’à : "فَمَنْ أَظْلَمُ مِمَّنِ ٱفْتَرَىٰ عَلَى ٱللَّهِ كَذِبًۭا لِّيُضِلَّ ٱلنَّاسَ"',
     ayah: '',
     options: [
-      'بِغَيْرِ عِلْمٍ',
       'وَهُمْ يَعْلَمُونَ',
       'وَٱللَّهُ لَا يَهْدِى ٱلْقَوْمَ ٱلظَّـٰلِمِينَ',
+            'بِغَيْرِ عِلْمٍ',
+
       'إِنَّ ٱللَّهَ سَرِيعُ ٱلْحِسَابِ'
     ],
-    answer: 0
+    answer: 2
   },
   {
     type: 'meaning',
     question: 'Que signifie : "وَمَا تَفَرَّقُوٓا۟ إِلَّا مِنۢ بَعْدِ مَا جَآءَهُمُ ٱلْعِلْمُ بَغْيًۢا بَيْنَهُمْ" ?',
     ayah: '',
     options: [
-      'Ils se sont divisés par orgueil après avoir reçu la science',
       'Ils ont divergé par ignorance avant la révélation',
       'Ils ont été unis après la venue du savoir',
-      'Ils ont rejeté la science par jalousie'
+      'Ils ont rejeté la science par jalousie',
+            'Ils se sont divisés par orgueil après avoir reçu la science'
+
     ],
-    answer: 0
+    answer: 3
   },
   {
     type: 'complete_verse',
@@ -1367,13 +1369,220 @@ const realQuizData = {
     options: ['Juz 7', 'Juz 8', 'Juz 9', 'Juz 10'],
     answer: 1
   }
-]
+],
 
-
-
+//quizz
+[
+  {
+    type: 'complete_verse',
+    question: 'Complétez le verset : "وَلَقَدْ أَرْسَلْنَا مِن قَبْلِكَ رُسُلًا إِلَىٰ قَوْمِهِمْ فَجَاءُوهُم بِٱلْبَيِّنَـٰتِ"',
+    ayah: '',
+    options: [
+      'فَٱنتَقَمْنَا مِنَ ٱلَّذِينَ أَجْرَمُوا۟',
+      'فَٱصْبِرْ كَمَا صَبَرَ أُو۟لُوا۟ ٱلْعَزْمِ',
+      'فَمَا كَانَ دَعْوَىٰهُمْ إِذْ جَاءَهُم بَأْسُنَآ',
+      'فَٱسْتَكْبَرُوا۟ وَكَانُوا۟ قَوْمًۭا مُّجْرِمِينَ'
+    ],
+    answer: 2 // Réponse correcte : فَمَا كَانَ دَعْوَىٰهُمْ إِذْ جَاءَهُم بَأْسُنَآ (Sourate Ar-Rûm, 47)
+  },
+  {
+    type: 'which_surah',
+    question: 'Dans quelle sourate trouve-t-on : "وَلَقَدْ أَرْسَلْنَا رُسُلًۭا مِّن قَبْلِكَ وَجَعَلْنَا لَهُمْ أَزْوَٰجًۭا وَذُرِّيَّةًۭ" ?',
+    ayah: '',
+    options: ['Ar-Ra‘d', 'Ghâfir', 'Al-Anbiyā’', 'Yûnus'],
+    answer: 0 // Réponse correcte : Ar-Ra‘d (13:38)
+  },
+  {
+    type: 'subtle_difference',
+    question: 'Quelle est la différence entre ces deux versets : "وَمَآ أَرْسَلْنَا مِن قَبْلِكَ إِلَّا رِجَالًۭا نُّوحِىٓ إِلَيْهِمْ" dans An-Nahl et Al-Anbiyā’ ?',
+    ayah: '',
+    options: [
+      'An-Nahl ajoute "مِنْ أَهْلِ ٱلْقُرَىٰ"',
+      'Al-Anbiyā’ omet "مِن قَبْلِكَ"',
+      'An-Nahl mentionne "فَٱسْأَلُوٓا۟ أَهْلَ ٱلذِّكْرِ" alors qu’Al-Anbiyā’ le répète deux fois',
+      'Aucune différence'
+    ],
+    answer: 2 // Réponse correcte : La mention répétée dans Al-Anbiyā’ (début et fin de sourate)
+  },
+  {
+    type: 'complete_verse',
+    question: 'Complétez : "أَلَآ إِنَّ لِلَّهِ مَن فِى ٱلسَّمَـٰوَٰتِ وَمَن فِى ٱلْأَرْضِ" (Yûnus)',
+    ayah: '',
+    options: [
+      'وَإِلَيْهِ يُرْجَعُ ٱلْأَمْرُ كُلُّهُۥ',
+      'وَمَا يَتَّبِعُ ٱلَّذِينَ يَدْعُونَ مِن دُونِ ٱللَّهِ شُرَكَآءَ',
+      'وَهُوَ ٱلْغَنِىُّ ٱلْحَمِيدُ',
+      'طَوْعًۭا وَكَرْهًۭا'
+    ],
+    answer: 1 // Réponse correcte : وَمَا يَتَّبِعُ ٱلَّذِينَ يَدْعُونَ مِن دُونِ ٱللَّهِ شُرَكَآءَ (Yûnus 10:66)
+  },
+  {
+    type: 'surah_identification',
+    question: 'Dans quelle sourate trouve-t-on : "وَلِلَّهِ يَسْجُدُ مَن فِى ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضِ طَوْعًۭا وَكَرْهًۭا" ?',
+    ayah: '',
+    options: ['Ar-Ra‘d', 'An-Nahl', 'Al-Hajj', 'Az-Zumar'],
+    answer: 0 // Réponse correcte : Ar-Ra‘d (13:15)
+  },
+  {
+    type: 'verse_triplet',
+    question: 'Parmi ces trois versets, lequel contient "إِلَّا مَن شَآءَ ٱللَّهُ" ?\n1. "وَيَوْمَ يُنفَخُ فِى ٱلصُّورِ فَفَزِعَ مَن فِى ٱلسَّمَـٰوَٰتِ وَمَن فِى ٱلْأَرْضِ"\n2. "وَنُفِخَ فِى ٱلصُّورِ فَصَعِقَ مَن فِى ٱلسَّمَـٰوَٰتِ وَمَن فِى ٱلْأَرْضِ"\n3. "أَلَمْ تَرَ أَنَّ ٱللَّهَ يُسَبِّحُ لَهُۥ مَن فِى ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضِ"',
+    ayah: '',
+    options: ['1 et 2', '2 uniquement', '3 uniquement', 'Aucun'],
+    answer: 0 // Réponses correctes : An-Naml (27:87) et Az-Zumar (39:68)
+  },
+  {
+    type: 'hidden_word',
+    question: 'Quel mot manque dans ce verset d’An-Nûr comparé à Al-Hajj ? "أَلَمْ تَرَ أَنَّ ٱللَّهَ يُسَبِّحُ لَهُۥ مَن فِى ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضِ وَٱلطَّيْرُ ___"',
+    ayah: '',
+    options: ['صَـٰٓفَّـٰتٍۢ', 'وَٱلْجِبَالُ', 'وَٱلنُّجُومُ', 'وَٱلْبَحْرُ'],
+    answer: 0 // Réponse correcte : صَـٰٓفَّـٰتٍۢ (An-Nûr 24:41)
+  },
+  {
+    type: 'chronological_order',
+    question: 'Classez ces versets par ordre chronologique de révélation :\n1. "وَمَآ أَرْسَلْنَا مِن قَبْلِكَ إِلَّا رِجَالًۭا نُّوحِىٓ إِلَيْهِمْ" (Al-Anbiyā’)\n2. "وَلَقَدْ أَرْسَلْنَا رُسُلًۭا مِّن قَبْلِكَ" (Ar-Ra‘d)\n3. "وَلَقَدْ أَرْسَلْنَا مِن قَبْلِكَ رُسُلًا" (Ar-Rûm)',
+    ayah: '',
+    options: ['1-2-3', '2-3-1', '3-1-2', '2-1-3'],
+    answer: 1 // Réponse correcte : Ar-Ra‘d (Médinoise) → Ar-Rûm (Méquoise tardive) → Al-Anbiyā’ (Méquoise tardive)
+  },
+  {
+    type: 'count_occurrences',
+    question: 'Combien de fois trouve-t-on la structure "مَن فِى ٱلسَّمَـٰوَٰتِ وَمَن فِى ٱلْأَرْضِ" (avec "مَن" répété) dans le Coran ?',
+    ayah: '',
+    options: ['3 fois', '5 fois', '7 fois', '9 fois'],
+    answer: 2 // Réponses correctes : Yûnus 10:66, Al-Hajj 22:18, An-Naml 27:87, Az-Zumar 39:68, etc.
+  },
+  {
+    type: 'surah_link',
+    question: 'Quelle sourate contient BOTH : "وَلَقَدْ أَرْسَلْنَا" ET "مَن فِى ٱلسَّمَـٰوَٰتِ" dans des versets différents ?',
+    ayah: '',
+    options: ['Yûnus', 'Al-Anbiyā’', 'Ghâfir', 'Az-Zumar'],
+    answer: 3 // Réponse correcte : Az-Zumar (39:3 et 39:68)
+  }
+],
 
  
-
+[
+  {
+    type: 'micro_difference',
+    question: 'Quelle est la SEULE différence entre ces deux versets ?\n1. "وَهَـٰذَا كِتَـٰبٌ أَنزَلْنَـٰهُ مُبَارَكٌۭ مُّصَدِّقُ ٱلَّذِى بَيْنَ يَدَيْهِ" (Al-An‘ām)\n2. "وَهَـٰذَا كِتَـٰبٌ أَنزَلْنَـٰهُ مُبَارَكٌۭ فَٱتَّبِعُوهُ" (Al-An‘ām)',
+    options: [
+      'L’ajout de "مُّصَدِّقُ ٱلَّذِى بَيْنَ يَدَيْهِ" vs. "فَٱتَّبِعُوهُ"',
+      'La présence de "وَلِتُنذِرَ أُمَّ ٱلْقُرَىٰ" dans le 1er',
+      'Le 2e mentionne "وَٱتَّقُوا۟ لَعَلَّكُمْ تُرْحَمُونَ"',
+      'Aucune différence'
+    ],
+    answer: 0,
+    explanation: 'Le piège : Les deux versets sont dans la même sourate (Al-An‘ām 92 vs 155) mais avec des fins radicalement différentes.'
+  },
+  {
+    type: 'satanic_choice',
+    question: 'Parmi ces 4 versets, lequel contient "ٱلْأَسْفَلِينَ" au lieu de "ٱلْأَخْسَرِينَ" ?',
+    options: [
+      '"وَأَرَادُوا۟ بِهِۦ كَيْدًۭا فَجَعَلْنَـٰهُمُ ٱلْأَخْسَرِينَ" (Al-Anbiyā’)',
+      '"فَأَرَادُوا۟ بِهِۦ كَيْدًۭا فَجَعَلْنَـٰهُمُ ٱلْأَسْفَلِينَ" (Aṣ-Ṣāffāt)',
+      '"فَأَرَادُوا۟ بِهِۦ كَيْدًۭا فَجَعَلْنَـٰهُمُ ٱلْأَخْسَرِينَ" (An-Naml)',
+      '"وَأَرَادُوا۟ بِهِۦ كَيْدًۭا فَجَعَلْنَـٰهُمُ ٱلْأَسْفَلِينَ" (Al-Qaṣaṣ)'
+    ],
+    answer: 1,
+    trick: 'Aṣ-Ṣāffāt 98 est le SEUL verset avec "ٱلْأَسْفَلِينَ". Les autres utilisent "ٱلْأَخْسَرِينَ".'
+  },
+  {
+    type: 'phantom_word',
+    question: 'Dans "كِتَـٰبٌ أَنزَلْنَـٰهُ إِلَيْكَ مُبَارَكٌۭ لِّيَدَّبَّرُوٓا۟ ءَايَـٰتِهِۦ" (Ṣād), quel mot crucial manque comparé à Al-An‘ām 92 ?',
+    options: [
+      '"مُّصَدِّقُ ٱلَّذِى بَيْنَ يَدَيْهِ"',
+      '"وَلِتُنذِرَ أُمَّ ٱلْقُرَىٰ"',
+      '"فَٱتَّبِعُوهُ"',
+      '"وَٱتَّقُوا۟"'
+    ],
+    answer: 0,
+    hint: 'C’est la différence entre une description (Al-An‘ām) et une injonction (Ṣād).'
+  },
+  {
+    type: 'noah_nightmare',
+    question: 'Dans quel récit de Noé trouve-t-on "ٱلْمَلَأُ ٱلَّذِينَ كَفَرُوا۟ مِن قَوْمِهِۦ" au lieu de "ٱلْمَلَأُ مِن قَوْمِهِۦ" ?',
+    options: [
+      'Al-A‘rāf 60',
+      'Hūd 27',
+      'Al-‘Ankabūt 25',
+      'Nūḥ 22'
+    ],
+    answer: 0,
+    detail: 'Al-A‘rāf 60 est le SEUL endroit où "ٱلَّذِينَ كَفَرُوا۟" est ajouté. Un piège pour les mémorisations superficielles.'
+  },
+  {
+    type: 'resurrection_roulette',
+    question: 'Classer ces versets par longueur croissante de la phrase "أَوَلَمْ يَسِيرُوا۟ فِى ٱلْأَرْضِ" :\n1. Ar-Rūm 9\n2. Fāṭir 44\n3. Ghāfir 21\n4. Ghāfir 82',
+    options: [
+      '1-2-3-4',
+      '4-3-2-1',
+      '1-3-2-4',
+      '3-1-4-2'
+    ],
+    answer: 2,
+    breakdown: 'Ar-Rūm (9 mots) → Ghāfir 21 (11 mots) → Fāṭir (12 mots) → Ghāfir 82 (15 mots avec "أَكْثَرَ مِنْهُمْ").'
+  },
+  {
+    type: 'surah_doppelganger',
+    question: 'Quelle sourate contient DEUX formulations différentes de "وَمَآ أَرْسَلْنَا مِن قَبْلِكَ" dans des versets distincts ?',
+    options: [
+      'Al-Anbiyā’',
+      'Yūsuf',
+      'An-Naḥl',
+      'Ghāfir'
+    ],
+    answer: 0,
+    proof: 'Al-Anbiyā’ a : V.7 ("رِجَالًۭا نُّوحِىٓ إِلَيْهِمْ") ET V.25 ("مِن رَّسُولٍ إِلَّا نُوحِىٓ إِلَيْهِ").'
+  },
+  {
+    type: 'day_night_trap',
+    question: 'Quel verset mentionne "لِتَسْكُنُوا۟ فِيهِ وَٱلنَّهَارَ مُبْصِرًۭا" SANS "وَلِتَبْتَغُوا۟ مِن فَضْلِهِۦ" ?',
+    options: [
+      'Yūnus 67',
+      'Al-Qaṣaṣ 73',
+      'Ghāfir 61',
+      'An-Naml 86'
+    ],
+    answer: 0,
+    exception: 'Yūnus 67 est le SEUL à omettre "وَلِتَبْتَغُوا۟". Al-Qaṣaṣ/Ghāfir l’ajoutent.'
+  },
+  {
+    type: 'rescue_mission',
+    question: 'Dans quel récit le sauvetage des croyants est-il formulé "فَأَنجَيْنَـٰهُ وَمَن مَّعَهُۥ" au lieu de "فَأَنجَيْنَـٰهُ وَٱلَّذِينَ مَعَهُۥ" ?',
+    options: [
+      'Hūd (Nūḥ)',
+      'Al-A‘rāf (Hūd)',
+      'Yūnus (Nūḥ)',
+      'Ash-Shu‘arā’ (Mūsā)'
+    ],
+    answer: 2,
+    secret: 'Yūnus 73 est l’UNIQUE cas où "وَمَن مَّعَهُۥ" remplace "وَٱلَّذِينَ مَعَهُۥ" pour Noé.'
+  },
+  {
+    type: 'doubt_or_delusion',
+    question: 'Quel verset utilise "مُرِيبٌ" pour décrire le doute des mécréants ?',
+    options: [
+      'Hūd 62 ("وَإِنَّا لَفِى شَكٍّۢ مِّمَّا تَدْعُونَآ إِلَيْهِ مُرِيبٌۭ")',
+      'Ibrāhīm 9 ("وَفِى شَكٍّۢ مِّمَّا تَدْعُونَنَآ إِلَيْهِ مُرِيبٌۭ")',
+      'Al-Mu’minūn 78 ("إِن كُنتُمْ فِى شَكٍّۢ مِّنَ ٱلْبَعْثِ")',
+      'Az-Zukhruf 54 ("فَٱسْتَخَفَّ قَوْمَهُۥ فَأَطَاعُوهُ")'
+    ],
+    answer: 0,
+    nuance: 'Hūd 62 et Ibrāhīm 9 sont presque identiques, mais seul Hūd commence par "قَالُوا۟ يَـٰصَـٰلِحُ".'
+  },
+  {
+    type: 'surah_switch',
+    question: 'Quelle paire de sourates partage la phrase "وَأَشْهَدُهُمْ عَلَىٰٓ أَنفُسِهِمْ" mais avec des contextes différents ?',
+    options: [
+      'Al-Mā’idah 116 / Al-Aḥqāf 10',
+      'Al-A‘rāf 172 / Yā-Sīn 65',
+      'Al-An‘ām 19 / Fuṣṣilat 20',
+      'Al-Isrā’ 96 / Az-Zumar 69'
+    ],
+    answer: 1,
+    bombshell: 'Al-A‘rāf 172 (Pacte pré-éternel) vs. Yā-Sīn 65 (Jour du Jugement). Même phrase, sens opposés.'
+  }
+]
     // Quiz 12
    
   ]
