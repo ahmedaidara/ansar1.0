@@ -27,9 +27,22 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request).catch(() => caches.match('/offline.html'));
-    })
-  );
+  const requestURL = new URL(event.request.url);
+
+  // Si la requête est une navigation (document HTML) et ce n’est pas index.html
+  if (event.request.mode === 'navigate' && requestURL.pathname !== '/index.html') {
+    event.respondWith(
+      caches.match('/index.html').then((response) => {
+        return response || fetch('/index.html');
+      })
+    );
+  } else {
+    // Sinon comportement normal (cache ou réseau avec fallback offline)
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request).catch(() => caches.match('/offline.html'));
+      })
+    );
+  }
 });
+
