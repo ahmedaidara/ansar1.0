@@ -280,8 +280,7 @@
                 <i class="fas fa-location-arrow text-blue-400 mr-3"></i>
                 <div>
                     <div class="font-semibold text-white/80 text-sm">Votre position</div>
-                    <div id="location" class="text-white">Autorisation nécessaire...</div>
-                </div>
+<div id="location" class="text-white">En attente d'autorisation...</div>                </div>
             </div>
             <div class="flex items-center mb-3">
                 <i class="fas fa-compass text-green-400 mr-3"></i>
@@ -293,7 +292,7 @@
             <div class="flex items-center">
                 <i class="fas fa-bullseye text-red-400 mr-3"></i>
                 <div>
-                    <div class="font-semibold text-white/80 text-sm">Précision</div>
+                    <div class="font-semibold text-white/80 text-sm">Précision</div> 
                     <div id="accuracy" class="text-white">-</div>
                 </div>
             </div>
@@ -326,6 +325,19 @@
         <p>Le cercle deviendra vert lorsque vous serez correctement orienté vers la Qibla.</p>
     </div>
 
+  <div class="bg-white/10 rounded-lg p-4 mb-6 mt-6 backdrop-blur-sm border border-white/10" id="manual-location">
+    <div class="flex items-center mb-3">
+        <i class="fas fa-map-marker-alt text-yellow-400 mr-3"></i>
+        <div>
+            <div class="font-semibold text-white/80 text-sm">Position manuelle</div>
+            <input type="text" id="manual-lat" placeholder="Latitude" class="bg-white/10 border border-white/20 rounded p-2 text-white w-24">
+            <input type="text" id="manual-lng" placeholder="Longitude" class="bg-white/10 border border-white/20 rounded p-2 text-white w-24 ml-2">
+            <button id="manual-submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded ml-2">
+                <i class="fas fa-check"></i>
+            </button>
+        </div>
+    </div>
+</div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const compassElement = document.getElementById('compass');
@@ -345,7 +357,24 @@
             let qiblaDirection = null;
             let watchId = null;
             let compassStyle = '1';
+          // Essayer d'abord la géolocalisation IP
+    getApproximateLocation();
             
+          
+          // Vérification initiale des permissions
+if (navigator.permissions) {
+    navigator.permissions.query({name: 'geolocation'}).then(permissionStatus => {
+        if (permissionStatus.state === 'granted') {
+            getLocation();
+            updatePermissionUI(true);
+        }
+    });
+}
+          // Pour iOS, on ne peut pas vérifier sans demander, donc on attend l'interaction utilisateur
+if (!(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function')) {
+    // Sur les autres navigateurs, on active directement si possible
+    window.addEventListener('deviceorientation', handleOrientation);
+}
             // Initialisation des marqueurs de la boussole
             function initCompassMarkers() {
                 compassMarkers.innerHTML = '';
@@ -509,72 +538,152 @@
                     updateCompass();
                 }
             }
-            
-            // Obtention de la position géographique
-            function getLocation() {
-                if (navigator.geolocation) {
-                    // Arrêt de tout watcher existant
-                    if (watchId) {
-                        navigator.geolocation.clearWatch(watchId);
-                    }
-                    
-                    // Démarrage d'un nouveau watcher pour des mises à jour continues
-                    watchId = navigator.geolocation.watchPosition(
-                        function(position) {
-                            currentPosition = position;
-                            qiblaDirection = calculateQiblaDirection(
-                                position.coords.latitude, 
-                                position.coords.longitude
-                            );
-                            updateCompass();
-                        },
-                        function(error) {
-                            console.error("Erreur de géolocalisation:", error);
-                            locationDisplay.textContent = "Erreur - Activez la géolocalisation";
-                            accuracyDisplay.textContent = "-";
-                        },
-                        { 
-                            enableHighAccuracy: true,
-                            maximumAge: 10000,
-                            timeout: 10000
-                        }
-                    );
-                } else {
-                    locationDisplay.textContent = "Géolocalisation non supportée";
-                }
+            // Ajoutez dans votre DOMContentLoaded
+// Placez ce code dans le DOMContentLoaded, après les autres écouteurs d'événements
+document.getElementById('manual-submit').addEventListener('click', function() {
+    // Remplacer les virgules par des points pour la conversion
+    const lat = parseFloat(document.getElementById('manual-lat').value.replace(',', '.'));
+    const lng = parseFloat(document.getElementById('manual-lng').value.replace(',', '.'));
+    
+    if (!isNaN(lat) && !isNaN(lng)) {
+        currentPosition = {
+            coords: {
+                latitude: lat,
+                longitude: lng,
+                accuracy: 100 // Précision arbitraire pour position manuelle
             }
+        };
+        
+        // Calculer la direction de la Qibla
+        qiblaDirection = calculateQiblaDirection(lat, lng);
+        
+        // Mettre à jour l'affichage
+        locationDisplay.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)} (Manuelle)`;
+        qiblaDirectionDisplay.textContent = `${Math.round(qiblaDirection)}° ${getCardinalDirection(qiblaDirection)}`;
+        accuracyDisplay.textContent = "Position manuelle";
+        
+        // Si on a l'orientation de l'appareil, mettre à jour la boussole
+        if (currentHeading !== null) {
+            updateCompass();
+        } else {
+            // Sinon, juste orienter la Qibla vers le haut (0°)
+            qiblaIndicator.style.transform = `rotate(0deg)`;
+            compassElement.style.transform = `rotate(${-qiblaDirection}deg)`;
+        }
+    } else {
+        alert("Veuillez entrer des coordonnées valides");
+    }
+});    // Obtention de la position géographique
+           // Modifiez la fonction getLocation() pour mieux gérer les permissions
+function getLocation() {
+    if (navigator.geolocation) {
+        if (watchId) {
+            navigator.geolocation.clearWatch(watchId);
+        }
+        
+        watchId = navigator.geolocation.watchPosition(
+            function(position) {
+                currentPosition = position;
+                qiblaDirection = calculateQiblaDirection(
+                    position.coords.latitude, 
+                    position.coords.longitude
+                );
+                updateCompass();
+                updatePermissionUI(true);
+            },
+            function(error) {
+                console.error("Erreur de géolocalisation:", error);
+                let errorMessage = "Erreur de localisation";
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "Veuillez autoriser la localisation";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "Localisation indisponible";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "Temps écoulé";
+                        break;
+                    default:
+                        errorMessage = "Erreur inconnue";
+                }
+                
+                locationDisplay.textContent = errorMessage;
+                accuracyDisplay.textContent = "-";
+                updatePermissionUI(false);
+            },
+            { 
+                enableHighAccuracy: true,
+                maximumAge: 10000,
+                timeout: 15000
+            }
+        );
+    } else {
+        locationDisplay.textContent = "Géolocalisation non supportée";
+        updatePermissionUI(false);
+    }
+}
             
             // Demande des permissions
-            function requestPermissions() {
-                // Demande de permission pour la géolocalisation
-                getLocation();
-                
-                // Demande de permission pour les capteurs (iOS 13+)
-                if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    DeviceOrientationEvent.requestPermission()
-                        .then(permissionState => {
-                            if (permissionState === 'granted') {
-                                window.addEventListener('deviceorientation', handleOrientation);
-                                permissionBtn.textContent = "Autorisé";
-                                permissionBtn.classList.remove('bg-blue-600');
-                                permissionBtn.classList.add('bg-green-600');
-                                permissionBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Autorisé';
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Permission refusée:", error);
-                            permissionBtn.textContent = "Réessayer";
-                        });
-                } else {
-                    // Navigateurs standard
+      // Modifiez la fonction requestPermissions() pour qu'elle soit plus directe
+function requestPermissions() {
+    // Cette fonction va directement demander la localisation
+    getLocation();
+    
+    // Pour iOS, demande spécifique pour les capteurs
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === 'granted') {
                     window.addEventListener('deviceorientation', handleOrientation);
-                    permissionBtn.textContent = "Autorisé";
-                    permissionBtn.classList.remove('bg-blue-600');
-                    permissionBtn.classList.add('bg-green-600');
-                    permissionBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Autorisé';
+                    updatePermissionUI(true);
                 }
+            })
+            .catch(console.error);
+    }
+}
+
+          function updatePermissionUI(granted) {
+    if (granted) {
+        permissionBtn.textContent = "Autorisé";
+        permissionBtn.classList.remove('bg-blue-600');
+        permissionBtn.classList.add('bg-green-600');
+        permissionBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Autorisé';
+    } else {
+        permissionBtn.textContent = "Autoriser";
+        permissionBtn.classList.add('bg-blue-600');
+        permissionBtn.classList.remove('bg-green-600');
+        permissionBtn.innerHTML = '<i class="fas fa-location-dot mr-2"></i> Autoriser';
+    }
+}
+          
+          // Ajoutez cette fonction alternative
+function getApproximateLocation() {
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.latitude && data.longitude) {
+                currentPosition = {
+                    coords: {
+                        latitude: data.latitude,
+                        longitude: data.longitude,
+                        accuracy: 5000 // Précision très approximative (en mètres)
+                    }
+                };
+                qiblaDirection = calculateQiblaDirection(data.latitude, data.longitude);
+                updateCompass();
+                
+                locationDisplay.textContent = `${data.latitude.toFixed(2)}, ${data.longitude.toFixed(2)} (Approximative)`;
+                accuracyDisplay.textContent = "~5 km (Basé sur IP)";
             }
-            
+        })
+        .catch(error => {
+            console.error("Erreur de géolocalisation IP:", error);
+            locationDisplay.textContent = "Impossible de déterminer la position";
+        });
+}
+
             // Changement de style de la boussole
             function changeCompassStyle(style) {
                 compassStyle = style;
@@ -601,24 +710,37 @@
             }
             
             // Initialisation
-            initCompassMarkers();
-            
-            // Gestion des événements
-            permissionBtn.addEventListener('click', requestPermissions);
-            reloadBtn.addEventListener('click', getLocation);
-            
-            // Sélection du style
-            styleOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    changeCompassStyle(this.dataset.style);
-                });
-            });
-            
-            // Pour les navigateurs non iOS, on active directement les capteurs si disponibles
-            if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
-                window.addEventListener('deviceorientation', handleOrientation);
-            }
+            // Initialisation de base
+    initCompassMarkers();
+    
+    // Essayer la géolocalisation IP en premier
+    getApproximateLocation();
+    
+    // Écouteurs d'événements
+    permissionBtn.addEventListener('click', requestPermissions);
+    reloadBtn.addEventListener('click', function() {
+        locationDisplay.textContent = "Actualisation en cours...";
+        getLocation();
+    });
+    
+    // Pour les capteurs (sauf iOS)
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+        window.addEventListener('deviceorientation', handleOrientation);
+    }
+    
+    // Style de la boussole
+    styleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            changeCompassStyle(this.dataset.style);
         });
+    });
+    
+    // Saisie manuelle
+    document.getElementById('manual-submit').addEventListener('click', function() {
+        // ... (le code de saisie manuelle ci-dessus)
+    });
+});
+      
     </script>
 </body>
 </html>
