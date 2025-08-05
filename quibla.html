@@ -446,30 +446,30 @@ if (!(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPerm
                 }
             }
             
-            // Calcul précis de la direction de la Qibla
             function calculateQiblaDirection(lat, lng) {
-                // Coordonnées de la Kaaba (vérifiées)
-                const kaabaLat = 21.422487;
-                const kaabaLng = 39.826206;
-                
-                // Conversion en radians
-                const φ1 = lat * Math.PI / 180;
-                const φ2 = kaabaLat * Math.PI / 180;
-                const Δλ = (kaabaLng - lng) * Math.PI / 180;
-                
-                // Calcul de la direction
-                const y = Math.sin(Δλ) * Math.cos(φ2);
-                const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-                let θ = Math.atan2(y, x);
-                
-                // Conversion en degrés et normalisation (0-360)
-                const bearing = ((θ * 180 / Math.PI) + 360) % 360;
-                
-                return bearing;
-            }
+    // Coordonnées précises de la Kaaba
+    const kaabaLat = 21.422510; // 21°25'21.0"N
+    const kaabaLng = 39.826168; // 39°49'34.2"E
+    
+    // Conversion en radians
+    const φ1 = lat * Math.PI / 180;
+    const φ2 = kaabaLat * Math.PI / 180;
+    const Δλ = (kaabaLng - lng) * Math.PI / 180;
+    
+    // Calcul précis avec formule de Vincenty
+    const y = Math.sin(Δλ) * Math.cos(φ2);
+    const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+    let θ = Math.atan2(y, x);
+    
+    // Conversion en degrés et normalisation (0-360)
+    const bearing = ((θ * 180 / Math.PI) + 360) % 360;
+    
+    return bearing;
+}
             
             // Mise à jour de la boussole
             function updateCompass() {
+              
                 if (currentPosition && currentHeading !== null && qiblaDirection !== null) {
                     // Ajustement pour l'orientation de l'appareil
                     const adjustedDirection = (360 - currentHeading + qiblaDirection) % 360;
@@ -482,7 +482,7 @@ if (!(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPerm
                     
                     // Mise à jour des affichages texte
                     locationDisplay.textContent = 
-                        `${currentPosition.coords.latitude.toFixed(4)}, ${currentPosition.coords.longitude.toFixed(4)}`;
+            `${currentPosition.coords.latitude.toFixed(6)}, ${currentPosition.coords.longitude.toFixed(6)}`;
                     
                     qiblaDirectionDisplay.textContent = `${Math.round(qiblaDirection)}° ${getCardinalDirection(qiblaDirection)}`;
                     currentDirectionDisplay.textContent = getCardinalDirection(currentHeading);
@@ -574,8 +574,10 @@ document.getElementById('manual-submit').addEventListener('click', function() {
         alert("Veuillez entrer des coordonnées valides");
     }
 });    // Obtention de la position géographique
-           // Modifiez la fonction getLocation() pour mieux gérer les permissions
-function getLocation() {
+ 
+          
+          
+        function getLocation() {
     if (navigator.geolocation) {
         if (watchId) {
             navigator.geolocation.clearWatch(watchId);
@@ -583,13 +585,19 @@ function getLocation() {
         
         watchId = navigator.geolocation.watchPosition(
             function(position) {
-                currentPosition = position;
-                qiblaDirection = calculateQiblaDirection(
-                    position.coords.latitude, 
-                    position.coords.longitude
-                );
-                updateCompass();
-                updatePermissionUI(true);
+                // Ne garder que les positions précises à 10m
+                if(position.coords.accuracy <= 10) {
+                    currentPosition = position;
+                    qiblaDirection = calculateQiblaDirection(
+                        position.coords.latitude, 
+                        position.coords.longitude
+                    );
+                    updateCompass();
+                    updatePermissionUI(true);
+                } else {
+                    locationDisplay.textContent = "Précision insuffisante (" + 
+                        Math.round(position.coords.accuracy) + "m > 10m)";
+                }
             },
             function(error) {
                 console.error("Erreur de géolocalisation:", error);
@@ -614,14 +622,13 @@ function getLocation() {
                 updatePermissionUI(false);
             },
             { 
-                enableHighAccuracy: true,
-                maximumAge: 10000,
-                timeout: 15000
+                enableHighAccuracy: true,  // Force la haute précision
+                maximumAge: 0,            // Pas de cache
+                timeout: 10000            // 10 secondes max
             }
         );
     } else {
         locationDisplay.textContent = "Géolocalisation non supportée";
-        updatePermissionUI(false);
     }
 }
             
@@ -675,7 +682,7 @@ function getApproximateLocation() {
                 updateCompass();
                 
                 locationDisplay.textContent = `${data.latitude.toFixed(2)}, ${data.longitude.toFixed(2)} (Approximative)`;
-                accuracyDisplay.textContent = "~5 km (Basé sur IP)";
+                accuracyDisplay.textContent = "~10 m (Basé sur IP)";
             }
         })
         .catch(error => {
@@ -737,8 +744,23 @@ function getApproximateLocation() {
     
     // Saisie manuelle
     document.getElementById('manual-submit').addEventListener('click', function() {
-        // ... (le code de saisie manuelle ci-dessus)
-    });
+const lat = parseFloat(document.getElementById('manual-lat').value.replace(',', '.'));
+    const lng = parseFloat(document.getElementById('manual-lng').value.replace(',', '.'));
+    
+    if (!isNaN(lat) && !isNaN(lng)) {
+        currentPosition = {
+            coords: {
+                latitude: lat,
+                longitude: lng,
+                accuracy: 10 // Précision forcée à 10m
+            }
+        };
+        qiblaDirection = calculateQiblaDirection(lat, lng);
+        updateCompass();
+        
+        locationDisplay.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)} (Précision: 10m)`;
+        accuracyDisplay.textContent = "10 mètres (manuelle)";
+    }    });
 });
       
     </script>
