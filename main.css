@@ -248,6 +248,8 @@ main {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  margin-bottom: 80px;
+  padding-bottom: 20px;
   background-color: var(--bg-color);
 }
 
@@ -538,6 +540,8 @@ main {
 .bottom-nav {
   position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -545,6 +549,10 @@ main {
   padding: 10px 0;
   border-top: 1px solid #ccc;
   z-index: 1000;
+  /* Ajoutez ces propriétés pour garantir qu'elle reste en place */
+  box-sizing: border-box;
+  margin: 0;
+  height: 60px; /* Hauteur fixe */
 }
 
 .nav-item {
@@ -570,7 +578,61 @@ main {
   font-size: 20px;
   color: white;
 }
+@media (max-width: 600px) {
+  /* Fixe la bottom-nav et empêche tout débordement */
+  .bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 60px !important; /* Hauteur fixe */
+    z-index: 1000 !important;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2); /* Ombre pour visibilité */
+  }
 
+  /* Ajuste l'espace pour la bottom-nav */
+  main {
+    padding-bottom: 70px !important; /* Doit être > que la hauteur de la bottom-nav */
+  }
+
+  /* Empêche le zoom sur iOS */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Correction spécifique pour iOS */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      /* iOS a besoin de cette propriété */
+      -webkit-overflow-scrolling: touch;
+    }
+    .bottom-nav {
+      padding-bottom: env(safe-area-inset-bottom); /* Prend en compte le notch */
+    }
+  }
+}
+/* Pour les pages avec la top-nav */
+#members,
+#events,
+#library,
+#projet,
+#secret,
+#treasurer,
+#president,
+#secretary,
+#settings,
+#coran,
+#hadith,
+#quibla,
+#priere,
+#quizz,
+#tasbih,
+#admin-dashboard {
+  padding-top: 100px !important;
+  padding-bottom: 80px !important; /* Ajouté pour espace en bas */
+  min-height: calc(100vh - 180px); /* Ajusté pour tenir compte des deux barres */
+}
 /* Styles pour le bouton du chatbot */
 .chatbot-button {
   position: fixed;
