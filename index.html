@@ -908,91 +908,66 @@ function handleIframeError() {
     
     <!-- Espace personnel -->
  <!-- Espace personnel -->
-    <section id="personal" class="page">
- 
-     <div id="personal-login" style="display: block;">
-  <div class="main">
-    <div class="top-section">
-      <div class="profile-container">
-        <div class="profile-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
+  <!-- Espace personnel -->
+<section id="personal" class="page">
+  <button onclick="showPage('home')" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+
+  <!-- Nouveau design de connexion (visible par défaut) -->
+ <iframe src="personal.html" 
+          style="width:100%; height:100vh; border:none;"
+          title=" ">
+  </iframe>
+  <!-- Espace membre (identique à votre version actuelle) -->
+  <div id="personal-content" style="display: none;">
+    <div class="main">
+      <div class="top-section">
+        <div class="profile-container">
+          <div class="profile-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+          <p id="personal-title" class="user-name"></p>
+          <p id="personal-role" class="user-role"></p>
         </div>
       </div>
-    </div>
-    <div class="bottom-section">
-      <div class="container">
-        <h2>Espace Personnel</h2>
-        <form id="personal-login-form" class="login-section">
-          <label for="personal-member-code">Code</label>
-          <input type="text" id="personal-member-code" placeholder=" " required>
-          <label for="personal-password">Mot de passe </label>
-          <input type="password" id="personal-password" placeholder=" " required>
-          <button type="submit" class="cta-button">Se connecter</button>
-        </form>
-        <p id="personal-error-message" style="color: red; display: none;"></p>
-        <p class="privacy-policy-link">En vous connectant, vous acceptez notre <a href="privacy-policy.html" target="_blank">Politique de Confidentialité</a></p>
+
+      <div class="bottom-section">
+        <div class="container">
+          <h1>Compte</h1>
+
+          <div id="personal-info" class="section info-section">
+            <!-- Contenu dynamique -->
+          </div>
+
+          <div id="personal-contributions" class="section cotisations-section">
+            <h2>Cotisations Mensuelles</h2>
+            <div id="cotisations-content"></div>
+            <h2>Autres Cotisations</h2>
+            <div id="global-cotisations-content"></div>
+          </div>
+
+          <div class="payment-methods">
+            <button class="payment-btn" onclick="payViaWave()">Payer via Wave</button>
+            <button class="payment-btn" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
+          </div>
+
+          <div class="section suggestions-section">
+            <h2>Suggestions</h2>
+            <form id="suggestion-form">
+              <textarea id="suggestion-text" placeholder="Écrivez vos suggestions ici..." rows="4" required></textarea>
+              <button type="submit" class="cta-button">Envoyer</button>
+            </form>
+          </div>
+
+          <button class="logout-btn" onclick="logoutPersonal()">Se Déconnecter</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-      <div id="personal-content" style="display: none;">
-        <div class="main">
-          <!-- Partie haute en vert avec profil -->
-          <div class="top-section">
-            <div class="profile-container">
-              <div class="profile-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              </div>
-              <p id="personal-title" class="user-name"></p>
-              <p id="personal-role" class="user-role"></p> <!-- Nouvel élément pour le rôle -->
-            </div>
-          </div>
-
-          <!-- Partie basse avec contenu -->
-          <div class="bottom-section">
-            <div class="container">
-              <h1>Compte</h1>
-
-              <!-- Section 1 : Informations personnelles -->
-              <div id="personal-info" class="section info-section">
-                <!-- Contenu rempli dynamiquement par JS, sans le rôle -->
-              </div>
-
-              <!-- Section 2 : Cotisations -->
-              <div id="personal-contributions" class="section cotisations-section">
-                <h2>Cotisations Mensuelles</h2> <!-- Transformé en titre -->
-                <div id="cotisations-content"></div> <!-- Contenu des cotisations -->
-                <h2>Autres Cotisations </h2> <!-- Titre pour cotisations globales -->
-                <div id="global-cotisations-content"></div> <!-- Contenu des cotisations globales -->
-              </div>
-
-              <!-- Méthodes de paiement -->
-              <div class="payment-methods">
-                <button class="payment-btn" onclick="payViaWave()">Payer via Wave</button>
-                <button class="payment-btn" onclick="payViaOrangeMoney()">Payer via Orange Money</button>
-              </div>
-
-              <!-- Section 3 : Suggestions -->
-              <div class="section suggestions-section">
-                <h2>Suggestions</h2>
-                <form id="suggestion-form">
-                  <textarea id="suggestion-text" placeholder="Écrivez vos suggestions ici..." rows="4" required></textarea>
-                  <button type="submit" class="cta-button">Envoyer</button>
-                </form>
-              </div>
-
-              <!-- Bouton Déconnexion -->
-              <button class="logout-btn" onclick="logoutPersonal()">Se Déconnecter</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
+</section>
     <!-- Espace Secret Général -->
     <section id="secret" class="page">
       <div class="top-nav-bar">
@@ -1453,19 +1428,15 @@ Prénom|Nom|Âge|Email|Téléphone|Rôle|Statut|Adresse|Activité|Résidence|Lie
     
   </main>
   <footer>
-  <nav class="bottom-nav">
-  <a href="#" class="nav-item active" onclick="showPage('home')">
-    <span class="material-icons" style="color: #9b9c28;">home</span>
-  </a>
-   
-  <a href="#" class="nav-item" onclick="showPage('messages')">
-    <span class="material-icons" style="color: #9b9c28;">notifications</span>
-  </a>
-  
-  <a href="#" class="nav-item" onclick="showPage('personal')">
-    <span class="material-icons" style="color: #9b9c28;">person</span>
-  </a>
-</nav>
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active" onclick="showPage('home')"><span class="material-icons">home</span> </a>
+     
+      
+      <a href="#" class="nav-item" onclick="showPage('messages')"><span class="material-icons">notifications</span> </a>
+      
+      <a href="#" class="nav-item" onclick="showPage('personal')"><span class="material-icons">person</span> </a>
+      
+    </nav>
   </footer>
   <div class="chatbot-button">
     <span class="material-icons">chat</span>
@@ -1602,7 +1573,6 @@ function downloadPDF(url) {
 // Utilisation dans votre HTML :
 // <img src="cover.jpg" onclick="downloadPDF('book.pdf')">
 </script>
-
 </body>
   <script>
 // Fonction pour afficher les sections (à ajouter à la fin du body)
