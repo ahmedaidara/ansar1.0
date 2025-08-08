@@ -168,9 +168,6 @@ body {
   width: 30px; /* Largeur fixe pour le cercle */
   height: 30px; /* Hauteur égale à la largeur pour former un cercle */
   border-radius: 50%; /* Rend l'élément rond */
-    background-color: var(--accent-color); /* #9b9c28 */
-  border: 2px solid rgba(255, 255, 255, 0.3);
-
   display: inline-flex; /* Alignement horizontal */
   margin: 0 10px; /* Espacement entre les cercles */
 }
@@ -179,20 +176,11 @@ body {
   font-size: 1em;
   margin-bottom: 0;
 }
-.item:nth-child(-n+3):hover {
-  background-color: #ffffff;
-}
 
-.item:nth-child(-n+3).active {
-  background-color: color-mix(in srgb, var(--accent-color), black 20%);
-}
 /* Nouveau style pour les cercles + texte en dessous */
 .item:nth-child(-n+3) {
   width: 70px; 
   height: 70px;
-    background-color: var(--accent-color); /* #9b9c28 */
-  border: 2px solid rgba(255, 255, 255, 0.3);
-
   border-radius: 50%;
   display: flex; /* Changé de inline-flex à flex */
   flex-direction: column; /* Empile verticalement */
@@ -549,193 +537,131 @@ main {
 }
 
 /* Styles pour les autres sections (inchangés) */
-/* Barre de navigation principale */
 .bottom-nav {
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  width: 95%; /* Prend 95% de la largeur pour laisser un peu d'espace */
-  max-width: 400px; /* Largeur maximale pour ne pas que ce soit trop large */
-  height: 80px;
-  margin: 0 auto; /* Centrage horizontal */
-  background: rgba(7, 51, 50, 0.7);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 20px;
-  border: 1px solid rgba(159, 156, 40, 0.3);
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 0;
-    gap: 30px; /* Espace personnalisé entre les icônes */
+            position: relative;
+            width: 360px;
+            height: 80px;
+            background: rgba(7, 51, 50, 0.7); /* var(--primary-color) with opacity */
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
 
-}
-
-
-/* Conteneur des éléments de menu */
-.bottom-nav > div { /* Adapté à votre structure HTML existante */
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-}
-
-/* Éléments de menu */
 .nav-item {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
+            position: relative;
+            display: flex;
+            width: 100%;
+            padding: 0 25px;
+            justify-content: space-between;
+        }
 
-/* Lien dans chaque élément */
-.nav-item a {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-}
+        .nav-item {
+            position: relative;
+            list-style: none;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
 
-/* Icônes */
-.nav-icon {
-  position: relative;
-  display: block;
-  font-size: 1.75em !important;
-  color: rgba(255, 255, 255, 0.7) !important;
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  z-index: 11;
-}
-
-/* Texte sous les icônes */
-.nav-item .item-text {
-  position: absolute;
-  font-weight: 600;
-  font-size: 0.75em !important;
-  letter-spacing: 0.05em;
-  color: var(--text-color) !important;
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  opacity: 0;
-  transform: translateY(20px);
-  bottom: -15px;
-}
-
-/* Cercle indicateur (ajouté via pseudo-élément) */
-.nav-item::before {
-  content: '';
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  width: 60px;
-  height: 60px;
-  background: rgba(7, 51, 50, 0.3); /* Couleur primaire avec 30% d'opacité */
-  border-radius: 50%;
-  border: 6px solid rgba(159, 156, 40, 0.3);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  opacity: 0;
-  z-index: 5;
-}
-
-/* État actif */
-.nav-item.active::before {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-}
-
-.nav-item.active .nav-icon {
-  transform: translateY(-35px) !important;
-  color: var(--text-color) !important;
-  filter: drop-shadow(0 5px 15px rgba(159, 156, 40, 0.5)) !important;
-}
-
-.nav-item.active .item-text {
-  opacity: 1 !important;
-  transform: translateY(5px) !important;
-}
-
-/* Effet ripple */
-.nav-item .ripple {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  background: rgba(159, 156, 40, 0.3);
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple 0.6s linear;
-  pointer-events: none;
-  z-index: 2;
-}
-
-@keyframes ripple {
-  to { transform: scale(2); opacity: 0; }
-}
-
-/* Animation de vague */
-.bottom-nav::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: rgba(31, 74, 73, 0.3);
-  transform: skewX(-15deg);
-  transition: 0.5s;
-}
-
-.bottom-nav:hover::after {
-  left: 120%;
-}
-
-/* Responsive */
-@media (max-width: 400px) {
-  .bottom-nav {
-    width: 340px;
-    height: 75px;
-  }
-  
-  .nav-item {
-    width: 65px;
-    height: 65px;
-  }
-  
-  .nav-item::before {
-    width: 55px;
-    height: 55px;
-    
-  }
-  
- .nav-item.active .nav-icon {
-  color: white !important; /* Icône active */
-  filter: drop-shadow(0 0 10px rgba(155, 156, 40, 0.8)); /* Ajoute un halo jaune-vert */
-}
-}
-
-.nav-item.active {
+       .nav-item.active {
   color: var(--accent-color);
 }
+        .nav-icon {
+            position: relative;
+            display: block;
+            line-height: 1;
+            font-size: 1.75em;
+            color: rgba(255, 255, 255, 0.7);
+            transition: 0.5s;
+            z-index: 11;
+        }
 
-.nav-icon i {
-  font-size: 20px;
-  color: white;
+        .nav-text {
+            position: absolute;
+            font-weight: 600;
+            font-size: 0.75em;
+            letter-spacing: 0.05em;
+            color: var(--text-color);
+            transition: 0.5s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .indicator {
+            position: absolute;
+            top: -49px;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            border: 6px solid rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(-50%) scale(0);
+            transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 5;
+            opacity: 0;
+        }
+
+        .nav-item.active .indicator {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: translateY(-35px);
+            color: var(--text-color);
+            filter: drop-shadow(0 5px 15px rgba(159, 156, 40, 0.5)); /* var(--accent-color) with opacity */
+        }
+
+        .nav-item.active .nav-text {
+            opacity: 1;
+            transform: translateY(5px);
+        }
+
+        /* Effet de vague sur le fond */
+        .nav-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(31, 74, 73, 0.3); /* var(--secondary-color) with opacity */
+            transform: skewX(-15deg);
+            transition: 0.5s;
+        }
+
+        .nav-container:hover::before {
+            left: 120%;
+        }
+.nav-item .material-icons {
+    color: #ffffff;
 }
+        /* Effet ripple */
+        .ripple {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes ripple {
+            to { transform: scale(2); opacity: 0; }
+        }
 @media (max-width: 600px) {
   /* Fixe la bottom-nav et empêche tout débordement */
   .bottom-nav {
