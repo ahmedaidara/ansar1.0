@@ -845,23 +845,33 @@ if (personalInfo) {
   `;
 }
 
-    // Cotisations mensuelles
-    const cotisationsContent = document.querySelector('#cotisations-content');
-    const mensualContributions = member.contributions?.Mensuelle || {};
-    cotisationsContent.innerHTML = Object.entries(mensualContributions)
-      .sort((a, b) => b[0] - a[0]) // Trie par année décroissante
-      .map(([year, months]) => `
-        <div class="year-section">
-          <h4>${year}</h4>
-          <div class="months-grid">
-            ${months.map((paid, index) => `
-              <div class="month ${paid ? 'paid' : 'unpaid'}">
-                ${months[index]} - ${paid ? '✅' : '❌'}
-              </div>
-            `).join('')}
+   // Dans la fonction showMemberDetail()
+
+// Cotisations mensuelles
+const cotisationsContent = document.querySelector('#cotisations-content');
+const mensualContributions = member.contributions?.Mensuelle || {};
+const currentYear = new Date().getFullYear();
+
+// Générer les 3 dernières années (2023-2025)
+const years = [currentYear - 2, currentYear - 1, currentYear];
+
+cotisationsContent.innerHTML = years.map(year => {
+  const paidMonths = mensualContributions[year] || Array(12).fill(false);
+  
+  return `
+    <div class="year-section">
+      <h3>${year}</h3>
+      <div class="months-grid">
+        ${paidMonths.map((paid, index) => `
+          <div class="month ${paid ? 'paid' : 'unpaid'}">
+            <span class="month-name">${months[index]}</span>
+            <span class="status">${paid ? '✅' : '❌'}</span>
           </div>
-        </div>
-      `).join('');
+        `).join('')}
+      </div>
+    </div>
+  `;
+}).join('') || '<p>Aucune cotisation mensuelle enregistrée</p>';
 
     // Cotisations globales
     const globalContributions = await db.collection("contributions").get();
