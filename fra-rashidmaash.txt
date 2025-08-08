@@ -6234,13 +6234,3 @@
 114|4|contre le mal du démon qui se dérobe[1618] ou s’insinue chez l’homme
 114|5|soufflant d’insidieuses pensées dans le cœur des hommes
 114|6|qu’il soit du nombre des djinns ou du nombre des hommes. »
-{
-    "name": "fra-rashidmaash",
-    "author": "Rashid Maash",
-    "language": "French",
-    "direction": "ltr",
-    "source": "https://quranenc.com/en/browse/french_rashid",
-    "comments": "",
-    "link": "https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/fra-rashidmaash.json",
-    "linkmin": "https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/fra-rashidmaash.min.json"
-}
