@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Espace Personnel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Insérez ici tout le CSS du deuxième code que vous avez partagé -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Orbitron:wght@400;500;600;700&display=swap');
+        
+        :root {
+            /* VOTRE PALETTE */
+            --primary-color: #073332;
+            --secondary-color: #1f4a49;
+            --accent-color: #9b9c28;
+            --bg-color: #073332;
+            --text-color: #ffffff;
+            
+            /* DÉRIVÉS POUR LES ANIMATIONS */
+            --primary-light: #0a4a48;
+            --accent-light: #b5b632;
+            --glass-intensity: 0.15;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* ANIMATION DE FOND DYNAMIQUE */
+        .dynamic-bg {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: 
+                radial-gradient(circle at 30% 40%, var(--primary-light) 0%, transparent 25%),
+                radial-gradient(circle at 70% 60%, var(--secondary-color) 0%, transparent 25%);
+            opacity: 0.4;
+            z-index: 0;
+            animation: bgRotate 60s linear infinite;
+        }
+        
+        @keyframes bgRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* CONTAINER PRINCIPAL */
+        .auth-container {
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        /* ICONE DE PROFIL PREMIUM */
+        .profile-trigger {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            box-shadow: 
+                0 0 0 4px rgba(155, 156, 40, 0.3),
+                0 10px 30px rgba(0, 0, 0, 0.4),
+                inset 0 0 20px rgba(31, 74, 73, 0.6);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 20;
+            overflow: hidden;
+        }
+        
+        .profile-trigger::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .profile-trigger:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 0 0 6px rgba(155, 156, 40, 0.4),
+                0 15px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 30px rgba(31, 74, 73, 0.8);
+        }
+        
+        .profile-trigger:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .profile-icon {
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+        }
+        
+        .profile-trigger:hover .profile-icon {
+            transform: scale(1.1);
+            color: var(--accent-color);
+            text-shadow: 0 0 20px rgba(155, 156, 40, 0.6);
+        }
+        
+        .trigger-text {
+            position: absolute;
+            bottom: -30px;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .profile-trigger:hover .trigger-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* PANEL DE CONNEXION */
+        .auth-panel {
+            width: 100%;
+            background: rgba(7, 51, 50, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                inset 0 0 30px rgba(31, 74, 73, 0.5);
+            border: 1px solid rgba(155, 156, 40, 0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: top center;
+        }
+        
+        .auth-panel.active {
+            height: auto;
+            opacity: 1;
+            transform: scale(1);
+            margin-top: 1rem;
+        }
+        
+        .auth-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--accent-color), 
+                transparent);
+            animation: panelShine 3s infinite;
+        }
+        
+        @keyframes panelShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* EN-TÊTE */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .auth-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            color: var(--text-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .auth-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            animation: titlePulse 2s infinite ease;
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { width: 60px; opacity: 1; }
+            50% { width: 100px; opacity: 0.7; }
+        }
+        
+        /* CHAMPS DE FORMULAIRE */
+        .auth-field {
+            position: relative;
+            margin-bottom: 1.8rem;
+        }
+        
+        .auth-field input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(31, 74, 73, 0.3);
+            border: 1px solid rgba(155, 156, 40, 0.3);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.4s ease;
+        }
+        
+        .auth-field input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 
+                0 0 0 2px rgba(155, 156, 40, 0.2),
+                inset 0 0 15px rgba(31, 74, 73, 0.6);
+            background: rgba(31, 74, 73, 0.5);
+        }
+        
+        .auth-label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+        
+        .auth-field input:focus + .auth-label,
+        .auth-field input:not(:placeholder-shown) + .auth-label {
+            transform: translateY(-1.8rem) scale(0.9);
+            color: var(--accent-color);
+            left: 0;
+            background: var(--primary-color);
+            padding: 0 8px;
+        }
+        
+        /* BOUTON DE CONNEXION */
+        .auth-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-light));
+            border: none;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+        
+        .auth-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: all 0.6s ease;
+            z-index: -1;
+        }
+        
+        .auth-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 6px 25px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(155, 156, 40, 0.4);
+        }
+        
+        .auth-submit:hover::before {
+            left: 100%;
+        }
+        
+        .auth-submit:active {
+            transform: translateY(0);
+        }
+        
+        /* PIED DE PAGE */
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            position: relative;
+        }
+        
+        .auth-footer::before {
+            content: '';
+            position: absolute;
+            top: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(155, 156, 40, 0.5), 
+                transparent);
+        }
+        
+        .auth-policy {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-policy:hover {
+            color: #d5d66a;
+            text-shadow: 0 0 10px rgba(155, 156, 40, 0.4);
+        }
+        
+        /* PARTICULES D'ARRIÈRE-PLAN */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0;
+            filter: blur(1px);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* EFFET DE LUMIÈRE DYNAMIQUE */
+        .spotlight {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(155, 156, 40, 0.1),
+                transparent 70%
+            );
+            filter: blur(20px);
+            z-index: 2;
+            pointer-events: none;
+            animation: moveLight 20s infinite alternate ease-in-out;
+        }
+        
+        @keyframes moveLight {
+            0% { transform: translate(-50%, -50%); }
+            25% { transform: translate(20%, 30%); }
+            50% { transform: translate(80%, -20%); }
+            75% { transform: translate(40%, 60%); }
+            100% { transform: translate(70%, 10%); }
+        }
+    </style>
+</head>
+<body>
+    <div id="personal-login" style="display: block;">
+  <div class="dynamic-bg"></div>
+  <div class="spotlight"></div>
+  <div class="particles" id="particles-js"></div>
+  
+  <div class="auth-container">
+    <!-- Icône de profil animée -->
+    <div class="profile-trigger" id="profileTrigger">
+      <i class="fas fa-user profile-icon"></i>
+      <div class="trigger-text">Cliquez pour vous connecter</div>
+    </div>
+    
+    <!-- Panel de connexion -->
+    <div class="auth-panel" id="authPanel">
+      <div class="auth-header">
+        <h1 class="auth-title">ESPACE PERSONNEL</h1> 
+      </div>
+      
+      <form id="personal-login-form" class="auth-form">
+        <div class="auth-field">
+          <input type="text" id="personal-member-code" required placeholder=" ">
+          <label for="personal-member-code" class="auth-label">Code d'accès</label>
+        </div>
+        
+        <div class="auth-field">
+          <input type="password" id="personal-password" required placeholder=" ">
+          <label for="personal-password" class="auth-label">Mot de passe</label>
+        </div>
+        
+        <button type="submit" class="auth-submit">SE CONNECTER</button>
+        
+        <div class="auth-footer">
+          En vous connectant, vous acceptez notre <a href="privacy-policy.html" class="auth-policy">Politique de Confidentialité</a>.
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+    <script>
+        // Initialisation des particules
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('particles-js');
+            const particleCount = Math.floor(window.innerWidth / 15);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div'); 
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 120 - 20}%`;
+                
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+                
+                particle.style.opacity = Math.random() * 0.2;
+                
+                container.appendChild(particle);
+            }
+            
+            // Gestion du clic sur l'icône
+            const trigger = document.getElementById('profileTrigger');
+            const panel = document.getElementById('authPanel');
+            
+            trigger.addEventListener('click', function() {
+                panel.classList.toggle('active');
+                
+                if (panel.classList.contains('active')) {
+                    trigger.style.transform = 'translateY(-20px) scale(1.1)';
+                    trigger.style.boxShadow = 
+                        '0 0 0 8px rgba(155, 156, 40, 0.2), ' +
+                        '0 20px 50px rgba(0, 0, 0, 0.5), ' +
+                        'inset 0 0 30px rgba(31, 74, 73, 0.8)';
+                    
+                    const icon = trigger.querySelector('.profile-icon');
+                    icon.style.transform = 'scale(1.2) rotateY(360deg)';
+                    icon.style.color = 'var(--accent-color)';
+                    
+                    setTimeout(() => {
+                        icon.style.transform = 'scale(1.1)';
+                    }, 600);
+                } else {
+                    trigger.style.transform = 'translateY(0) scale(1)';
+                    trigger.style.boxShadow = 
+                        '0 0 0 4px rgba(155, 156, 40, 0.3), ' +  
+                        '0 10px 30px rgba(0, 0, 0, 0.4), ' +
+                        'inset 0 0 20px rgba(31, 74, 73, 0.6)';
+                }
+            });
+            
+            // Effet de lumière qui suit la souris
+            const spotlight = document.querySelector('.spotlight');
+            document.addEventListener('mousemove', (e) => {
+                spotlight.style.left = `${e.clientX}px`;
+                spotlight.style.top = `${e.clientY}px`;
+            });
+        });
+    </script>
+</body>
+</html>
