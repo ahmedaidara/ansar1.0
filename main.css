@@ -547,6 +547,7 @@ main {
             border: 1px solid rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
             box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
             display: flex;
+  
             justify-content: center;
             align-items: center;
             z-index: 1;
