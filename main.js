@@ -249,7 +249,12 @@ case 'quibla':
     quiblaIframe.src = 'quibla.html';
   }
   break;
-
+case 'personal':
+  const personalIframe = document.querySelector('#personal iframe');
+  if (personalIframe && (!personalIframe.src || personalIframe.src === '')) {
+    personalIframe.src = 'personal.html';
+  }
+  break;
  
 case 'tasbih':
   const tasbihIframe = document.querySelector('#tasbih iframe');
