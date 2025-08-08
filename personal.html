@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - Espace Personnel</title>
+    <title>ESPACE PERSONNEL | Accès Sécurisé</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Insérez ici tout le CSS du deuxième code que vous avez partagé -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Orbitron:wght@400;500;600;700&display=swap');
         
@@ -427,44 +426,42 @@
     </style>
 </head>
 <body>
-    <div id="personal-login" style="display: block;">
-  <div class="dynamic-bg"></div>
-  <div class="spotlight"></div>
-  <div class="particles" id="particles-js"></div>
-  
-  <div class="auth-container">
-    <!-- Icône de profil animée -->
-    <div class="profile-trigger" id="profileTrigger">
-      <i class="fas fa-user profile-icon"></i>
-      <div class="trigger-text">Cliquez pour vous connecter</div>
-    </div>
+    <div class="dynamic-bg"></div>
+    <div class="spotlight"></div>
+    <div class="particles" id="particles-js"></div>
     
-    <!-- Panel de connexion -->
-    <div class="auth-panel" id="authPanel">
-      <div class="auth-header">
-        <h1 class="auth-title">ESPACE PERSONNEL</h1> 
-      </div>
-      
-      <form id="personal-login-form" class="auth-form">
-        <div class="auth-field">
-          <input type="text" id="personal-member-code" required placeholder=" ">
-          <label for="personal-member-code" class="auth-label">Code d'accès</label>
+    <div class="auth-container">
+        <!-- Icône de profil animée -->
+        <div class="profile-trigger" id="profileTrigger">
+            <i class="fas fa-user profile-icon"></i>
+            <div class="trigger-text">Cliquez pour vous connecter</div>
         </div>
         
-        <div class="auth-field">
-          <input type="password" id="personal-password" required placeholder=" ">
-          <label for="personal-password" class="auth-label">Mot de passe</label>
+        <!-- Panel de connexion -->
+        <div class="auth-panel" id="authPanel">
+            <div class="auth-header">
+                <h1 class="auth-title">ESPACE PERSONNEL</h1>
+            </div>
+            
+            <form class="auth-form">
+                <div class="auth-field">
+                    <input type="text" id="auth-code" required placeholder=" ">
+                    <label for="auth-code" class="auth-label">Code d'accès</label>
+                </div>
+                
+                <div class="auth-field">
+                    <input type="password" id="auth-password" required placeholder=" ">
+                    <label for="auth-password" class="auth-label">Mot de passe</label>
+                </div>
+                
+                <button type="submit" class="auth-submit">SE CONNECTER</button>
+                
+                <div class="auth-footer">
+                    En vous connectant, vous acceptez notre <a href="#" class="auth-policy">Politique de Confidentialité</a>.
+                </div>
+            </form>
         </div>
-        
-        <button type="submit" class="auth-submit">SE CONNECTER</button>
-        
-        <div class="auth-footer">
-          En vous connectant, vous acceptez notre <a href="privacy-policy.html" class="auth-policy">Politique de Confidentialité</a>.
-        </div>
-      </form>
     </div>
-  </div>
-</div>
 
     <script>
         // Initialisation des particules
@@ -473,20 +470,24 @@
             const particleCount = Math.floor(window.innerWidth / 15);
             
             for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div'); 
+                const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
+                // Taille aléatoire
                 const size = Math.random() * 6 + 2;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
+                // Position aléatoire
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 120 - 20}%`;
                 
+                // Animation personnalisée
                 const duration = Math.random() * 20 + 10;
                 const delay = Math.random() * 5;
                 particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
                 
+                // Opacité aléatoire
                 particle.style.opacity = Math.random() * 0.2;
                 
                 container.appendChild(particle);
@@ -506,6 +507,7 @@
                         '0 20px 50px rgba(0, 0, 0, 0.5), ' +
                         'inset 0 0 30px rgba(31, 74, 73, 0.8)';
                     
+                    // Animation de l'icône
                     const icon = trigger.querySelector('.profile-icon');
                     icon.style.transform = 'scale(1.2) rotateY(360deg)';
                     icon.style.color = 'var(--accent-color)';
