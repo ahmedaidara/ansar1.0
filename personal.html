@@ -833,7 +833,7 @@
                 showMemberDetail(member);
             } catch (error) {
                 console.error('Erreur de connexion:', error);
-                errorMessage.textContent = 'Erreur lors de la connexion';
+                errorMessage.textContent = ' ';
                 errorMessage.style.display = 'block';
             }
         });
@@ -944,7 +944,7 @@ cotisationsContent.innerHTML = years.map(year => {
                 showMemberDetail(member.code);
             } catch (error) {
                 console.error('Erreur loginPersonal:', error);
-                errorMessage.textContent = 'Erreur lors de la connexion';
+                errorMessage.textContent = ' ';
                 errorMessage.style.display = 'block';
             }
         });
@@ -1094,5 +1094,3 @@ nameTrigger.addEventListener('click', async function() {
     </script>
 </body>
 </html>
-
-
