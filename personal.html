@@ -6,9 +6,10 @@
     <title>ESPACE PERSONNEL | Accès Sécurisé</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Orbitron:wght@400;500;600;700&display=swap');
         
@@ -631,11 +632,37 @@
                 padding: 1rem;
             }
         }
+      .year-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(31, 74, 73, 0.3);
+  border-radius: 8px;
+}
+
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.month {
+  padding: 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.month.paid {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.month.unpaid {
+  background: rgba(255, 0, 0, 0.1);
+}
     </style>
 </head>
 <body>
     <script>
-        // Config (remplacez par vos clés)
+        // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA-TpblN0YnekG2tKFRhjOwwEd80qke5pk",
             authDomain: "ansar-69617.firebaseapp.com",
@@ -650,7 +677,6 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
-        const storage = firebase.storage();
     </script>
 
     <!-- Votre contenu existant (dynamic-bg, spotlight, etc.) -->
@@ -743,178 +769,124 @@
         </div>
     </div>
 
-    <script>
-      
+   <script>
         // Variables globales
         let currentUser = null;
         const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-        
-        // Simuler le chargement des données (à remplacer par vos appels API réels)
-        async function loadData(collection) {
-            // Simulation de données membres
-            if (collection === 'members') {
-                return [
-                    {
-                        id: '1',
-                        code: 'MEM001',
-                        firstname: 'Jean',
-                        lastname: 'Dupont',
-                        dob: '01011980', // mot de passe simulé
-                        role: 'membre',
-                        status: 'Actif',
-                        age: 43,
-                        birthplace: 'Dakar',
-                        email: 'jean.dupont@example.com',
-                        phone: '+221 77 123 45 67',
-                        activity: 'Entrepreneur',
-                        address: '123 Rue des Entrepreneurs, Dakar',
-                        residence: 'DN-12345678',
-                        contributions: {
-                            Mensuelle: {
-                                '2023': [true, true, true, false, false, false, false, false, false, false, false, false]
-                            },
-                            globalContributions: {
-                                'Cotisation Annuelle': { id: 'annual', paid: true, note: 'Payée le 15/01/2023' },
-                                'Fonds Spécial': { id: 'special', paid: false, note: 'À payer avant fin mars' }
-                            }
-                        }
-                    },
-                    {
-                        id: '2',
-                        code: 'ADM001',
-                        firstname: 'Admin',
-                        lastname: 'Test',
-                        dob: 'admin', // mot de passe simulé
-                        role: 'admin'
-                    }
-                ];
-            }
-            
-            // Simulation de données de cotisations
-            if (collection === 'contributions') {
-                return [
-                    { id: 'annual', name: 'Cotisation Annuelle', amount: 50000 },
-                    { id: 'special', name: 'Fonds Spécial', amount: 25000 }
-                ];
-            }
-            
-            return [];
-        }
-        
-        // Simuler l'enregistrement des données
-        async function saveData(collection, data, id) {
-            console.log(`Simulation d'enregistrement pour ${collection}/${id}:`, data);
-            return true;
-        }
-        
-        // Fonction showMemberDetail mise à jour
-        async function showMemberDetail(code) {
-            console.log('showMemberDetail appelé avec code:', code);
+
+        // Fonction pour charger les membres depuis Firestore
+        async function loadMembers() {
             try {
-                // Charger les données des membres depuis Firestore
-                const members = await loadData('members');
-                const member = members.find(m => m.code === code);
+                const snapshot = await db.collection("members").get();
+                return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            } catch (error) {
+                console.error("Erreur de chargement des membres:", error);
+                return [];
+            }
+        }
+
+        // Fonction de connexion MODIFIÉE
+        document.querySelector('#personal-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.querySelector('#personal-member-code').value.trim();
+            const password = document.querySelector('#personal-password').value.trim();
+            const errorMessage = document.querySelector('#personal-error-message');
+
+            try {
+                const members = await loadMembers();
+                const member = members.find(m => m.code === code && m.dob === password);
+                
                 if (!member) {
-                    console.error('Membre introuvable pour code:', code);
-                    alert('Membre introuvable');
+                    errorMessage.textContent = 'Code ou mot de passe incorrect';
+                    errorMessage.style.display = 'block';
                     return;
                 }
 
-                console.log('Membre trouvé:', {
-                    firstname: member.firstname,
-                    lastname: member.lastname,
-                    code: member.code,
-                    contributions: JSON.stringify(member.contributions, null, 2)
-                });
-
-                // Mettre à jour currentUser
                 currentUser = member;
-
-                // Afficher la page personnelle
-                document.querySelector('#personal-login').style.display = 'none';
-                document.querySelector('#personal-content').style.display = 'block';
-                
-                // Mapper les rôles
-                const roleDisplayMap = {
-                    'membre': 'Membre',
-                    'tresorier': 'Trésorier',
-                    'vice-tresorier': 'Vice-Trésorière',
-                    'president': 'Président',
-                    'vice-president': 'Vice-Présidente',
-                    'secretaire': 'Secrétaire',
-                    'vice-secretaire': 'Vice-Secrétaire',
-                    'admin': 'Administrateur'
-                };
-                
-                document.querySelector('#personal-title').textContent = `Espace de ${member.firstname} ${member.lastname}`;
-                document.querySelector('#personal-role').textContent = `Rôle: ${roleDisplayMap[member.role] || member.role}`;
-                
-                // Afficher les informations personnelles
-                const personalInfo = document.querySelector('#personal-info');
-                if (personalInfo) {
-                    const displayInfo = (value, label) => value ? `<p><strong>${label}:</strong> ${value}</p>` : '';
-                    personalInfo.innerHTML = `
-                        ${displayInfo(member.code, 'Code')}
-                        ${displayInfo(member.status, 'Statut')}
-                        ${displayInfo(member.age, 'Âge')}
-                        ${displayInfo(member.dob, 'Date de naissance')}
-                        ${displayInfo(member.birthplace, 'Lieu de naissance')}
-                        ${displayInfo(member.email, 'Email')}
-                        ${displayInfo(member.phone, 'Téléphone')}
-                        ${displayInfo(member.activity, 'Activité actuelle')}
-                        ${displayInfo(member.address, 'Adresse')}
-                        ${displayInfo(member.residence, 'Num. C.I.N.')}
-                    `;
-                } else {
-                    console.error('Élément #personal-info introuvable');
-                }
-
-                // Afficher les cotisations mensuelles
-                const cotisationsContent = document.querySelector('#cotisations-content');
-                if (cotisationsContent) {
-                    const mensualContributions = member.contributions?.Mensuelle || {};
-                    cotisationsContent.innerHTML = Object.entries(mensualContributions).map(([year, paidMonths]) => `
-                        <p>${year}: ${paidMonths.map((paid, i) => `${paid ? '✅' : '❌'} ${months[i]}`).join(', ')}</p>
-                    `).join('') || '<p>Aucune cotisation mensuelle</p>';
-                } else {
-                    console.error('Élément #cotisations-content introuvable');
-                }
-
-                // Afficher les cotisations globales
-                const contributions = await loadData('contributions');
-                console.log('Cotisations globales chargées:', JSON.stringify(contributions, null, 2));
-                const globalCotisationsContent = document.querySelector('#global-cotisations-content');
-                if (globalCotisationsContent) {
-                    if (!contributions || contributions.length === 0) {
-                        console.warn('Aucune cotisation globale trouvée dans Firestore');
-                        globalCotisationsContent.innerHTML = '<p>Aucune cotisation globale disponible</p>';
-                    } else {
-                        globalCotisationsContent.innerHTML = contributions.map(c => {
-                            const contributionData = member.contributions?.globalContributions?.[c.name] || { paid: false, note: '' };
-                            console.log(`Affichage cotisation ${c.name} pour ${member.firstname}:`, {
-                                paid: contributionData.paid,
-                                note: contributionData.note,
-                                amount: c.amount
-                            });
-                            return `
-                                <div class="contribution-item">
-                                    <p><strong>${c.name}</strong> (${c.amount} FCFA): ${contributionData.paid ? '✅ Payé' : '❌ Non payé'}
-                                        ${contributionData.note ? `<br><small>Note: ${contributionData.note}</small>` : ''}
-                                    </p>
-                                </div>
-                            `;
-                        }).join('');
-                    }
-                } else {
-                    console.error('Élément #global-cotisations-content introuvable');
-                    alert('Erreur : conteneur des cotisations globales introuvable');
-                }
+                showMemberDetail(member);
             } catch (error) {
-                console.error('Erreur showMemberDetail:', error);
-                alert('Erreur lors de l\'affichage des détails du membre');
+                console.error('Erreur de connexion:', error);
+                errorMessage.textContent = 'Erreur lors de la connexion';
+                errorMessage.style.display = 'block';
             }
-        }
-        
+        });
+
+        // Fonction showMemberDetail MODIFIÉE
+    // Fonction showMemberDetail complètement réécrite
+async function showMemberDetail(member) {
+  try {
+    console.log('Affichage des détails pour:', member.firstname, member.lastname);
+    console.log('Données complètes:', JSON.stringify(member, null, 2));
+
+    // Afficher la page
+    document.querySelector('#personal-login').style.display = 'none';
+    document.querySelector('#personal-content').style.display = 'block';
+
+    // Infos de base
+    document.querySelector('#personal-title').textContent = `${member.firstname} ${member.lastname}`;
+    document.querySelector('#personal-role').textContent = `Rôle: ${member.role}`;
+
+    // Informations personnelles
+    // Dans showMemberDetail()
+const personalInfo = document.querySelector('#personal-info');
+if (personalInfo) {
+  personalInfo.innerHTML = `
+    <p><strong>Code:</strong> ${member.code || 'Non renseigné'}</p>
+    <p><strong>Nom complet:</strong> ${member.firstname} ${member.lastname}</p>
+    ${member.dob ? `<p><strong>Date de naissance:</strong> ${member.dob}</p>` : ''}
+    ${member.birthplace ? `<p><strong>Lieu de naissance:</strong> ${member.birthplace}</p>` : ''}
+    ${member.phone ? `<p><strong>Téléphone:</strong> ${member.phone}</p>` : ''}
+    ${member.email ? `<p><strong>Email:</strong> ${member.email}</p>` : ''}
+    ${member.address ? `<p><strong>Adresse:</strong> ${member.address}</p>` : ''}
+    ${member.activity ? `<p><strong>Activité:</strong> ${member.activity}</p>` : ''}
+    ${member.residence ? `<p><strong>Résidence:</strong> ${member.residence}</p>` : ''}
+    <p><strong>Rôle:</strong> ${member.role || 'Membre'}</p>
+    <p><strong>Statut:</strong> ${member.status || 'Actif'}</p>
+  `;
+}
+
+    // Cotisations mensuelles
+    const cotisationsContent = document.querySelector('#cotisations-content');
+    const mensualContributions = member.contributions?.Mensuelle || {};
+    cotisationsContent.innerHTML = Object.entries(mensualContributions)
+      .sort((a, b) => b[0] - a[0]) // Trie par année décroissante
+      .map(([year, months]) => `
+        <div class="year-section">
+          <h4>${year}</h4>
+          <div class="months-grid">
+            ${months.map((paid, index) => `
+              <div class="month ${paid ? 'paid' : 'unpaid'}">
+                ${months[index]} - ${paid ? '✅' : '❌'}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+    // Cotisations globales
+    const globalContributions = await db.collection("contributions").get();
+    const globalCotisationsContent = document.querySelector('#global-cotisations-content');
+    globalCotisationsContent.innerHTML = globalContributions.docs
+      .map(doc => {
+        const contrib = doc.data();
+        const memberContrib = member.contributions?.globalContributions?.[contrib.name] || {};
+        return `
+          <div class="contribution-item">
+            <p><strong>${contrib.name}:</strong> 
+              ${memberContrib.paid ? '✅ Payé' : '❌ En attente'}
+              (${contrib.amount} FCFA)
+              ${memberContrib.note ? `<br><em>Note: ${memberContrib.note}</em>` : ''}
+            </p>
+          </div>
+        `;
+      }).join('') || '<p>Aucune autre cotisation</p>';
+
+  } catch (error) {
+    console.error('Erreur showMemberDetail:', error);
+    alert('Erreur lors du chargement des données');
+  }
+}
+
         // Gestion de la connexion
         document.querySelector('#personal-login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
