@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Amiri&display=swap" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2family=Open+Sans:wght@300;400;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <!-- Scripts Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -20,6 +21,166 @@
   <script src="main.js" defer></script>
   <script src="https://unpkg.com/@whereby.com/browser-sdk"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Glass Ultra</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --primary-color: #073332;
+            --secondary-color: #1f4a49;
+            --accent-color: #9b9c28;
+            --bg-color: #073332;
+            --text-color: #ffffff;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            min-height: 100vh;
+            background: var(--bg-color);
+            overflow: hidden;
+            padding-bottom: 30px;
+        }
+
+        .nav-container {
+            position: relative;
+            width: 360px;
+            height: 80px;
+            background: rgba(7, 51, 50, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(159, 156, 40, 0.3);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .nav-menu {
+            position: relative;
+            display: flex;
+            width: 100%;
+            padding: 0 25px;
+            justify-content: space-between;
+        }
+
+        .nav-item {
+            position: relative;
+            list-style: none;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .nav-item a {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .nav-icon {
+            position: relative;
+            display: block;
+            line-height: 1;
+            font-size: 1.75em;
+            color: rgba(255, 255, 255, 0.7);
+            transition: 0.5s;
+            z-index: 11;
+        }
+
+        .nav-text {
+            position: absolute;
+            font-weight: 600;
+            font-size: 0.75em;
+            letter-spacing: 0.05em;
+            color: var(--text-color);
+            transition: 0.5s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .indicator {
+            position: absolute;
+            top: -49px;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            border: 6px solid rgba(159, 156, 40, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(-50%) scale(0);
+            transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 5;
+            opacity: 0;
+        }
+
+        .nav-item.active .indicator {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: translateY(-35px);
+            color: var(--text-color);
+            filter: drop-shadow(0 5px 15px rgba(159, 156, 40, 0.5));
+        }
+
+        .nav-item.active .nav-text {
+            opacity: 1;
+            transform: translateY(5px);
+        }
+
+        .nav-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(31, 74, 73, 0.3);
+            transform: skewX(-15deg);
+            transition: 0.5s;
+        }
+
+        .nav-container:hover::before {
+            left: 120%;
+        }
+
+        .ripple {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(159, 156, 40, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes ripple {
+            to { transform: scale(2); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -908,7 +1069,7 @@ function handleIframeError() {
     
     <!-- Espace personnel -->
  <!-- Espace personnel -->
-  <!-- Espace personnel -->
+     <!-- Espace personnel -->
 <section id="personal" class="page">
   <button onclick="showPage('home')" class="back-button">
     <i class="fas fa-arrow-left"></i>
@@ -968,6 +1129,7 @@ function handleIframeError() {
     </div>
   </div>
 </section>
+
     <!-- Espace Secret Général -->
     <section id="secret" class="page">
       <div class="top-nav-bar">
@@ -1429,13 +1591,32 @@ Prénom|Nom|Âge|Email|Téléphone|Rôle|Statut|Adresse|Activité|Résidence|Lie
   </main>
   <footer>
     <nav class="bottom-nav">
-      <a href="#" class="nav-item active" onclick="showPage('home')"><span class="material-icons">home</span> </a>
-     
-      
-      <a href="#" class="nav-item" onclick="showPage('messages')"><span class="material-icons">notifications</span> </a>
-      
-      <a href="#" class="nav-item" onclick="showPage('personal')"><span class="material-icons">person</span> </a>
-      
+      <div class="nav-container">
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <a href="#" onclick="showPage('home')">
+                    <span class="material-icons nav-icon">home</span>
+                    <span class="nav-text">Accueil</span>
+                    <div class="indicator"></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" onclick="showPage('messages')">
+                    <span class="material-icons nav-icon">notifications</span>
+                    <span class="nav-text">Notifications</span>
+                    <div class="indicator"></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" onclick="showPage('personal')">
+                    <span class="material-icons nav-icon">person</span>
+                    <span class="nav-text">Profil</span>
+                    <div class="indicator"></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
     </nav>
   </footer>
   <div class="chatbot-button">
@@ -1573,6 +1754,43 @@ function downloadPDF(url) {
 // Utilisation dans votre HTML :
 // <img src="cover.jpg" onclick="downloadPDF('book.pdf')">
 </script>
+      <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const profileTrigger = document.querySelector('.profile-container');
+  const loginPanel = document.querySelector('.bottom-section');
+  
+  profileTrigger.addEventListener('click', function() {
+    loginPanel.classList.toggle('active');
+    
+    // Animation de l'icône
+    if (loginPanel.classList.contains('active')) {
+      this.style.transform = 'translateY(-20px) scale(1.1)';
+      this.style.boxShadow = 
+        '0 0 0 8px rgba(155, 156, 40, 0.2), ' +
+        '0 20px 50px rgba(0, 0, 0, 0.5), ' +
+        'inset 0 0 30px rgba(31, 74, 73, 0.8)';
+      
+      const icon = this.querySelector('.profile-icon svg');
+      icon.style.transform = 'scale(1.2) rotateY(360deg)';
+      icon.style.fill = '#9b9c28';
+    } else {
+      this.style.transform = 'translateY(0) scale(1)';
+      this.style.boxShadow = 
+        '0 0 0 4px rgba(155, 156, 40, 0.3), ' +
+        '0 10px 30px rgba(0, 0, 0, 0.4), ' +
+        'inset 0 0 20px rgba(31, 74, 73, 0.6)';
+    }
+  });
+  
+  // Effet de lumière qui suit la souris
+  const spotlight = document.querySelector('.spotlight');
+  document.addEventListener('mousemove', (e) => {
+    spotlight.style.left = `${e.clientX}px`;
+    spotlight.style.top = `${e.clientY}px`;
+  });
+});
+</script>
+      
 </body>
   <script>
 // Fonction pour afficher les sections (à ajouter à la fin du body)
