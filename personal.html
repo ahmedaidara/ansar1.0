@@ -41,22 +41,32 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+           margin: 0; /* Supprime les marges par défaut */
+    padding: 0; 
         }
         
         /* ANIMATION DE FOND DYNAMIQUE */
-        .dynamic-bg {
-            position: absolute;
-            width: 300%;
-            height: 300%;
-            top: -100%;
-            left: -100%;
-            background: 
-                radial-gradient(circle at 30% 40%, var(--primary-light) 0%, transparent 25%),
-                radial-gradient(circle at 70% 60%, var(--secondary-color) 0%, transparent 25%);
-            opacity: 0.4;
-            z-index: 0;
-            animation: bgRotate 60s linear infinite;
-        }
+       /* Supprimer le .dynamic-bg ou le remplacer par : */
+/* Supprimez un des deux fonds et gardez celui avec l'animation */
+.dynamic-bg {
+    position: fixed; /* Fixe pour éviter le défilement */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+        radial-gradient(circle at 30% 40%, var(--primary-light) 0%, transparent 25%),
+        radial-gradient(circle at 70% 60%, var(--secondary-color) 0%, transparent 25%);
+    opacity: 0.4;
+    z-index: -1; /* Place en arrière-plan */
+    animation: bgRotate 60s linear infinite;
+    overflow: hidden; /* Empêche tout débordement */
+}
+
+/* Supprimez le deuxième fond ou éléments superflus */
+.spotlight, .particles {
+    display: none; /* Optionnel - supprime les autres effets si trop chargé */
+}
         
         @keyframes bgRotate {
             0% { transform: rotate(0deg); }
@@ -64,17 +74,19 @@
         }
         
         /* CONTAINER PRINCIPAL */
-        .auth-container {
-    position: relative;
-    width: 90%;
-    max-width: 500px;
-    min-height: 100vh;
+    .auth-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 10;
-    margin: 0 auto;
+    padding: 20px; /* Un peu d'espace sur les bords */
+    box-sizing: border-box;
 }
         
         /* ESPACE PERSONNEL CONTENU */
@@ -85,6 +97,10 @@
             margin: 2rem auto;
             z-index: 10;
             display: none;
+              height: calc(100vh - 4rem); /* Limite la hauteur */
+
+              overflow-y: auto; /* Permet le défilement uniquement si nécessaire */
+
         }
         
         /* ICONE DE PROFIL PREMIUM */
@@ -379,17 +395,19 @@
         }
         
         /* ESPACE PERSONNEL STYLES */
-        .profile-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
+       .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3rem;
+    text-align: center;
+    margin-top: 2rem; /* Ajoutez cette ligne pour créer de l'espace en haut */
+    padding-top: 20px; /* Optionnel - espace supplémentaire */
+}
         
         .profile-container .profile-icon {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             background: linear-gradient(135deg, var(--secondary-color), var(--primary-light));
             border-radius: 50%;
             display: flex;
@@ -403,8 +421,8 @@
         }
         
         .profile-container .profile-icon svg {
-            width: 50px;
-            height: 50px;
+            width: 80px;
+            height: 80px;
             fill: var(--accent-color);
         }
         
@@ -549,6 +567,8 @@
             font-family: 'Orbitron', sans-serif;
             font-weight: 600;
             letter-spacing: 1px;
+              margin-bottom: 1rem; /* Réduit la marge sous le bouton */
+
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -627,6 +647,8 @@
             
             .auth-container, #personal-content {
                 width: 95%;
+                  padding-bottom: env(safe-area-inset-bottom); /* Gère les écrans avec encoches */
+
                 margin: 1rem auto;
             }
             
