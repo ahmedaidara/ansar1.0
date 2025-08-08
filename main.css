@@ -248,8 +248,6 @@ main {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  margin-bottom: 80px;
-  padding-bottom: 20px;
   background-color: var(--bg-color);
 }
 
@@ -538,226 +536,41 @@ main {
 
 /* Styles pour les autres sections (inchangés) */
 .bottom-nav {
-            position: relative;
-            width: 360px;
-            height: 80px;
-            background: rgba(7, 51, 50, 0.7); /* var(--primary-color) with opacity */
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            border: 1px solid rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
-            display: flex;
-  
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
-        }
-
-/* Styles pour le bouton avec animation de cercle */
-.nav-item {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70px;
-    height: 70px;
-    cursor: pointer;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: var(--primary-color);
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+  z-index: 1000;
 }
 
-        .nav-item {
-            position: relative;
-            list-style: none;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
+.nav-item {
+  background: transparent !important; /* Supprime le fond */
+  border: none !important; /* Supprime les bordures */
+  box-shadow: none !important; /* Supprime les ombres éventuelles */
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  padding: 8px;
+  border-radius: 5px;
+}
 
-       .nav-item.active {
+.nav-item.active {
   color: var(--accent-color);
 }
-        .nav-icon {
-            position: relative;
-            display: block;
-            line-height: 1;
-            font-size: 1.75em;
-            color: rgba(255, 255, 255, 0.7);
-            transition: 0.5s;
-            z-index: 11;
-        }
 
-        .nav-text {
-            position: absolute;
-            font-weight: 600;
-            font-size: 0.75em;
-            letter-spacing: 0.05em;
-            color: var(--text-color);
-            transition: 0.5s;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .indicator {
-            position: absolute;
-            top: -49px;
-            left: 50%;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 50%;
-            border: 6px solid rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: translateX(-50%) scale(0);
-            transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 5;
-            opacity: 0;
-        }
-
-        .nav-item.active .indicator {
-            transform: translateX(-50%) scale(1);
-            opacity: 1;
-        }
-
-        .nav-item.active .nav-icon {
-            transform: translateY(-35px);
-            color: var(--text-color);
-            filter: drop-shadow(0 5px 15px rgba(159, 156, 40, 0.5)); /* var(--accent-color) with opacity */
-        }
-
-        .nav-item.active .nav-text {
-            opacity: 1;
-            transform: translateY(5px);
-        }
-
-        /* Effet de vague sur le fond */
-        .nav-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(31, 74, 73, 0.3); /* var(--secondary-color) with opacity */
-            transform: skewX(-15deg);
-            transition: 0.5s;
-        }
-
-        .nav-container:hover::before {
-            left: 120%;
-        }
-.nav-item .material-icons {
-    color: #ffffff;
-    font-size: 1.75em;
-    z-index: 10;
+.nav-icon i {
+  font-size: 20px;
+  color: white;
 }
-.nav-item:hover::before,
-.nav-item.active::before {
-    transform: scale(1);
-    opacity: 1;
-}
-.nav-item::before {
-    content: '';
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: rgba(159, 156, 40, 0.5); /* Cercle avec accent-color */
-    border-radius: 50%;
-    transform: scale(0);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-    z-index: 5;
-}
-/* Animation de clic (effet ripple) */
-.nav-item .ripple {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple 0.6s linear;
-    pointer-events: none;
-    z-index: 6;
-}
-@keyframes ripple {
-    to {
-        transform: scale(2);
-        opacity: 0;
-    }
-}
-        /* Effet ripple */
-        .ripple {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: rgba(159, 156, 40, 0.3); /* var(--accent-color) with opacity */
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-            z-index: 2;
-        }
 
-        @keyframes ripple {
-            to { transform: scale(2); opacity: 0; }
-        }
-@media (max-width: 600px) {
-  /* Fixe la bottom-nav et empêche tout débordement */
-  .bottom-nav {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    height: 60px !important; /* Hauteur fixe */
-    z-index: 1000 !important;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2); /* Ombre pour visibilité */
-  }
-
-  /* Ajuste l'espace pour la bottom-nav */
-  main {
-    padding-bottom: 70px !important; /* Doit être > que la hauteur de la bottom-nav */
-  }
-
-  /* Empêche le zoom sur iOS */
-  input, select, textarea {
-    font-size: 16px !important;
-  }
-
-  /* Correction spécifique pour iOS */
-  @supports (-webkit-touch-callout: none) {
-    body {
-      /* iOS a besoin de cette propriété */
-      -webkit-overflow-scrolling: touch;
-    }
-    .bottom-nav {
-      padding-bottom: env(safe-area-inset-bottom); /* Prend en compte le notch */
-    }
-  }
-}
-/* Pour les pages avec la top-nav */
-#members,
-#events,
-#library,
-#projet,
-#secret,
-#treasurer,
-#president,
-#secretary,
-#settings,
-#coran,
-#hadith,
-#quibla,
-#priere,
-#quizz,
-#tasbih,
-#admin-dashboard {
-  padding-top: 100px !important;
-  padding-bottom: 80px !important; /* Ajouté pour espace en bas */
-  min-height: calc(100vh - 180px); /* Ajusté pour tenir compte des deux barres */
-}
 /* Styles pour le bouton du chatbot */
 .chatbot-button {
   position: fixed;
@@ -834,7 +647,7 @@ main {
   right: 20px; /* Décalé à droite */
   width: 80vw; /* 80% de la largeur de l'écran */
   height: 80vh; /* 80% de la hauteur de l'écran */
-  background: url('assets/images/chatbot-bg.jpg') no-repeat center center;
+  background: url('chatbot-bg.jpg') no-repeat center center;
   background-size: cover; /* L'image couvre tout l'espace sans zoom ni coupure */
   border: 2px solid var(--accent-color); /* Contour jaune #9b9c28 */
   border-radius: 10px; /* Coins arrondis */
@@ -1256,9 +1069,6 @@ canvas {
 
 /* Styles pour la page de connexion personnelle */
 #personal-login .main {
-    touch-action: manipulation; /* Empêche le zoom */
-  overflow-x: hidden; /* Cache tout débordement horizontal */
-
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -2071,12 +1881,25 @@ background-color: #002e2d; /* Nouveau fond gris foncé pour chaque message */
 }
 .close-modal {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
+    top: 15px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #93963c;
     cursor: pointer;
-    color: #666;
+    z-index: 2001; /* Plus élevé que le modal */
+    background: rgba(255, 255, 255, 0.8);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre pour meilleure visibilité */
+
 }
+
 
 .hidden-section {
     display: none !important;
@@ -2689,7 +2512,82 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
 }
 
 /* Ajuster le contenu pour éviter le chevauchement */
- 
+#members,
+#events,
+#library,
+#projet,
+#secret,
+#treasurer,
+#president,
+#secretary,
+#settings,
+#hadith,
+#quibla,
+#quizz,
+#tasbih,
+#priere,
+
+#coran,
+#admin-dashboard {
+    padding-top: 100px !important; /* Hauteur estimée de la barre (~60px) + marge */
+}
+
+/* S'assurer que les titres ne sont pas masqués */
+#members h2,
+#events .association-title,
+#library .messages-header-container,
+#projet .projet-header,
+#secret h2,
+#treasurer h2,
+#president h2,
+#secretary h2,
+#hadith h2,
+#quibla h2,
+#quizz h2,
+#tasbih h2,
+#priere h2,
+
+#coran h2,
+#settings .association-title,
+#admin-dashboard h2 {
+    margin-top: 0;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 600px) {
+    .top-nav-bar .title-container h1 {
+        font-size: 1.1rem;
+    }
+    .top-nav-bar .title-container p {
+        font-size: 0.65rem;
+    }
+    .top-nav-bar .logo {
+        width: 40px;
+    }
+    .top-nav-bar {
+        padding: 10px 0;
+    }
+    #members,
+    #events,
+    #library,
+    #projet,
+    #secret,
+    #treasurer,
+    #president,
+    #secretary,
+    #settings,
+    #hadith,
+      #quibla,
+    #quizz,
+    #tasbih,
+    #priere,
+
+    #coran,
+    #admin-dashboard {
+        padding-top: 70px; /* Réduit pour mobile */
+    }
+}
+
 /* Masquer la barre par défaut sur #home */
 #home .top-nav-bar {
     display: none;
