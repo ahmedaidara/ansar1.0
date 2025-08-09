@@ -49,7 +49,7 @@
        /* Supprimer le .dynamic-bg ou le remplacer par : */
 /* Supprimez un des deux fonds et gardez celui avec l'animation */
 .dynamic-bg {
-    position: fixed; /* Fixe pour éviter le défilement */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
@@ -58,12 +58,10 @@
         radial-gradient(circle at 30% 40%, var(--primary-light) 0%, transparent 25%),
         radial-gradient(circle at 70% 60%, var(--secondary-color) 0%, transparent 25%);
     opacity: 0.4;
-    z-index: -1; /* Place en arrière-plan */
-    animation: bgRotate 60s linear infinite;
-      animation: bgMovement 30s infinite alternate ease-in-out;
-
-    overflow: hidden; /* Empêche tout débordement */
+    z-index: -1;
+    animation: bgMovement 30s infinite alternate ease-in-out;
 }
+
 @keyframes bgMovement {
     0% { 
         transform: scale(1) rotate(0deg);
@@ -89,19 +87,20 @@
         }
         
         /* CONTAINER PRINCIPAL */
-    .auth-container {
-    position: relative;
+  .auth-container {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement */
     z-index: 10;
-    padding: 20px; /* Un peu d'espace sur les bords */
+    padding: 20px;
     box-sizing: border-box;
+    overflow: auto; /* Permet le défilement si nécessaire */
 }
         
         /* ESPACE PERSONNEL CONTENU */
@@ -137,6 +136,8 @@
             transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 20;
             overflow: hidden;
+              animation: triggerBounce 6s ease-in-out infinite;
+
         }
         
         .profile-trigger::before {
@@ -171,6 +172,7 @@
             color: rgba(255, 255, 255, 0.9);
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
             transition: all 0.4s ease;
+          
         }
         
         .profile-trigger:hover .profile-icon {
@@ -214,6 +216,10 @@
             overflow: hidden;
             transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             transform-origin: top center;
+              transform: translateY(20px) scale(0.95);
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+                box-shadow 0.5s ease,
+                transform 0.5s ease;
         }
         
         .auth-panel.active {
@@ -221,6 +227,8 @@
             opacity: 1;
             transform: scale(1);
             margin-top: 1rem;
+          transform: translateY(0) scale(1);
+    animation: panelGlow 3s infinite alternate;
         }
         
         .auth-panel::before {
@@ -301,6 +309,8 @@
                 0 0 0 2px rgba(155, 156, 40, 0.2),
                 inset 0 0 15px rgba(31, 74, 73, 0.6);
             background: rgba(31, 74, 73, 0.5);
+              animation: inputPulse 2s infinite;
+
         }
         
         .auth-label {
@@ -341,6 +351,8 @@
             margin-top: 1rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             z-index: 1;
+              animation: buttonFloat 4s ease-in-out infinite;
+
         }
         
         .auth-submit::before {
@@ -721,6 +733,63 @@
     0% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.1); opacity: 0.7; }
     100% { transform: scale(1); opacity: 1; }
+}
+      /* Ajoutez ces nouvelles animations à la fin de votre CSS */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.5); opacity: 0.3; }
+}
+
+@keyframes panelGlow {
+    0% {
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.08),
+            inset 0 0 30px rgba(31, 74, 73, 0.5);
+    }
+    100% {
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.4),
+            0 0 0 2px rgba(155, 156, 40, 0.3),
+            inset 0 0 40px rgba(31, 74, 73, 0.7);
+    }
+}
+
+@keyframes inputPulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(155, 156, 40, 0.2); }
+    50% { box-shadow: 0 0 0 4px rgba(155, 156, 40, 0.3); }
+}
+
+@keyframes buttonFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes buttonHover {
+    100% { 
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 10px 30px rgba(155, 156, 40, 0.5);
+    }
+}
+
+@keyframes triggerBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes iconRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes linePulse {
+    0%, 100% { width: 60px; opacity: 1; }
+    50% { width: 100px; opacity: 0.5; background-color: var(--accent-light); }
 }
     </style>
 </head>
