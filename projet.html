@@ -929,7 +929,7 @@
             document.getElementById('admin-project-list').style.display = 'block';
         }
 
-       function showBusinessDetails(id, type) {
+     function showBusinessDetails(id, type) {
     const collection = type === 'business' ? 'businesses' : 'projects';
     firebase.firestore().collection(collection).doc(id).get()
         .then(doc => {
@@ -966,6 +966,21 @@
                             <div class="md:w-2/3">
                                 <h4 class="text-lg font-bold mb-2">À propos</h4>
                                 <p class="mb-4">${data.description}</p>
+                                
+                                ${data.website ? `
+                                <div class="mb-2">
+                                    <a href="${data.website}" target="_blank" class="text-[#9b9c28] hover:underline">
+                                        <i class="fas fa-globe mr-2"></i> Site Web
+                                    </a>
+                                </div>` : ''}
+                                
+                                ${data.portfolio ? `
+                                <div class="mb-4">
+                                    <a href="${data.portfolio}" target="_blank" class="text-[#9b9c28] hover:underline">
+                                        <i class="fas fa-briefcase mr-2"></i> Portfolio
+                                    </a>
+                                </div>` : ''}
+                                
                                 ${data.services && data.services.length > 0 ? `
                                 <h4 class="text-lg font-bold mb-2">Services proposés</h4>
                                 <ul class="list-disc pl-5">
@@ -975,7 +990,7 @@
                         </div>
                     `;
                 } else {
-                    // Contenu pour les projets
+                    // Contenu pour les projets (identique à votre version actuelle)
                     content = `
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="md:w-1/3">
