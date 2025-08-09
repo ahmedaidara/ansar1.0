@@ -1084,10 +1084,9 @@ function loadProjectList() {
             document.getElementById(`success-${type}`).style.display = 'flex';
         }
 
-        function hideSuccessMessage(type) {
-            document.getElementById(`success-${type}`).style.display = 'none';
-            navigateTo('home');
-        }
+       function hideSuccessMessage(type) {
+    document.getElementById(`success-${type}`).style.display = 'none';
+}
 
         // Fonctions utilitaires
         function hideAllAdminForms() {
@@ -1178,17 +1177,13 @@ function loadProjectList() {
                 besoins
             })
             .then(() => {
-                // Envoi de l'email de confirmation
-                sendConfirmationEmail(nom, email); 
-
-                // Message de succès
-                document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
-                document.getElementById('success-promotion').classList.remove('hidden-section');
-document.getElementById('promotion-page').classList.add('hidden-section');
-              document.getElementById('promotionForm').reset();
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Envoyer mon dossier';
-            })
+        sendConfirmationEmail(nom, email); 
+        document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
+        document.getElementById('success-promotion').classList.remove('hidden-section');
+        document.getElementById('promotionForm').reset(); // Réinitialise le formulaire
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Envoyer mon dossier';
+    })
             .catch(error => {
                 console.error('Erreur lors de l\'envoi de l\'email:', error);
                 alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
