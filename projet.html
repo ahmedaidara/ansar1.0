@@ -603,9 +603,10 @@
 
             <!-- Tableau de bord Admin -->
             <div id="admin-dashboard" class="hidden-section page-transition pb-16">
-                <button onclick="navigateTo('home')" class="btn-ansar mb-6 py-2 px-4 rounded-lg">
-                    <i class="fas fa-arrow-left mr-2"></i> Retour
-                </button>
+                <!-- Dans la section admin-dashboard -->
+<button onclick="navigateTo('home')" class="btn-ansar mb-6 py-2 px-4 rounded-lg">
+    <i class="fas fa-arrow-left mr-2"></i> Retour
+</button>
                 
                 <div class="ansar-glass rounded-xl p-6">
                     <h2 class="text-3xl font-bold text-center mb-6 font-['Orbitron']">Tableau de bord Admin</h2>
@@ -1591,7 +1592,22 @@ document.getElementById('promotion-page').classList.add('hidden-section');
         alert('Codes incorrects. Espace réservé aux admin.');
     }
 }
-
+function navigateTo(page) {
+    // Masque toutes les sections
+    document.querySelectorAll('[id$="-page"], [id$="-section"]').forEach(el => {
+        el.classList.add('hidden-section');
+    });
+    
+    // Affiche la page demandée
+    if (page === 'home') {
+        document.getElementById('home-page').classList.remove('hidden-section');
+        // Réinitialise l'admin si besoin
+        document.getElementById('admin-section').classList.add('hidden-section');
+        document.getElementById('admin-dashboard').classList.add('hidden-section');
+    } else {
+        document.getElementById(`${page}-page`).classList.remove('hidden-section');
+    }
+}
 
         // Initialisation au chargement de la page
       document.addEventListener('DOMContentLoaded', function() {
