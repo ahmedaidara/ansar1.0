@@ -296,7 +296,26 @@
             }
         }
       
-      
+      #success-promotion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+      #success-promotion .popup-content {
+    background: #073332;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #9b9c28;
+    max-width: 80%;
+}
     </style>
 </head>
 <body>
@@ -1176,14 +1195,22 @@ function loadProjectList() {
                 email,
                 besoins
             })
-            .then(() => {
-        sendConfirmationEmail(nom, email); 
-        document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
-        document.getElementById('success-promotion').classList.remove('hidden-section');
-        document.getElementById('promotionForm').reset(); // Réinitialise le formulaire
-        submitButton.disabled = false;
-        submitButton.innerHTML = 'Envoyer mon dossier';
-    })
+           .then(() => {
+    sendConfirmationEmail(nom, email);
+    
+    // Afficher le message
+    const successPopup = document.getElementById('success-promotion');
+    document.getElementById('success-promotion-message').textContent = 
+        `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
+    successPopup.style.display = 'flex'; // Afficher la popup
+    
+    // Réinitialiser le formulaire
+    document.getElementById('promotionForm').reset();
+    
+    // Réactiver le bouton
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Envoyer mon dossier';
+})
             .catch(error => {
                 console.error('Erreur lors de l\'envoi de l\'email:', error);
                 alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
