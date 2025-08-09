@@ -267,7 +267,11 @@
             max-height: 1500px;
             transition: max-height 0.8s ease-in;
         }
-        
+        #admin-section,
+#success-promotion,
+#success-financement {
+    display: none; /* S'assurer qu'elles sont cachées par défaut */
+}
         .page-transition {
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -291,6 +295,8 @@
                 font-size: 3rem;
             }
         }
+      
+      
     </style>
 </head>
 <body>
@@ -518,7 +524,8 @@
             </div>
 
             <!-- Modal Business Details -->
-            <div id="business-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+<div id="business-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-4 z-50">
+  
                 <div class="ansar-glass rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 business-details">
                     <div class="flex justify-between items-start mb-4">
                         <h3 id="modal-title" class="text-2xl font-bold font-['Orbitron']"></h3>
@@ -526,7 +533,7 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    
+                      
                     <div id="modal-content" class="space-y-4">
                         <!-- Content will be loaded here -->
                     </div>
@@ -536,7 +543,7 @@
                             Fermer
                         </button>
                     </div>
-                </div>
+                </div> 
             </div>
 
             <!-- Messages de succès -->
@@ -595,7 +602,7 @@
             </div>
 
             <!-- Tableau de bord Admin -->
-            <div id="admin-dashboard" class="hidden-section page-transition">
+            <div id="admin-dashboard" class="hidden-section page-transition pb-16">
                 <button onclick="navigateTo('home')" class="btn-ansar mb-6 py-2 px-4 rounded-lg">
                     <i class="fas fa-arrow-left mr-2"></i> Retour
                 </button>
@@ -607,20 +614,15 @@
                         <button onclick="showAdminForm('promotion')" class="btn-ansar py-3 px-6 rounded-lg">
                             <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
                         </button>
-                        <button onclick="showAdminForm('financement')" class="btn-ansar py-3 px-6 rounded-lg">
-                            <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
-                        </button>
+                        
                         <button onclick="showAdminBusinessList()" class="btn-ansar py-3 px-6 rounded-lg">
                             <i class="fas fa-briefcase mr-2"></i> Gérer Business
                         </button>
-                        <button onclick="showAdminProjectList()" class="btn-ansar py-3 px-6 rounded-lg">
-                            <i class="fas fa-project-diagram mr-2"></i> Gérer Projets
-                        </button>
+                        
                     </div>
 
                     <!-- Formulaire Admin Promotion -->
                     <div id="admin-promotion-form" class="form-container hidden-section">
-                        <div class="ansar-glass rounded-xl p-6">
                             <h2 class="text-2xl font-bold text-center mb-6 font-['Orbitron']">Ajouter un Métier</h2>
                             
                             <form id="adminPromotionForm" class="space-y-6">
@@ -704,7 +706,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="flex justify-end pt-6">
+                                <div class="p-4 bg-[#073332] sticky bottom-0 border-t border-gray-700">
                                     <button type="button" onclick="saveBusiness()" class="btn-ansar py-3 px-6 rounded-lg">
                                         Enregistrer
                                     </button>
@@ -1592,15 +1594,15 @@ document.getElementById('promotion-page').classList.add('hidden-section');
 
 
         // Initialisation au chargement de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOMContentLoaded: Page chargée');
-            
-            // Charger les professionnels pour la section Business
-            loadBusinessCards();
-            
-            // Afficher la section business par défaut
-            showProjetSection('business');
-        });
+      document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded: Page chargée');
+    
+    // Charger les professionnels pour la section Business
+    loadBusinessCards();
+    
+    // Supprimer cette ligne qui affichait une section par défaut
+    // showProjetSection('business'); 
+});
     </script>
 </body>
 </html>
