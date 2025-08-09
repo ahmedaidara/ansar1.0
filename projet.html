@@ -1369,166 +1369,164 @@ document.getElementById('promotion-page').classList.add('hidden-section');
         }
 
           // Éditer un métier
-        function editBusiness(businessId) {
-            firebase.firestore().collection('businesses').doc(businessId).get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('a-nom').value = data.nom;
-                        document.getElementById('a-dob').value = data.dob || '';
-                        document.getElementById('a-membre').value = data.membre;
-                        document.getElementById('a-metier').value = data.metier;
-                        document.getElementById('a-experience').value = data.experience;
-                        document.getElementById('a-description').value = data.description;
-                        document.getElementById('a-adresse').value = data.adresse;
-                        document.getElementById('a-contact').value = data.contact;
-                        document.getElementById('a-email').value = data.email || '';
-                        document.getElementById('a-image').value = data.image || '';
-                        document.getElementById('a-website').value = data.website || '';
-                        document.getElementById('a-portfolio').value = data.portfolio || '';
-                        document.querySelectorAll('input[name="a-services"]').forEach(input => {
-                            input.checked = data.services.includes(input.value);
-                        });
-
-                        const saveButton = document.querySelector('#adminPromotionForm button');
-                        saveButton.textContent = 'Mettre à jour';
-                        saveButton.onclick = () => updateBusiness(businessId);
-                        showAdminForm('promotion');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement du métier :', error);
-                    alert('Une erreur est survenue.');
+       function editBusiness(businessId) {
+    firebase.firestore().collection('businesses').doc(businessId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('a-nom').value = data.nom;
+                document.getElementById('a-dob').value = data.dob || '';
+                document.getElementById('a-membre').value = data.membre;
+                document.getElementById('a-metier').value = data.metier;
+                document.getElementById('a-experience').value = data.experience;
+                document.getElementById('a-description').value = data.description;
+                document.getElementById('a-adresse').value = data.adresse;
+                document.getElementById('a-contact').value = data.contact;
+                document.getElementById('a-email').value = data.email || '';
+                document.getElementById('a-image').value = data.image || '';
+                document.getElementById('a-website').value = data.website || ''; // Ajout du champ Site Web
+                document.getElementById('a-portfolio').value = data.portfolio || ''; // Ajout du champ Portfolio
+                document.querySelectorAll('input[name="a-services"]').forEach(input => {
+                    input.checked = data.services.includes(input.value);
                 });
-        }
+
+                const saveButton = document.querySelector('#adminPromotionForm button');
+                saveButton.textContent = 'Mettre à jour';
+                saveButton.onclick = () => updateBusiness(businessId);
+                showAdminForm('promotion');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement du métier :', error);
+            alert('Une erreur est survenue.');
+        });
+}
 
 
-        function updateBusiness(businessId) {
-            const businessData = {
-                nom: document.getElementById('a-nom').value,
-                dob: document.getElementById('a-dob').value,
-                membre: document.getElementById('a-membre').value,
-                metier: document.getElementById('a-metier').value,
-                experience: parseInt(document.getElementById('a-experience').value),
-                description: document.getElementById('a-description').value,
-                adresse: document.getElementById('a-adresse').value,
-                contact: document.getElementById('a-contact').value,
-                email: document.getElementById('a-email').value,
-                image: document.getElementById('a-image').value || 'https://via.placeholder.com/150',
-                services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(input => input.value),
-                website: document.getElementById('a-website').value || '',
-                portfolio: document.getElementById('a-portfolio').value || '',
-                updatedAt: new Date()
-            };
+       function updateBusiness(businessId) {
+    const businessData = {
+        nom: document.getElementById('a-nom').value,
+        dob: document.getElementById('a-dob').value,
+        membre: document.getElementById('a-membre').value,
+        metier: document.getElementById('a-metier').value,
+        experience: parseInt(document.getElementById('a-experience').value),
+        description: document.getElementById('a-description').value,
+        adresse: document.getElementById('a-adresse').value,
+        contact: document.getElementById('a-contact').value,
+        email: document.getElementById('a-email').value,
+        image: document.getElementById('a-image').value || 'https://via.placeholder.com/150',
+        services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(input => input.value),
+        website: document.getElementById('a-website').value || '', // Ajout du champ Site Web
+        portfolio: document.getElementById('a-portfolio').value || '', // Ajout du champ Portfolio
+        updatedAt: new Date()
+    };
 
-            firebase.firestore().collection('businesses').doc(businessId).update(businessData)
-                .then(() => {
-                    alert('Métier mis à jour avec succès !');
-                    document.getElementById('adminPromotionForm').reset();
-                    const saveButton = document.querySelector('#adminPromotionForm button');
-                    saveButton.textContent = 'Enregistrer';
-                    saveButton.onclick = saveBusiness;
-                    showAdminBusinessList();
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la mise à jour du métier :', error);
-                    alert('Une erreur est survenue.');
-                });
-        }
+    firebase.firestore().collection('businesses').doc(businessId).update(businessData)
+        .then(() => {
+            alert('Métier mis à jour avec succès !');
+            document.getElementById('adminPromotionForm').reset();
+            const saveButton = document.querySelector('#adminPromotionForm button');
+            saveButton.textContent = 'Enregistrer';
+            saveButton.onclick = saveBusiness;
+            showAdminBusinessList();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la mise à jour du métier :', error);
+            alert('Une erreur est survenue.');
+        });
+}
 
 
          // Supprimer un métier
-        function deleteBusiness(businessId) {
-            if (confirm('Voulez-vous vraiment supprimer ce métier ?')) {
-                firebase.firestore().collection('businesses').doc(businessId).delete()
-                    .then(() => {
-                        alert('Métier supprimé avec succès !');
-                        loadBusinessList();
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la suppression du métier :', error);
-                        alert('Une erreur est survenue.');
-                    });
+     function deleteBusiness(businessId) {
+    if (confirm('Voulez-vous vraiment supprimer ce métier ?')) {
+        firebase.firestore().collection('businesses').doc(businessId).delete()
+            .then(() => {
+                alert('Métier supprimé avec succès !');
+                loadBusinessList();
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du métier :', error);
+                alert('Une erreur est survenue.');
+            });
+    }
+}
+     function editProject(projectId) {
+    firebase.firestore().collection('projects').doc(projectId).get()
+        .then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('af-nom').value = data.nom;
+                document.getElementById('af-dob').value = data.dob || '';
+                document.getElementById('af-membre').value = data.membre;
+                document.getElementById('af-titre').value = data.titre;
+                document.getElementById('af-description').value = data.description;
+                document.getElementById('af-budget').value = data.budget;
+                document.getElementById('af-delai').value = data.delai;
+                document.getElementById('af-image').value = data.image || '';
+                document.getElementById('af-website').value = data.website || ''; // Ajout du champ Site Web
+                document.getElementById('af-portfolio').value = data.portfolio || ''; // Ajout du champ Portfolio
+                document.querySelectorAll('input[name="af-besoins"]').forEach(input => {
+                    input.checked = data.besoins.includes(input.value);
+                });
+
+                const saveButton = document.querySelector('#adminFinancementForm button');
+                saveButton.textContent = 'Mettre à jour';
+                saveButton.onclick = () => updateProject(projectId);
+                showAdminForm('financement');
             }
-        }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement du projet :', error);
+            alert('Une erreur est survenue.');
+        });
+}
 
-      function editProject(projectId) {
-            firebase.firestore().collection('projects').doc(projectId).get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('af-nom').value = data.nom; 
-                        document.getElementById('af-dob').value = data.dob || '';
-                        document.getElementById('af-membre').value = data.membre;
-                        document.getElementById('af-titre').value = data.titre;
-                        document.getElementById('af-description').value = data.description;
-                        document.getElementById('af-budget').value = data.budget;
-                        document.getElementById('af-delai').value = data.delai;
-                        document.getElementById('af-image').value = data.image || '';
-                        document.getElementById('af-website').value = data.website || '';
-                        document.getElementById('af-portfolio').value = data.portfolio || '';
-                        document.querySelectorAll('input[name="af-besoins"]').forEach(input => {
-                            input.checked = data.besoins.includes(input.value);
-                        });
+     function updateProject(projectId) {
+    const projectData = {
+        nom: document.getElementById('af-nom').value,
+        dob: document.getElementById('af-dob').value,
+        membre: document.getElementById('af-membre').value,
+        titre: document.getElementById('af-titre').value,
+        description: document.getElementById('af-description').value,
+        budget: parseInt(document.getElementById('af-budget').value),
+        delai: document.getElementById('af-delai').value,
+        image: document.getElementById('af-image').value || 'https://via.placeholder.com/150',
+        besoins: Array.from(document.querySelectorAll('input[name="af-besoins"]:checked')).map(input => input.value),
+        website: document.getElementById('af-website').value || '', // Ajout du champ Site Web
+        portfolio: document.getElementById('af-portfolio').value || '', // Ajout du champ Portfolio
+        updatedAt: new Date()
+    };
 
-                        const saveButton = document.querySelector('#adminFinancementForm button');
-                        saveButton.textContent = 'Mettre à jour';
-                        saveButton.onclick = () => updateProject(projectId);
-                        showAdminForm('financement');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement du projet :', error);
-                    alert('Une erreur est survenue.');
-                });
-        }
-
-
-        function updateProject(projectId) {
-            const projectData = {
-                nom: document.getElementById('af-nom').value,
-                dob: document.getElementById('af-dob').value,
-                membre: document.getElementById('af-membre').value,
-                titre: document.getElementById('af-titre').value,
-                description: document.getElementById('af-description').value,
-                budget: parseInt(document.getElementById('af-budget').value),
-                delai: document.getElementById('af-delai').value,
-                image: document.getElementById('af-image').value || 'https://via.placeholder.com/150',
-                besoins: Array.from(document.querySelectorAll('input[name="af-besoins"]:checked')).map(input => input.value),
-                website: document.getElementById('af-website').value || '',
-                portfolio: document.getElementById('af-portfolio').value || '',
-                updatedAt: new Date()
-            };
-
-            firebase.firestore().collection('projects').doc(projectId).update(projectData)
-                .then(() => {
-                    alert('Projet mis à jour avec succès !');
-                    document.getElementById('adminFinancementForm').reset();
-                    const saveButton = document.querySelector('#adminFinancementForm button');
-                    saveButton.textContent = 'Enregistrer';
-                    saveButton.onclick = saveProject;
-                    showAdminProjectList();
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la mise à jour du projet :', error);
-                    alert('Une erreur est survenue.');
-                });
-        }
+    firebase.firestore().collection('projects').doc(projectId).update(projectData)
+        .then(() => {
+            alert('Projet mis à jour avec succès !');
+            document.getElementById('adminFinancementForm').reset();
+            const saveButton = document.querySelector('#adminFinancementForm button');
+            saveButton.textContent = 'Enregistrer';
+            saveButton.onclick = saveProject;
+            showAdminProjectList();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la mise à jour du projet :', error);
+            alert('Une erreur est survenue.');
+        });
+}
 
 
-        function deleteProject(projectId) {
-            if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
-                firebase.firestore().collection('projects').doc(projectId).delete()
-                    .then(() => {
-                        alert('Projet supprimé avec succès !'); 
-                        loadProjectList();
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la suppression du projet :', error);
-                        alert('Une erreur est survenue.');
-                    });
-            } 
-        }
+   function deleteProject(projectId) {
+    if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
+        firebase.firestore().collection('projects').doc(projectId).delete()
+            .then(() => {
+                alert('Projet supprimé avec succès !');
+                loadProjectList();
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du projet :', error);
+                alert('Une erreur est survenue.');
+            });
+    }
+}
 
         function verifyAdminCodes() {
     const code1 = document.getElementById('code1').value;
