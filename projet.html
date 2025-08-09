@@ -112,6 +112,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         
         .btn-ansar:hover {
@@ -254,7 +255,7 @@
         }
         
         .hidden-section {
-            display: none;
+            display: none !important;
         }
         
         .form-container {
@@ -283,10 +284,10 @@
         <div class="ansar-glass w-full max-w-4xl overflow-hidden p-6 holographic-effect">
             <!-- En-tête -->
             <header class="text-center mb-8 projet-header">
-                <h1 class="text-4xl font-bold mb-2 font-['Orbitron'] text-transparent bg-clip-text bg-gradient-to-r from-white to-var(--accent-color)">
+                <h1 class="text-4xl font-bold mb-2 font-['Orbitron'] text-transparent bg-clip-text bg-gradient-to-r from-white to-[var(--accent-color)]">
                     ANSAR PROJET
                 </h1>
-                <p class="text-var(--accent-color)">Plateforme de développement professionnel</p>
+                <p class="text-[var(--accent-color)]">Plateforme de développement professionnel</p>
             </header>
 
             <!-- Interface principale -->
@@ -309,7 +310,7 @@
 
                 <!-- Lien admin -->
                 <div class="text-center mt-6 admin-link">
-                    <a href="#" onclick="showProjetAdmin()" class="text-var(--accent-color) hover:text-white underline">Espace réservé aux membres</a>
+                    <a href="#" onclick="showProjetAdmin(); return false;" class="text-[var(--accent-color)] hover:text-white underline">Espace réservé aux membres</a>
                 </div>
             </div>
 
@@ -321,7 +322,7 @@
                 
                 <div class="ansar-glass rounded-xl p-6">
                     <h2 class="text-2xl font-bold text-center mb-6 font-['Orbitron']">Promotion des Métiers</h2>
-                    <p class="text-center text-var(--accent-color)/80 mb-6">Objectif : Mettre en avant les compétences des membres</p>
+                    <p class="text-center text-[var(--accent-color)]/80 mb-6">Objectif : Mettre en avant les compétences des membres</p>
                     
                     <form id="promotionForm" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -505,11 +506,11 @@
             </div>
 
             <!-- Modal Business Details -->
-            <div id="business-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                <div class="ansar-glass rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div id="business-modal" class="modal hidden-section">
+                <div class="modal-content">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 id="modal-title" class="text-2xl font-bold font-['Orbitron']"></h3>
-                        <button onclick="hideBusinessDetails()" class="text-var(--accent-color) hover:text-white">
+                        <h3 id="modal-title" class="modal-title"></h3>
+                        <button onclick="hideBusinessDetails()" class="text-[var(--accent-color)] hover:text-white">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -527,8 +528,8 @@
             </div>
 
             <!-- Messages de succès -->
-            <div id="success-promotion" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="ansar-glass rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+            <div id="success-promotion" class="modal hidden-section">
+                <div class="modal-content">
                     <div class="text-green-500 text-5xl mb-4">
                         <i class="fas fa-check-circle"></i>
                     </div>
@@ -540,8 +541,8 @@
                 </div>
             </div>
 
-            <div id="success-financement" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="ansar-glass rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+            <div id="success-financement" class="modal hidden-section">
+                <div class="modal-content">
                     <div class="text-green-500 text-5xl mb-4">
                         <i class="fas fa-check-circle"></i>
                     </div>
@@ -554,9 +555,9 @@
             </div>
 
             <!-- Section Admin -->
-            <div id="admin-section" class="hidden-section fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="ansar-glass rounded-lg shadow-xl p-8 max-w-md w-full">
-                    <h2 class="text-2xl font-bold text-center mb-6 font-['Orbitron']">ESPACE RÉSERVÉ À L'ADMINISTRATION</h2>
+            <div id="admin-section" class="modal hidden-section">
+                <div class="modal-content">
+                    <h2 class="modal-title">ESPACE RÉSERVÉ À L'ADMINISTRATION</h2>
                     
                     <div class="space-y-4">
                         <div>
@@ -661,8 +662,18 @@
                                 </div>
                                 
                                 <div>
-                                    <label class="form-label" for="a-image">Lien de l'image (PostImages ou autre)</label>
-                                    <input type="url" id="a-image" class="form-input" placeholder="https://postimages.org/example.jpg">
+                                    <label class="form-label" for="a-image">Lien de l'image</label>
+                                    <input type="url" id="a-image" class="form-input" placeholder="https://example.com/image.jpg">
+                                </div>
+                                
+                                <div>
+                                    <label class="form-label" for="a-website">Site Web</label>
+                                    <input type="url" id="a-website" class="form-input" placeholder="https://example.com">
+                                </div>
+                                
+                                <div>
+                                    <label class="form-label" for="a-portfolio">Portfolio</label>
+                                    <input type="url" id="a-portfolio" class="form-input" placeholder="https://portfolio.example.com">
                                 </div>
                                 
                                 <div class="pt-4">
@@ -739,8 +750,18 @@
                                 </div>
                                 
                                 <div>
-                                    <label class="form-label" for="af-image">Lien de l'image (PostImages ou autre)</label>
-                                    <input type="url" id="af-image" class="form-input" placeholder="https://postimages.org/example.jpg">
+                                    <label class="form-label" for="af-image">Lien de l'image</label>
+                                    <input type="url" id="af-image" class="form-input" placeholder="https://example.com/image.jpg">
+                                </div>
+                                
+                                <div>
+                                    <label class="form-label" for="af-website">Site Web</label>
+                                    <input type="url" id="af-website" class="form-input" placeholder="https://example.com">
+                                </div>
+                                
+                                <div>
+                                    <label class="form-label" for="af-portfolio">Portfolio</label>
+                                    <input type="url" id="af-portfolio" class="form-input" placeholder="https://portfolio.example.com">
                                 </div>
                                 
                                 <div class="pt-4">
@@ -780,6 +801,8 @@
                                         <tr class="border-b border-gray-700">
                                             <th class="px-4 py-3 text-left">Nom</th>
                                             <th class="px-4 py-3 text-left">Métier</th>
+                                            <th class="px-4 py-3 text-left">Expérience</th>
+                                            <th class="px-4 py-3 text-left">Adresse</th>
                                             <th class="px-4 py-3 text-left">Actions</th>
                                         </tr>
                                     </thead>
@@ -802,6 +825,7 @@
                                             <th class="px-4 py-3 text-left">Titre</th>
                                             <th class="px-4 py-3 text-left">Porteur</th>
                                             <th class="px-4 py-3 text-left">Budget</th>
+                                            <th class="px-4 py-3 text-left">Délai</th>
                                             <th class="px-4 py-3 text-left">Actions</th>
                                         </tr>
                                     </thead>
@@ -833,18 +857,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Initialisation EmailJS avec vos configurations
-        emailjs.init("t69wuFYR5Gno3G4py"); // Compte principal
-
-        // Gestion de la page Projet
-        let projetBusinessData = []; // Stocke les données des professionnels
+        // Initialisation EmailJS
+        emailjs.init("t69wuFYR5Gno3G4py");
 
         // Fonctions de navigation
         function showProjetSection(section) {
-            console.log(`Tentative d'affichage de la section : ${section}`);
-
-            // Liste des sections à masquer
-            const sectionsToHide = [
+            const sections = [
+                'main-interface',
                 'promotion-form',
                 'financement-form',
                 'business-section',
@@ -855,222 +874,143 @@
                 'business-modal'
             ];
 
-            // Masquer toutes les sections
-            sectionsToHide.forEach(id => {
+            sections.forEach(id => {
                 const element = document.getElementById(id);
-                if (element) {
-                    element.classList.add('hidden-section');
-                } else {
-                    console.warn(`Élément #${id} introuvable dans le DOM`);
-                }
+                if (element) element.classList.add('hidden-section');
             });
 
-            // Déterminer l'ID de la section cible
-            let targetId;
-            if (section === 'business') {
-                targetId = 'business-section';
-            } else if (section === 'promotion') {
-                targetId = 'promotion-form';
-            } else if (section === 'financement') {
-                targetId = 'financement-form';
-            } else if (section === 'admin') {
-                targetId = 'admin-section';
-            } else {
-                console.error(`Section inconnue : ${section}`);
-                return;
+            const targetId = {
+                'promotion': 'promotion-form',
+                'financement': 'financement-form',
+                'business': 'business-section'
+            }[section];
+
+            if (targetId) {
+                document.getElementById(targetId).classList.remove('hidden-section');
+                if (section === 'business') loadBusinessCards();
             }
 
-            // Afficher la section demandée
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.remove('hidden-section');
-                console.log(`Section #${targetId} affichée`);
-            } else {
-                console.error(`Section #${targetId} introuvable dans le DOM`);
-                return;
-            }
-
-            // Afficher les boutons principaux si on revient à l'accueil
-            if (section === 'business') {
-                document.querySelector('.projet-buttons').style.display = 'flex';
-                document.querySelector('.projet-header').style.display = 'block';
-                document.querySelector('.admin-link').style.display = 'block';
-                console.log('Appel de loadBusinessCards');
-                loadBusinessCards();
-            } else {
-                // Masquer les boutons principaux pour les autres sections
-                document.querySelector('.projet-buttons').style.display = 'none';
-                document.querySelector('.projet-header').style.display = 'none';
-                document.querySelector('.admin-link').style.display = 'none';
-            }
+            document.getElementById('main-interface').classList.toggle('hidden-section', section !== 'business');
         }
 
         function showProjetAdmin() {
-            // Masquer toutes les sections
-            document.getElementById('promotion-form').classList.add('hidden-section');
-            document.getElementById('financement-form').classList.add('hidden-section');
-            document.getElementById('business-section').classList.add('hidden-section');
-            document.getElementById('admin-dashboard').classList.add('hidden-section');
-
-            // Afficher la section admin
-            document.getElementById('admin-section').classList.remove('hidden-section');
+            showProjetSection('admin');
         }
 
         function showMainInterface() {
-            // Masquer toutes les sections
-            document.getElementById('promotion-form').classList.add('hidden-section');
-            document.getElementById('financement-form').classList.add('hidden-section');
-            document.getElementById('business-section').classList.add('hidden-section');
-            document.getElementById('admin-section').classList.add('hidden-section');
-            document.getElementById('admin-dashboard').classList.add('hidden-section');
+            showProjetSection('business');
+        }
 
-            // Afficher les boutons principaux
-            document.querySelector('.projet-buttons').style.display = 'flex';
-            document.querySelector('.projet-header').style.display = 'block';
-            document.querySelector('.admin-link').style.display = 'block';
+        function hideAdminSection() {
+            showMainInterface();
         }
 
         // Fonction pour envoyer l'email de confirmation
         async function sendConfirmationEmail(nom, email) {
             try {
-                // On utilise le compte SECONDARY pour la confirmation
-                await emailjs.init("b7VZLL9unc4ONEPby"); // Clé publique du 2ème compte
+                await emailjs.init("b7VZLL9unc4ONEPby");
                 await emailjs.send("service_v9clrbi", "template_p5w3d7a", {
                     nom: nom,
                     email: email
                 });
-                console.log("✅ Email de confirmation envoyé à :", email);
             } catch (error) {
-                console.error("❌ Erreur lors de l'envoi de la confirmation :", error);
+                console.error("Erreur lors de l'envoi de la confirmation :", error);
             }
         }
 
-        // Fonction pour soumettre le formulaire de promotion
+        // Soumettre le formulaire de promotion
         function submitPromotionForm() {
-            // Récupérer les valeurs des champs
-            const nom = document.getElementById('nom').value;
-            const dob = document.getElementById('dob').value;
-            const membre = document.querySelector('input[name="membre"]:checked')?.value;
-            const metier = document.getElementById('metier').value;
-            const experience = document.getElementById('experience').value;
-            const description = document.getElementById('description').value;
-            const adresse = document.getElementById('adresse').value;
-            const contact = document.getElementById('contact').value;
-            const email = document.getElementById('email').value;
-            const besoins = Array.from(document.querySelectorAll('input[name="besoins"]:checked')).map(input => input.value).join(', ');
+            const form = document.getElementById('promotionForm');
+            const submitButton = form.querySelector('button[type="button"]');
+            const data = {
+                nom: document.getElementById('nom').value,
+                dob: document.getElementById('dob').value,
+                membre: document.querySelector('input[name="membre"]:checked')?.value,
+                metier: document.getElementById('metier').value,
+                experience: document.getElementById('experience').value,
+                description: document.getElementById('description').value,
+                adresse: document.getElementById('adresse').value,
+                contact: document.getElementById('contact').value,
+                email: document.getElementById('email').value,
+                besoins: Array.from(document.querySelectorAll('input[name="besoins"]:checked')).map(input => input.value).join(', ')
+            };
 
-            // Vérifier que tous les champs requis sont remplis
-            if (!nom || !dob || !membre || !metier || !experience || !description || !adresse || !contact || !email) {
+            if (Object.values(data).some(val => !val && val !== '')) {
                 alert('Veuillez remplir tous les champs obligatoires.');
                 return;
             }
 
-            // Valider le format de l'email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
+            if (!emailRegex.test(data.email)) {
                 alert('Veuillez entrer une adresse email valide.');
                 return;
             }
 
-            // Désactiver le bouton pendant l'envoi
-            const submitButton = document.querySelector('#promotionForm button[type="button"]');
             submitButton.disabled = true;
             submitButton.innerHTML = 'Envoi en cours...';
 
-            // Envoyer l'email via EmailJS
-            emailjs.send('service_s761d89', 'template_01ycegg', {
-                nom,
-                dob,
-                membre,
-                metier,
-                experience,
-                description,
-                adresse,
-                contact,
-                email,
-                besoins
-            })
-            .then(() => {
-                // Envoi de l'email de confirmation
-                sendConfirmationEmail(nom, email); 
-
-                // Message de succès
-                document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
-                document.getElementById('success-promotion').classList.remove('hidden-section');
-                document.getElementById('promotion-form').classList.add('hidden-section');
-                document.getElementById('promotionForm').reset();
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Envoyer mon dossier';
-            })
-            .catch(error => {
-                console.error('Erreur lors de l\'envoi de l\'email:', error);
-                alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
-                // Réactiver le bouton
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Envoyer mon dossier';
-            });
+            emailjs.send('service_s761d89', 'template_01ycegg', data)
+                .then(() => {
+                    sendConfirmationEmail(data.nom, data.email);
+                    document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${data.nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
+                    document.getElementById('success-promotion').classList.remove('hidden-section');
+                    document.getElementById('promotion-form').classList.add('hidden-section');
+                    form.reset();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de l\'envoi de l\'email:', error);
+                    alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Envoyer mon dossier';
+                });
         }
 
-        // Fonction pour soumettre le formulaire de financement
+        // Soumettre le formulaire de financement
         function submitFinancementForm() {
-            // Récupérer les valeurs des champs
-            const nom = document.getElementById('f-nom').value;
-            const dob = document.getElementById('f-dob').value;
-            const membre = document.querySelector('input[name="f-membre"]:checked')?.value;
-            const titre = document.getElementById('titre-projet').value;
-            const description = document.getElementById('description-projet').value;
-            const budget = document.getElementById('budget').value;
-            const delai = document.getElementById('delai').value;
-            const besoins = Array.from(document.querySelectorAll('input[name="f-besoins"]:checked')).map(input => input.value).join(', ');
+            const form = document.getElementById('financementForm');
+            const submitButton = form.querySelector('button[type="button"]');
+            const data = {
+                nom: document.getElementById('f-nom').value,
+                dob: document.getElementById('f-dob').value,
+                membre: document.querySelector('input[name="f-membre"]:checked')?.value,
+                titre: document.getElementById('titre-projet').value,
+                description: document.getElementById('description-projet').value,
+                budget: document.getElementById('budget').value,
+                delai: document.getElementById('delai').value,
+                besoins: Array.from(document.querySelectorAll('input[name="f-besoins"]:checked')).map(input => input.value).join(', ')
+            };
 
-            // Vérifier que tous les champs requis sont remplis
-            if (!nom || !dob || !membre || !titre || !description || !budget || !delai) {
+            if (Object.values(data).some(val => !val && val !== '')) {
                 alert('Veuillez remplir tous les champs obligatoires.');
                 return;
             }
 
-            // Désactiver le bouton pendant l'envoi
-            const submitButton = document.querySelector('#financementForm button[type="button"]');
             submitButton.disabled = true;
             submitButton.innerHTML = 'Envoi en cours...';
 
-            // Envoyer l'email via EmailJS
-            emailjs.send('service_s761d89', 'template_evir7gc', {
-                nom,
-                dob,
-                membre,
-                titre,
-                description,
-                budget,
-                delai,
-                besoins
-            })
-            .then(() => {
-                // Mettre à jour le message de la modale avec le nom
-                document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
-                // Afficher la modale de succès
-                document.getElementById('success-financement').classList.remove('hidden-section');
-                // Cacher le formulaire
-                document.getElementById('financement-form').classList.add('hidden-section');
-                // Réinitialiser le formulaire
-                document.getElementById('financementForm').reset();
-                // Réactiver le bouton
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Envoyer mon dossier';
-            })
-            .catch(error => {
-                console.error('Erreur lors de l\'envoi de l\'email:', error);
-                alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
-                // Réactiver le bouton
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Envoyer mon dossier';
-            });
+            emailjs.send('service_s761d89', 'template_evir7gc', data)
+                .then(() => {
+                    document.getElementById('success-financement-message').innerHTML = `Votre message a été soumis, ${data.nom}. Ansar vous contactera dans un délai de 3 à 5 jours.`;
+                    document.getElementById('success-financement').classList.remove('hidden-section');
+                    document.getElementById('financement-form').classList.add('hidden-section');
+                    form.reset();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de l\'envoi de l\'email:', error);
+                    alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Envoyer mon dossier';
+                });
         }
 
-        // Fonctions pour masquer les messages de succès
+        // Masquer les messages de succès
         function hideSuccessMessage(type) {
             document.getElementById(`success-${type}`).classList.add('hidden-section');
-            showMainInterface(); // Retour à l'interface principale
+            showMainInterface();
         }
 
         function hideBusinessDetails() {
@@ -1091,37 +1031,28 @@
         }
 
         function showAdminForm(type) {
-            // Masquer toutes les sections admin
-            document.getElementById('admin-promotion-form').classList.add('hidden-section');
-            document.getElementById('admin-financement-form').classList.add('hidden-section');
-            document.getElementById('admin-business-list').classList.add('hidden-section');
-            document.getElementById('admin-project-list').classList.add('hidden-section');
-
-            // Afficher la section correspondante
-            document.getElementById('admin-' + type + '-form').classList.remove('hidden-section');
+            const forms = ['admin-promotion-form', 'admin-financement-form', 'admin-business-list', 'admin-project-list'];
+            forms.forEach(form => document.getElementById(form).classList.add('hidden-section'));
+            document.getElementById(`admin-${type}-form`).classList.remove('hidden-section');
         }
 
         function showAdminBusinessList() {
-            // Masquer toutes les sections admin
-            document.getElementById('admin-promotion-form').classList.add('hidden-section');
-            document.getElementById('admin-financement-form').classList.add('hidden-section');
+            const forms = ['admin-promotion-form', 'admin-financement-form', 'admin-business-list', 'admin-project-list'];
+            forms.forEach(form => document.getElementById(form).classList.add('hidden-section'));
             document.getElementById('admin-business-list').classList.remove('hidden-section');
-            document.getElementById('admin-project-list').classList.add('hidden-section');
-            loadBusinessList(); // Charger les données
+            loadBusinessList();
         }
 
         function showAdminProjectList() {
-            // Masquer toutes les sections admin
-            document.getElementById('admin-promotion-form').classList.add('hidden-section');
-            document.getElementById('admin-financement-form').classList.add('hidden-section');
-            document.getElementById('admin-business-list').classList.add('hidden-section');
+            const forms = ['admin-promotion-form', 'admin-financement-form', 'admin-business-list', 'admin-project-list'];
+            forms.forEach(form => document.getElementById(form).classList.add('hidden-section'));
             document.getElementById('admin-project-list').classList.remove('hidden-section');
-            loadProjectList(); // Charger les données
+            loadProjectList();
         }
 
-        // Enregistrer un métier dans Firestore
+        // Enregistrer un métier
         function saveBusiness() {
-            const businessData = {
+            const data = {
                 nom: document.getElementById('a-nom').value,
                 dob: document.getElementById('a-dob').value,
                 membre: document.getElementById('a-membre').value,
@@ -1133,17 +1064,17 @@
                 email: document.getElementById('a-email').value,
                 image: document.getElementById('a-image').value || 'https://via.placeholder.com/150',
                 services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(input => input.value),
-                website: document.getElementById('a-website').value || '', // Ajout du champ Site Web
-                portfolio: document.getElementById('a-portfolio').value || '', // Ajout du champ Portfolio
+                website: document.getElementById('a-website').value || '',
+                portfolio: document.getElementById('a-portfolio').value || '',
                 createdAt: new Date()
             };
 
-            if (!businessData.nom || !businessData.metier || !businessData.experience || !businessData.description || !businessData.adresse || !businessData.contact) {
+            if (!data.nom || !data.metier || !data.experience || !data.description || !data.adresse || !data.contact) {
                 alert('Veuillez remplir tous les champs obligatoires.');
                 return;
             }
 
-            firebase.firestore().collection('businesses').add(businessData)
+            db.collection('businesses').add(data)
                 .then(() => {
                     alert('Métier enregistré avec succès !');
                     document.getElementById('adminPromotionForm').reset();
@@ -1151,13 +1082,13 @@
                 })
                 .catch(error => {
                     console.error('Erreur lors de l\'enregistrement du métier :', error);
-                    alert('Une erreur est survenue lors de l\'enregistrement.');
+                    alert('Une erreur est survenue.');
                 });
         }
 
-        // Enregistrer un projet dans Firestore
+        // Enregistrer un projet
         function saveProject() {
-            const projectData = {
+            const data = {
                 nom: document.getElementById('af-nom').value,
                 dob: document.getElementById('af-dob').value,
                 membre: document.getElementById('af-membre').value,
@@ -1167,17 +1098,17 @@
                 delai: document.getElementById('af-delai').value,
                 image: document.getElementById('af-image').value || 'https://via.placeholder.com/150',
                 besoins: Array.from(document.querySelectorAll('input[name="af-besoins"]:checked')).map(input => input.value),
-                website: document.getElementById('af-website').value || '', // Ajout du champ Site Web
-                portfolio: document.getElementById('af-portfolio').value || '', // Ajout du champ Portfolio
+                website: document.getElementById('af-website').value || '',
+                portfolio: document.getElementById('af-portfolio').value || '',
                 createdAt: new Date()
             };
 
-            if (!projectData.nom || !projectData.titre || !projectData.description || !projectData.budget || !projectData.delai) {
+            if (!data.nom || !data.titre || !data.description || !data.budget || !data.delai) {
                 alert('Veuillez remplir tous les champs obligatoires.');
                 return;
             }
 
-            firebase.firestore().collection('projects').add(projectData)
+            db.collection('projects').add(data)
                 .then(() => {
                     alert('Projet enregistré avec succès !');
                     document.getElementById('adminFinancementForm').reset();
@@ -1189,78 +1120,52 @@
                 });
         }
 
-        // Charger les métiers dans #business-cards
+        // Charger les cartes business
         async function loadBusinessCards() {
-            console.log('loadBusinessCards: Début');
             const businessCards = document.getElementById('business-cards');
-
-            // Vérifier si le conteneur existe
-            if (!businessCards) {
-                console.error('Conteneur #business-cards introuvable');
-                return;
-            }
-
-            // Afficher un message de chargement
-            businessCards.innerHTML = '<p class="text-gray-600 text-center">Chargement...</p>';
+            businessCards.innerHTML = '<p class="text-center">Chargement...</p>';
 
             try {
-                // Charger les professionnels depuis Firestore
-                console.log('loadBusinessCards: Chargement des professionnels Firestore');
-                const businessSnapshot = await firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get();
+                const snapshot = await db.collection('businesses').orderBy('createdAt', 'desc').get();
+                const businesses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                // Mapper les données des professionnels
-                const businesses = businessSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    type: 'business',
-                    ...doc.data()
-                }));
-                console.log('loadBusinessCards: Professionnels chargés', businesses);
-
-                // Vérifier si des professionnels existent
                 if (businesses.length === 0) {
-                    console.log('loadBusinessCards: Aucun professionnel disponible');
-                    businessCards.innerHTML = '<p class="text-gray-600 text-center">Aucun professionnel disponible.</p>';
+                    businessCards.innerHTML = '<p class="text-center">Aucun professionnel disponible.</p>';
                     return;
                 }
 
-                // Générer le HTML des cartes pour les professionnels
-                const cardHTML = businesses.map(business => `
+                businessCards.innerHTML = businesses.map(business => `
                     <div class="business-card">
                         <div class="h-48 bg-blue-500 flex items-center justify-center">
                             <img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">${business.metier}</h3>
-                            <p class="text-gray-600 mb-2">${business.nom}</p>
-                            <div class="flex items-center text-gray-600 mb-2">
+                            <h3 class="text-xl font-bold mb-2">${business.metier}</h3>
+                            <p class="mb-2">${business.nom}</p>
+                            <div class="flex items-center mb-2">
                                 <i class="fas fa-calendar-alt mr-2"></i>
                                 <span>${business.experience} ans d'expérience</span>
                             </div>
-                            <div class="flex items-center text-gray-600 mb-4">
+                            <div class="flex items-center mb-4">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
                                 <span>${business.adresse}</span>
                             </div>
-                            <button onclick="showBusinessDetails('${business.id}', 'business')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            <button onclick="showBusinessDetails('${business.id}', 'business')" class="w-full btn-ansar py-2 px-4 rounded">
                                 En savoir plus
                             </button>
                         </div>
                     </div>
                 `).join('');
-                console.log('loadBusinessCards: HTML généré', cardHTML);
-
-                // Injecter le HTML dans le conteneur
-                businessCards.innerHTML = cardHTML;
-                console.log('loadBusinessCards: HTML injecté dans le conteneur');
             } catch (error) {
-                console.error('loadBusinessCards: Erreur lors du chargement', error);
-                businessCards.innerHTML = '<p class="text-red-600 text-center">Erreur lors du chargement des professionnels.</p>';
+                console.error('Erreur lors du chargement des professionnels:', error);
+                businessCards.innerHTML = '<p class="text-center text-red-500">Erreur lors du chargement.</p>';
             }
         }
 
-        // Afficher les détails d'un métier ou projet dans le modal
+        // Afficher les détails d'un métier/projet
         function showBusinessDetails(id, type) {
             const collection = type === 'business' ? 'businesses' : 'projects';
-            firebase.firestore().collection(collection).doc(id).get()
+            db.collection(collection).doc(id).get()
                 .then(doc => {
                     if (doc.exists) {
                         const data = doc.data();
@@ -1271,35 +1176,35 @@
                                     <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
                                         <img src="${data.image}" alt="${data.nom}" class="w-full h-full object-cover">
                                     </div>
-                                    <h4 class="text-xl font-bold text-gray-800">${data.nom}</h4>
-                                    <div class="flex items-center text-gray-600 mt-2">
+                                    <h4 class="text-xl font-bold">${data.nom}</h4>
+                                    <div class="flex items-center mt-2">
                                         <i class="fas fa-calendar-alt mr-2"></i>
                                         <span>${data.experience ? `${data.experience} ans d'expérience` : data.budget + ' FCFA'}</span>
                                     </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
+                                    <div class="flex items-center mt-2">
                                         <i class="fas fa-map-marker-alt mr-2"></i>
                                         <span>${data.adresse || data.delai}</span>
                                     </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
+                                    <div class="flex items-center mt-2">
                                         <i class="fas fa-phone mr-2"></i>
                                         <span>${data.contact || 'Non spécifié'}</span>
                                     </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
+                                    <div class="flex items-center mt-2">
                                         <i class="fas fa-envelope mr-2"></i>
                                         <span>${data.email || 'Non spécifié'}</span>
                                     </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
+                                    <div class="flex items-center mt-2">
                                         <i class="fas fa-globe mr-2"></i>
                                         <span>${data.website ? `<a href="${data.website}" target="_blank">Site Web</a>` : 'Non spécifié'}</span>
                                     </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
+                                    <div class="flex items-center mt-2">
                                         <i class="fas fa-briefcase mr-2"></i>
                                         <span>${data.portfolio ? `<a href="${data.portfolio}" target="_blank">Portfolio</a>` : 'Non spécifié'}</span>
                                     </div>
                                 </div>
                                 <div class="md:w-2/3">
-                                    <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
-                                    <p class="text-gray-600 mb-4">${data.description}</p>
+                                    <h4 class="text-lg font-bold mb-2">À propos</h4>
+                                    <p>${data.description}</p>
                                 </div>
                             </div>
                         `;
@@ -1314,11 +1219,11 @@
                 });
         }
 
-        // Charger la liste des métiers dans #admin-business-list
+        // Charger la liste des métiers
         function loadBusinessList() {
             const businessTableBody = document.getElementById('business-list-body');
-            businessTableBody.innerHTML = ''; // Vider le tableau
-            firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get()
+            businessTableBody.innerHTML = '';
+            db.collection('businesses').orderBy('createdAt', 'desc').get()
                 .then(querySnapshot => {
                     if (querySnapshot.empty) {
                         businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center">Aucun métier disponible.</td></tr>';
@@ -1326,7 +1231,7 @@
                     }
                     querySnapshot.forEach(doc => {
                         const data = doc.data();
-                        const row = `
+                        businessTableBody.innerHTML += `
                             <tr>
                                 <td class="py-3 px-4">${data.nom}</td>
                                 <td class="py-3 px-4">${data.metier}</td>
@@ -1341,20 +1246,19 @@
                                     </button>
                                 </td>
                             </tr>`;
-                        businessTableBody.innerHTML += row;
                     });
                 })
                 .catch(error => {
                     console.error('Erreur lors du chargement des métiers :', error);
-                    businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-600">Erreur lors du chargement.</td></tr>';
+                    businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-500">Erreur lors du chargement.</td></tr>';
                 });
         }
 
-        // Charger la liste des projets dans #admin-project-list
+        // Charger la liste des projets
         function loadProjectList() {
             const projectTableBody = document.getElementById('project-list-body');
-            projectTableBody.innerHTML = ''; // Vider le tableau
-            firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
+            projectTableBody.innerHTML = '';
+            db.collection('projects').orderBy('createdAt', 'desc').get()
                 .then(querySnapshot => {
                     if (querySnapshot.empty) {
                         projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center">Aucun projet disponible.</td></tr>';
@@ -1362,10 +1266,10 @@
                     }
                     querySnapshot.forEach(doc => {
                         const data = doc.data();
-                        const row = `
+                        projectTableBody.innerHTML += `
                             <tr>
-                                <td class="py-3 px-4">${data.nom}</td>
                                 <td class="py-3 px-4">${data.titre}</td>
+                                <td class="py-3 px-4">${data.nom}</td>
                                 <td class="py-3 px-4">${data.budget} FCFA</td>
                                 <td class="py-3 px-4">${data.delai}</td>
                                 <td class="py-3 px-4 text-center">
@@ -1377,18 +1281,17 @@
                                     </button>
                                 </td>
                             </tr>`;
-                        projectTableBody.innerHTML += row;
                     });
                 })
                 .catch(error => {
                     console.error('Erreur lors du chargement des projets :', error);
-                    projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-600">Erreur lors du chargement.</td></tr>';
+                    projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-500">Erreur lors du chargement.</td></tr>';
                 });
         }
 
         // Éditer un métier
         function editBusiness(businessId) {
-            firebase.firestore().collection('businesses').doc(businessId).get()
+            db.collection('businesses').doc(businessId).get()
                 .then(doc => {
                     if (doc.exists) {
                         const data = doc.data();
@@ -1422,7 +1325,7 @@
 
         // Mettre à jour un métier
         function updateBusiness(businessId) {
-            const businessData = {
+            const data = {
                 nom: document.getElementById('a-nom').value,
                 dob: document.getElementById('a-dob').value,
                 membre: document.getElementById('a-membre').value,
@@ -1439,7 +1342,7 @@
                 updatedAt: new Date()
             };
 
-            firebase.firestore().collection('businesses').doc(businessId).update(businessData)
+            db.collection('businesses').doc(businessId).update(data)
                 .then(() => {
                     alert('Métier mis à jour avec succès !');
                     document.getElementById('adminPromotionForm').reset();
@@ -1457,7 +1360,7 @@
         // Supprimer un métier
         function deleteBusiness(businessId) {
             if (confirm('Voulez-vous vraiment supprimer ce métier ?')) {
-                firebase.firestore().collection('businesses').doc(businessId).delete()
+                db.collection('businesses').doc(businessId).delete()
                     .then(() => {
                         alert('Métier supprimé avec succès !');
                         loadBusinessList();
@@ -1471,7 +1374,7 @@
 
         // Éditer un projet
         function editProject(projectId) {
-            firebase.firestore().collection('projects').doc(projectId).get()
+            db.collection('projects').doc(projectId).get()
                 .then(doc => {
                     if (doc.exists) {
                         const data = doc.data();
@@ -1503,7 +1406,7 @@
 
         // Mettre à jour un projet
         function updateProject(projectId) {
-            const projectData = {
+            const data = {
                 nom: document.getElementById('af-nom').value,
                 dob: document.getElementById('af-dob').value,
                 membre: document.getElementById('af-membre').value,
@@ -1518,7 +1421,7 @@
                 updatedAt: new Date()
             };
 
-            firebase.firestore().collection('projects').doc(projectId).update(projectData)
+            db.collection('projects').doc(projectId).update(data)
                 .then(() => {
                     alert('Projet mis à jour avec succès !');
                     document.getElementById('adminFinancementForm').reset();
@@ -1536,26 +1439,20 @@
         // Supprimer un projet
         function deleteProject(projectId) {
             if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
-                firebase.firestore().collection('projects').doc(projectId).delete()
+                db.collection('projects').doc(projectId).delete()
                     .then(() => {
                         alert('Projet supprimé avec succès !');
                         loadProjectList();
-                    })
+                    }) 
                     .catch(error => {
-                        console.error('Erreur lors de la suppression du projet :', error);
+                        console.error('Erreur lors de la suppression du projet :', error); 
                         alert('Une erreur est survenue.');
                     });
             }
-        }
+        } 
 
-        // Initialisation au chargement de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOMContentLoaded: Page chargée');
-            
-            // Charger les professionnels pour la section Business
-            loadBusinessCards();
-            
-            // Afficher la section business par défaut
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
             showProjetSection('business');
         });
     </script>
