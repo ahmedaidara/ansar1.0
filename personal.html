@@ -60,9 +60,24 @@
     opacity: 0.4;
     z-index: -1; /* Place en arrière-plan */
     animation: bgRotate 60s linear infinite;
+      animation: bgMovement 30s infinite alternate ease-in-out;
+
     overflow: hidden; /* Empêche tout débordement */
 }
-
+@keyframes bgMovement {
+    0% { 
+        transform: scale(1) rotate(0deg);
+        background-position: 0% 0%;
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+        background-position: 50% 50%;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        background-position: 100% 100%;
+    }
+}
 /* Supprimez le deuxième fond ou éléments superflus */
 .spotlight, .particles {
     display: none; /* Optionnel - supprime les autres effets si trop chargé */
@@ -75,7 +90,7 @@
         
         /* CONTAINER PRINCIPAL */
     .auth-container {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
