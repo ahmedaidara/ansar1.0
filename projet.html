@@ -961,76 +961,80 @@
         }
 
     // Charger la liste des métiers dans #admin-business-list
-        function loadBusinessList() {
-            const businessTableBody = document.getElementById('business-list-body');
-            businessTableBody.innerHTML = ''; // Vider le tableau
-            firebase.firestore().collection('businesses').orderBy('createdAt', 'desc').get()
-                .then(querySnapshot => {
-                    if (querySnapshot.empty) {
-                        businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center">Aucun métier disponible.</td></tr>';
-                        return;
-                    }
-                    querySnapshot.forEach(doc => {
-                        const data = doc.data();
-                        const row = `
-                            <tr>
-                                <td class="py-3 px-4">${data.nom}</td>
-                                <td class="py-3 px-4">${data.metier}</td>
-                                <td class="py-3 px-4">${data.experience} ans</td>
-                                <td class="py-3 px-4">${data.adresse}</td>
-                                <td class="py-3 px-4 text-center">
-                                    <button onclick="editBusiness('${doc.id}')" class="text-blue-600 hover:text-blue-800 mr-3">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteBusiness('${doc.id}')" class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>`;
-                        businessTableBody.innerHTML += row;
-                    });
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des métiers :', error);
-                    businessTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-600">Erreur lors du chargement.</td></tr>';
-                });
-        }
-  // Charger la liste des projets dans #admin-project-list
-        function loadProjectList() {
-            const projectTableBody = document.getElementById('project-list-body');
-            projectTableBody.innerHTML = ''; // Vider le tableau
-            firebase.firestore().collection('projects').orderBy('createdAt', 'desc').get()
-                .then(querySnapshot => {
-                    if (querySnapshot.empty) {
-                        projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center">Aucun projet disponible.</td></tr>';
-                        return;
-                    }
-                    querySnapshot.forEach(doc => {
-                        const data = doc.data();
-                        const row = `
-                            <tr>
-                                <td class="py-3 px-4">${data.nom}</td>
-                                <td class="py-3 px-4">${data.titre}</td>
-                                <td class="py-3 px-4">${data.budget} FCFA</td>
-                                <td class="py-3 px-4">${data.delai}</td>
-                                <td class="py-3 px-4 text-center">
-                                    <button onclick="editProject('${doc.id}')" class="text-blue-600 hover:text-blue-800 mr-3">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteProject('${doc.id}')" class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>`;
-                        projectTableBody.innerHTML += row;
-                    });
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des projets :', error);
-                    projectTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-red-600">Erreur lors du chargement.</td></tr>';
-                });
-        }
+       function loadBusinessList() {
+    const businessTableBody = document.getElementById('business-list-body');
+    businessTableBody.innerHTML = '<tr><td colspan="3">Chargement...</td></tr>';
 
+    firebase.firestore().collection('businesses').get()
+        .then(querySnapshot => {
+            businessTableBody.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                businessTableBody.innerHTML = '<tr><td colspan="3">Aucun métier enregistré</td></tr>';
+                return;
+            }
+
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const row = `
+                    <tr class="border-b border-gray-700">
+                        <td class="px-4 py-3">${data.nom || 'Non spécifié'}</td>
+                        <td class="px-4 py-3">${data.metier || 'Non spécifié'}</td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="editBusiness('${doc.id}')" class="text-blue-500 hover:text-blue-400 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteBusiness('${doc.id}')" class="text-red-500 hover:text-red-400">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                businessTableBody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error("Error loading businesses: ", error);
+            businessTableBody.innerHTML = '<tr><td colspan="3">Erreur de chargement</td></tr>';
+        });
+}
+
+function loadProjectList() {
+    const projectTableBody = document.getElementById('project-list-body');
+    projectTableBody.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
+
+    firebase.firestore().collection('projects').get()
+        .then(querySnapshot => {
+            projectTableBody.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                projectTableBody.innerHTML = '<tr><td colspan="4">Aucun projet enregistré</td></tr>';
+                return;
+            }
+
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const row = `
+                    <tr class="border-b border-gray-700">
+                        <td class="px-4 py-3">${data.titre || 'Non spécifié'}</td>
+                        <td class="px-4 py-3">${data.nom || 'Non spécifié'}</td>
+                        <td class="px-4 py-3">${data.budget || '0'} FCFA</td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="editProject('${doc.id}')" class="text-blue-500 hover:text-blue-400 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProject('${doc.id}')" class="text-red-500 hover:text-red-400">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                projectTableBody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error("Error loading projects: ", error);
+            projectTableBody.innerHTML = '<tr><td colspan="4">Erreur de chargement</td></tr>';
+        });
+}
         function hideBusinessDetails() {
             document.getElementById('business-modal').style.display = 'none';
         }
@@ -1139,8 +1143,8 @@
                 // Message de succès
                 document.getElementById('success-promotion-message').innerHTML = `Votre message a été soumis, ${nom}. Ansar vous contactera dans un délai de 24 à 48H.`;
                 document.getElementById('success-promotion').classList.remove('hidden-section');
-                document.getElementById('promotion-form').classList.add('hidden-section');
-                document.getElementById('promotionForm').reset();
+document.getElementById('promotion-page').classList.add('hidden-section');
+              document.getElementById('promotionForm').reset();
                 submitButton.disabled = false;
                 submitButton.innerHTML = 'Envoyer mon dossier';
             })
@@ -1526,17 +1530,19 @@
             } 
         }
 
-         function verifyAdminCodes() {
-            const code1 = document.getElementById('code1').value;
-            const code2 = document.getElementById('code2').value;
+        function verifyAdminCodes() {
+    const code1 = document.getElementById('code1').value;
+    const code2 = document.getElementById('code2').value;
 
-            if (code1 === 'admin123' && code2 === 'admin456') {
-                document.getElementById('admin-section').classList.add('hidden-section');
-                document.getElementById('admin-dashboard').classList.remove('hidden-section');
-            } else {
-                alert('Codes incorrects. Espace réservé aux admin.');
-            }
-        }
+    if (code1 === 'admin123' && code2 === 'admin456') {
+        document.getElementById('admin-section').classList.add('hidden-section');
+        document.getElementById('admin-dashboard').classList.remove('hidden-section');
+        loadBusinessList(); // Ajoutez cette ligne
+        loadProjectList();  // Ajoutez cette ligne
+    } else {
+        alert('Codes incorrects. Espace réservé aux admin.');
+    }
+}
 
 
         // Initialisation au chargement de la page
@@ -1552,4 +1558,3 @@
     </script>
 </body>
 </html>
-
