@@ -510,13 +510,11 @@
                     <i class="fas fa-arrow-left mr-2"></i> Retour
                 </button>
                 
-                <div class="ansar-glass rounded-xl p-6">
                     <h2 class="text-2xl font-bold text-center mb-8 font-['Orbitron']">Nos Professionnels</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="business-cards">
                         <!-- Les cartes seront générées dynamiquement -->
                     </div>
-                </div>
             </div>
 
             <!-- Modal Business Details -->
@@ -609,11 +607,15 @@
                         <button onclick="showAdminForm('promotion')" class="btn-ansar py-3 px-6 rounded-lg">
                             <i class="fas fa-bullhorn mr-2"></i> Ajouter Métier
                         </button>
-                        
+                        <button onclick="showAdminForm('financement')" class="btn-ansar py-3 px-6 rounded-lg">
+                            <i class="fas fa-money-bill-wave mr-2"></i> Ajouter Projet
+                        </button>
                         <button onclick="showAdminBusinessList()" class="btn-ansar py-3 px-6 rounded-lg">
                             <i class="fas fa-briefcase mr-2"></i> Gérer Business
                         </button>
-                       
+                        <button onclick="showAdminProjectList()" class="btn-ansar py-3 px-6 rounded-lg">
+                            <i class="fas fa-project-diagram mr-2"></i> Gérer Projets
+                        </button>
                     </div>
 
                     <!-- Formulaire Admin Promotion -->
@@ -1347,17 +1349,17 @@ document.getElementById('promotion-page').classList.add('hidden-section');
                             <img src="${business.image}" alt="${business.metier}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">${business.metier}</h3>
-                            <p class="text-gray-600 mb-2">${business.nom}</p>
-                            <div class="flex items-center text-gray-600 mb-2">
+                            <h3 class="text-xl font-bold text-emerald-500 mb-2">${business.metier}</h3>
+                            <p class="text-[#FFD700] mb-2">${business.nom}</p>
+                            <div class="flex items-center text-white mb-2">
                                 <i class="fas fa-calendar-alt mr-2"></i>
                                 <span>${business.experience} ans d'expérience</span>
                             </div>
-                            <div class="flex items-center text-gray-600 mb-4">
+                            <div class="flex items-center text-white mb-4">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
                                 <span>${business.adresse}</span>
                             </div>
-                            <button onclick="showBusinessDetails('${business.id}', 'business')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            <button onclick="showBusinessDetails('${business.id}', 'business')" class="w-full bg-[#9b9c28] hover:bg-[#FFDB58] text-white font-bold py-2 px-4 rounded transition duration-300">
                                 En savoir plus
                             </button>
                         </div>
