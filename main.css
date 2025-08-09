@@ -2722,3 +2722,40 @@ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); /* Ombre en bas */
   margin-top: 10px !important;
   margin-bottom: 10px !important;
 }
+
+
+/* Supprime l'outline sur le clic */
+* {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+/* Pour les boutons spécifiquement */
+button, a, .item, .circle-item, .nav-item, .social-icon, .settings-icon {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Pour les inputs */
+input, textarea, select {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+/* Supprime la sélection de texte au clic */
+*:focus {
+    outline: none !important;
+}
+
+
+/* Supprime tous les effets de focus/clic */
+button:focus, button:active,
+a:focus, a:active,
+input:focus, input:active,
+textarea:focus, textarea:active,
+select:focus, select:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
