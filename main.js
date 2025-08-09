@@ -242,12 +242,6 @@ case 'hadith':
     hadithIframe.src = 'hadith.html';
   }
   break;
-        case 'projet':
-  const projetIframe = document.getElementById('projet-iframe');
-  if (projetIframe && (!projetIframe.src || projetIframe.src === '')) {
-    projetIframe.src = 'projet.html';
-  }
-  break;
         // Dans le switch/case de showPage(), ajoutez ces nouveaux cas :
 case 'quibla':
   const quiblaIframe = document.querySelector('#quibla iframe');
@@ -4290,4 +4284,5 @@ function showWelcomeGuide() {
 setTimeout(showWelcomeGuide, 1000);
 // ========== FIN ==========
 // ========== FIN ==========
+
 
