@@ -3,173 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TASBIH</title>
+    <title>TASBIH | Ansar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-      
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Times New Roman", Times, serif;
-            user-select: none;
-            -webkit-tap-highlight-color: #073332;
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Open+Sans:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary-color: #073332;
+            --secondary-color: #1f4a49;
+            --accent-color: #9b9c28;
+            --accent-glow: rgba(155, 156, 40, 0.4);
+            --bg-color: #073332;
+            --text-color: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
         }
         
         body {
-            background-color: #073332;
+            font-family: 'Open Sans', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .holographic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: 
+                radial-gradient(
+                    circle at 30% 40%, 
+                    var(--secondary-color) 0%, 
+                    transparent 25%),
+                radial-gradient(
+                    circle at 70% 60%, 
+                    var(--primary-color) 0%, 
+                    transparent 25%);
+            opacity: 0.4;
+            z-index: -1;
+            animation: bgRotate 60s linear infinite;
+        }
+        
+        @keyframes bgRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .ansar-glass {
+            background: rgba(7, 51, 50, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(155, 156, 40, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(155, 156, 40, 0.1),
+                inset 0 0 30px rgba(31, 74, 73, 0.3);
+            border-radius: 20px;
+        }
+        
+        .holographic-effect {
+            position: relative;
             overflow: hidden;
-            color: #2a2118;
         }
         
-        .header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 100px;
-            background-color: #073332;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .header-title {
-            font-size: 28px;
-            font-weight: bold;
-            text-align: center;
-            color: #9b9b22;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .counter-container {
-            text-align: center;
-            margin: 30px 0;
-            position: relative;
-        }
-        
-        .current-count {
-            font-size: 79px;
-            font-weight: normal;
-            color: #9b9b22;
-            line-height: 1;
-            margin-bottom: 5px;
-        }
-        
-        .target-count {
-            font-size: 20px;
-            color: #8d6e63;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .edit-icon {
-            margin-left: 8px;
-            font-size: 16px;
-            color: #8d6e63;
-            cursor: pointer;
-        }
-        
-        .tasbih-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 40px 0;
-            position: relative;
-            height: 60px;
-            transform: rotate(-5deg);
-        }
-        
-        .tasbih-line {
+        .holographic-effect::before {
+            content: '';
             position: absolute;
-            height: 1px;
-            background-color: #bcaaa4;
-            width: 80%;
-            z-index: 1;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                transparent,
+                var(--accent-glow),
+                transparent
+            );
+            transform: rotate(30deg);
+            animation: hologram 8s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes hologram {
+            0% { transform: translateY(-100%) rotate(30deg); }
+            100% { transform: translateY(100%) rotate(30deg); }
+        }
+        
+        .counter-display {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 15px var(--accent-glow);
+            transition: all 0.3s ease;
         }
         
         .bead {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             position: relative;
             z-index: 2;
-            background-size: cover;
-            background-position: center;
-            transition: transform 0.1s;
+            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            cursor: pointer;
         }
         
-        .bead.left {
-            margin-right: 12px;
+        .bead:hover {
+            transform: scale(1.1);
         }
         
-        .bead.right {
-            margin-left: 12px;
+        .bead.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 25px var(--accent-glow);
         }
         
-        .bead-space {
-            width: 60px;
-            height: 1px;
-            background-color: #bcaaa4;
+        .bead-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            opacity: 0.5;
         }
         
-        .main-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
+        .btn-ansar {
+            background: linear-gradient(135deg, rgba(155, 156, 40, 0.2), transparent);
+            border: 1px solid var(--accent-color);
+            color: var(--text-color);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
-        .instructions {
-            color: #8d6e63;
-            font-size: 16px;
-            margin-top: 30px;
-            line-height: 1.5;
-            font-style: italic;
+        .btn-ansar:hover {
+            background: linear-gradient(135deg, rgba(155, 156, 40, 0.3), transparent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: translateY(-2px);
         }
         
-        .footer {
-            background-color: #073332;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        .btn-ansar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(155, 156, 40, 0.2),
+                transparent
+            );
+            transition: all 0.6s ease;
         }
         
-        .footer-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #5d4037;
-            text-align: center;
+        .btn-ansar:hover::before {
+            left: 100%;
         }
-        
-       .bead-styles {
-    display: flex;
-    justify-content: space-between; /* Au lieu de "center" */
-    gap: 15px;
-    flex-wrap: wrap;
-    padding: 0 20px; /* Ajoute un peu de marge intérieure si nécessaire */
-    max-width: 100%; /* S'assure que ça ne dépasse pas */
-    margin: 0 auto; /* Centrer le contenu */
-}
         
         .bead-style {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
+            transition: all 0.3s ease;
             border: 2px solid transparent;
-            background-size: cover;
-            transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        .bead-style:hover {
+            transform: scale(1.1);
         }
         
         .bead-style.selected {
-            border-color: #5d4037;
-            transform: scale(1.05);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.1);
         }
         
         .notification {
@@ -177,34 +188,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #4caf50;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
+            background: rgba(7, 51, 50, 0.9);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 20px 40px;
+            border-radius: 12px;
             font-size: 24px;
             font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
             z-index: 100;
             display: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 0 30px var(--accent-glow);
+            text-shadow: 0 0 10px var(--accent-glow);
         }
         
-        .reset-btn {
-            background-color: #1f4a49;
-            color: #efebe9;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .reset-btn:active {
-            transform: scale(0.98);
-        }
-        
-        /* Modal pour modifier le nombre */
         .modal {
             display: none;
             position: fixed;
@@ -212,138 +209,161 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.7);
             z-index: 200;
             justify-content: center;
             align-items: center;
         }
         
         .modal-content {
-            background-color: white;
+            background: rgba(7, 51, 50, 0.9);
+            border: 1px solid var(--accent-color);
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 16px;
             width: 90%;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 0 40px var(--accent-glow);
         }
         
         .modal-title {
+            font-family: 'Orbitron', sans-serif;
             font-size: 20px;
             margin-bottom: 20px;
-            color: #3d2e1e;
+            color: var(--accent-color);
         }
         
         .modal-input {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             font-size: 18px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            background: rgba(31, 74, 73, 0.5);
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            color: var(--text-color);
+            font-family: 'Orbitron', sans-serif;
         }
         
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 0 10px;
+        .modal-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
         
-        .modal-btn.confirm {
-            background-color: #4caf50;
-            color: white;
-        }
-        
-        .modal-btn.cancel {
-            background-color: #e0e0e0;
-            color: #333;
+        @media (max-width: 640px) {
+            .bead {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .counter-display {
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-
-        <div class="header-title">TASBIH</div>
-    </div>
+    <div class="holographic-bg"></div>
     
-    <div class="main-area" id="tap-area">
-        <div class="counter-container">
-            <div class="current-count" id="current-count">0</div>
-            <div class="target-count">
-                / <span id="target-count">100</span>
-                <span class="edit-icon" id="edit-target-btn">✏️</span>
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <!-- Conteneur principal -->
+        <div class="ansar-glass w-full max-w-md overflow-hidden p-6 holographic-effect">
+            <!-- En-tête -->
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold mb-2 font-['Orbitron'] text-transparent bg-clip-text bg-gradient-to-r from-white to-var(--accent-color)">
+                    TASBIH DIGITAL
+                </h1>
+                <p class="text-sm text-var(--accent-color)/80">Compteur de dhikr </p>
+            </div>
+            
+            <!-- Affichage du compteur -->
+            <div class="ansar-glass rounded-xl p-6 mb-6 text-center">
+                <div class="counter-display text-6xl mb-2" id="current-count">0</div>
+                <div class="flex justify-center items-center text-lg text-var(--accent-color)">
+                    / <span id="target-count" class="mx-1">100</span>
+                    <button id="edit-target-btn" class="text-var(--accent-color) hover:text-white ml-2">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Perles du tasbih -->
+            <div class="flex justify-center items-center mb-8">
+                <div class="flex items-center">
+                    <!-- 4 perles à gauche -->
+                    <div class="bead mr-3" id="bead-1" style="background-color: var(--accent-color);"></div>
+                    <div class="bead mr-3" id="bead-2" style="background-color: var(--accent-color);"></div>
+                    <div class="bead mr-3" id="bead-3" style="background-color: var(--accent-color);"></div>
+                    <div class="bead" id="bead-4" style="background-color: var(--accent-color);"></div>
+                    
+                    <!-- Ligne centrale -->
+                    <div class="bead-line mx-6 flex-1"></div>
+                    
+                    <!-- 3 perles à droite -->
+                    <div class="bead ml-3" id="bead-5" style="background-color: var(--accent-color);"></div>
+                    <div class="bead ml-3" id="bead-6" style="background-color: var(--accent-color);"></div>
+                    <div class="bead ml-3" id="bead-7" style="background-color: var(--accent-color);"></div>
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="text-center text-var(--accent-color)/80 mb-6">
+                <p>Cliquez sur les perles ou tapez l'écran pour </p>
+                <p> compter</p>
+            </div>
+            
+            <!-- Bouton de réinitialisation -->
+            <button id="reset" class="btn-ansar w-full py-3 rounded-lg flex items-center justify-center gap-2 mb-6">
+                <i class="fas fa-redo"></i> RÉINITIALISER
+            </button>
+            
+            <!-- Sélecteur de couleur -->
+            <div class="ansar-glass rounded-xl p-4">
+                <div class="text-center text-var(--accent-color) mb-3">COULEUR DES PERLES</div>
+                <div class="flex justify-center gap-4">
+                    <div class="bead-style selected" style="background-color: var(--accent-color);"></div>
+                    <div class="bead-style" style="background-color: #d4af37;"></div>
+                    <div class="bead-style" style="background-color: #a67c52;"></div>
+                    <div class="bead-style" style="background-color: #6b8c42;"></div>
+                    <div class="bead-style" style="background-color: #4a6b7d;"></div>
+                </div>
             </div>
         </div>
-        
-        <div class="tasbih-container">
-            <div class="tasbih-line"></div>
-            
-            <!-- 4 perles à gauche -->
-            <div class="bead left" id="bead-1" style="background-color: #d4af37;"></div>
-            <div class="bead left" id="bead-2" style="background-color: #d4af37;"></div>
-            <div class="bead left" id="bead-3" style="background-color: #d4af37;"></div>
-            <div class="bead left" id="bead-4" style="background-color: #d4af37;"></div>
-            
-            <!-- Espace central -->
-            <div class="bead-space"></div>
-            
-            <!-- 3 perles à droite -->
-            <div class="bead right" id="bead-5" style="background-color: #d4af37;"></div>
-            <div class="bead right" id="bead-6" style="background-color: #d4af37;"></div>
-            <div class="bead right" id="bead-7" style="background-color: #d4af37;"></div>
-        </div>
-        
-        <div class="instructions">
-            Touchez l'écran pour compter<br>
-            
-        </div>
-        
-        <button class="reset-btn" id="reset">Réinitialiser</button>
     </div>
     
-    <div class="footer">
-        <div class="footer-title">Couleurs de Perles</div>
-        <div class="bead-styles">
-            <div class="bead-style selected" style="background-color: #9b9b22;"></div>
-            <div class="bead-style" style="background-color: #30412a;"></div>
-            <div class="bead-style" style="background-color: #555555;"></div>
-            <div class="bead-style" style="background-color: #333333;"></div>
-            <div class="bead-style" style="background-color: #805d47;"></div>
-        </div>
-    </div>
-    
+    <!-- Notification -->
     <div class="notification" id="notification"></div>
     
-    <!-- Modal pour modifier le nombre -->
+    <!-- Modal pour modifier la cible -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <div class="modal-title">Entrez votre nombre total</div>
+            <div class="modal-title">MODIFIER LE NOMBRE CIBLE</div>
             <input type="number" class="modal-input" id="target-input" min="1" max="1000000" value="100">
-            <div>
-                <button class="modal-btn confirm" id="modal-confirm">Confirmer</button>
-                <button class="modal-btn cancel" id="modal-cancel">Annuler</button>
+            <div class="flex justify-center gap-4 mt-4">
+                <button class="btn-ansar px-6 py-2" id="modal-confirm">
+                    <i class="fas fa-check mr-2"></i> CONFIRMER
+                </button>
+                <button class="btn-ansar px-6 py-2" id="modal-cancel">
+                    <i class="fas fa-times mr-2"></i> ANNULER
+                </button>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Variables
         let currentCount = 0;
         let targetCount = 100;
         let currentBeadIndex = 0;
         let touchStartX = 0;
-        let beadColor = '#d4af37'; // Or par défaut
+        let beadColor = 'var(--accent-color)';
         
         // Éléments DOM
         const currentCountElement = document.getElementById('current-count');
         const targetCountElement = document.getElementById('target-count');
         const editTargetBtn = document.getElementById('edit-target-btn');
         const resetBtn = document.getElementById('reset');
-        const tapArea = document.getElementById('tap-area');
         const notification = document.getElementById('notification');
         const beadStyles = document.querySelectorAll('.bead-style');
         const beads = document.querySelectorAll('.bead');
@@ -351,15 +371,20 @@
         const targetInput = document.getElementById('target-input');
         const modalConfirm = document.getElementById('modal-confirm');
         const modalCancel = document.getElementById('modal-cancel');
+        const tapArea = document.querySelector('.ansar-glass');
         
         // Initialisation
         function init() {
             updateCounter();
             
             // Événements
-            tapArea.addEventListener('click', incrementCount);
+            beads.forEach(bead => {
+                bead.addEventListener('click', incrementCount);
+            });
+            
             tapArea.addEventListener('touchstart', handleTouchStart, false);
             tapArea.addEventListener('touchmove', handleTouchMove, false);
+            tapArea.addEventListener('click', incrementCount);
             
             resetBtn.addEventListener('click', resetCounter);
             
@@ -389,7 +414,13 @@
                     this.classList.add('selected');
                     
                     // Couleurs correspondantes
-                    const colors = ['#9b9b22', '#30412a', '#555555', '#333333', '#805d47'];
+                     const colors = [
+                        'var(--accent-color)',
+                        '#d4af37', // Or
+                        '#a67c52', // Bronze
+                        '#6b8c42', // Vert
+                        '#4a6b7d'  // Bleu acier
+                    ];
                     beadColor = colors[index];
                     
                     // Mettre à jour la couleur des perles
@@ -397,6 +428,7 @@
                 });
             });
         }
+         
          
         // Incrémenter le compteur
         function incrementCount() {
@@ -424,21 +456,27 @@
         // Mettre à jour l'affichage du compteur
         function updateCounter() {
             currentCountElement.textContent = currentCount;
+            
+            // Animation du compteur
+            currentCountElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                currentCountElement.style.transform = 'scale(1)';
+            }, 100);
         }
         
         // Animer la prochaine perle
         function animateNextBead() {
             // Réinitialiser l'animation précédente
             beads.forEach(bead => {
-                bead.style.transform = 'scale(1)';
+                bead.classList.remove('active');
             });
             
             // Animer la perle actuelle
             if (currentBeadIndex < beads.length) {
-                beads[currentBeadIndex].style.transform = 'scale(1.1)';
+                beads[currentBeadIndex].classList.add('active');
                 setTimeout(() => {
-                    beads[currentBeadIndex].style.transform = 'scale(1)';
-                }, 100);
+                    beads[currentBeadIndex].classList.remove('active');
+                }, 200);
             }
             
             // Passer à la perle suivante
@@ -449,17 +487,17 @@
         function animatePreviousBead() {
             // Réinitialiser l'animation précédente
             beads.forEach(bead => {
-                bead.style.transform = 'scale(1)';
+                bead.classList.remove('active');
             });
             
             // Reculer l'index
             currentBeadIndex = (currentBeadIndex - 1 + beads.length) % beads.length;
             
             // Animer la perle
-            beads[currentBeadIndex].style.transform = 'scale(0.9)';
+            beads[currentBeadIndex].classList.add('active');
             setTimeout(() => {
-                beads[currentBeadIndex].style.transform = 'scale(1)';
-            }, 100);
+                beads[currentBeadIndex].classList.remove('active');
+            }, 200);
         }
         
         // Réinitialiser le compteur
@@ -467,16 +505,11 @@
             currentCount = 0;
             currentBeadIndex = 0;
             updateCounter();
-            
-            // Réinitialiser les perles
-            beads.forEach(bead => {
-                bead.style.transform = 'scale(1)';
-            });
         }
         
         // Afficher la notification
         function showNotification() {
-            notification.textContent = targetCount;
+            notification.textContent = `Objectif atteint : ${targetCount}`;
             notification.style.display = 'block';
             
             setTimeout(() => {
