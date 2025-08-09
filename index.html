@@ -150,13 +150,11 @@
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
   </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+  
   <iframe src="quibla.html" 
           style="
-    position: fixed;
-    top: 97px; /* Laisser de l'espace pour la barre du haut */
+    position: absolute;
+    top: 100px; /* Laisser de l'espace pour la barre du haut */
     left: 0;
     width: 100%;
     height: calc(100% - 100px); /* Réduire la hauteur totale de 100px (50px haut + 50px bas) */
@@ -178,12 +176,10 @@
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
   </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+ 
   <iframe src="tasbih.html" 
 style="
-    position: fixed;
+    position: absolute;
     top: 97px; /* Laisser de l'espace pour la barre du haut */
     left: 0;
     width: 100%;
@@ -205,12 +201,10 @@ style="
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
   </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+ 
   <iframe src="priere.html" 
 style="
-    position: fixed;
+    position: absolute;
     top: 97px; /* Laisser de l'espace pour la barre du haut */
     left: 0;
     width: 100%;
@@ -232,12 +226,10 @@ style="
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
   </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+ 
   <iframe src="quizz.html" 
 style="
-    position: fixed;
+    position: absolute;
     top: 97px; /* Laisser de l'espace pour la barre du haut */
     left: 0;
     width: 100%;
@@ -259,9 +251,7 @@ style="
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
 </div>
-       <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+   
       <h2>Liste des Membres</h2>
       <div id="members-list"></div>
     </section>
@@ -322,18 +312,17 @@ style="
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
 </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+  
   <iframe src="coran.html" 
 style="
-    position: fixed;
+    position: absolute;
     top: 97px; /* Laisser de l'espace pour la barre du haut */
     left: 0;
     width: 100%;
     height: calc(100% - 100px); /* Réduire la hauteur totale de 100px (50px haut + 50px bas) */
     border: none;
-    overflow: hidden;
+           bottom: 97px;   /* Évite la barre du bas */
+    overflow: auto;
     margin: 0;
     padding: 0;
   "          title="Mushaf Coranique">
@@ -351,12 +340,10 @@ style="
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
 </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+ 
   <iframe src="hadith.html" 
 style="
-    position: fixed;
+    position: absolute;
     top: 97px; /* Laisser de l'espace pour la barre du haut */
     left: 0;
     width: 100%;
@@ -378,9 +365,7 @@ style="
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
 </div>
-  <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+  
 
   <div class="projet-container">
     <!-- Header -->
@@ -936,9 +921,7 @@ function handleIframeError() {
     </div>
     <img src="logo.png" alt="Logo ANSAR ALMOUYASSAR" class="logo">
 </div>
-   <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+   
   <div class="messages-header-container">
     <div class="messages-header">Bibliothèques</div>
   </div>
@@ -965,9 +948,7 @@ function handleIframeError() {
  <!-- Espace personnel -->
   <!-- Espace personnel -->
 <section id="personal" class="page">
-  <button onclick="showPage('home')" class="back-button">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+  
 
   <!-- Nouveau design de connexion (visible par défaut) -->
  <iframe src="personal.html" 
@@ -979,6 +960,7 @@ style="
     height: 100%;
     border: none;
     overflow: hidden;
+       
     margin: 0;
     padding: 0;
   "          title=" ">
@@ -1659,6 +1641,3 @@ function showSecretarySection(section) {
 }
 </script>
 </html>
-
-
-
