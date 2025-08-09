@@ -679,7 +679,15 @@
                                     <label class="form-label" for="a-image">Lien de l'image (PostImages ou autre)</label>
                                     <input type="url" id="a-image" class="form-input" placeholder="https://postimages.org/example.jpg">
                                 </div>
-                                
+                                <div>
+    <label class="form-label" for="a-website">Site Web (URL)</label>
+    <input type="url" id="a-website" class="form-input" placeholder="https://example.com">
+</div>
+
+<div>
+    <label class="form-label" for="a-portfolio">Portfolio (URL)</label>
+    <input type="url" id="a-portfolio" class="form-input" placeholder="https://portfolio.example.com">
+</div>
                                 <div class="pt-4">
                                     <label class="form-label">Services proposés</label>
                                     <div class="flex flex-wrap gap-4">
@@ -1401,7 +1409,7 @@ document.getElementById('promotion-page').classList.add('hidden-section');
         }
 
           // Éditer un métier
-       function editBusiness(businessId) {
+     function editBusiness(businessId) {
     firebase.firestore().collection('businesses').doc(businessId).get()
         .then(doc => {
             if (doc.exists) {
@@ -1416,11 +1424,19 @@ document.getElementById('promotion-page').classList.add('hidden-section');
                 document.getElementById('a-contact').value = data.contact;
                 document.getElementById('a-email').value = data.email || '';
                 document.getElementById('a-image').value = data.image || '';
-                document.getElementById('a-website').value = data.website || ''; // Ajout du champ Site Web
-                document.getElementById('a-portfolio').value = data.portfolio || ''; // Ajout du champ Portfolio
-                document.querySelectorAll('input[name="a-services"]').forEach(input => {
-                    input.checked = data.services.includes(input.value);
-                });
+                
+                // Gestion des champs optionnels
+                const websiteField = document.getElementById('a-website');
+                const portfolioField = document.getElementById('a-portfolio');
+                if (websiteField) websiteField.value = data.website || '';
+                if (portfolioField) portfolioField.value = data.portfolio || '';
+                
+                // Gestion des cases à cocher
+                if (data.services) {
+                    document.querySelectorAll('input[name="a-services"]').forEach(input => {
+                        input.checked = data.services.includes(input.value);
+                    });
+                }
 
                 const saveButton = document.querySelector('#adminPromotionForm button');
                 saveButton.textContent = 'Mettre à jour';
@@ -1430,12 +1446,11 @@ document.getElementById('promotion-page').classList.add('hidden-section');
         })
         .catch(error => {
             console.error('Erreur lors du chargement du métier :', error);
-            alert('Une erreur est survenue.');
+            alert('Une erreur est survenue lors du chargement du métier.');
         });
 }
 
-
-       function updateBusiness(businessId) {
+     function updateBusiness(businessId) {
     const businessData = {
         nom: document.getElementById('a-nom').value,
         dob: document.getElementById('a-dob').value,
@@ -1448,10 +1463,14 @@ document.getElementById('promotion-page').classList.add('hidden-section');
         email: document.getElementById('a-email').value,
         image: document.getElementById('a-image').value || 'https://via.placeholder.com/150',
         services: Array.from(document.querySelectorAll('input[name="a-services"]:checked')).map(input => input.value),
-        website: document.getElementById('a-website').value || '', // Ajout du champ Site Web
-        portfolio: document.getElementById('a-portfolio').value || '', // Ajout du champ Portfolio
         updatedAt: new Date()
     };
+
+    // Ajout des champs optionnels si ils existent
+    const websiteField = document.getElementById('a-website');
+    const portfolioField = document.getElementById('a-portfolio');
+    if (websiteField) businessData.website = websiteField.value;
+    if (portfolioField) businessData.portfolio = portfolioField.value;
 
     firebase.firestore().collection('businesses').doc(businessId).update(businessData)
         .then(() => {
@@ -1464,10 +1483,9 @@ document.getElementById('promotion-page').classList.add('hidden-section');
         })
         .catch(error => {
             console.error('Erreur lors de la mise à jour du métier :', error);
-            alert('Une erreur est survenue.');
+            alert('Une erreur est survenue lors de la mise à jour.');
         });
 }
-
 
          // Supprimer un métier
      function deleteBusiness(businessId) {
