@@ -312,16 +312,13 @@
                 <!-- Boutons principaux -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <button onclick="navigateTo('promotion')" class="btn-ansar py-4 px-6 rounded-lg flex flex-col items-center justify-center">
-                        <i class="fas fa-bullhorn text-2xl mb-2"></i>
-                        Promotion des Métiers
-                    </button>
-                    <button onclick="navigateTo('financement')" class="btn-ansar py-4 px-6 rounded-lg flex flex-col items-center justify-center">
                         <i class="fas fa-money-bill-wave text-2xl mb-2"></i>
-                        Financement d'un Projet
+                        Financement - Promotion 
                     </button>
+                   
                     <button onclick="navigateTo('business')" class="btn-ansar py-4 px-6 rounded-lg flex flex-col items-center justify-center">
                         <i class="fas fa-briefcase text-2xl mb-2"></i>
-                        Business
+                        Profils
                     </button>
                 </div>
 
@@ -861,16 +858,16 @@
         };
 
         // Fonctions de navigation
-        function navigateTo(page) {
-            document.querySelectorAll('[id$="-page"]').forEach(el => {
-                el.classList.add('hidden-section');
-            });
-            document.getElementById(`${page}-page`).classList.remove('hidden-section');
-            
-            if (page === 'business') {
-                loadBusinessProfessionals();
-            }
-        }
+       function navigateTo(page) {
+    document.querySelectorAll('[id$="-page"]').forEach(el => {
+        el.classList.add('hidden-section');
+    });
+    document.getElementById(`${page}-page`).classList.remove('hidden-section');
+    
+    if (page === 'business') {
+        loadBusinessCards(); // Remplacez loadBusinessProfessionals() par loadBusinessCards()
+    }
+}
 
         function showAdminSection() {
             document.getElementById('admin-section').style.display = 'flex';
@@ -904,62 +901,97 @@
             document.getElementById('admin-project-list').style.display = 'block';
         }
 
-        function showBusinessDetails(id, type) {
-            const collection = type === 'business' ? 'businesses' : 'projects';
-            firebase.firestore().collection(collection).doc(id).get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('modal-title').textContent = data.nom;
-                        document.getElementById('modal-content').innerHTML = `
-                            <div class="flex flex-col md:flex-row gap-6">
-                                <div class="md:w-1/3">
-                                    <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
-                                        <img src="${data.image}" alt="${data.nom}" class="w-full h-full object-cover">
-                                    </div>
-                                    <h4 class="text-xl font-bold text-gray-800">${data.nom}</h4>
-                                    <div class="flex items-center text-gray-600 mt-2">
-                                        <i class="fas fa-calendar-alt mr-2"></i>
-                                        <span>${data.experience ? `${data.experience} ans d'expérience` : data.budget + ' FCFA'}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
-                                        <i class="fas fa-map-marker-alt mr-2"></i>
-                                        <span>${data.adresse || data.delai}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
-                                        <i class="fas fa-phone mr-2"></i>
-                                        <span>${data.contact || 'Non spécifié'}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
-                                        <i class="fas fa-envelope mr-2"></i>
-                                        <span>${data.email || 'Non spécifié'}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
-                                        <i class="fas fa-globe mr-2"></i>
-                                        <span>${data.website ? `<a href="${data.website}" target="_blank">Site Web</a>` : 'Non spécifié'}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 mt-2">
-                                        <i class="fas fa-briefcase mr-2"></i>
-                                        <span>${data.portfolio ? `<a href="${data.portfolio}" target="_blank">Portfolio</a>` : 'Non spécifié'}</span>
-                                    </div>
+       function showBusinessDetails(id, type) {
+    const collection = type === 'business' ? 'businesses' : 'projects';
+    firebase.firestore().collection(collection).doc(id).get()
+        .then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('modal-title').textContent = type === 'business' ? data.metier : data.titre;
+                
+                let content = '';
+                if (type === 'business') {
+                    content = `
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="md:w-1/3">
+                                <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
+                                    <img src="${data.image}" alt="${data.metier}" class="w-full h-full object-cover">
                                 </div>
-                                <div class="md:w-2/3">
-                                    <h4 class="text-lg font-bold text-gray-800 mb-2">À propos</h4>
-                                    <p class="text-gray-600 mb-4">${data.description}</p>
+                                <h4 class="text-xl font-bold">${data.nom}</h4>
+                                <div class="flex items-center mt-2">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>${data.experience} ans d'expérience</span>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    <span>${data.adresse}</span>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    <span>${data.contact}</span>
+                                </div>
+                                ${data.email ? `<div class="flex items-center mt-2">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    <span>${data.email}</span>
+                                </div>` : ''}
+                            </div>
+                            <div class="md:w-2/3">
+                                <h4 class="text-lg font-bold mb-2">À propos</h4>
+                                <p class="mb-4">${data.description}</p>
+                                ${data.services && data.services.length > 0 ? `
+                                <h4 class="text-lg font-bold mb-2">Services proposés</h4>
+                                <ul class="list-disc pl-5">
+                                    ${data.services.map(service => `<li>${service}</li>`).join('')}
+                                </ul>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Contenu pour les projets
+                    content = `
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="md:w-1/3">
+                                <div class="h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
+                                    <img src="${data.image}" alt="${data.titre}" class="w-full h-full object-cover">
+                                </div>
+                                <h4 class="text-xl font-bold">${data.nom}</h4>
+                                <div class="flex items-center mt-2">
+                                    <i class="fas fa-money-bill-wave mr-2"></i>
+                                    <span>Budget: ${data.budget} FCFA</span>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    <span>Délai: ${data.delai}</span>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    <span>${data.contact || 'Non spécifié'}</span>
                                 </div>
                             </div>
-                        `;
-                        document.getElementById('business-modal').classList.remove('hidden-section');
-                    } else {
-                        alert('Métier ou projet non trouvé.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des détails :', error);
-                    alert('Une erreur est survenue.');
-                });
-        }
-
+                            <div class="md:w-2/3">
+                                <h4 class="text-lg font-bold mb-2">Description du projet</h4>
+                                <p class="mb-4">${data.description}</p>
+                                ${data.besoins && data.besoins.length > 0 ? `
+                                <h4 class="text-lg font-bold mb-2">Besoins</h4>
+                                <ul class="list-disc pl-5">
+                                    ${data.besoins.map(besoin => `<li>${besoin}</li>`).join('')}
+                                </ul>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('modal-content').innerHTML = content;
+                document.getElementById('business-modal').classList.remove('hidden');
+            } else {
+                alert('Document non trouvé.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des détails :', error);
+            alert('Une erreur est survenue.');
+        });
+}
     // Charger la liste des métiers dans #admin-business-list
        function loadBusinessList() {
     const businessTableBody = document.getElementById('business-list-body');
@@ -1036,8 +1068,8 @@ function loadProjectList() {
         });
 }
         function hideBusinessDetails() {
-            document.getElementById('business-modal').style.display = 'none';
-        }
+    document.getElementById('business-modal').classList.add('hidden');
+}
 
         function showSuccessMessage(type) {
             document.getElementById(`success-${type}`).style.display = 'flex';
